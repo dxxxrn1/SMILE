@@ -1,26 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMILE</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SMILE empowers Black South African youth by connecting them with opportunities that support personal growth, educational advancement, and career development.">
+  <title>SMILE - No Child is Left Behind</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Header / Navigation -->
+  <header class="header">
+    <nav class="nav container">
+      <a href="home.html" class="nav__logo">
+        <span class="nav__logo-icon">&#9786;</span>
+        <span>SMILE</span>
+      </a>
+      
+      <ul class="nav__menu" id="navMenu">
+        <li><a href="home.html" class="nav__link nav__link--active">
+          <span class="nav__link-icon">&#127968;</span> Home
+        </a></li>
+        <li><a href="#" class="nav__link">
+          <span class="nav__link-icon">&#127891;</span> Opportunities
+        </a></li>
+        <li><a href="#" class="nav__link">
+          <span class="nav__link-icon">&#128188;</span> Careers
+        </a></li>
+        <li><a href="#" class="nav__link">
+          <span class="nav__link-icon">&#128205;</span> Near Me
+        </a></li>
+        <li><a href="#" class="nav__link">
+          <span class="nav__link-icon">&#128240;</span> News
+        </a></li>
+        <li><a href="#" class="nav__link">
+          <span class="nav__link-icon">&#128202;</span> Dashboard
+        </a></li>
+      </ul>
+      
+      <div class="nav__actions">
+        <a href="login.html" class="btn btn--outline">Log In</a>
+        <a href="register.html" class="btn btn--primary">Sign Up</a>
+      </div>
+      
+      <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
+        &#9776;
+      </button>
+    </nav>
+  </header>
 
-    <header>
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero__content">
+          <div class="hero__text">
+            <h1 class="hero__title">No Child is Left Behind</h1>
+            <p class="hero__description">
+              SMILE empowers Black South African youth by connecting them with 
+              opportunities that support personal growth, educational advancement, 
+              and career development.
+            </p>
+            <div class="hero__actions">
+              <a href="#" class="btn btn--outline-white btn--lg">
+                Explore Opportunities <span>&rarr;</span>
+              </a>
+              <a href="register.html" class="btn btn--white btn--lg">Get Started</a>
+            </div>
+          </div>
+          <div class="hero__image">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%20%28342%29-IFXgxqXeBIv8WDieIwd96haPXvG1zm.png" 
+                 alt="South African students in school uniforms smiling" 
+                 width="550" 
+                 height="400">
+          </div>
+        </div>
+      </div>
+    </section>
 
-    </header>
+    <!-- Stats Section -->
+    <section class="stats">
+      <div class="container">
+        <div class="stats__grid">
+          <div class="stats__item">
+            <div class="stats__icon stats__icon--orange">
+              &#127891;
+            </div>
+            <div class="stats__number">500+</div>
+            <div class="stats__label">Active Opportunities</div>
+          </div>
+          <div class="stats__item">
+            <div class="stats__icon stats__icon--pink">
+              &#128101;
+            </div>
+            <div class="stats__number">50+</div>
+            <div class="stats__label">Partner Organizations</div>
+          </div>
+          <div class="stats__item">
+            <div class="stats__icon stats__icon--purple">
+              &#128200;
+            </div>
+            <div class="stats__number">10,000+</div>
+            <div class="stats__label">Youth Empowered</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <main>
+    <!-- Mission Section -->
+    <section class="mission">
+      <div class="container">
+        <h2 class="mission__title">Our Mission</h2>
+        <p class="mission__text">
+          With more learners dropping out of schools to become streamers or forex traders, we 
+          want to ensure that <span class="highlight">education remains the first choice</span>. 
+          You can become a streamer while educated. As they say "The boy child is left behind" 
+          &ndash; we ensure that <span class="highlight">no kid is left behind</span>, and that 
+          education is still part of every child&apos;s dream.
+        </p>
+      </div>
+    </section>
 
-    </main>
+    <!-- Features Section -->
+    <section class="features">
+      <div class="container">
+        <h2 class="features__title">How SMILE Helps You</h2>
+        <div class="features__grid">
+          <article class="feature-card">
+            <div class="feature-card__icon feature-card__icon--orange">
+              &#127891;
+            </div>
+            <h3 class="feature-card__title">Discover Opportunities</h3>
+            <p class="feature-card__text">
+              Access workshops, internships, scholarships, and youth programs from trusted organizations.
+            </p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-card__icon feature-card__icon--pink">
+              &#128188;
+            </div>
+            <h3 class="feature-card__title">Explore Career Paths</h3>
+            <p class="feature-card__text">
+              Learn about different careers, required skills, and which school subjects lead to your dream.
+            </p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-card__icon feature-card__icon--purple">
+              &#128205;
+            </div>
+            <h3 class="feature-card__title">Find Local Programs</h3>
+            <p class="feature-card__text">
+              Discover events and programs available in your area with our location-based finder.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
 
+    <!-- CTA Section -->
+    <section class="cta">
+      <div class="container">
+        <h2 class="cta__title">Ready to Shape Your Future?</h2>
+        <p class="cta__text">
+          Join thousands of South African youth taking control of their education and career path.
+        </p>
+        <a href="register.html" class="btn btn--white btn--lg">Create Your Free Account</a>
+      </div>
+    </section>
+  </main>
 
-    <footer>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__content">
+        <a href="home.html" class="footer__logo">
+          <span class="nav__logo-icon">&#9786;</span>
+          <span>SMILE</span>
+        </a>
+        <nav class="footer__links">
+          <a href="#" class="footer__link">About Us</a>
+          <a href="#" class="footer__link">Contact</a>
+          <a href="#" class="footer__link">Privacy Policy</a>
+          <a href="#" class="footer__link">Terms of Service</a>
+        </nav>
+        <p class="footer__copy">&copy; 2026 SMILE. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
 
-    </footer>
-
-    <script src="../jsFrontEnd/homeJS.js"></script>
-    
+  <script src="../jsFrontEnd/homeJS.js"></script>
 </body>
 </html>
