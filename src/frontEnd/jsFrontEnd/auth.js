@@ -161,7 +161,7 @@ function handleLoginSubmit(event) {
     
     // Simulate redirect after successful login
     setTimeout(() => {
-      window.location.href = 'home.html';
+      window.location.href = '/login-page';
     }, 1500);
   }
 }
@@ -285,7 +285,7 @@ function handleRegisterSubmit(event) {
     
     // Simulate redirect after successful registration
     setTimeout(() => {
-      window.location.href = 'login.html';
+      window.location.href = '/login-page';
     }, 1500);
   }
 }
