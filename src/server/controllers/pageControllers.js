@@ -20,4 +20,8 @@ export const registerPage = (req,res)=>{
 
 }
 
+export const studentLandingPage = (req,res)=>{
+    res.sendFile(path.join(__dirname,"..",".." ,"frontEnd" , "htmlPages" , "studentdashboard.html"));
+}
+
 //Lucas Bohani Maluleke and Darren Foster

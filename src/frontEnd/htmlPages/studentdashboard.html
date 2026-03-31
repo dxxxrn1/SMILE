@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="SMILE Student Dashboard - View your saved opportunities, track applications, and access free eBooks."
+    />
+    <title>Dashboard - SMILE</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="dashboard-page">
+    <!-- Dashboard Header / Navigation -->
+    <header class="header header--dashboard">
+      <nav class="nav container">
+        <a href="home.html" class="nav__logo">
+          <span class="nav__logo-icon">&#9786;</span>
+          <span>SMILE</span>
+        </a>
+
+        <ul class="nav__menu nav__menu--dashboard" id="navMenu">
+          <li>
+            <a href="#" class="nav__link">
+              <svg
+                class="nav__link-svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"
+                ></path>
+              </svg>
+              Opportunities
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav__link">
+              <svg
+                class="nav__link-svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              Near Me
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav__link">
+              <svg
+                class="nav__link-svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"
+                ></path>
+                <path d="M18 14h-8"></path>
+                <path d="M15 18h-5"></path>
+                <path d="M10 6h8v4h-8V6Z"></path>
+              </svg>
+              News
+            </a>
+          </li>
+          <li>
+            <a href="dashboard.html" class="nav__link nav__link--active">
+              <svg
+                class="nav__link-svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+                <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+                <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+                <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+              </svg>
+              Dashboard
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav__actions nav__actions--dashboard">
+          <button class="nav__icon-btn" aria-label="Notifications">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+            </svg>
+            <span class="nav__notification-badge">3</span>
+          </button>
+          <div class="nav__profile" id="profileDropdown">
+            <button class="nav__profile-btn" aria-label="Profile menu">
+              <div class="nav__avatar">
+                <span>TM</span>
+              </div>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="nav__profile-menu" id="profileMenu">
+              <a href="#" class="nav__profile-link">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                My Profile
+              </a>
+              <a href="#" class="nav__profile-link">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+                  ></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <!-- Settings
+            </a>
+            <hr class="nav__profile-divider">
+            <a href="login.html" class="nav__profile-link nav__profile-link--logout">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" x2="9" y1="12" y2="12"></line>
+              </svg> -->
+                Log Out
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <button
+          class="nav__mobile-toggle"
+          id="mobileToggle"
+          aria-label="Toggle navigation menu"
+        >
+          &#9776;
+        </button>
+      </nav>
+    </header>
+
+    <main class="dashboard">
+      <div class="container">
+        <!-- Dashboard Welcome Header -->
+        <div class="dashboard__header">
+          <div class="dashboard__welcome">
+            <h1 class="dashboard__title">Welcome back, Thabo!</h1>
+            <p class="dashboard__subtitle">
+              Here&apos;s what&apos;s happening with your opportunities today.
+            </p>
+          </div>
+          <a href="#" class="btn btn--primary">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+            Find Opportunities
+          </a>
+        </div>
+
+        <!-- Quick Stats Cards -->
+        <div class="dashboard__stats">
+          <div class="stat-card">
+            <div class="stat-card__icon stat-card__icon--orange">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"
+                ></path>
+              </svg>
+            </div>
+            <div class="stat-card__content">
+              <span class="stat-card__number">12</span>
+              <span class="stat-card__label">Saved Opportunities</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon stat-card__icon--blue">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <div class="stat-card__content">
+              <span class="stat-card__number">5</span>
+              <span class="stat-card__label">Applications Sent</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon stat-card__icon--green">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <div class="stat-card__content">
+              <span class="stat-card__number">2</span>
+              <span class="stat-card__label">Interviews Scheduled</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon stat-card__icon--purple">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
+                ></path>
+              </svg>
+            </div>
+            <div class="stat-card__content">
+              <span class="stat-card__number">8</span>
+              <span class="stat-card__label">eBooks Downloaded</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard__grid">
+          <!-- Saved Opportunities Section -->
+          <section class="dashboard__section dashboard__section--opportunities">
+            <div class="section__header">
+              <h2 class="section__title">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"
+                  ></path>
+                </svg>
+                Saved Opportunities
+              </h2>
+              <a href="#" class="section__link">View All</a>
+            </div>
+            <div class="opportunities-list">
+              <article class="opportunity-card">
+                <div
+                  class="opportunity-card__badge opportunity-card__badge--scholarship"
+                >
+                  Scholarship
+                </div>
+                <h3 class="opportunity-card__title">
+                  Sasol Bursary Program 2026
+                </h3>
+                <p class="opportunity-card__org">Sasol South Africa</p>
+                <div class="opportunity-card__meta">
+                  <span class="opportunity-card__location">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                      ></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Gauteng
+                  </span>
+                  <span class="opportunity-card__deadline">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Closes: Apr 15, 2026
+                  </span>
+                </div>
+                <div class="opportunity-card__actions">
+                  <a href="#" class="btn btn--primary btn--sm">Apply Now</a>
+                  <button
+                    class="btn btn--outline btn--sm btn--icon"
+                    aria-label="Remove from saved"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 6h18"></path>
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </div>
+              </article>
+              <article class="opportunity-card">
+                <div
+                  class="opportunity-card__badge opportunity-card__badge--internship"
+                >
+                  Internship
+                </div>
+                <h3 class="opportunity-card__title">
+                  Software Development Internship
+                </h3>
+                <p class="opportunity-card__org">Standard Bank</p>
+                <div class="opportunity-card__meta">
+                  <span class="opportunity-card__location">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                      ></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Johannesburg
+                  </span>
+                  <span class="opportunity-card__deadline">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Closes: Apr 30, 2026
+                  </span>
+                </div>
+                <div class="opportunity-card__actions">
+                  <a href="#" class="btn btn--primary btn--sm">Apply Now</a>
+                  <button
+                    class="btn btn--outline btn--sm btn--icon"
+                    aria-label="Remove from saved"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 6h18"></path>
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </div>
+              </article>
+              <article class="opportunity-card">
+                <div
+                  class="opportunity-card__badge opportunity-card__badge--workshop"
+                >
+                  Workshop
+                </div>
+                <h3 class="opportunity-card__title">
+                  Youth Leadership Summit 2026
+                </h3>
+                <p class="opportunity-card__org">NYDA</p>
+                <div class="opportunity-card__meta">
+                  <span class="opportunity-card__location">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                      ></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Cape Town
+                  </span>
+                  <span class="opportunity-card__deadline">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Closes: May 10, 2026
+                  </span>
+                </div>
+                <div class="opportunity-card__actions">
+                  <a href="#" class="btn btn--primary btn--sm">Apply Now</a>
+                  <button
+                    class="btn btn--outline btn--sm btn--icon"
+                    aria-label="Remove from saved"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 6h18"></path>
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- Application Status Section -->
+          <section class="dashboard__section dashboard__section--applications">
+            <div class="section__header">
+              <h2 class="section__title">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                  ></path>
+                  <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+                </svg>
+                Application Status
+              </h2>
+              <a href="#" class="section__link">View All</a>
+            </div>
+            <div class="applications-list">
+              <article class="application-card">
+                <div
+                  class="application-card__status application-card__status--pending"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  Pending Review
+                </div>
+                <h3 class="application-card__title">MTN Graduate Program</h3>
+                <p class="application-card__org">MTN South Africa</p>
+                <p class="application-card__date">Applied: Mar 20, 2026</p>
+              </article>
+              <article class="application-card">
+                <div
+                  class="application-card__status application-card__status--interview"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect
+                      width="18"
+                      height="18"
+                      x="3"
+                      y="4"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <line x1="16" x2="16" y1="2" y2="6"></line>
+                    <line x1="8" x2="8" y1="2" y2="6"></line>
+                    <line x1="3" x2="21" y1="10" y2="10"></line>
+                  </svg>
+                  Interview Scheduled
+                </div>
+                <h3 class="application-card__title">Vodacom Bursary</h3>
+                <p class="application-card__org">Vodacom Foundation</p>
+                <p class="application-card__date">
+                  Interview: Apr 5, 2026 at 10:00 AM
+                </p>
+              </article>
+              <article class="application-card">
+                <div
+                  class="application-card__status application-card__status--accepted"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                  Accepted
+                </div>
+                <h3 class="application-card__title">
+                  Allan Gray Orbis Scholarship
+                </h3>
+                <p class="application-card__org">Allan Gray Foundation</p>
+                <p class="application-card__date">Accepted: Mar 15, 2026</p>
+              </article>
+              <article class="application-card">
+                <div
+                  class="application-card__status application-card__status--rejected"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" x2="9" y1="9" y2="15"></line>
+                    <line x1="9" x2="15" y1="9" y2="15"></line>
+                  </svg>
+                  Not Selected
+                </div>
+                <h3 class="application-card__title">
+                  Google Africa Developer Program
+                </h3>
+                <p class="application-card__org">Google</p>
+                <p class="application-card__date">Updated: Mar 10, 2026</p>
+              </article>
+            </div>
+          </section>
+
+          <!-- eBook Library Section -->
+          <section class="dashboard__section dashboard__section--ebooks">
+            <div class="section__header">
+              <h2 class="section__title">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
+                  ></path>
+                </svg>
+                Free eBook Library
+              </h2>
+              <a href="#" class="section__link">Browse All</a>
+            </div>
+            <div class="ebooks-grid">
+              <article class="ebook-card">
+                <div class="ebook-card__cover ebook-card__cover--orange">
+                  <svg
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="ebook-card__content">
+                  <span class="ebook-card__category">Career Guide</span>
+                  <h3 class="ebook-card__title">How to Write a Winning CV</h3>
+                  <p class="ebook-card__pages">45 pages</p>
+                  <button class="btn btn--outline btn--sm">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                      ></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" x2="12" y1="15" y2="3"></line>
+                    </svg>
+                    Download
+                  </button>
+                </div>
+              </article>
+              <article class="ebook-card">
+                <div class="ebook-card__cover ebook-card__cover--blue">
+                  <svg
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="ebook-card__content">
+                  <span class="ebook-card__category">Study Tips</span>
+                  <h3 class="ebook-card__title">
+                    Mastering Matric Mathematics
+                  </h3>
+                  <p class="ebook-card__pages">120 pages</p>
+                  <button class="btn btn--outline btn--sm">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                      ></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" x2="12" y1="15" y2="3"></line>
+                    </svg>
+                    Download
+                  </button>
+                </div>
+              </article>
+              <article class="ebook-card">
+                <div class="ebook-card__cover ebook-card__cover--green">
+                  <svg
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="ebook-card__content">
+                  <span class="ebook-card__category">Financial Literacy</span>
+                  <h3 class="ebook-card__title">Managing Your Bursary Funds</h3>
+                  <p class="ebook-card__pages">32 pages</p>
+                  <button class="btn btn--outline btn--sm">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                      ></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" x2="12" y1="15" y2="3"></line>
+                    </svg>
+                    Download
+                  </button>
+                </div>
+              </article>
+              <article class="ebook-card">
+                <div class="ebook-card__cover ebook-card__cover--purple">
+                  <svg
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="ebook-card__content">
+                  <span class="ebook-card__category">Interview Prep</span>
+                  <h3 class="ebook-card__title">
+                    Ace Your Scholarship Interview
+                  </h3>
+                  <p class="ebook-card__pages">58 pages</p>
+                  <button class="btn btn--outline btn--sm">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                      ></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" x2="12" y1="15" y2="3"></line>
+                    </svg>
+                    Download
+                  </button>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <!-- Near Me Map Section -->
+          <section class="dashboard__section dashboard__section--map">
+            <div class="section__header">
+              <h2 class="section__title">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                  ></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                Opportunities Near You
+              </h2>
+              <a href="#" class="section__link">Open Map</a>
+            </div>
+            <div class="map-placeholder">
+              <div class="map-placeholder__content">
+                <svg
+                  width="48"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                  ></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <p class="map-placeholder__text">
+                  Interactive map showing opportunities in your area
+                </p>
+                <button class="btn btn--primary" id="enableLocation">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                  </svg>
+                  Enable Location
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer__content">
+          <a href="home.html" class="footer__logo">
+            <span class="nav__logo-icon">&#9786;</span>
+            <span>SMILE</span>
+          </a>
+          <nav class="footer__links">
+            <a href="#" class="footer__link">About Us</a>
+            <a href="#" class="footer__link">Contact</a>
+            <a href="#" class="footer__link">Privacy Policy</a>
+            <a href="#" class="footer__link">Terms of Service</a>
+          </nav>
+          <p class="footer__copy">&copy; 2026 SMILE. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="../jsFrontEnd/dashboardJS.js"></script>
+  </body>
+</html>
