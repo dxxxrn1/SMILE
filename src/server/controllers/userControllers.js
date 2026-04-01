@@ -150,5 +150,4 @@ export const saveOrganisationDetails = async(req,res)=>{
             message: "Opps something went wrong!!!!"
         });
     }
-
 }

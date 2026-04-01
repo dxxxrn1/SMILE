@@ -1,7 +1,6 @@
 import express from "express";
-import { homePage , loginPage  , registerPage , studentLandingPage} from "../controllers/pageControllers.js";
+import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,studentLandingPage,careersPage } from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails} from "../controllers/userControllers.js";
-
 
 const route = express.Router();
 
@@ -17,8 +16,13 @@ route.post("/register/student" , saveStudentDetails);
 
 route.post("/register/organization" , saveOrganisationDetails);
 
+route.get("/near/me" , nearMePage);
 
+route.get("/news/daily" , newsPage);
 
+route.get("/opportunities/browse", opportunitiesPage)
+
+route.get("/careers/explore" , careersPage);
 
 export default route;
 
