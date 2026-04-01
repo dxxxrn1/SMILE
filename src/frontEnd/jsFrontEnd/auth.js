@@ -90,12 +90,14 @@ function initAccountTypeSelector() {
 /**
  * Handle login form submission
  */
+
 function handleLoginSubmit(event) {
   event.preventDefault();
 
   const form = event.target;
   const email = form.querySelector('#email');
   const password = form.querySelector('#password');
+  const accountType = form.querySelector('#accountType').value; // 'student' or 'organization'
 
   let isValid = true;
 
@@ -112,7 +114,8 @@ function handleLoginSubmit(event) {
   if (isValid) {
     const formData = {
       email: email.value.trim().toLowerCase(),
-      password: password.value
+      password: password.value,
+      accountType // <-- send this to the backend
     };
 
     fetch('/login', {
@@ -124,12 +127,12 @@ function handleLoginSubmit(event) {
       if (response.status === 200) {
         showSuccessMessage(form, 'Login successful! Redirecting...');
         setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 1500);
-      } else if(response.status === 403){
-        showSuccessMessage(form, "User/Organisation with the email exists pleaselog in");
-      }
-      else if (response.status === 401) {
+          // Redirect based on account type
+          window.location.href = accountType === 'student' ? '/student/dashboard' : '/org/dashboard';
+        }, 3000);
+      } else if (response.status === 403) {
+        showSuccessMessage(form, 'Account exists — please log in with the correct type.');
+      } else if (response.status === 401) {
         showSuccessMessage(form, 'Invalid email or password.');
       } else {
         showSuccessMessage(form, 'Something went wrong. Please try again.');
