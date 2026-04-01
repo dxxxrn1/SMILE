@@ -1,6 +1,6 @@
 import express from "express";
-
 import { homePage , loginPage  , registerPage , studentLandingPage} from "../controllers/pageControllers.js";
+import {saveStudentDetails, saveOrganisationDetails} from "../controllers/userControllers.js";
 
 
 const route = express.Router();
@@ -11,7 +11,13 @@ route.get("/login-page" , loginPage);
 
 route.get("/register-page" , registerPage);
 
-route.get("/student/dashboard",studentLandingPage)
+route.get("/student/dashboard",studentLandingPage);
+
+route.post("/register/student" , saveStudentDetails);
+
+route.post("/register/organization" , saveOrganisationDetails);
+
+
 
 
 export default route;

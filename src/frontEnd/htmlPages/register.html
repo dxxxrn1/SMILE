@@ -11,25 +11,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="auth-page">
-  <!-- Header / Navigation -->
+
   <header class="header">
     <nav class="nav container">
       <a href="/" class="nav__logo">
         <span class="nav__logo-icon">&#9786;</span>
         <span>SMILE</span>
       </a>
-      
       <ul class="nav__menu" id="navMenu">
         <li><a href="/" class="nav__link">
           <span class="nav__link-icon">&#127968;</span> Home
         </a></li>
       </ul>
-      
       <div class="nav__actions">
         <a href="/login-page" class="btn btn--outline">Log In</a>
         <a href="/register-page" class="btn btn--primary">Sign Up</a>
       </div>
-      
       <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
         &#9776;
       </button>
@@ -38,6 +35,7 @@
 
   <main class="auth-container">
     <div class="auth-card auth-card--wide">
+
       <div class="auth-card__header">
         <h1 class="auth-card__title">Create Account</h1>
         <p class="auth-card__subtitle">Choose your account type to get started</p>
@@ -56,6 +54,7 @@
           <span class="account-type-card__description">Find opportunities</span>
           <span class="account-type-card__badge account-type-card__badge--green">Free Forever</span>
         </button>
+
         <button type="button" class="account-type-card account-type-card--detailed" data-type="organization">
           <div class="account-type-card__icon account-type-card__icon--organization">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -74,128 +73,152 @@
         </button>
       </div>
 
-      <form id="registerForm" class="form" novalidate>
-        <input type="hidden" id="accountType" name="accountType" value="student">
+      <!-- STUDENT FORM -->
+      <form id="studentForm" class="form" action="/register/student" method="POST" novalidate>
+        <input type="hidden" name="accountType" value="student">
 
-        <!-- Student Form Fields -->
-        <div id="studentFields">
-          <div class="form__row">
-            <div class="form__group">
-              <label for="firstName" class="form__label">First Name</label>
-              <input type="text" id="firstName" name="firstName" class="form__input" placeholder="Enter first name" required autocomplete="given-name"
-              >
-              <span class="form__error">First name is required</span>
-            </div>
-            <div class="form__group">
-              <label for="lastName" class="form__label">Last Name</label>
-              <input type="text" id="lastName" name="lastName" class="form__input" placeholder="Enter last name" required autocomplete="family-name">
-              <span class="form__error">Last name is required</span>
-            </div>
-          </div>
-
+        <div class="form__row">
           <div class="form__group">
-            <label for="email" class="form__label">Email Address</label>
-            <input type="email" id="email" name="email" class="form__input" placeholder="Enter your email" required autocomplete="email">
-            <span class="form__error">Please enter a valid email address</span>
+            <label for="firstName" class="form__label">First Name</label>
+            <input type="text" id="firstName" name="firstName" class="form__input" placeholder="Enter first name" required autocomplete="given-name">
+            <span class="form__error">First name is required</span>
           </div>
-
           <div class="form__group">
-            <label for="province" class="form__label">Province</label>
-            <select id="province" name="province" class="form__input form__select" required>
-              <option value="" disabled selected>Select your province</option>
-              <option value="eastern-cape">Eastern Cape</option>
-              <option value="free-state">Free State</option>
-              <option value="gauteng">Gauteng</option>
-              <option value="kwazulu-natal">KwaZulu-Natal</option>
-              <option value="limpopo">Limpopo</option>
-              <option value="mpumalanga">Mpumalanga</option>
-              <option value="northern-cape">Northern Cape</option>
-              <option value="north-west">North West</option>
-              <option value="western-cape">Western Cape</option>
-            </select>
-            <span class="form__error">Please select your province</span>
-          </div>
-
-          <div class="form__group">
-            <label for="educationLevel" class="form__label">Education Level</label>
-            <select id="educationLevel" name="educationLevel" class="form__input form__select" required>
-              <option value="" disabled selected>Select education level</option>
-              <option value="grade-8">Grade 8</option>
-              <option value="grade-9">Grade 9</option>
-              <option value="grade-10">Grade 10</option>
-              <option value="grade-11">Grade 11</option>
-              <option value="grade-12">Grade 12 (Matric)</option>
-              <option value="certificate">Certificate</option>
-              <option value="diploma">Diploma</option>
-              <option value="undergraduate">Undergraduate Degree</option>
-              <option value="postgraduate">Postgraduate Degree</option>
-              <option value="other">Other</option>
-            </select>
-            <span class="form__error">Please select your education level</span>
-          </div>
-        </div>
-
-        <!-- Organization Form Fields (Hidden by default) -->
-        <div id="organizationFields" style="display: none;">
-          <div class="form__group">
-            <label for="orgName" class="form__label">Organization Name</label>
-            <input type="text" id="orgName" name="orgName" class="form__input" placeholder="Enter organization name" autocomplete="organization">
-            <span class="form__error">Organization name is required</span>
-          </div>
-
-          <div class="form__group">
-            <label for="orgEmail" class="form__label">Organization Email</label>
-            <input type="email" id="orgEmail" name="orgEmail" class="form__input" placeholder="Enter organization email" autocomplete="email">
-            <span class="form__error">Please enter a valid email address</span>
-          </div>
-
-          <div class="form__group">
-            <label for="orgType" class="form__label">Organization Type</label>
-            <select id="orgType" name="orgType" class="form__input form__select">
-              <option value="" disabled selected>Select organization type</option>
-              <option value="ngo">NGO / Non-Profit</option>
-              <option value="company">Company / Business</option>
-              <option value="government">Government</option>
-              <option value="educational">Educational Institution</option>
-              <option value="other">Other</option>
-            </select>
-            <span class="form__error">Please select organization type</span>
-          </div>
-
-          <div class="form__group">
-            <label for="orgProvince" class="form__label">Province</label>
-            <select id="orgProvince" name="orgProvince" class="form__input form__select">
-              <option value="" disabled selected>Select province</option>
-              <option value="eastern-cape">Eastern Cape</option>
-              <option value="free-state">Free State</option>
-              <option value="gauteng">Gauteng</option>
-              <option value="kwazulu-natal">KwaZulu-Natal</option>
-              <option value="limpopo">Limpopo</option>
-              <option value="mpumalanga">Mpumalanga</option>
-              <option value="northern-cape">Northern Cape</option>
-              <option value="north-west">North West</option>
-              <option value="western-cape">Western Cape</option>
-              <option value="national">National / Multiple Provinces</option>
-            </select>
-            <span class="form__error">Please select province</span>
+            <label for="lastName" class="form__label">Last Name</label>
+            <input type="text" id="lastName" name="lastName" class="form__input" placeholder="Enter last name" required autocomplete="family-name">
+            <span class="form__error">Last name is required</span>
           </div>
         </div>
 
         <div class="form__group">
-          <label for="password" class="form__label">Password</label>
-          <input type="password" id="password" name="password" class="form__input" placeholder="Create a password" required autocomplete="new-password" minlength="8">
+          <label for="email" class="form__label">Email Address</label>
+          <input type="email" id="email" name="email" class="form__input" placeholder="Enter your email" required autocomplete="email">
+          <span class="form__error">Please enter a valid email address</span>
+        </div>
+
+        <div class="form__group">
+          <label for="province" class="form__label">Province</label>
+          <select id="province" name="province" class="form__input form__select" required>
+            <option value="" disabled selected>Select your province</option>
+            <option value="eastern-cape">Eastern Cape</option>
+            <option value="free-state">Free State</option>
+            <option value="gauteng">Gauteng</option>
+            <option value="kwazulu-natal">KwaZulu-Natal</option>
+            <option value="limpopo">Limpopo</option>
+            <option value="mpumalanga">Mpumalanga</option>
+            <option value="northern-cape">Northern Cape</option>
+            <option value="north-west">North West</option>
+            <option value="western-cape">Western Cape</option>
+          </select>
+          <span class="form__error">Please select your province</span>
+        </div>
+
+        <div class="form__group">
+          <label for="educationLevel" class="form__label">Education Level</label>
+          <select id="educationLevel" name="educationLevel" class="form__input form__select" required>
+            <option value="" disabled selected>Select education level</option>
+            <option value="grade-8">Grade 8</option>
+            <option value="grade-9">Grade 9</option>
+            <option value="grade-10">Grade 10</option>
+            <option value="grade-11">Grade 11</option>
+            <option value="grade-12">Grade 12 (Matric)</option>
+            <option value="certificate">Certificate</option>
+            <option value="diploma">Diploma</option>
+            <option value="undergraduate">Undergraduate Degree</option>
+            <option value="postgraduate">Postgraduate Degree</option>
+            <option value="other">Other</option>
+          </select>
+          <span class="form__error">Please select your education level</span>
+        </div>
+
+        <div class="form__group">
+          <label for="studentPassword" class="form__label">Password</label>
+          <input type="password" id="studentPassword" name="password" class="form__input" placeholder="Create a password" required autocomplete="new-password" minlength="8">
           <span class="form__error">Password must be at least 8 characters</span>
         </div>
 
         <div class="form__group">
           <div class="form__checkbox">
-            <input type="checkbox" id="terms" name="terms" required>
-            <label for="terms">I agree to the <a href="#" class="form__link">Terms of Service</a> and <a href="#" class="form__link">Privacy Policy</a></label>
+            <input type="checkbox" id="studentTerms" name="terms" required>
+            <label for="studentTerms">I agree to the
+              <a href="#" class="form__link">Terms of Service</a> and
+              <a href="#" class="form__link">Privacy Policy</a>
+            </label>
           </div>
+          <span class="form__error">You must agree to the Terms and Conditions</span>
         </div>
 
-        <button type="submit" class="btn btn--gradient form__submit" id="submitBtn">
+        <button type="submit" class="btn btn--gradient form__submit">
           Create Student Account
+        </button>
+      </form>
+
+      <!-- ORGANIZATION FORM -->
+      <form id="organizationForm" class="form" action="/register/organization" method="POST" novalidate style="display: none;">
+        <input type="hidden" name="accountType" value="organization">
+
+        <div class="form__group">
+          <label for="orgName" class="form__label">Organization Name</label>
+          <input type="text" id="orgName" name="orgName" class="form__input" placeholder="Enter organization name" required autocomplete="organization">
+          <span class="form__error">Organization name is required</span>
+        </div>
+
+        <div class="form__group">
+          <label for="orgEmail" class="form__label">Organization Email</label>
+          <input type="email" id="orgEmail" name="orgEmail" class="form__input" placeholder="Enter organization email" required autocomplete="email">
+          <span class="form__error">Please enter a valid email address</span>
+        </div>
+
+        <div class="form__group">
+          <label for="orgType" class="form__label">Organization Type</label>
+          <select id="orgType" name="orgType" class="form__input form__select" required>
+            <option value="" disabled selected>Select organization type</option>
+            <option value="ngo">NGO / Non-Profit</option>
+            <option value="company">Company / Business</option>
+            <option value="government">Government</option>
+            <option value="educational">Educational Institution</option>
+            <option value="other">Other</option>
+          </select>
+          <span class="form__error">Please select organization type</span>
+        </div>
+
+        <div class="form__group">
+          <label for="orgProvince" class="form__label">Province</label>
+          <select id="orgProvince" name="orgProvince" class="form__input form__select" required>
+            <option value="" disabled selected>Select province</option>
+            <option value="eastern-cape">Eastern Cape</option>
+            <option value="free-state">Free State</option>
+            <option value="gauteng">Gauteng</option>
+            <option value="kwazulu-natal">KwaZulu-Natal</option>
+            <option value="limpopo">Limpopo</option>
+            <option value="mpumalanga">Mpumalanga</option>
+            <option value="northern-cape">Northern Cape</option>
+            <option value="north-west">North West</option>
+            <option value="western-cape">Western Cape</option>
+            <option value="national">National / Multiple Provinces</option>
+          </select>
+          <span class="form__error">Please select province</span>
+        </div>
+
+        <div class="form__group">
+          <label for="orgPassword" class="form__label">Password</label>
+          <input type="password" id="orgPassword" name="password" class="form__input" placeholder="Create a password" required autocomplete="new-password" minlength="8">
+          <span class="form__error">Password must be at least 8 characters</span>
+        </div>
+
+        <div class="form__group">
+          <div class="form__checkbox">
+            <input type="checkbox" id="orgTerms" name="terms" required>
+            <label for="orgTerms">I agree to the
+              <a href="#" class="form__link">Terms of Service</a> and
+              <a href="#" class="form__link">Privacy Policy</a>
+            </label>
+          </div>
+          <span class="form__error">You must agree to the Terms and Conditions</span>
+        </div>
+
+        <button type="submit" class="btn btn--gradient form__submit">
+          Create Organization Account
         </button>
       </form>
 
@@ -205,7 +228,6 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="footer__content">
@@ -225,26 +247,27 @@
   </footer>
 
   <script src="../jsFrontEnd/auth.js"></script>
+
+  <script>
+    const cards = document.querySelectorAll('.account-type-card');
+    const studentForm = document.getElementById('studentForm');
+    const organizationForm = document.getElementById('organizationForm');
+
+    cards.forEach(card => {
+      card.addEventListener('click', function () {
+        cards.forEach(c => c.classList.remove('account-type-card--active'));
+        this.classList.add('account-type-card--active');
+
+        if (this.dataset.type === 'student') {
+          studentForm.style.display = 'block';
+          organizationForm.style.display = 'none';
+        } else {
+          studentForm.style.display = 'none';
+          organizationForm.style.display = 'block';
+        }
+      });
+    });
+  </script>
+
 </body>
 </html>
-
-
-<!--
-
-  <li><a href="#" class="nav__link">
-          <span class="nav__link-icon">&#127891;</span> Opportunities
-        </a></li>
-        <li><a href="#" class="nav__link">
-          <span class="nav__link-icon">&#128188;</span> Careers
-        </a></li>
-        <li><a href="#" class="nav__link">
-          <span class="nav__link-icon">&#128205;</span> Near Me
-        </a></li>
-        <li><a href="#" class="nav__link">
-          <span class="nav__link-icon">&#128240;</span> News
-        </a></li>
-        <li><a href="#" class="nav__link">
-          <span class="nav__link-icon">&#128202;</span> Dashboard
-        </a></li>
-
--->

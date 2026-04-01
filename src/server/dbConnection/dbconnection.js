@@ -28,4 +28,4 @@ export const connectToDB = ()=>{
 
 }
 
-export default sql;
+export {sql};

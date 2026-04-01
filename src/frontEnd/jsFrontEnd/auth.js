@@ -5,7 +5,8 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Mobile Navigation Toggle (shared across pages)
+
+  // Mobile Navigation Toggle
   const mobileToggle = document.getElementById('mobileToggle');
   const navMenu = document.getElementById('navMenu');
 
@@ -21,16 +22,22 @@ document.addEventListener('DOMContentLoaded', function() {
   // Account Type Selector
   initAccountTypeSelector();
 
-  // Login Form Validation
+  // Login Form
   const loginForm = document.getElementById('loginForm');
   if (loginForm) {
     loginForm.addEventListener('submit', handleLoginSubmit);
   }
 
-  // Registration Form Validation
-  const registerForm = document.getElementById('registerForm');
-  if (registerForm) {
-    registerForm.addEventListener('submit', handleRegisterSubmit);
+  // ✅ Fixed - attach to both separate forms
+  const studentForm = document.getElementById('studentForm');
+  const organizationForm = document.getElementById('organizationForm');
+
+  if (studentForm) {
+    studentForm.addEventListener('submit', handleRegisterSubmit);
+  }
+
+  if (organizationForm) {
+    organizationForm.addEventListener('submit', handleRegisterSubmit);
   }
 
   // Real-time validation on input blur
@@ -39,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
       validateField(this);
     });
 
-    // Clear error on input
     input.addEventListener('input', function() {
       const formGroup = this.closest('.form__group');
       if (formGroup) {
@@ -48,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
+
 });
 
 /**
@@ -55,10 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function initAccountTypeSelector() {
   const accountTypeCards = document.querySelectorAll('.account-type-card');
-  const accountTypeInput = document.getElementById('accountType');
-  const studentFields = document.getElementById('studentFields');
-  const organizationFields = document.getElementById('organizationFields');
-  const submitBtn = document.getElementById('submitBtn');
+  const studentForm = document.getElementById('studentForm');
+  const organizationForm = document.getElementById('organizationForm');
 
   accountTypeCards.forEach(card => {
     card.addEventListener('click', function() {
@@ -68,56 +73,17 @@ function initAccountTypeSelector() {
       accountTypeCards.forEach(c => c.classList.remove('account-type-card--active'));
       this.classList.add('account-type-card--active');
 
-      // Update hidden input value
-      if (accountTypeInput) {
-        accountTypeInput.value = selectedType;
-      }
-
-      // Toggle form fields based on account type (for registration page)
-      if (studentFields && organizationFields) {
+      // Toggle forms based on account type
+      if (studentForm && organizationForm) {
         if (selectedType === 'student') {
-          studentFields.style.display = 'block';
-          organizationFields.style.display = 'none';
-          
-          // Update required attributes
-          setFieldsRequired(studentFields, true);
-          setFieldsRequired(organizationFields, false);
-          
-          // Update submit button text
-          if (submitBtn) {
-            submitBtn.textContent = 'Create Student Account';
-          }
+          studentForm.style.display = 'block';
+          organizationForm.style.display = 'none';
         } else {
-          studentFields.style.display = 'none';
-          organizationFields.style.display = 'block';
-          
-          // Update required attributes
-          setFieldsRequired(studentFields, false);
-          setFieldsRequired(organizationFields, true);
-          
-          // Update submit button text
-          if (submitBtn) {
-            submitBtn.textContent = 'Create Organization Account';
-          }
+          studentForm.style.display = 'none';
+          organizationForm.style.display = 'block';
         }
       }
     });
-  });
-}
-
-/**
- * Set required attribute on form fields within a container
- */
-function setFieldsRequired(container, isRequired) {
-  if (!container) return;
-  
-  const inputs = container.querySelectorAll('input, select');
-  inputs.forEach(input => {
-    if (isRequired) {
-      input.setAttribute('required', '');
-    } else {
-      input.removeAttribute('required');
-    }
   });
 }
 
@@ -126,43 +92,50 @@ function setFieldsRequired(container, isRequired) {
  */
 function handleLoginSubmit(event) {
   event.preventDefault();
-  
+
   const form = event.target;
   const email = form.querySelector('#email');
   const password = form.querySelector('#password');
-  const accountType = form.querySelector('#accountType');
-  
+
   let isValid = true;
-  
-  // Validate email
+
   if (!validateEmail(email.value)) {
     showError(email, 'Please enter a valid email address');
     isValid = false;
   }
-  
-  // Validate password
+
   if (!password.value.trim()) {
     showError(password, 'Password is required');
     isValid = false;
   }
-  
+
   if (isValid) {
-    // Form is valid - prepare data for database submission
     const formData = {
-      email: email.value.trim(),
-      password: password.value,
-      accountType: accountType ? accountType.value : 'student',
-      remember: form.querySelector('#remember')?.checked || false
+      email: email.value.trim().toLowerCase(),
+      password: password.value
     };
-    
-    // TODO: Send to backend API when database is connected
-    // For now, show success feedback
-    showSuccessMessage(form, 'Login successful! Redirecting...');
-    
-    // Simulate redirect after successful login
-    setTimeout(() => {
-      window.location.href = '/login-page';
-    }, 1500);
+
+    fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
+      if (response.status === 200) {
+        showSuccessMessage(form, 'Login successful! Redirecting...');
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 1500);
+      } else if (response.status === 401) {
+        showSuccessMessage(form, 'Invalid email or password.');
+      } else {
+        showSuccessMessage(form, 'Something went wrong. Please try again.');
+      }
+    })
+    .catch(error => {
+      console.error('Login error:', error);
+      showSuccessMessage(form, 'Network error. Please try again.');
+    });
   }
 }
 
@@ -171,122 +144,153 @@ function handleLoginSubmit(event) {
  */
 function handleRegisterSubmit(event) {
   event.preventDefault();
-  
+
   const form = event.target;
-  const accountType = form.querySelector('#accountType')?.value || 'student';
-  const password = form.querySelector('#password');
-  const terms = form.querySelector('#terms');
-  
+  const accountType = form.querySelector('[name="accountType"]')?.value || 'student';
+
+  // ✅ Fixed - get correct password and terms based on which form was submitted
+  const password = accountType === 'student'
+    ? form.querySelector('#studentPassword')
+    : form.querySelector('#orgPassword');
+
+  const terms = accountType === 'student'
+    ? form.querySelector('#studentTerms')
+    : form.querySelector('#orgTerms');
+
   let isValid = true;
-  
+
   if (accountType === 'student') {
-    // Validate student fields
     const firstName = form.querySelector('#firstName');
     const lastName = form.querySelector('#lastName');
     const email = form.querySelector('#email');
     const province = form.querySelector('#province');
     const educationLevel = form.querySelector('#educationLevel');
-    
+
     if (!firstName.value.trim()) {
       showError(firstName, 'First name is required');
       isValid = false;
     }
-    
+
     if (!lastName.value.trim()) {
       showError(lastName, 'Last name is required');
       isValid = false;
     }
-    
+
     if (!validateEmail(email.value)) {
       showError(email, 'Please enter a valid email address');
       isValid = false;
     }
-    
+
     if (!province.value) {
       showError(province, 'Please select your province');
       isValid = false;
     }
-    
+
     if (!educationLevel.value) {
       showError(educationLevel, 'Please select your education level');
       isValid = false;
     }
+
   } else {
-    // Validate organization fields
     const orgName = form.querySelector('#orgName');
     const orgEmail = form.querySelector('#orgEmail');
     const orgType = form.querySelector('#orgType');
     const orgProvince = form.querySelector('#orgProvince');
-    
+
     if (!orgName.value.trim()) {
       showError(orgName, 'Organization name is required');
       isValid = false;
     }
-    
+
     if (!validateEmail(orgEmail.value)) {
       showError(orgEmail, 'Please enter a valid email address');
       isValid = false;
     }
-    
+
     if (!orgType.value) {
       showError(orgType, 'Please select organization type');
       isValid = false;
     }
-    
+
     if (!orgProvince.value) {
       showError(orgProvince, 'Please select province');
       isValid = false;
     }
   }
-  
+
   // Validate password
-  if (password.value.length < 8) {
+  if (!password || password.value.length < 8) {
     showError(password, 'Password must be at least 8 characters');
     isValid = false;
   }
-  
-  // Validate terms acceptance
-  if (!terms.checked) {
-    const termsGroup = terms.closest('.form__group');
+
+  // Validate terms
+  if (!terms || !terms.checked) {
+    const termsGroup = terms?.closest('.form__group');
+
     if (termsGroup) {
       termsGroup.classList.add('form__group--error');
     }
     isValid = false;
+
   }
-  
+
   if (isValid) {
-    // Form is valid - prepare data for database submission
     let formData;
-    
+    let url;
+
     if (accountType === 'student') {
+      url = '/register/student';
       formData = {
-        accountType: 'student',
         firstName: form.querySelector('#firstName').value.trim(),
         lastName: form.querySelector('#lastName').value.trim(),
-        email: form.querySelector('#email').value.trim(),
+        email: form.querySelector('#email').value.trim().toLowerCase(),
         province: form.querySelector('#province').value,
         educationLevel: form.querySelector('#educationLevel').value,
         password: password.value
       };
     } else {
+      url = '/register/organization';
       formData = {
-        accountType: 'organization',
-        organizationName: form.querySelector('#orgName').value.trim(),
-        email: form.querySelector('#orgEmail').value.trim(),
-        organizationType: form.querySelector('#orgType').value,
-        province: form.querySelector('#orgProvince').value,
+        orgName: form.querySelector('#orgName').value.trim(),
+        orgEmail: form.querySelector('#orgEmail').value.trim().toLowerCase(),
+        orgType: form.querySelector('#orgType').value,
+        orgProvince: form.querySelector('#orgProvince').value,
         password: password.value
       };
     }
-    
-    // TODO: Send to backend API when database is connected
-    // For now, show success feedback
-    showSuccessMessage(form, 'Account created successfully! Redirecting to login...');
-    
-    // Simulate redirect after successful registration
-    setTimeout(() => {
-      window.location.href = '/login-page';
-    }, 1500);
+
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
+      if (response.status === 201) {
+
+        showSuccessMessage(form, 'Account created! Redirecting to login...');
+
+        setTimeout(() => {
+          window.location.href = '/login-page';
+        }, 3000);
+
+      } else if (response.status === 400) {
+
+        showSuccessMessage(form, 'Please fill in all your details.');
+
+      } else {
+
+        showSuccessMessage(form, 'Something went wrong. Please try again.');
+
+      }
+    })
+    .catch(error => {
+
+      console.error('Registration error:', error);
+
+      showSuccessMessage(form, 'Network error. Please try again.');
+
+    });
   }
 }
 
@@ -296,12 +300,11 @@ function handleRegisterSubmit(event) {
 function validateField(input) {
   const type = input.type;
   const value = input.value.trim();
-  
-  // Skip validation for non-required fields that are empty
+
   if (!input.hasAttribute('required') && !value) {
     return true;
   }
-  
+
   switch (type) {
     case 'email':
       if (!validateEmail(value)) {
@@ -327,7 +330,7 @@ function validateField(input) {
         return false;
       }
   }
-  
+
   return true;
 }
 
@@ -347,7 +350,7 @@ function showError(input, message) {
   if (formGroup) {
     formGroup.classList.add('form__group--error');
     input.classList.add('form__input--error');
-    
+
     const errorElement = formGroup.querySelector('.form__error');
     if (errorElement) {
       errorElement.textContent = message;
@@ -356,16 +359,14 @@ function showError(input, message) {
 }
 
 /**
- * Show success message
+ * Show success or error message on the form
  */
 function showSuccessMessage(form, message) {
-  // Remove any existing success message
   const existingMessage = form.querySelector('.form__success');
   if (existingMessage) {
     existingMessage.remove();
   }
-  
-  // Create and insert success message
+
   const successDiv = document.createElement('div');
   successDiv.className = 'form__success';
   successDiv.style.cssText = `
@@ -378,7 +379,7 @@ function showSuccessMessage(form, message) {
     font-weight: 500;
   `;
   successDiv.textContent = message;
-  
+
   const submitButton = form.querySelector('.form__submit');
   if (submitButton) {
     submitButton.disabled = true;
