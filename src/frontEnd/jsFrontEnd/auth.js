@@ -126,7 +126,10 @@ function handleLoginSubmit(event) {
         setTimeout(() => {
           window.location.href = '/dashboard';
         }, 1500);
-      } else if (response.status === 401) {
+      } else if(response.status === 403){
+        showSuccessMessage(form, "User/Organisation with the email exists pleaselog in");
+      }
+      else if (response.status === 401) {
         showSuccessMessage(form, 'Invalid email or password.');
       } else {
         showSuccessMessage(form, 'Something went wrong. Please try again.');
@@ -274,7 +277,10 @@ function handleRegisterSubmit(event) {
           window.location.href = '/login-page';
         }, 3000);
 
-      } else if (response.status === 400) {
+      } else if (response.status === 403) {
+        showSuccessMessage(form, 'This email is already registered. Please log in.');
+      }
+      else if (response.status === 400) {
 
         showSuccessMessage(form, 'Please fill in all your details.');
 

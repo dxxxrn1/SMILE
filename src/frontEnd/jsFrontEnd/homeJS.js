@@ -4,6 +4,12 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+
+  document.addEventListener("click" , (e)=>{
+
+    console.log(e);
+
+  })
   // Mobile Navigation Toggle
   const mobileToggle = document.getElementById('mobileToggle');
   const navMenu = document.getElementById('navMenu');
