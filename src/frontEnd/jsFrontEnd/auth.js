@@ -147,11 +147,9 @@ function handleLoginSubmit(event) {
   })
   .then(response => {
     if (response.status === 200) {
-      showSuccessMessage(form, 'Login successful! Redirecting...');
-      setTimeout(() => {
-        window.location.href = accountType === 'student' ? '/student/dashboard' : '/org/dashboard';
-      }, 3000);
-    } else if (response.status === 403) {
+        return response.json();
+    }
+     if (response.status === 403) {
       showSuccessMessage(form, 'Invalid email or password.');
       resetSubmitButton(submitBtn);
     } else if (response.status === 401) {
@@ -161,6 +159,20 @@ function handleLoginSubmit(event) {
       showSuccessMessage(form, 'Something went wrong. Please try again.');
       resetSubmitButton(submitBtn);
     }
+  })
+  .then(data =>{
+    if(!data){
+      return
+    }
+    localStorage.setItem("token" , data.token);
+    localStorage.setItem("accountType" , data.accountType);
+
+    console.log("Token stored" , data.token);
+
+    showSuccessMessage(form, 'Login successful! Redirecting...');
+      setTimeout(() => {
+        window.location.href = accountType === 'student' ? '/student/dashboard' : '/org/dashboard';
+      }, 3000);
   })
   .catch(error => {
     console.error('Login error:', error);
@@ -434,4 +446,15 @@ function showSuccessMessage(form, message) {
   if (submitButton) {
     form.insertBefore(successDiv, submitButton);
   }
+}
+
+function handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('accountType');
+
+    // ✅ Call logout endpoint to clear cookie on server
+    fetch('/logout', { method: 'POST' })
+    .then(() => {
+        window.location.href = '/login-page';
+    });
 }
