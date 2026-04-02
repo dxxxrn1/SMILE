@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
  
 export const saveStudentDetails = async (req, res) => {
+    console.log("The request is received!!")
     try {
         const { firstName, lastName, email, province, educationLevel, password } = req.body;
 
@@ -17,32 +18,37 @@ export const saveStudentDetails = async (req, res) => {
 
         const pool = await connectToDB();
 
+        console.log("the database is connected!!")
+
         // Check if email already exists
+
+        console.log("3️⃣ connected, about to SELECT");
         const results = await pool
             .request()
             .input("email", sql.VarChar, email)
             .query(`SELECT * FROM Student WHERE StuEmail = @email`);
 
         if (results.recordset.length > 0) {
-            return res.sendStatus(403); // ✅ Bug 1 fixed - actually sends the response
+            return res.sendStatus(403);
         }
+
+        console.log("5️⃣ about to hash password");
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await pool
-            .request()
-            .input("firstname", sql.VarChar, firstName)
-            .input("lastname", sql.VarChar, lastName)
-            .input("email", sql.VarChar, email)
-            .input("province", sql.VarChar, province)
-            .input("educationlevel", sql.VarChar, educationLevel)
-            .input("password", sql.VarChar, hashedPassword)
-            .query(`
-                INSERT INTO Student(StuName, StuLastName, StuEmail, StuProvince, StuEducationLevel, StuPassword)
-                VALUES(@firstname, @lastname, @email, @province, @educationlevel, @password)
-            `);
+        .request()
+        .input("firstname", sql.VarChar, firstName)
+        .input("lastname", sql.VarChar, lastName)
+        .input("email", sql.VarChar, email)
+        .input("province", sql.VarChar, province)
+        .input("educationlevel", sql.VarChar, educationLevel)
+        .input("password", sql.VarChar, hashedPassword)
+        .query(`
+            INSERT INTO Student(StuName, StuLastName, StuEmail, StuProvince, StuEducationLevel, StuPassword)
+            VALUES(@firstname, @lastname, @email, @province, @educationlevel, @password)
+        `);
 
-        // ✅ Bug 2 fixed - await only, no callback
         const transport = nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -88,21 +94,29 @@ export const saveOrganisationDetails = async(req,res)=>{
             })
 
         }
+
+        const pool = await connectToDB();
+
+
+        console.log("3️⃣ connected, about to SELECT");
         
         const results = await pool
         .request()
         .input("email" , sql.VarChar , orgEmail)
         .query(`
-            SELECT * FROM Student WHERE StuEmail = @email;
+            SELECT * FROM Student WHERE OrgEmail = @email;
         `)
+
+        console.log("4️⃣ SELECT done, rows:", results.recordset.length);
 
         if(results.recordset.length > 0){
             return res.status(403);
         }
 
-        const hashedPassword = await bcrypt.hash(password , strengthOfpassWord);
 
-        const pool = await connectToDB();
+        console.log("5️⃣ about to hash password");
+
+        const hashedPassword = await bcrypt.hash(password , strengthOfpassWord);
 
         await pool
         .request()
@@ -115,6 +129,8 @@ export const saveOrganisationDetails = async(req,res)=>{
             INSERT INTO Organisation(OrgName,OrgEmail,Type,Province,Password)
             VALUES(@orgname,@orgemail,@orgtype,@orgprovince,@orgpassword)
         `)
+
+        console.log("✅ INSERT successful"); 
 
         const transport = nodemailer.createTransport({
             service:"gmail",
@@ -139,7 +155,6 @@ export const saveOrganisationDetails = async(req,res)=>{
             console.log("Email failed but user was still registered:", emailError);
         }
         
-
         console.log("Successfully registered the organisation!!!");
 
         return res.sendStatus(201);
@@ -151,3 +166,76 @@ export const saveOrganisationDetails = async(req,res)=>{
         });
     }
 }
+
+export const userLogin = async(req,res)=>{
+
+    try{
+
+        const  {email , password ,accountType} = req.body;
+
+        if(!email || !password || !accountType){
+            return res.status(401);
+        }
+
+        const pool = await connectToDB();
+
+        if(accountType === "student"){
+
+            const results = await pool
+            .request()
+            .input("email" , sql.VarChar , email)
+            .query(`
+                SELECT * FROM Student WHERE  StuEmail = @email
+            `)
+
+            if(results.recordset.length <= 0){
+                return res.status(401);
+            }
+
+            const user = results.recordset[0];
+
+            const hashedPassword = await bcrypt.compare(password , user.StuPassword);
+
+            if(!hashedPassword){
+                if (!passwordMatch) return res.status(401).json({ message: "Invalid credentials" });
+            }
+            else{
+                return res.status(200).json({ message: "Login successful" });
+            }
+            
+        }else if(accountType === "organization"){
+
+            const results = await pool
+            .request()
+            .input("email" , sql.VarChar , email)
+            .query(
+                `SELECT * FROM Organisation WHERE OrgEmail = @email`
+            )
+
+            if(results.recordset.length <= 0){
+                return res.status(403);
+            }
+
+            const user = results.recordset[0];
+
+            console.log(user)
+
+            const hashedPassword = bcrypt.compare(password , user.Password);
+
+            if(!hashedPassword){
+                if (!passwordMatch) return res.status(401).json({ message: "Invalid credentials" });
+            }
+            else{
+                return res.status(200).json({ message: "Login successful" });
+            }
+
+        }
+       
+    }catch(err){
+        console.log(err);
+        return res.status(500);
+    }
+
+}
+
+//Lucas Bohani Maluleke
