@@ -21,6 +21,8 @@ export const saveStudentDetails = async (req, res) => {
         console.log("the database is connected!!")
 
         // Check if email already exists
+
+        console.log("3️⃣ connected, about to SELECT");
         const results = await pool
             .request()
             .input("email", sql.VarChar, email)
@@ -29,6 +31,8 @@ export const saveStudentDetails = async (req, res) => {
         if (results.recordset.length > 0) {
             return res.sendStatus(403);
         }
+
+        console.log("5️⃣ about to hash password");
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -92,6 +96,9 @@ export const saveOrganisationDetails = async(req,res)=>{
         }
 
         const pool = await connectToDB();
+
+
+        console.log("3️⃣ connected, about to SELECT");
         
         const results = await pool
         .request()
@@ -100,9 +107,14 @@ export const saveOrganisationDetails = async(req,res)=>{
             SELECT * FROM Student WHERE OrgEmail = @email;
         `)
 
+        console.log("4️⃣ SELECT done, rows:", results.recordset.length);
+
         if(results.recordset.length > 0){
             return res.status(403);
         }
+
+
+        console.log("5️⃣ about to hash password");
 
         const hashedPassword = await bcrypt.hash(password , strengthOfpassWord);
 

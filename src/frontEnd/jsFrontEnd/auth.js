@@ -6,6 +6,9 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
+  console.log("✅ auth.js loaded");
+
+
   // Mobile Navigation Toggle
   const mobileToggle = document.getElementById('mobileToggle');
   const navMenu = document.getElementById('navMenu');
@@ -28,12 +31,16 @@ document.addEventListener('DOMContentLoaded', function() {
     loginForm.addEventListener('submit', handleLoginSubmit);
   }
 
-  // ✅ Fixed - attach to both separate forms
+  // Attach to both separate forms
   const studentForm = document.getElementById('studentForm');
+
+  console.log("studentForm found:", studentForm);
+
   const organizationForm = document.getElementById('organizationForm');
 
   if (studentForm) {
     studentForm.addEventListener('submit', handleRegisterSubmit);
+    console.log("✅ submit listener attached to studentForm");
   }
 
   if (organizationForm) {
@@ -90,14 +97,21 @@ function initAccountTypeSelector() {
 /**
  * Handle login form submission
  */
-
 function handleLoginSubmit(event) {
   event.preventDefault();
 
   const form = event.target;
+
+  // ✅ Disable submit button immediately to prevent multiple requests
+  const submitBtn = form.querySelector('.form__submit');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.7';
+  }
+
   const email = form.querySelector('#email');
   const password = form.querySelector('#password');
-  const accountType = form.querySelector('#accountType').value; // 'student' or 'organization'
+  const accountType = form.querySelector('#accountType').value;
 
   let isValid = true;
 
@@ -111,38 +125,48 @@ function handleLoginSubmit(event) {
     isValid = false;
   }
 
-  if (isValid) {
-    const formData = {
-      email: email.value.trim().toLowerCase(),
-      password: password.value,
-      accountType // <-- send this to the backend
-    };
-
-    fetch('/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
-    .then(response => {
-      if (response.status === 200) {
-        showSuccessMessage(form, 'Login successful! Redirecting...');
-        setTimeout(() => {
-          // Redirect based on account type
-          window.location.href = accountType === 'student' ? '/student/dashboard' : '/org/dashboard';
-        }, 3000);
-      } else if (response.status === 403) {
-        showSuccessMessage(form, 'Account exists — please log in with the correct type.');
-      } else if (response.status === 401) {
-        showSuccessMessage(form, 'Invalid email or password.');
-      } else {
-        showSuccessMessage(form, 'Something went wrong. Please try again.');
-      }
-    })
-    .catch(error => {
-      console.error('Login error:', error);
-      showSuccessMessage(form, 'Network error. Please try again.');
-    });
+  // ✅ Re-enable button if validation fails so user can correct and resubmit
+  if (!isValid) {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+    }
+    return;
   }
+
+  const formData = {
+    email: email.value.trim().toLowerCase(),
+    password: password.value,
+    accountType
+  };
+
+  fetch('/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData)
+  })
+  .then(response => {
+    if (response.status === 200) {
+      showSuccessMessage(form, 'Login successful! Redirecting...');
+      setTimeout(() => {
+        window.location.href = accountType === 'student' ? '/student/dashboard' : '/org/dashboard';
+      }, 3000);
+    } else if (response.status === 403) {
+      showSuccessMessage(form, 'Invalid email or password.');
+      resetSubmitButton(submitBtn);
+    } else if (response.status === 401) {
+      showSuccessMessage(form, 'Invalid email or password.');
+      resetSubmitButton(submitBtn);
+    } else {
+      showSuccessMessage(form, 'Something went wrong. Please try again.');
+      resetSubmitButton(submitBtn);
+    }
+  })
+  .catch(error => {
+    console.error('Login error:', error);
+    showSuccessMessage(form, 'Network error. Please try again.');
+    resetSubmitButton(submitBtn);
+  });
 }
 
 /**
@@ -152,9 +176,23 @@ function handleRegisterSubmit(event) {
   event.preventDefault();
 
   const form = event.target;
+
+  console.log("🔥 handleRegisterSubmit fired");
+  console.log("form:", event.target);
+  console.log("accountType:", event.target.querySelector('[name="accountType"]')?.value)
+
+  // ✅ Disable submit button immediately to prevent multiple requests
+  const submitBtn = form.querySelector('.form__submit');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.7';
+  }
+  console.log("submitBtn found:", submitBtn);
+
   const accountType = form.querySelector('[name="accountType"]')?.value || 'student';
 
-  // ✅ Fixed - get correct password and terms based on which form was submitted
+  console.log("accountType:", accountType);
+
   const password = accountType === 'student'
     ? form.querySelector('#studentPassword')
     : form.querySelector('#orgPassword');
@@ -224,82 +262,85 @@ function handleRegisterSubmit(event) {
     }
   }
 
-  // Validate password
   if (!password || password.value.length < 8) {
     showError(password, 'Password must be at least 8 characters');
     isValid = false;
   }
 
-  // Validate terms
   if (!terms || !terms.checked) {
     const termsGroup = terms?.closest('.form__group');
-
     if (termsGroup) {
       termsGroup.classList.add('form__group--error');
     }
     isValid = false;
-
   }
 
-  if (isValid) {
-    let formData;
-    let url;
+  // ✅ Re-enable button if validation fails so user can correct and resubmit
+  if (!isValid) {
+    resetSubmitButton(submitBtn);
+    return;
+  }
 
-    if (accountType === 'student') {
-      url = '/register/student';
-      formData = {
-        firstName: form.querySelector('#firstName').value.trim(),
-        lastName: form.querySelector('#lastName').value.trim(),
-        email: form.querySelector('#email').value.trim().toLowerCase(),
-        province: form.querySelector('#province').value,
-        educationLevel: form.querySelector('#educationLevel').value,
-        password: password.value
-      };
+  let formData;
+  let url;
+
+  if (accountType === 'student') {
+    url = '/register/student';
+    formData = {
+      firstName: form.querySelector('#firstName').value.trim(),
+      lastName: form.querySelector('#lastName').value.trim(),
+      email: form.querySelector('#email').value.trim().toLowerCase(),
+      province: form.querySelector('#province').value,
+      educationLevel: form.querySelector('#educationLevel').value,
+      password: password.value
+    };
+  } else {
+    url = '/register/organization';
+    formData = {
+      orgName: form.querySelector('#orgName').value.trim(),
+      orgEmail: form.querySelector('#orgEmail').value.trim().toLowerCase(),
+      orgType: form.querySelector('#orgType').value,
+      orgProvince: form.querySelector('#orgProvince').value,
+      password: password.value
+    };
+  }
+
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData)
+  })
+  .then(response => {
+    if (response.status === 201) {
+      showSuccessMessage(form, 'Account created! Redirecting to login...');
+      setTimeout(() => {
+        window.location.href = '/login-page';
+      }, 3000);
+    } else if (response.status === 403) {
+      showSuccessMessage(form, 'This email is already registered. Please log in.');
+      resetSubmitButton(submitBtn);
+    } else if (response.status === 400) {
+      showSuccessMessage(form, 'Please fill in all your details.');
+      resetSubmitButton(submitBtn);
     } else {
-      url = '/register/organization';
-      formData = {
-        orgName: form.querySelector('#orgName').value.trim(),
-        orgEmail: form.querySelector('#orgEmail').value.trim().toLowerCase(),
-        orgType: form.querySelector('#orgType').value,
-        orgProvince: form.querySelector('#orgProvince').value,
-        password: password.value
-      };
+      showSuccessMessage(form, 'Something went wrong. Please try again.');
+      resetSubmitButton(submitBtn);
     }
+  })
+  .catch(error => {
+    console.error('Registration error:', error);
+    showSuccessMessage(form, 'Network error. Please try again.');
+    resetSubmitButton(submitBtn);
+  });
+}
 
-    fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
-    .then(response => {
-      if (response.status === 201) {
-
-        showSuccessMessage(form, 'Account created! Redirecting to login...');
-
-        setTimeout(() => {
-          window.location.href = '/login-page';
-        }, 3000);
-
-      } else if (response.status === 403) {
-        showSuccessMessage(form, 'This email is already registered. Please log in.');
-      }
-      else if (response.status === 400) {
-
-        showSuccessMessage(form, 'Please fill in all your details.');
-
-      } else {
-
-        showSuccessMessage(form, 'Something went wrong. Please try again.');
-
-      }
-    })
-    .catch(error => {
-
-      console.error('Registration error:', error);
-
-      showSuccessMessage(form, 'Network error. Please try again.');
-
-    });
+/**
+ * Re-enable submit button after error so user can try again
+ */
+function resetSubmitButton(submitBtn) {
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.style.opacity = '1';
   }
 }
 
@@ -368,7 +409,7 @@ function showError(input, message) {
 }
 
 /**
- * Show success or error message on the form
+ * Show success or info message on the form
  */
 function showSuccessMessage(form, message) {
   const existingMessage = form.querySelector('.form__success');
@@ -391,8 +432,6 @@ function showSuccessMessage(form, message) {
 
   const submitButton = form.querySelector('.form__submit');
   if (submitButton) {
-    submitButton.disabled = true;
-    submitButton.style.opacity = '0.7';
     form.insertBefore(successDiv, submitButton);
   }
 }
