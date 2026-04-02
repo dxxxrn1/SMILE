@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import nodemailer from  "nodemailer";
 import { error } from "node:console";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
  
@@ -32,7 +33,7 @@ export const saveStudentDetails = async (req, res) => {
             return res.sendStatus(403);
         }
 
-        console.log("5️⃣ about to hash password");
+        console.log(" about to hash password");
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -97,8 +98,7 @@ export const saveOrganisationDetails = async(req,res)=>{
 
         const pool = await connectToDB();
 
-
-        console.log("3️⃣ connected, about to SELECT");
+        console.log("connected, about to SELECT");
         
         const results = await pool
         .request()
@@ -107,14 +107,14 @@ export const saveOrganisationDetails = async(req,res)=>{
             SELECT * FROM Student WHERE OrgEmail = @email;
         `)
 
-        console.log("4️⃣ SELECT done, rows:", results.recordset.length);
+        console.log("SELECT done, rows:", results.recordset.length);
 
         if(results.recordset.length > 0){
             return res.status(403);
         }
 
 
-        console.log("5️⃣ about to hash password");
+        console.log("about to hash password");
 
         const hashedPassword = await bcrypt.hash(password , strengthOfpassWord);
 
@@ -130,7 +130,7 @@ export const saveOrganisationDetails = async(req,res)=>{
             VALUES(@orgname,@orgemail,@orgtype,@orgprovince,@orgpassword)
         `)
 
-        console.log("✅ INSERT successful"); 
+        console.log("INSERT successful"); 
 
         const transport = nodemailer.createTransport({
             service:"gmail",
@@ -167,75 +167,91 @@ export const saveOrganisationDetails = async(req,res)=>{
     }
 }
 
-export const userLogin = async(req,res)=>{
+export const userLogin = async (req, res) => {
+    try {
+        const { email, password, accountType } = req.body;
 
-    try{
-
-        const  {email , password ,accountType} = req.body;
-
-        if(!email || !password || !accountType){
-            return res.status(401);
+        if (!email || !password || !accountType) {
+            return res.sendStatus(400);
         }
 
         const pool = await connectToDB();
 
-        if(accountType === "student"){
-
+        if (accountType === "student") {
             const results = await pool
-            .request()
-            .input("email" , sql.VarChar , email)
-            .query(`
-                SELECT * FROM Student WHERE  StuEmail = @email
-            `)
+                .request()
+                .input("email", sql.VarChar, email)
+                .query(`SELECT * FROM Student WHERE StuEmail = @email`);
 
-            if(results.recordset.length <= 0){
-                return res.status(401);
+            if (results.recordset.length <= 0) {
+                return res.sendStatus(401);
             }
 
             const user = results.recordset[0];
 
-            const hashedPassword = await bcrypt.compare(password , user.StuPassword);
+            // ✅ correct variable name
+            const passwordMatch = await bcrypt.compare(password, user.StuPassword);
 
-            if(!hashedPassword){
-                if (!passwordMatch) return res.status(401).json({ message: "Invalid credentials" });
+            if (!passwordMatch) {
+                return res.status(401).json({ message: "Invalid credentials" });
             }
-            else{
-                return res.status(200).json({ message: "Login successful" });
-            }
-            
-        }else if(accountType === "organization"){
 
+            // ✅ correct env variable names
+            const token = jwt.sign(
+                { id: user.StuID, email: user.StuEmail, accountType: "student" },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN }
+            );
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: false,
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+
+            console.log("✅ Student login successfully!");
+            return res.status(200).json({ token, accountType: "student" });
+
+        } else if (accountType === "organization") {
             const results = await pool
-            .request()
-            .input("email" , sql.VarChar , email)
-            .query(
-                `SELECT * FROM Organisation WHERE OrgEmail = @email`
-            )
+                .request()
+                .input("email", sql.VarChar, email)
+                .query(`SELECT * FROM Organisation WHERE OrgEmail = @email`);
 
-            if(results.recordset.length <= 0){
-                return res.status(403);
+            if (results.recordset.length <= 0) {
+                return res.sendStatus(401);
             }
 
             const user = results.recordset[0];
 
-            console.log(user)
+            // ✅ await added, correct variable name
+            const passwordMatch = await bcrypt.compare(password, user.Password);
 
-            const hashedPassword = bcrypt.compare(password , user.Password);
-
-            if(!hashedPassword){
-                if (!passwordMatch) return res.status(401).json({ message: "Invalid credentials" });
-            }
-            else{
-                return res.status(200).json({ message: "Login successful" });
+            if (!passwordMatch) {
+                return res.status(401).json({ message: "Invalid credentials" });
             }
 
+            // ✅ correct env variable names
+            const token = jwt.sign(
+                { id: user.OrgId, email: user.OrgEmail, accountType: "organization" },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN }
+            );
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: false,
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+
+            console.log("✅ Organisation login successfully!");
+            return res.status(200).json({ token, accountType: "organization" });
         }
-       
-    }catch(err){
-        console.log(err);
-        return res.status(500);
-    }
 
-}
+    } catch (err) {
+        console.error("❌ Login error:", err);
+        return res.sendStatus(500);
+    }
+};
 
 //Lucas Bohani Maluleke

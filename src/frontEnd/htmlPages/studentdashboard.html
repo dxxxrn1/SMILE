@@ -985,5 +985,15 @@
     </footer>
 
     <script src="../jsFrontEnd/dashboardJS.js"></script>
+
+    <script>
+      const token = localStorage.getItem('token');
+      const accountType = localStorage.getItem('accountType');
+
+      // If no token or wrong account type, redirect to login
+      if (!token || accountType !== 'student') {
+          window.location.href = '/login-page';
+      }
+</script>
   </body>
 </html>
