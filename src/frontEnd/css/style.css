@@ -2885,3 +2885,221 @@ img {
     gap: var(--spacing-sm);
   }
 }
+
+    /* ── Page layout near me map ── */
+    .nearme-page { background: var(--gray-50); min-height: 100vh; }
+
+    .nearme-controls {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+
+    .nearme-controls__group { display: flex; flex-direction: column; gap: 0.375rem; flex: 1; min-width: 160px; }
+    .nearme-controls__label { font-size: 0.8125rem; font-weight: 500; color: var(--gray-700); }
+
+    .nearme-controls__select,
+    .nearme-controls__input {
+      padding: 0.625rem 1rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      font-size: 0.9375rem;
+      font-family: var(--font-primary);
+      color: var(--gray-800);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    .nearme-controls__select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; padding-right: 2.5rem; }
+    .nearme-controls__select:focus,
+    .nearme-controls__input:focus  { border-color: var(--primary-orange); box-shadow: 0 0 0 3px rgba(249,115,22,0.1); }
+
+    /* ── Map container ── */
+    .map-wrap {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    #smileMap { height: 440px; width: 100%; }
+
+    .map-status {
+      padding: 0.875rem 1.25rem;
+      background: var(--white);
+      border-top: 1px solid var(--gray-100);
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .map-status__dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gray-300);
+      flex-shrink: 0;
+    }
+
+    .map-status__dot--active { background: #16a34a; }
+    .map-status__dot--loading {
+      background: var(--primary-orange);
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ── Results list below map ── */
+    .nearme-results { margin-bottom: 2rem; }
+    .nearme-results__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .nearme-results__title { font-size: 1.125rem; font-weight: 600; color: var(--gray-900); }
+    .nearme-results__count { font-size: 0.875rem; color: var(--gray-600); }
+
+    .nearme-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+
+    .nearme-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .nearme-card:hover,
+    .nearme-card--active {
+      border-color: var(--primary-orange);
+      box-shadow: 0 0 0 2px rgba(249,115,22,0.12);
+    }
+
+    .nearme-card__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+    }
+
+    .nearme-badge {
+      display: inline-block;
+      padding: 0.2em 0.625em;
+      border-radius: var(--radius-full);
+      font-size: 0.6875rem;
+      font-weight: 700;
+    }
+
+    .nearme-badge--scholarship { background: #fff7ed; color: #92400e; }
+    .nearme-badge--workshop    { background: #ede9fe; color: #6d28d9; }
+    .nearme-badge--internship  { background: #dbeafe; color: #1d4ed8; }
+    .nearme-badge--bursary     { background: #fce7f3; color: #9d174d; }
+    .nearme-badge--programme   { background: #d1fae5; color: #065f46; }
+
+    .nearme-card__distance {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--primary-orange);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .nearme-card__title { font-size: 1rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.25rem; }
+    .nearme-card__org   { font-size: 0.8125rem; color: var(--gray-600); margin-bottom: 0.625rem; }
+
+    .nearme-card__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--gray-600);
+      margin-bottom: 0.875rem;
+    }
+
+    .nearme-card__meta span { display: flex; align-items: center; gap: 0.3rem; }
+
+    .nearme-card__actions { display: flex; gap: 0.625rem; }
+
+    /* ── Leaflet popup custom style ── */
+    .smile-popup { font-family: 'Inter', sans-serif; min-width: 220px; }
+    .smile-popup__badge {
+      display: inline-block;
+      padding: 0.15em 0.5em;
+      border-radius: 9999px;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: #fff7ed;
+      color: #92400e;
+    }
+    .smile-popup__title { font-size: 0.9375rem; font-weight: 600; margin-bottom: 0.25rem; color: #111827; }
+    .smile-popup__org   { font-size: 0.8125rem; color: #6b7280; margin-bottom: 0.5rem; }
+    .smile-popup__meta  { font-size: 0.75rem; color: #6b7280; margin-bottom: 0.75rem; }
+    .smile-popup__btn {
+      display: block;
+      width: 100%;
+      padding: 0.5rem;
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      color: #fff;
+      border: none;
+      border-radius: 0.375rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Empty state */
+    .nearme-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-400);
+    }
+    .nearme-empty__icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .nearme-empty__title { font-size: 1rem; font-weight: 600; color: var(--gray-600); margin-bottom: 0.375rem; }
+
+    /* Location permission banner */
+    .location-banner {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius-md);
+      padding: 0.875rem 1.25rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.875rem;
+      color: #1e40af;
+    }
+
+    .location-banner__dismiss {
+      background: none; border: none; cursor: pointer;
+      color: #1e40af; font-size: 1rem; line-height: 1; padding: 0.25rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nearme-grid { grid-template-columns: 1fr; }
+      .nearme-controls { flex-direction: column; }
+      #smileMap { height: 320px; }
+    }

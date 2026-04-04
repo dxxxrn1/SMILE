@@ -3,53 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Find programs, events, and opportunities available in your province.">
   <title>Near Me - SMILE</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 </head>
-<body class="dashboard-page">
-  <!-- Header / Navigation -->
+<body class="dashboard-page nearme-page">
+
+  <!-- Header -->
   <header class="header header--dashboard">
     <nav class="nav container">
-<<<<<<< HEAD
       <a href="home.html" class="nav__logo">
-=======
-      <a href="/" class="nav__logo">
->>>>>>> backend/lucas
+              <a href="/" class="nav__logo">
         <span class="nav__logo-icon">&#9786;</span>
         <span>SMILE</span>
       </a>
       
       <ul class="nav__menu nav__menu--dashboard" id="navMenu">
-<<<<<<< HEAD
-        <li><a href="home.html" class="nav__link">
-=======
         <li><a href="/" class="nav__link">
->>>>>>> backend/lucas
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9 22 9 12 15 12 15 22"></polyline>
           </svg>
           Home
         </a></li>
-<<<<<<< HEAD
-        <li><a href="opportunities.html" class="nav__link">
-=======
-        <li><a href="/opportunities/browse" class="nav__link">
->>>>>>> backend/lucas
+        <li><a href="opportunities.html" class="nav__link nav__link--active">
+        <li><a href="/opportunities/browse" class="nav__link nav__link--active">
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
           </svg>
           Opportunities
         </a></li>
-<<<<<<< HEAD
         <li><a href="careers.html" class="nav__link">
-=======
         <li><a href="/careers/explore" class="nav__link">
->>>>>>> backend/lucas
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
@@ -57,22 +45,14 @@
           </svg>
           Careers
         </a></li>
-<<<<<<< HEAD
-        <li><a href="nearme.html" class="nav__link nav__link--active">
-=======
-        <li><a href="/near/me" class="nav__link nav__link--active">
->>>>>>> backend/lucas
+        <li><a href="/near/me" class="nav__link">
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
             <circle cx="12" cy="10" r="3"></circle>
           </svg>
           Near Me
         </a></li>
-<<<<<<< HEAD
-        <li><a href="news.html" class="nav__link">
-=======
         <li><a href="/news/daily" class="nav__link">
->>>>>>> backend/lucas
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
             <path d="M18 14h-8"></path>
@@ -81,11 +61,7 @@
           </svg>
           News
         </a></li>
-<<<<<<< HEAD
-        <li><a href="dashboard.html" class="nav__link">
-=======
         <li><a href="/student/dashboard" class="nav__link">
->>>>>>> backend/lucas
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect width="7" height="9" x="3" y="3" rx="1"></rect>
             <rect width="7" height="5" x="14" y="3" rx="1"></rect>
@@ -129,11 +105,7 @@
               Settings
             </a>
             <hr class="nav__profile-divider">
-<<<<<<< HEAD
-            <a href="login.html" class="nav__profile-link nav__profile-link--logout">
-=======
             <a href="/login-page" class="nav__profile-link nav__profile-link--logout">
->>>>>>> backend/lucas
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                 <polyline points="16 17 21 12 16 7"></polyline>
@@ -153,216 +125,87 @@
 
   <main class="page-content">
     <div class="container">
-      <!-- Page Header -->
+
       <div class="page-header">
         <h1 class="page-header__title">Find Opportunities Near You</h1>
-        <p class="page-header__subtitle">Discover programs, events, and opportunities available in your province.</p>
+        <p class="page-header__subtitle">Discover programs, events, and opportunities available in your area</p>
       </div>
 
-      <!-- Province Selector -->
-      <div class="location-selector">
-        <div class="location-selector__group">
-          <label class="location-selector__label">Select Your Province</label>
-          <select class="location-selector__select" id="provinceSelect">
-            <option value="">Select a province</option>
-            <option value="gauteng" selected>Gauteng</option>
-            <option value="western-cape">Western Cape</option>
-            <option value="kwazulu-natal">KwaZulu-Natal</option>
-            <option value="eastern-cape">Eastern Cape</option>
-            <option value="free-state">Free State</option>
-            <option value="mpumalanga">Mpumalanga</option>
-            <option value="limpopo">Limpopo</option>
-            <option value="north-west">North West</option>
-            <option value="northern-cape">Northern Cape</option>
+      <!-- Location permission tip -->
+      <div class="location-banner" id="locationBanner">
+        <span>
+          <strong>Tip:</strong> Allow location access for the most accurate results, or select your province below.
+        </span>
+        <button class="location-banner__dismiss" onclick="document.getElementById('locationBanner').remove()" aria-label="Dismiss">&#10005;</button>
+      </div>
+
+      <!-- Controls -->
+      <div class="nearme-controls">
+        <div class="nearme-controls__group">
+          <label class="nearme-controls__label">Select province</label>
+          <select class="nearme-controls__select" id="provinceSelect" onchange="onProvinceChange()">
+            <option value="">-- Select a province --</option>
+            <option value="Gauteng"       data-lat="-26.2041" data-lng="28.0473">Gauteng</option>
+            <option value="Western Cape"  data-lat="-33.9249" data-lng="18.4241">Western Cape</option>
+            <option value="KwaZulu-Natal" data-lat="-29.8587" data-lng="31.0218">KwaZulu-Natal</option>
+            <option value="Eastern Cape"  data-lat="-33.0153" data-lng="27.9116">Eastern Cape</option>
+            <option value="Limpopo"       data-lat="-23.4013" data-lng="29.4179">Limpopo</option>
+            <option value="Mpumalanga"    data-lat="-25.5653" data-lng="30.5279">Mpumalanga</option>
+            <option value="Free State"    data-lat="-29.0852" data-lng="26.1596">Free State</option>
+            <option value="North West"    data-lat="-26.6638" data-lng="25.2838">North West</option>
+            <option value="Northern Cape" data-lat="-29.0467" data-lng="23.8837">Northern Cape</option>
           </select>
         </div>
-        <button class="btn btn--gradient location-selector__btn" id="useLocationBtn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+
+        <div class="nearme-controls__group">
+          <label class="nearme-controls__label">Opportunity type</label>
+          <select class="nearme-controls__select" id="typeSelect" onchange="filterResults()">
+            <option value="">All types</option>
+            <option value="scholarship">Scholarship</option>
+            <option value="workshop">Workshop</option>
+            <option value="internship">Internship</option>
+            <option value="bursary">Bursary</option>
+            <option value="programme">Programme</option>
+          </select>
+        </div>
+
+        <div class="nearme-controls__group">
+          <label class="nearme-controls__label">Search</label>
+          <input type="text" class="nearme-controls__input" id="keywordInput" placeholder="Search opportunities..." oninput="filterResults()">
+        </div>
+
+        <button class="btn btn--gradient" id="locateBtn" onclick="useMyLocation()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="3 11 22 2 13 21 11 13 3 11"/>
           </svg>
           Use My Location
         </button>
       </div>
 
-      <!-- Map Section -->
-      <div class="map-section">
-        <div class="map-container" id="mapContainer">
-          <!-- Stylized South Africa Map -->
-          <svg class="sa-map" viewBox="0 0 500 450" xmlns="http://www.w3.org/2000/svg">
-            <!-- Background -->
-            <rect width="500" height="450" fill="#E8F4FD"/>
-            
-            <!-- Simplified South Africa shape -->
-            <path class="sa-map__country" d="M100,180 L120,150 L180,130 L240,120 L300,115 L350,120 L400,140 L420,180 L430,220 L420,280 L400,320 L350,350 L300,370 L250,380 L200,375 L150,360 L120,330 L100,290 L90,250 L95,210 Z" fill="#D4E8F7" stroke="#9BC1E3" stroke-width="2"/>
-            
-            <!-- Province regions (simplified) -->
-            <!-- Limpopo -->
-            <ellipse class="sa-map__province" data-province="limpopo" cx="300" cy="145" rx="45" ry="25" fill="#E8F4FD" stroke="#9BC1E3" stroke-width="1"/>
-            
-            <!-- Mpumalanga -->
-            <ellipse class="sa-map__province" data-province="mpumalanga" cx="370" cy="190" rx="35" ry="25" fill="#E8F4FD" stroke="#9BC1E3" stroke-width="1"/>
-            
-            <!-- Gauteng -->
-            <ellipse class="sa-map__province sa-map__province--active" data-province="gauteng" cx="290" cy="195" rx="30" ry="25" fill="#FFF7ED" stroke="#F97316" stroke-width="2"/>
-            
-            <!-- North West -->
-            <ellipse class="sa-map__province" data-province="north-west" cx="210" cy="200" rx="40" ry="25" fill="#E8F4FD" stroke="#9BC1E3" stroke-width="1"/>
-            
-            <!-- Free State -->
-            <ellipse class="sa-map__province" data-province="free-state" cx="260" cy="270" rx="50" ry="30" fill="#E8F4FD" stroke="#9BC1E3" stroke-width="1"/>
-            
-            <!-- KwaZulu-Natal -->
-            <ellipse class="sa-map__province" data-province="kwazulu-natal" cx="370" cy="290" rx="40" ry="35" fill="#E8F4FD" stroke="#9BC1E3" stroke-width="1"/>
-            
-            <!-- Eastern Cape -->
-            <ellipse class="sa-map__province" data-province="eastern-cape" cx="300" cy="350" rx="55" ry="30" fill="#E8F4FD" stroke="#9BC1E3" stroke-width="1"/>
-            
-            <!-- Western Cape -->
-            <ellipse class="sa-map__province" data-province="western-cape" cx="170" cy="350" rx="50" ry="30" fill="#E8F4FD" stroke="#9BC1E3" stroke-width="1"/>
-            
-            <!-- Northern Cape -->
-            <ellipse class="sa-map__province" data-province="northern-cape" cx="160" cy="260" rx="55" ry="40" fill="#E8F4FD" stroke="#9BC1E3" stroke-width="1"/>
-            
-            <!-- Location pins -->
-            <!-- Gauteng pins -->
-            <g class="map-pin" data-province="gauteng">
-              <circle cx="275" cy="185" r="8" fill="#F97316" stroke="#fff" stroke-width="2"/>
-              <circle cx="275" cy="185" r="3" fill="#fff"/>
-            </g>
-            <g class="map-pin" data-province="gauteng">
-              <circle cx="305" cy="195" r="8" fill="#F97316" stroke="#fff" stroke-width="2"/>
-              <circle cx="305" cy="195" r="3" fill="#fff"/>
-            </g>
-            <g class="map-pin" data-province="gauteng">
-              <circle cx="285" cy="210" r="8" fill="#F97316" stroke="#fff" stroke-width="2"/>
-              <circle cx="285" cy="210" r="3" fill="#fff"/>
-            </g>
-            <g class="map-pin" data-province="gauteng">
-              <circle cx="295" cy="175" r="8" fill="#F97316" stroke="#fff" stroke-width="2"/>
-              <circle cx="295" cy="175" r="3" fill="#fff"/>
-            </g>
-            
-            <!-- Main pin (selected province) -->
-            <g class="map-pin map-pin--main" id="mainPin">
-              <circle cx="290" cy="195" r="18" fill="#9333EA" stroke="#fff" stroke-width="3"/>
-              <svg x="278" y="183" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-            </g>
-          </svg>
-          
-          <!-- Map Info -->
-          <div class="map-info" id="mapInfo">
-            <h3 class="map-info__province" id="selectedProvince">Gauteng</h3>
-            <p class="map-info__count"><span id="oppCount">4</span> opportunities found in this area</p>
+      <!-- Map -->
+      <div class="map-wrap">
+        <div id="smileMap"></div>
+        <div class="map-status" id="mapStatus">
+          <div class="map-status__dot" id="mapDot"></div>
+          <span id="mapStatusText">Select a province or use your location to find opportunities near you.</span>
+        </div>
+      </div>
+
+      <!-- Results list -->
+      <div class="nearme-results">
+        <div class="nearme-results__header">
+          <h2 class="nearme-results__title" id="resultsTitle">Opportunities near you</h2>
+          <span class="nearme-results__count" id="resultsCount"></span>
+        </div>
+        <div class="nearme-grid" id="nearmeGrid">
+          <div class="nearme-empty">
+            <div class="nearme-empty__icon">&#128205;</div>
+            <div class="nearme-empty__title">No area selected yet</div>
+            <p style="font-size:.875rem">Select a province or tap "Use My Location" to see opportunities.</p>
           </div>
         </div>
       </div>
 
-      <!-- Opportunities in this area -->
-      <section class="nearme-opportunities">
-        <div class="section__header">
-          <h2 class="section__title">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-            Opportunities in <span id="areaName">Gauteng</span>
-          </h2>
-<<<<<<< HEAD
-          <a href="opportunities.html" class="section__link">View All</a>
-=======
-          <a href="/opportunities/browse" class="section__link">View All</a>
->>>>>>> backend/lucas
-        </div>
-        
-        <div class="nearme-grid" id="nearmeGrid">
-          <!-- Opportunity 1 -->
-          <article class="nearme-card">
-            <div class="nearme-card__header">
-              <span class="nearme-card__badge nearme-card__badge--scholarship">Scholarship</span>
-              <span class="nearme-card__distance">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                Johannesburg
-              </span>
-            </div>
-            <h3 class="nearme-card__title">Sasol Bursary Program 2026</h3>
-            <p class="nearme-card__org">Sasol South Africa</p>
-            <p class="nearme-card__description">Full bursary for engineering and science students.</p>
-            <div class="nearme-card__footer">
-              <span class="nearme-card__deadline">Closes: Apr 15, 2026</span>
-              <a href="#" class="btn btn--primary btn--sm">Apply</a>
-            </div>
-          </article>
-
-          <!-- Opportunity 2 -->
-          <article class="nearme-card">
-            <div class="nearme-card__header">
-              <span class="nearme-card__badge nearme-card__badge--internship">Internship</span>
-              <span class="nearme-card__distance">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                Sandton
-              </span>
-            </div>
-            <h3 class="nearme-card__title">Software Development Internship</h3>
-            <p class="nearme-card__org">Standard Bank</p>
-            <p class="nearme-card__description">12-month IT internship for graduates.</p>
-            <div class="nearme-card__footer">
-              <span class="nearme-card__deadline">Closes: Apr 30, 2026</span>
-              <a href="#" class="btn btn--primary btn--sm">Apply</a>
-            </div>
-          </article>
-
-          <!-- Opportunity 3 -->
-          <article class="nearme-card">
-            <div class="nearme-card__header">
-              <span class="nearme-card__badge nearme-card__badge--workshop">Workshop</span>
-              <span class="nearme-card__distance">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                Pretoria
-              </span>
-            </div>
-            <h3 class="nearme-card__title">Youth Entrepreneurship Workshop</h3>
-            <p class="nearme-card__org">NYDA</p>
-            <p class="nearme-card__description">Free 2-day workshop on starting a business.</p>
-            <div class="nearme-card__footer">
-              <span class="nearme-card__deadline">Date: Apr 20, 2026</span>
-              <a href="#" class="btn btn--primary btn--sm">Register</a>
-            </div>
-          </article>
-
-          <!-- Opportunity 4 -->
-          <article class="nearme-card">
-            <div class="nearme-card__header">
-              <span class="nearme-card__badge nearme-card__badge--program">Program</span>
-              <span class="nearme-card__distance">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                Midrand
-              </span>
-            </div>
-            <h3 class="nearme-card__title">MTN Digital Skills Program</h3>
-            <p class="nearme-card__org">MTN Foundation</p>
-            <p class="nearme-card__description">6-month coding and digital marketing course.</p>
-            <div class="nearme-card__footer">
-              <span class="nearme-card__deadline">Closes: Jun 1, 2026</span>
-              <a href="#" class="btn btn--primary btn--sm">Apply</a>
-            </div>
-          </article>
-        </div>
-      </section>
     </div>
   </main>
 
@@ -370,22 +213,35 @@
   <footer class="footer">
     <div class="container">
       <div class="footer__content">
-        <div class="footer__logo">
+        <a href="home.html" class="footer__logo">
           <span class="nav__logo-icon">&#9786;</span>
           <span>SMILE</span>
-        </div>
-        <ul class="footer__links">
-          <li><a href="#" class="footer__link">About</a></li>
-          <li><a href="#" class="footer__link">Contact</a></li>
-          <li><a href="#" class="footer__link">Privacy Policy</a></li>
-          <li><a href="#" class="footer__link">Terms of Service</a></li>
-        </ul>
+        </a>
+        <nav class="footer__links">
+          <a href="#" class="footer__link">About Us</a>
+          <a href="#" class="footer__link">Contact</a>
+          <a href="#" class="footer__link">Privacy Policy</a>
+          <a href="#" class="footer__link">Terms of Service</a>
+        </nav>
         <p class="footer__copy">&copy; 2026 SMILE. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
-  <script src="../jsFrontEnd/dashboardJS.js"></script>
-  <script src="../jsFrontEnd/nearmeJS.js"></script>
+  <!-- Leaflet JS — -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+ 
+  <!-- /* ================================================================
+     OPPORTUNITY DATA
+       fetch('/api/opportunities?province=Gauteng')
+     Each opportunity needs lat + lng so it can be pinned/////.
+     Store let + lng in db
+     ================================================================
+ */ -->
+  
+
+      <script src="../jsFrontEnd/map.js"></script>
 </body>
 </html>
+
