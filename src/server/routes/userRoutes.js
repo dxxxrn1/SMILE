@@ -2,7 +2,7 @@ import express from "express";
 import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,studentLandingPage,careersPage } from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken } from "../controllers/sessionControllers.js";
-import { fectNews } from "../apis/weatherAPI.js";
+import { fectNews } from "../apis/newsAPI.js";
 import { fetchJobs } from "../apis/careers.js";
 
 const route = express.Router();
