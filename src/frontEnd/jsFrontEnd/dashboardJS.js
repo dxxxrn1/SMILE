@@ -8,6 +8,19 @@ document.addEventListener("DOMContentLoaded", function () {
   initProfileDropdown();
   initLocationButton();
   initOpportunityActions();
+
+  const spanID = document.getElementById("userName");
+
+  const userStored = localStorage.getItem("userName");
+
+  if(userStored){
+
+    spanID.textContent = userStored;
+
+  }else{
+    spanID.textContent = "User not Found!!!!";
+  }
+
 });
 
 /**

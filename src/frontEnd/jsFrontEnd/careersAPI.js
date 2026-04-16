@@ -97,53 +97,58 @@
 // });
 
 
-document.addEventListener("DOMContentLoaded", (btn) => {
+document.addEventListener("DOMContentLoaded", () => {
+
+    console.log("The button was clicked somehow or the js was loaded!!!");
 
   const grid = document.getElementById("careersGrid");
-  const buttons = document.querySelectorAll(".career-category");
+  const buttons = document.querySelectorAll("[data-category='technology']");
 
-  console.log("GRID:", grid); // debug
+  if (!grid) {
+    console.error("Grid not found!");
+    return;
+  }
 
-  console.log("CLICKED BUTTON:", btn.dataset.category);
+  buttons.forEach(button => {
 
-  buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
+    button.addEventListener("click", async (e) => {
 
-      const category = btn.dataset.category;
+        console.log(e);
 
-      fetch(`http://localhost:3000/api/jobs?category=${category}`)
-        .then(res => res.json())
-        .then(data => {
+      const category = button.dataset.category;
 
-          console.log(data);
+      console.log("Clicked category:", category);
 
-          grid.innerHTML = "";
+      try {
+        const res = await fetch(`/api/jobs?category=${category}`);
+        const data = await res.json();
 
-          data.jobs.forEach(job => {
+        console.log("API RESPONSE:", data);
 
-            const card = document.createElement("article");
-            card.className = "career-card";
+        const jobs = data.jobs || [];
 
-            card.innerHTML = `
-              <div class="career-card__image">
-                <img src="https://via.placeholder.com/400x220">
-              </div>
-              <div class="career-card__content">
-                <h3 class="career-card__title">${job.title}</h3>
-                <p>${job.company} • ${job.location}</p>
-                <p>${job.salary}</p>
-                <div class="career-card__footer">
-                  <a href="${job.url}" target="_blank" class="btn btn--primary btn--sm">Apply</a>
-                </div>
-              </div>
-            `;
+        grid.innerHTML = "";
 
-            grid.appendChild(card);
-          });
+        jobs.forEach(job => {
 
+          const card = document.createElement("article");
+          card.className = "career-card";
+
+          card.innerHTML = `
+            <h3>${job.title || "No title"}</h3>
+            <p>${job.company || "Unknown"} • ${job.location || ""}</p>
+            <p>${job.salary || ""}</p>
+          `;
+
+          grid.appendChild(card);
         });
 
+      } catch (err) {
+        console.error("Fetch failed:", err);
+      }
+
     });
+
   });
 
 });

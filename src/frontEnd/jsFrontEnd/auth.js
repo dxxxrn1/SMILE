@@ -166,6 +166,7 @@ function handleLoginSubmit(event) {
     }
     localStorage.setItem("token" , data.token);
     localStorage.setItem("accountType" , data.accountType);
+    localStorage.setItem("userName" , data.name);
 
     console.log("Token stored" , data.token);
 

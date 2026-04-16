@@ -213,7 +213,7 @@ export const userLogin = async (req, res) => {
             });
 
             console.log("✅ Student login successfully!");
-            return res.status(200).json({ token, accountType: "student" });
+            return res.status(200).json({ token, accountType: "student" , name: user.StuName });
 
         } else if (accountType === "organization") {
             const results = await pool
@@ -248,8 +248,7 @@ export const userLogin = async (req, res) => {
             });
 
             console.log("✅ Organisation login successfully!");
-            return res.status(200).json({ token, accountType: "organization" });
-        }
+            return res.status(200).json({ token, accountType: "organization" , name: user.OrgName });        }
 
     } catch (err) {
         console.error("❌ Login error:", err);
