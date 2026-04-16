@@ -2,6 +2,8 @@ import express from "express";
 import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,studentLandingPage,careersPage } from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken } from "../controllers/sessionControllers.js";
+import { fectNews } from "../apis/newsAPI.js";
+import { fetchJobs } from "../apis/careers.js";
 
 const route = express.Router();
 
@@ -27,6 +29,8 @@ route.get("/careers/explore" ,verifyToken,careersPage);
 
 route.post("/login" , userLogin)
 
+route.get('/api/news' , verifyToken ,fectNews)
+
 route.post("/logout", (req, res) => {
 
     res.clearCookie('token');
@@ -36,6 +40,8 @@ route.post("/logout", (req, res) => {
     //Lucas Bohani Maluleke
 
 });
+
+route.get("/api/jobs", fetchJobs);
 
 export default route;
 

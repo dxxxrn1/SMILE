@@ -189,6 +189,9 @@ export const userLogin = async (req, res) => {
 
             const user = results.recordset[0];
 
+
+            console.log(user);
+
             // ✅ correct variable name
             const passwordMatch = await bcrypt.compare(password, user.StuPassword);
 
