@@ -4,6 +4,7 @@ import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../contro
 import { verifyToken } from "../controllers/sessionControllers.js";
 import { fectNews } from "../apis/newsAPI.js";
 import { fetchJobs } from "../apis/careers.js";
+import { fetchBooks } from "../apis/booksAPI.js";
 
 const route = express.Router();
 
@@ -27,9 +28,11 @@ route.get("/opportunities/browse", verifyToken,opportunitiesPage)
 
 route.get("/careers/explore" ,verifyToken,careersPage);
 
-route.post("/login" , userLogin)
+route.post("/login" , userLogin);
 
-route.get('/api/news' , verifyToken ,fectNews)
+route.get('/api/news' , verifyToken ,fectNews);
+
+route.get("/api/books", verifyToken ,fetchBooks);
 
 route.post("/logout", (req, res) => {
 
