@@ -212,8 +212,17 @@ export const userLogin = async (req, res) => {
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });
 
+            let stuName = user.StuName[0];
+            let lastName = user.StuLastName[0];
+
+            let initials = stuName + lastName;
+
+            console.log(stuName);
+
+            
+    
             console.log("✅ Student login successfully!");
-            return res.status(200).json({ token, accountType: "student" , name: user.StuName });
+            return res.status(200).json({ token, accountType: "student" , name: user.StuName,userinitials:initials});
 
         } else if (accountType === "organization") {
             const results = await pool

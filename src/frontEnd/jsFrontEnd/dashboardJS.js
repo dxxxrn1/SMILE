@@ -8,17 +8,27 @@ document.addEventListener("DOMContentLoaded", function () {
   initProfileDropdown();
   initLocationButton();
   initOpportunityActions();
+  loadEbooks()
 
   const spanID = document.getElementById("userName");
 
+  const spanInitials = document.getElementById("initials");
+
+  //This is were we will display the user information
   const userStored = localStorage.getItem("userName");
 
   if(userStored){
-
     spanID.textContent = userStored;
-
   }else{
     spanID.textContent = "User not Found!!!!";
+  }
+
+  const initialStored = localStorage.getItem("initials");
+
+  if(initialStored){
+    spanInitials.textContent = initialStored;
+  }else{
+    spanInitials.textContent = "?";
   }
 
 });
@@ -283,3 +293,82 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+
+
+function loadEbooks(query = "career development south africa youth") {
+  const ebooksGrid = document.querySelector(".ebooks-grid");
+  if (!ebooksGrid) return;
+
+  const token = localStorage.getItem("token");
+
+  // Show skeletons while loading
+  ebooksGrid.innerHTML = Array(4).fill(`
+    <article class="ebook-card" style="opacity:0.5;pointer-events:none;">
+      <div class="ebook-card__cover ebook-card__cover--orange"></div>
+      <div class="ebook-card__content">
+        <div style="height:10px;background:#e5e7eb;border-radius:4px;margin-bottom:8px;width:60%;"></div>
+        <div style="height:14px;background:#e5e7eb;border-radius:4px;margin-bottom:6px;"></div>
+        <div style="height:12px;background:#e5e7eb;border-radius:4px;width:40%;"></div>
+      </div>
+    </article>
+  `).join("");
+
+  fetch(`/api/books?q=${encodeURIComponent(query)}&maxResults=4`, {
+    headers: { "Authorization": `Bearer ${token}` }
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success || !data.books.length) {
+        ebooksGrid.innerHTML = "<p style='color:#888;padding:1rem;'>No books found.</p>";
+        return;
+      }
+
+      // Colour cycle for covers
+      const colors = ["orange", "blue", "green", "purple"];
+
+      ebooksGrid.innerHTML = "";
+
+      data.books.forEach((book, i) => {
+        const color = colors[i % colors.length];
+        const shortDesc = book.description.slice(0, 80) + (book.description.length > 80 ? "…" : "");
+        const pages = book.pageCount ? `${book.pageCount} pages` : "Preview available";
+        const stars = book.rating
+          ? "★".repeat(Math.round(book.rating)) + "☆".repeat(5 - Math.round(book.rating))
+          : "";
+
+        const card = document.createElement("article");
+        card.className = "ebook-card";
+        card.innerHTML = `
+          <div class="ebook-card__cover ebook-card__cover--${color}">
+            ${book.thumbnail
+              ? `<img src="${book.thumbnail}" alt="${book.title}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+              : `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                 </svg>`
+            }
+          </div>
+          <div class="ebook-card__content">
+            <span class="ebook-card__category">${book.categories[0] || "Reference"}</span>
+            <h3 class="ebook-card__title">${book.title}</h3>
+            <p class="ebook-card__pages">${book.authors} · ${pages}</p>
+            ${stars ? `<p style="font-size:12px;color:#f59e0b;letter-spacing:1px;">${stars}</p>` : ""}
+            <a href="${book.previewLink}" target="_blank" rel="noopener noreferrer"
+               class="btn btn--outline btn--sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" x2="12" y1="15" y2="3"></line>
+              </svg>
+              Read / Preview
+            </a>
+          </div>
+        `;
+
+        ebooksGrid.appendChild(card);
+      });
+    })
+    .catch(err => {
+      console.error("[SMILE Books]", err);
+      ebooksGrid.innerHTML = "<p style='color:#888;padding:1rem;'>Could not load books. Please try again.</p>";
+    });
+}
