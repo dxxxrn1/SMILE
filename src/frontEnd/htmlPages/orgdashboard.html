@@ -1,0 +1,1566 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="SMILE Organization Dashboard - Manage opportunities, track applications, and view analytics."
+    />
+    <title>Organization Dashboard - SMILE</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/orgdashboard.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"
+      defer
+    ></script>
+  </head>
+  <body class="dashboard-page layout-with-sidebar">
+    <div class="dashboard-layout">
+      <aside class="dashboard-sidebar">
+        <div class="dashboard-sidebar__header">
+          <a href="home.html" class="nav__logo">
+            <span class="nav__logo-icon">&#9786;</span>
+            <span>SMILE Org</span>
+          </a>
+        </div>
+
+        <div class="dashboard-sidebar__nav org-tabs" role="tablist">
+          <button
+            class="org-tab org-tab--active"
+            role="tab"
+            data-tab="overview"
+            onclick="switchTab('overview', this)"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect width="7" height="9" x="3" y="3" rx="1" />
+              <rect width="7" height="5" x="14" y="3" rx="1" />
+              <rect width="7" height="9" x="14" y="12" rx="1" />
+              <rect width="7" height="5" x="3" y="16" rx="1" />
+            </svg>
+            Overview
+          </button>
+          <button
+            class="org-tab"
+            role="tab"
+            data-tab="analytics"
+            onclick="switchTab('analytics', this)"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg>
+            Analytics
+          </button>
+          <button
+            class="org-tab"
+            role="tab"
+            data-tab="myopps"
+            onclick="switchTab('myopps', this)"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+            </svg>
+            My Opportunities
+          </button>
+          <button
+            class="org-tab"
+            role="tab"
+            data-tab="applicants"
+            onclick="switchTab('applicants', this)"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Applicants
+          </button>
+          <button
+            class="org-tab"
+            role="tab"
+            data-tab="create"
+            onclick="switchTab('create', this)"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Create New
+          </button>
+        </div>
+
+        <div class="dashboard-sidebar__footer">
+          <div class="org-profile-info" style="padding: 0 0 1rem 0">
+            <div class="org-profile-avatar">SA</div>
+            <div>
+              <div class="org-profile-name">SMILE Africa NGO</div>
+              <div class="org-profile-type">Organization</div>
+            </div>
+          </div>
+          <a
+            href="login.html"
+            class="nav__profile-link nav__profile-link--logout"
+            style="padding: 0"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" x2="9" y1="12" y2="12" />
+            </svg>
+            Log Out
+          </a>
+        </div>
+      </aside>
+
+      <main class="dashboard-main">
+        <div class="dashboard-container">
+          <div class="dashboard__header">
+            <div class="dashboard__welcome">
+              <h1 class="dashboard__title">Organization Dashboard</h1>
+              <p class="dashboard__subtitle">
+                Manage your opportunities and track engagement
+              </p>
+            </div>
+            <button class="btn btn--gradient" id="createOppQuickBtn">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Post Opportunity
+            </button>
+          </div>
+
+          <div class="tab-panel" id="tab-overview">
+            <div class="dashboard__stats">
+              <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--orange">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="2" y="7" width="20" height="14" rx="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                </div>
+                <div class="stat-card__content">
+                  <span class="stat-card__number">12</span>
+                  <span class="stat-card__label">Total Opportunities</span>
+                  <span class="stat-card__delta stat-card__delta--up"
+                    >+3 this month</span
+                  >
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--blue">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+                    />
+                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                  </svg>
+                </div>
+                <div class="stat-card__content">
+                  <span class="stat-card__number">285</span>
+                  <span class="stat-card__label">Total Applications</span>
+                  <span class="stat-card__delta stat-card__delta--up"
+                    >+47 this week</span
+                  >
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--green">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                </div>
+                <div class="stat-card__content">
+                  <span class="stat-card__number">8</span>
+                  <span class="stat-card__label">Active Programs</span>
+                  <span class="stat-card__delta stat-card__delta--neutral"
+                    >Currently running</span
+                  >
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card__icon stat-card__icon--purple">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                </div>
+                <div class="stat-card__content">
+                  <span class="stat-card__number">1.2K</span>
+                  <span class="stat-card__label">Youth Reached</span>
+                  <span class="stat-card__delta stat-card__delta--up"
+                    >Total impact</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="overview-grid">
+              <div class="org-section overview-grid__activity">
+                <div class="org-section__header">
+                  <h2 class="org-section__title">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    Recent Activity
+                  </h2>
+                  <button
+                    class="org-section__link"
+                    onclick="
+                      switchTab(
+                        'applicants',
+                        document.querySelector('[data-tab=applicants]'),
+                      )
+                    "
+                  >
+                    View All
+                  </button>
+                </div>
+                <p class="org-section__sub">Latest applications and updates</p>
+                <div class="activity-feed" id="activityFeed">
+                  <div class="activity-item">
+                    <div class="activity-item__avatar">TM</div>
+                    <div class="activity-item__info">
+                      <span class="activity-item__name">Thabo M.</span>
+                      <span class="activity-item__action"
+                        >applied to <strong>Youth Coding Bootcamp</strong></span
+                      >
+                    </div>
+                    <span class="activity-item__time">2 hrs ago</span>
+                  </div>
+                  <div class="activity-item">
+                    <div
+                      class="activity-item__avatar"
+                      style="background: #7c3aed"
+                    >
+                      NK
+                    </div>
+                    <div class="activity-item__info">
+                      <span class="activity-item__name">Naledi K.</span>
+                      <span class="activity-item__action"
+                        >applied to
+                        <strong>Digital Skills Training</strong></span
+                      >
+                    </div>
+                    <span class="activity-item__time">5 hrs ago</span>
+                  </div>
+                  <div class="activity-item">
+                    <div
+                      class="activity-item__avatar"
+                      style="background: #059669"
+                    >
+                      SD
+                    </div>
+                    <div class="activity-item__info">
+                      <span class="activity-item__name">Sipho D.</span>
+                      <span class="activity-item__action"
+                        >applied to <strong>Youth Coding Bootcamp</strong></span
+                      >
+                    </div>
+                    <span class="activity-item__time">1 day ago</span>
+                  </div>
+                  <div class="activity-item">
+                    <div
+                      class="activity-item__avatar"
+                      style="background: #ec4899"
+                    >
+                      AN
+                    </div>
+                    <div class="activity-item__info">
+                      <span class="activity-item__name">Amahle N.</span>
+                      <span class="activity-item__action"
+                        >applied to <strong>Leadership Workshop</strong></span
+                      >
+                    </div>
+                    <span class="activity-item__time">1 day ago</span>
+                  </div>
+                  <div class="activity-item">
+                    <div
+                      class="activity-item__avatar"
+                      style="background: #2563eb"
+                    >
+                      LM
+                    </div>
+                    <div class="activity-item__info">
+                      <span class="activity-item__name">Lethabo M.</span>
+                      <span class="activity-item__action"
+                        >applied to
+                        <strong>Digital Skills Training</strong></span
+                      >
+                    </div>
+                    <span class="activity-item__time">2 days ago</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="org-section overview-grid__chart">
+                <div class="org-section__header">
+                  <h2 class="org-section__title">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <line x1="18" y1="20" x2="18" y2="10" />
+                      <line x1="12" y1="20" x2="12" y2="4" />
+                      <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+                    This Week
+                  </h2>
+                  <button
+                    class="org-section__link"
+                    onclick="
+                      switchTab(
+                        'analytics',
+                        document.querySelector('[data-tab=analytics]'),
+                      )
+                    "
+                  >
+                    Full Analytics
+                  </button>
+                </div>
+                <div class="mini-chart-wrap">
+                  <canvas id="miniChart" height="200"></canvas>
+                </div>
+                <div class="mini-chart-legend">
+                  <span class="legend-dot" style="background: #f97316"></span
+                  ><span>Views</span>
+                  <span class="legend-dot" style="background: #ec4899"></span
+                  ><span>Applications</span>
+                </div>
+              </div>
+
+              <div class="org-section overview-grid__top">
+                <div class="org-section__header">
+                  <h2 class="org-section__title">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                      <polyline points="16 7 22 7 22 13" />
+                    </svg>
+                    Top Performing
+                  </h2>
+                  <button
+                    class="org-section__link"
+                    onclick="
+                      switchTab(
+                        'myopps',
+                        document.querySelector('[data-tab=myopps]'),
+                      )
+                    "
+                  >
+                    All Opps
+                  </button>
+                </div>
+                <div class="top-opps-list">
+                  <div class="top-opp-item">
+                    <div class="top-opp-item__info">
+                      <span class="top-opp-item__name"
+                        >Youth Coding Bootcamp</span
+                      >
+                      <div class="top-opp-item__bar-wrap">
+                        <div
+                          class="top-opp-item__bar"
+                          style="
+                            width: 90%;
+                            background: var(--gradient-primary);
+                          "
+                        ></div>
+                      </div>
+                    </div>
+                    <span class="top-opp-item__count">83</span>
+                  </div>
+                  <div class="top-opp-item">
+                    <div class="top-opp-item__info">
+                      <span class="top-opp-item__name"
+                        >Digital Skills Training</span
+                      >
+                      <div class="top-opp-item__bar-wrap">
+                        <div
+                          class="top-opp-item__bar"
+                          style="
+                            width: 75%;
+                            background: linear-gradient(
+                              90deg,
+                              #7c3aed,
+                              #a855f7
+                            );
+                          "
+                        ></div>
+                      </div>
+                    </div>
+                    <span class="top-opp-item__count">71</span>
+                  </div>
+                  <div class="top-opp-item">
+                    <div class="top-opp-item__info">
+                      <span class="top-opp-item__name"
+                        >Leadership Workshop</span
+                      >
+                      <div class="top-opp-item__bar-wrap">
+                        <div
+                          class="top-opp-item__bar"
+                          style="
+                            width: 50%;
+                            background: linear-gradient(
+                              90deg,
+                              #0284c7,
+                              #38bdf8
+                            );
+                          "
+                        ></div>
+                      </div>
+                    </div>
+                    <span class="top-opp-item__count">47</span>
+                  </div>
+                  <div class="top-opp-item">
+                    <div class="top-opp-item__info">
+                      <span class="top-opp-item__name"
+                        >STEM Scholarship 2025</span
+                      >
+                      <div class="top-opp-item__bar-wrap">
+                        <div
+                          class="top-opp-item__bar"
+                          style="
+                            width: 30%;
+                            background: linear-gradient(
+                              90deg,
+                              #059669,
+                              #34d399
+                            );
+                          "
+                        ></div>
+                      </div>
+                    </div>
+                    <span class="top-opp-item__count">29</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-analytics" style="display: none">
+            <div class="analytics-controls">
+              <div class="range-tabs">
+                <button
+                  class="range-tab range-tab--active"
+                  onclick="setRange(7, this)"
+                >
+                  7 days
+                </button>
+                <button class="range-tab" onclick="setRange(30, this)">
+                  30 days
+                </button>
+                <button class="range-tab" onclick="setRange(90, this)">
+                  90 days
+                </button>
+              </div>
+              <div class="analytics-meta" id="analyticsMeta">
+                Showing last 7 days
+              </div>
+            </div>
+
+            <div class="analytics-metrics">
+              <div class="metric-card">
+                <div class="metric-card__label">Total views</div>
+                <div class="metric-card__value" id="mViews">1,842</div>
+                <div class="metric-card__delta metric-card__delta--up">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
+                    <polyline points="18 15 12 9 6 15" />
+                  </svg>
+                  14% vs last period
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card__label">Applications</div>
+                <div class="metric-card__value" id="mApps">285</div>
+                <div class="metric-card__delta metric-card__delta--up">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
+                    <polyline points="18 15 12 9 6 15" />
+                  </svg>
+                  +47 this week
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card__label">Conversion rate</div>
+                <div class="metric-card__value" id="mConv">15%</div>
+                <div class="metric-card__delta metric-card__delta--up">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
+                    <polyline points="18 15 12 9 6 15" />
+                  </svg>
+                  +2pp vs last period
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card__label">Saves</div>
+                <div class="metric-card__value" id="mSaves">634</div>
+                <div class="metric-card__delta metric-card__delta--down">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                  3% vs last period
+                </div>
+              </div>
+            </div>
+
+            <div class="analytics-charts-row">
+              <div class="org-section analytics-charts-row__main">
+                <div class="org-section__header">
+                  <h2 class="org-section__title">
+                    Views &amp; Applications over time
+                  </h2>
+                </div>
+                <div class="chart-wrap">
+                  <canvas id="timelineChart"></canvas>
+                </div>
+              </div>
+              <div class="org-section analytics-charts-row__side">
+                <div class="org-section__header">
+                  <h2 class="org-section__title">Education breakdown</h2>
+                </div>
+                <div class="chart-wrap chart-wrap--sm">
+                  <canvas id="eduChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="analytics-charts-row">
+              <div class="org-section analytics-charts-row__main">
+                <div class="org-section__header">
+                  <h2 class="org-section__title">Application funnel</h2>
+                  <select
+                    class="org-select"
+                    id="funnelOppSelect"
+                    onchange="updateFunnel(this.value)"
+                  >
+                    <option value="all">All opportunities</option>
+                    <option value="bootcamp">Youth Coding Bootcamp</option>
+                    <option value="digital">Digital Skills Training</option>
+                    <option value="leadership">Leadership Workshop</option>
+                  </select>
+                </div>
+                <div class="funnel-list" id="funnelList"></div>
+              </div>
+              <div class="org-section analytics-charts-row__side">
+                <div class="org-section__header">
+                  <h2 class="org-section__title">Applicants by province</h2>
+                </div>
+                <div class="prov-list" id="provList"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-myopps" style="display: none">
+            <div class="org-section">
+              <div class="org-section__header">
+                <h2 class="org-section__title">My Opportunities</h2>
+                <button
+                  class="btn btn--gradient btn--sm"
+                  onclick="
+                    switchTab(
+                      'create',
+                      document.querySelector('[data-tab=create]'),
+                    )
+                  "
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  Create New
+                </button>
+              </div>
+              <p class="org-section__sub">
+                All opportunities posted by your organisation
+              </p>
+
+              <div class="table-filters">
+                <div class="table-search-wrap">
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.3-4.3" />
+                  </svg>
+                  <input
+                    type="text"
+                    class="table-search"
+                    placeholder="Search opportunities..."
+                    id="oppSearch"
+                    oninput="filterOppTable(this.value)"
+                  />
+                </div>
+                <select
+                  class="org-select"
+                  id="statusFilter"
+                  onchange="filterOppTable()"
+                >
+                  <option value="">All statuses</option>
+                  <option value="Active">Active</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Closed">Closed</option>
+                </select>
+                <select
+                  class="org-select"
+                  id="typeFilter"
+                  onchange="filterOppTable()"
+                >
+                  <option value="">All types</option>
+                  <option value="Workshop">Workshop</option>
+                  <option value="Scholarship">Scholarship</option>
+                  <option value="Internship">Internship</option>
+                  <option value="Bursary">Bursary</option>
+                </select>
+              </div>
+
+              <div class="org-table-wrap">
+                <table class="org-table" id="oppTable">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Type</th>
+                      <th>Province</th>
+                      <th>Applications</th>
+                      <th>Deadline</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="oppTableBody">
+                    <tr data-status="Active" data-type="Workshop">
+                      <td><strong>Youth Coding Bootcamp</strong></td>
+                      <td>
+                        <span class="opp-type-badge opp-type-badge--workshop"
+                          >Workshop</span
+                        >
+                      </td>
+                      <td>Gauteng</td>
+                      <td><span class="app-count">83</span></td>
+                      <td>2026/05/01</td>
+                      <td>
+                        <span class="status-badge status-badge--active"
+                          >Active</span
+                        >
+                      </td>
+                      <td class="table-actions">
+                        <button
+                          class="tbl-btn"
+                          onclick="showToast('Opening editor...')"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--view"
+                          onclick="
+                            switchTab(
+                              'applicants',
+                              document.querySelector('[data-tab=applicants]'),
+                            )
+                          "
+                        >
+                          Applicants
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--danger"
+                          onclick="confirmDelete(this)"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                    <tr data-status="Active" data-type="Workshop">
+                      <td><strong>Digital Skills Training</strong></td>
+                      <td>
+                        <span class="opp-type-badge opp-type-badge--workshop"
+                          >Workshop</span
+                        >
+                      </td>
+                      <td>Western Cape</td>
+                      <td><span class="app-count">71</span></td>
+                      <td>2026/04/15</td>
+                      <td>
+                        <span class="status-badge status-badge--active"
+                          >Active</span
+                        >
+                      </td>
+                      <td class="table-actions">
+                        <button
+                          class="tbl-btn"
+                          onclick="showToast('Opening editor...')"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--view"
+                          onclick="
+                            switchTab(
+                              'applicants',
+                              document.querySelector('[data-tab=applicants]'),
+                            )
+                          "
+                        >
+                          Applicants
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--danger"
+                          onclick="confirmDelete(this)"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                    <tr data-status="Active" data-type="Workshop">
+                      <td><strong>Leadership Workshop</strong></td>
+                      <td>
+                        <span class="opp-type-badge opp-type-badge--workshop"
+                          >Workshop</span
+                        >
+                      </td>
+                      <td>KwaZulu-Natal</td>
+                      <td><span class="app-count">47</span></td>
+                      <td>2026/04/30</td>
+                      <td>
+                        <span class="status-badge status-badge--active"
+                          >Active</span
+                        >
+                      </td>
+                      <td class="table-actions">
+                        <button
+                          class="tbl-btn"
+                          onclick="showToast('Opening editor...')"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--view"
+                          onclick="
+                            switchTab(
+                              'applicants',
+                              document.querySelector('[data-tab=applicants]'),
+                            )
+                          "
+                        >
+                          Applicants
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--danger"
+                          onclick="confirmDelete(this)"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                    <tr data-status="Closed" data-type="Scholarship">
+                      <td><strong>STEM Scholarship 2025</strong></td>
+                      <td>
+                        <span class="opp-type-badge opp-type-badge--scholarship"
+                          >Scholarship</span
+                        >
+                      </td>
+                      <td>National</td>
+                      <td><span class="app-count">126</span></td>
+                      <td>2025/11/30</td>
+                      <td>
+                        <span class="status-badge status-badge--closed"
+                          >Closed</span
+                        >
+                      </td>
+                      <td class="table-actions">
+                        <button
+                          class="tbl-btn"
+                          onclick="showToast('Opening viewer...')"
+                        >
+                          View
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--danger"
+                          onclick="confirmDelete(this)"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                    <tr data-status="Draft" data-type="Internship">
+                      <td><strong>Graduate Internship Programme</strong></td>
+                      <td>
+                        <span class="opp-type-badge opp-type-badge--internship"
+                          >Internship</span
+                        >
+                      </td>
+                      <td>Gauteng</td>
+                      <td><span class="app-count">0</span></td>
+                      <td>2026/06/01</td>
+                      <td>
+                        <span class="status-badge status-badge--draft"
+                          >Draft</span
+                        >
+                      </td>
+                      <td class="table-actions">
+                        <button
+                          class="tbl-btn"
+                          onclick="showToast('Opening editor...')"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--publish"
+                          onclick="publishDraft(this)"
+                        >
+                          Publish
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--danger"
+                          onclick="confirmDelete(this)"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-applicants" style="display: none">
+            <div class="org-section">
+              <div class="org-section__header">
+                <h2 class="org-section__title">All Applicants</h2>
+                <div style="display: flex; gap: 0.625rem; align-items: center">
+                  <select
+                    class="org-select"
+                    id="applicantOppFilter"
+                    onchange="filterApplicants()"
+                  >
+                    <option value="">All opportunities</option>
+                    <option value="Youth Coding Bootcamp">
+                      Youth Coding Bootcamp
+                    </option>
+                    <option value="Digital Skills Training">
+                      Digital Skills Training
+                    </option>
+                    <option value="Leadership Workshop">
+                      Leadership Workshop
+                    </option>
+                  </select>
+                  <select
+                    class="org-select"
+                    id="applicantStatusFilter"
+                    onchange="filterApplicants()"
+                  >
+                    <option value="">All statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Reviewed">Reviewed</option>
+                    <option value="Shortlisted">Shortlisted</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                  <button
+                    class="btn btn--outline btn--sm"
+                    onclick="showToast('Exporting CSV...')"
+                  >
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export CSV
+                  </button>
+                </div>
+              </div>
+              <p class="org-section__sub">
+                Manage applications across all your opportunities
+              </p>
+
+              <div class="org-table-wrap">
+                <table class="org-table" id="applicantTable">
+                  <thead>
+                    <tr>
+                      <th>Applicant</th>
+                      <th>Opportunity</th>
+                      <th>Province</th>
+                      <th>Education</th>
+                      <th>Applied</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="applicantTableBody">
+                    <tr data-opp="Youth Coding Bootcamp" data-status="Pending">
+                      <td>
+                        <div class="applicant-cell">
+                          <div
+                            class="applicant-avatar"
+                            style="background: var(--gradient-primary)"
+                          >
+                            TM
+                          </div>
+                          <div>
+                            <div class="applicant-name">Thabo Mokoena</div>
+                            <div class="applicant-email">
+                              t.mokoena@email.co.za
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Youth Coding Bootcamp</td>
+                      <td>Gauteng</td>
+                      <td>Grade 12</td>
+                      <td>20 Mar 2026</td>
+                      <td>
+                        <span class="app-status app-status--pending"
+                          >Pending</span
+                        >
+                      </td>
+                      <td class="table-actions">
+                        <button
+                          class="tbl-btn tbl-btn--view"
+                          onclick="
+                            showApplicantModal(
+                              'Thabo Mokoena',
+                              'Youth Coding Bootcamp',
+                              'Gauteng',
+                              'Grade 12',
+                              't.mokoena@email.co.za',
+                            )
+                          "
+                        >
+                          View
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--shortlist"
+                          onclick="changeApplicantStatus(this, 'Shortlisted')"
+                        >
+                          Shortlist
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--danger"
+                          onclick="changeApplicantStatus(this, 'Rejected')"
+                        >
+                          Reject
+                        </button>
+                      </td>
+                    </tr>
+                    <tr
+                      data-opp="Digital Skills Training"
+                      data-status="Reviewed"
+                    >
+                      <td>
+                        <div class="applicant-cell">
+                          <div
+                            class="applicant-avatar"
+                            style="background: #7c3aed"
+                          >
+                            NK
+                          </div>
+                          <div>
+                            <div class="applicant-name">Naledi Khumalo</div>
+                            <div class="applicant-email">
+                              naledi.k@gmail.com
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Digital Skills Training</td>
+                      <td>Western Cape</td>
+                      <td>Diploma</td>
+                      <td>18 Mar 2026</td>
+                      <td>
+                        <span class="app-status app-status--reviewed"
+                          >Reviewed</span
+                        >
+                      </td>
+                      <td class="table-actions">
+                        <button
+                          class="tbl-btn tbl-btn--view"
+                          onclick="
+                            showApplicantModal(
+                              'Naledi Khumalo',
+                              'Digital Skills Training',
+                              'Western Cape',
+                              'Diploma',
+                              'naledi.k@gmail.com',
+                            )
+                          "
+                        >
+                          View
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--shortlist"
+                          onclick="changeApplicantStatus(this, 'Shortlisted')"
+                        >
+                          Shortlist
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--danger"
+                          onclick="changeApplicantStatus(this, 'Rejected')"
+                        >
+                          Reject
+                        </button>
+                      </td>
+                    </tr>
+                    <tr
+                      data-opp="Youth Coding Bootcamp"
+                      data-status="Shortlisted"
+                    >
+                      <td>
+                        <div class="applicant-cell">
+                          <div
+                            class="applicant-avatar"
+                            style="background: #059669"
+                          >
+                            SD
+                          </div>
+                          <div>
+                            <div class="applicant-name">Sipho Dlamini</div>
+                            <div class="applicant-email">
+                              sipho.d@outlook.com
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Youth Coding Bootcamp</td>
+                      <td>KwaZulu-Natal</td>
+                      <td>Undergraduate</td>
+                      <td>15 Mar 2026</td>
+                      <td>
+                        <span class="app-status app-status--shortlisted"
+                          >Shortlisted</span
+                        >
+                      </td>
+                      <td class="table-actions">
+                        <button
+                          class="tbl-btn tbl-btn--view"
+                          onclick="
+                            showApplicantModal(
+                              'Sipho Dlamini',
+                              'Youth Coding Bootcamp',
+                              'KwaZulu-Natal',
+                              'Undergraduate',
+                              'sipho.d@outlook.com',
+                            )
+                          "
+                        >
+                          View
+                        </button>
+                        <button
+                          class="tbl-btn"
+                          onclick="showToast('Email sent to Sipho Dlamini')"
+                        >
+                          Notify
+                        </button>
+                      </td>
+                    </tr>
+                    <tr data-opp="Leadership Workshop" data-status="Pending">
+                      <td>
+                        <div class="applicant-cell">
+                          <div
+                            class="applicant-avatar"
+                            style="background: #ec4899"
+                          >
+                            AN
+                          </div>
+                          <div>
+                            <div class="applicant-name">Amahle Nkosi</div>
+                            <div class="applicant-email">
+                              amahle.n@yahoo.com
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Leadership Workshop</td>
+                      <td>Gauteng</td>
+                      <td>Grade 11</td>
+                      <td>12 Mar 2026</td>
+                      <td>
+                        <span class="app-status app-status--pending"
+                          >Pending</span
+                        >
+                      </td>
+                      <td class="table-actions">
+                        <button
+                          class="tbl-btn tbl-btn--view"
+                          onclick="
+                            showApplicantModal(
+                              'Amahle Nkosi',
+                              'Leadership Workshop',
+                              'Gauteng',
+                              'Grade 11',
+                              'amahle.n@yahoo.com',
+                            )
+                          "
+                        >
+                          View
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--shortlist"
+                          onclick="changeApplicantStatus(this, 'Shortlisted')"
+                        >
+                          Shortlist
+                        </button>
+                        <button
+                          class="tbl-btn tbl-btn--danger"
+                          onclick="changeApplicantStatus(this, 'Rejected')"
+                        >
+                          Reject
+                        </button>
+                      </td>
+                    </tr>
+                    <tr
+                      data-opp="Digital Skills Training"
+                      data-status="Rejected"
+                    >
+                      <td>
+                        <div class="applicant-cell">
+                          <div
+                            class="applicant-avatar"
+                            style="background: #2563eb"
+                          >
+                            LM
+                          </div>
+                          <div>
+                            <div class="applicant-name">Lethabo Molefe</div>
+                            <div class="applicant-email">
+                              lethabo.m@webmail.co.za
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>Digital Skills Training</td>
+                      <td>Limpopo</td>
+                      <td>Certificate</td>
+                      <td>10 Mar 2026</td>
+                      <td>
+                        <span class="app-status app-status--rejected"
+                          >Rejected</span
+                        >
+                      </td>
+                      <td class="table-actions">
+                        <button
+                          class="tbl-btn tbl-btn--view"
+                          onclick="
+                            showApplicantModal(
+                              'Lethabo Molefe',
+                              'Digital Skills Training',
+                              'Limpopo',
+                              'Certificate',
+                              'lethabo.m@webmail.co.za',
+                            )
+                          "
+                        >
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="tab-create" style="display: none">
+            <div class="org-section">
+              <div class="org-section__header">
+                <h2 class="org-section__title">Post a New Opportunity</h2>
+              </div>
+              <p class="org-section__sub">
+                Fill in the details below to list your opportunity for South
+                African youth
+              </p>
+
+              <form id="createOppForm" novalidate>
+                <div class="create-form-grid">
+                  <div class="form__group create-form-grid__full">
+                    <label class="form__label"
+                      >Opportunity Title <span class="required">*</span></label
+                    >
+                    <input
+                      type="text"
+                      class="form__input"
+                      id="newTitle"
+                      placeholder="e.g. Youth Coding Bootcamp 2026"
+                      required
+                    />
+                    <span class="form__error">Title is required</span>
+                  </div>
+
+                  <div class="form__group">
+                    <label class="form__label"
+                      >Type <span class="required">*</span></label
+                    >
+                    <select
+                      class="form__input form__select"
+                      id="newType"
+                      required
+                    >
+                      <option value="" disabled selected>Select type</option>
+                      <option>Workshop</option>
+                      <option>Scholarship</option>
+                      <option>Internship</option>
+                      <option>Bursary</option>
+                      <option>Learnership</option>
+                      <option>Programme</option>
+                    </select>
+                    <span class="form__error">Please select a type</span>
+                  </div>
+
+                  <div class="form__group">
+                    <label class="form__label"
+                      >Province <span class="required">*</span></label
+                    >
+                    <select
+                      class="form__input form__select"
+                      id="newProvince"
+                      required
+                    >
+                      <option value="" disabled selected>
+                        Select province
+                      </option>
+                      <option>Gauteng</option>
+                      <option>Western Cape</option>
+                      <option>KwaZulu-Natal</option>
+                      <option>Eastern Cape</option>
+                      <option>Limpopo</option>
+                      <option>Mpumalanga</option>
+                      <option>Free State</option>
+                      <option>North West</option>
+                      <option>Northern Cape</option>
+                      <option>National (All Provinces)</option>
+                    </select>
+                    <span class="form__error">Please select a province</span>
+                  </div>
+
+                  <div class="form__group">
+                    <label class="form__label"
+                      >Application Deadline
+                      <span class="required">*</span></label
+                    >
+                    <input
+                      type="date"
+                      class="form__input"
+                      id="newDeadline"
+                      required
+                    />
+                    <span class="form__error">Deadline is required</span>
+                  </div>
+
+                  <div class="form__group">
+                    <label class="form__label">Start Date</label>
+                    <input type="date" class="form__input" id="newStart" />
+                  </div>
+
+                  <div class="form__group create-form-grid__full">
+                    <label class="form__label"
+                      >Description <span class="required">*</span></label
+                    >
+                    <textarea
+                      class="form__input form__textarea"
+                      id="newDesc"
+                      rows="4"
+                      placeholder="Describe the opportunity, who it is for, and what youth will gain..."
+                      required
+                    ></textarea>
+                    <span class="form__error">Description is required</span>
+                  </div>
+
+                  <div class="form__group create-form-grid__full">
+                    <label class="form__label"
+                      >Requirements / Eligibility</label
+                    >
+                    <textarea
+                      class="form__input form__textarea"
+                      id="newReq"
+                      rows="3"
+                      placeholder="e.g. Must be between 16–25 years old, Grade 10 minimum, South African citizen..."
+                    ></textarea>
+                  </div>
+
+                  <div class="form__group">
+                    <label class="form__label"
+                      >Application Link or Contact Email</label
+                    >
+                    <input
+                      type="text"
+                      class="form__input"
+                      id="newLink"
+                      placeholder="https://apply.org.co.za or info@org.co.za"
+                    />
+                  </div>
+
+                  <div class="form__group">
+                    <label class="form__label"
+                      >Max Applicants
+                      <span class="form__optional">(optional)</span></label
+                    >
+                    <input
+                      type="number"
+                      class="form__input"
+                      id="newMax"
+                      placeholder="e.g. 50"
+                      min="1"
+                    />
+                  </div>
+                </div>
+
+                <div
+                  id="createFormMsg"
+                  class="create-form-msg"
+                  style="display: none"
+                ></div>
+
+                <div class="create-form-actions">
+                  <button
+                    type="submit"
+                    class="btn btn--gradient"
+                    id="publishBtn"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M22 2 11 13" />
+                      <path d="M22 2 15 22 11 13 2 9l20-7z" />
+                    </svg>
+                    Publish Opportunity
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn--outline"
+                    id="saveDraftBtn"
+                  >
+                    Save as Draft
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn--outline"
+                    onclick="resetCreateForm()"
+                  >
+                    Clear Form
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <div
+      class="modal-overlay"
+      id="applicantModal"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="applicant-modal">
+        <button
+          class="modal-close"
+          onclick="closeApplicantModal()"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+        <div id="applicantModalContent"></div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true">
+      <div class="confirm-modal">
+        <div class="confirm-modal__icon">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#dc2626"
+            stroke-width="2"
+          >
+            <polyline points="3 6 5 6 21 6" />
+            <path
+              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"
+            />
+          </svg>
+        </div>
+        <h3 class="confirm-modal__title">Delete opportunity?</h3>
+        <p class="confirm-modal__text">
+          This will permanently delete the opportunity and all associated
+          applications. This cannot be undone.
+        </p>
+        <div class="confirm-modal__actions">
+          <button class="btn btn--outline" onclick="closeDeleteModal()">
+            Cancel
+          </button>
+          <button
+            class="btn"
+            style="background: #dc2626; color: #fff; border-color: #dc2626"
+            onclick="executeDelete()"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="alert"></div>
+
+    <script src="../jsFrontEnd/dashboardJS.js"></script>
+    <script src="../jsFrontEnd/orgdashboardJS.js"></script>
+  </body>
+</html>
