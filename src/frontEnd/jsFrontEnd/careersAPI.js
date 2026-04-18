@@ -99,7 +99,18 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    console.log("The button was clicked somehow or the js was loaded!!!");
+  const spanInitials = document.getElementById("initials");
+
+  const initialStored = localStorage.getItem("initials");
+
+  if(initialStored){
+    spanInitials.textContent = initialStored;
+  }else{
+    spanInitials.textContent = "?";
+  }
+
+
+  console.log("The button was clicked somehow or the js was loaded!!!");
 
   const grid = document.getElementById("careersGrid");
   const buttons = document.querySelectorAll("[data-category='technology']");
