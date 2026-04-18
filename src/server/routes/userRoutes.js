@@ -1,10 +1,12 @@
 import express from "express";
-import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,studentLandingPage,careersPage } from "../controllers/pageControllers.js";
+import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,studentLandingPage,careersPage,orgDashboard} from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken } from "../controllers/sessionControllers.js";
 import { fectNews } from "../apis/newsAPI.js";
 import { fetchJobs } from "../apis/careers.js";
 import { fetchBooks } from "../apis/booksAPI.js";
+
+
 
 const route = express.Router();
 
@@ -45,6 +47,8 @@ route.post("/logout", (req, res) => {
 });
 
 route.get("/api/jobs", fetchJobs);
+
+route.get("/org/dashboard", verifyToken ,orgDashboard);
 
 export default route;
 
