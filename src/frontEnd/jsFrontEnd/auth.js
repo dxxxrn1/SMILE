@@ -359,6 +359,7 @@ function handleLoginSubmit(event) {
         window.location.href = '/org/dashboard';
       }
     }, 3000);
+    resetSubmitButton(submitBtn);
   })
   .catch(error => {
     console.error('Login error:', error);
