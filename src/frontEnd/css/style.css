@@ -3232,7 +3232,8 @@ img {
 
 .dashboard-sidebar {
   width: 260px;
-  background: var(--white);
+  background: #ffffff;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.03);
   border-right: 1px solid var(--gray-200);
   display: flex;
   flex-direction: column;
@@ -3241,52 +3242,52 @@ img {
   bottom: 0;
   left: 0;
   z-index: 100;
+  margin-bottom: 1.5rem;
 }
 
 .dashboard-main {
   flex: 1;
-  margin-left: 260px; /* Shifts content right  */
-  padding: 2rem;
-  max-width: calc(100vw - 260px);
+  margin-left: 260px; /* Shifts content right so sidebar doesn't cover it */
+  padding: 2.5rem 3rem;
+  width: calc(100% - 260px);
 }
 
 .org-tabs {
   display: flex;
-  gap: 0.25rem;
-  background: var(--gray-100);
-  border-radius: var(--radius-full);
-  padding: 0.25rem;
-  width: fit-content;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
 }
 
 .org-tab {
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  padding: 0.5rem 1.125rem;
-  border-radius: var(--radius-full);
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md); /* Clean, slightly rounded edges */
   border: none;
   background: transparent;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: var(--gray-600);
   cursor: pointer;
   transition: all 0.2s ease;
-  font-family: var(--font-primary);
-  white-space: nowrap;
+  width: 100%;
+  text-align: left;
 }
 
 .org-tab:hover {
   color: var(--gray-900);
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--gray-100);
 }
 
 .org-tab--active {
-  background: var(--white);
-  color: var(--gray-900);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  background: #eff6ff;
+  color: #2563eb;
+  font-weight: 600;
 }
 
 /* ==================== TAB PANELS ==================== */
