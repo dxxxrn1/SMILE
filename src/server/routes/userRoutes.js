@@ -1,5 +1,5 @@
 import express from "express";
-import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,studentLandingPage,careersPage } from "../controllers/pageControllers.js";
+import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,studentLandingPage,careersPage,orgDashboard} from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken } from "../controllers/sessionControllers.js";
 import { fectNews } from "../apis/newsAPI.js";
@@ -61,6 +61,8 @@ route.post("/logout", (req, res) => {
 });
 
 route.get("/api/jobs", fetchJobs);
+
+route.get("/org/dashboard", verifyToken ,orgDashboard);
 
 export default route;
 

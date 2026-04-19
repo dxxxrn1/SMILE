@@ -36,4 +36,9 @@ export const opportunitiesPage = (req,res)=>{
 export const careersPage = (req,res)=>{
     res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd","htmlPages" , "careers.html"));
 }
+                                                                                    //orgdashboard
+export const orgDashboard = (req,res)=>{
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "orgdashboard.html"));
+}
+
 //Lucas Bohani Maluleke and Darren Foster

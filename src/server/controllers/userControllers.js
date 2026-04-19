@@ -81,8 +81,9 @@ export const saveStudentDetails = async (req, res) => {
 };
 
 export const saveOrganisationDetails = async(req,res)=>{
-
     try{
+
+        console.log("Saving org details");
 
         const strengthOfpassWord = 10;
 
@@ -104,7 +105,7 @@ export const saveOrganisationDetails = async(req,res)=>{
         .request()
         .input("email" , sql.VarChar , orgEmail)
         .query(`
-            SELECT * FROM Student WHERE OrgEmail = @email;
+            SELECT * FROM Organisation WHERE OrgEmail = @email;
         `)
 
         console.log("SELECT done, rows:", results.recordset.length);
@@ -168,6 +169,7 @@ export const saveOrganisationDetails = async(req,res)=>{
 }
 
 export const userLogin = async (req, res) => {
+
     try {
         const { email, password, accountType } = req.body;
 
@@ -266,3 +268,70 @@ export const userLogin = async (req, res) => {
 };
 
 //Lucas Bohani Maluleke
+
+// export const userLogin = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+
+//         if (!email || !password) {
+//             return res.sendStatus(400);
+//         }
+
+//         const pool = await connectToDB();
+
+//         // ✅ Try student first
+//         const studentResult = await pool
+//             .request()
+//             .input("email", sql.VarChar, email)
+//             .query(`SELECT * FROM Student WHERE StuEmail = @email`);
+
+//         if (studentResult.recordset.length > 0) {
+//             const user = studentResult.recordset[0];
+//             const passwordMatch = await bcrypt.compare(password, user.StuPassword);
+//             if (!passwordMatch) return res.status(401).json({ message: "Invalid credentials" });
+
+//             const token = jwt.sign(
+//                 { id: user.StuID, email: user.StuEmail, accountType: "student" },
+//                 process.env.JWT_SECRET,
+//                 { expiresIn: process.env.JWT_EXPIRES_IN }
+//             );
+
+//             res.cookie('token', token, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
+
+//             const initials = user.StuName[0] + user.StuLastName[0];
+//             console.log("✅ Student login successfully!");
+//             return res.status(200).json({ token, accountType: "student", name: user.StuName, userinitials: initials });
+//         }
+
+//         // ✅ Try organisation second
+//         const orgResult = await pool
+//             .request()
+//             .input("email", sql.VarChar, email)
+//             .query(`SELECT * FROM Organisation WHERE OrgEmail = @email`);
+
+//         if (orgResult.recordset.length > 0) {
+//             const user = orgResult.recordset[0];
+//             const passwordMatch = await bcrypt.compare(password, user.Password);
+//             if (!passwordMatch) return res.status(401).json({ message: "Invalid credentials" });
+
+//             const token = jwt.sign(
+//                 { id: user.OrgId, email: user.OrgEmail, accountType: "organization" },
+//                 process.env.JWT_SECRET,
+//                 { expiresIn: process.env.JWT_EXPIRES_IN }
+//             );
+
+//             res.cookie('token', token, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
+
+//             const initials = user.OrgName[0];
+//             console.log("✅ Organisation login successfully!");
+//             return res.status(200).json({ token, accountType: "organization", name: user.OrgName, userinitials: initials });
+//         }
+
+//         // ✅ Email not found in either table
+//         return res.sendStatus(401);
+
+//     } catch (err) {
+//         console.error("❌ Login error:", err);
+//         return res.sendStatus(500);
+//     }
+// };

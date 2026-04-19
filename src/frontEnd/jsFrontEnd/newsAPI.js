@@ -4,7 +4,20 @@
  * Add  <script src="../jsFrontEnd/newsJS.js"></script>  before </body> in news.html
  */
 
-(function () {
+document.addEventListener("DOMContentLoaded" , ()=>{
+
+  const spanInitials = document.getElementById("initials");
+
+  const initialStored = localStorage.getItem("initials");
+
+
+  if(initialStored){
+    spanInitials.textContent = initialStored;
+  }else{
+    spanInitials.textContent = "?";
+  }
+
+  (function () {
   'use strict';
 
   // ─── State ────────────────────────────────────────────────────────────────
@@ -226,3 +239,7 @@
   loadNews();
 
 })();
+
+})
+
+
