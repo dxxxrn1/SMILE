@@ -41,4 +41,11 @@ export const orgDashboard = (req,res)=>{
     res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "orgdashboard.html"));
 }
 
+export const forgotPasswordPage = (req,res)=>{
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" ,"htmlPages" , "forget-password.html"));
+}
+
+export const resetPasswordPage = (req,res)=>{
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "reset-password.html"));
+}
 //Lucas Bohani Maluleke and Darren Foster

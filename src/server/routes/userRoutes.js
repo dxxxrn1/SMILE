@@ -1,10 +1,12 @@
 import express from "express";
 import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,studentLandingPage,careersPage,orgDashboard} from "../controllers/pageControllers.js";
+import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken } from "../controllers/sessionControllers.js";
 import { fectNews } from "../apis/newsAPI.js";
 import { fetchJobs } from "../apis/careers.js";
 import { fetchBooks } from "../apis/booksAPI.js";
+import { forgotPassword, resetPassword } from "../controllers/passwordController.js";
 
 import {
   getCareerAdvice,
@@ -63,6 +65,11 @@ route.post("/logout", (req, res) => {
 route.get("/api/jobs", fetchJobs);
 
 route.get("/org/dashboard", verifyToken ,orgDashboard);
+
+route.get("/forgot-password" , forgotPasswordPage)
+route.post("/forgot-password", forgotPassword);
+route.post("/reset-password", resetPassword);
+route.get("/reset-password", resetPasswordPage);
 
 export default route;
 
