@@ -133,7 +133,54 @@
             Create New
           </button>
         </div>
-
+        <div class="dashboard-sidebar__links" style="padding: 0 1rem 1rem 1rem">
+          <p
+            style="
+              font-size: 11px;
+              text-transform: uppercase;
+              color: #9ca3af;
+              letter-spacing: 0.05em;
+              padding-left: 8px;
+              margin-bottom: 12px;
+              margin-top: 12px;
+              font-weight: 600;
+            "
+          >
+            Actions
+          </p>
+          <button
+            id="createOppQuickBtn"
+            class="btn btn--gradient org-tab"
+            data-tab="create"
+            onclick="switchTab('create', this)"
+            style="
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+              padding: 12px;
+              border-radius: 8px;
+              cursor: pointer;
+              color: white;
+              border: none;
+            "
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Post Opportunity
+          </button>
+        </div>
         <div class="dashboard-sidebar__footer">
           <div class="org-profile-info" style="padding: 0 0 1rem 0">
             <div class="org-profile-avatar">SA</div>
@@ -173,7 +220,7 @@
                 Manage your opportunities and track engagement
               </p>
             </div>
-            <button class="btn btn--gradient" id="createOppQuickBtn">
+            <!-- <button class="btn btn--gradient" id="createOppQuickBtn"> -->
               <svg
                 width="16"
                 height="16"
