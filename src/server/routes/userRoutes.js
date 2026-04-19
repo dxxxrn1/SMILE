@@ -6,7 +6,14 @@ import { fectNews } from "../apis/newsAPI.js";
 import { fetchJobs } from "../apis/careers.js";
 import { fetchBooks } from "../apis/booksAPI.js";
 
-
+import {
+  getCareerAdvice,
+  generateDocFromChat,
+  getMyInterests,
+  saveInterests,
+  getSavedDocs,
+  getSingleDoc,
+} from "../controllers/chatbotController.js";
 
 const route = express.Router();
 
@@ -35,6 +42,13 @@ route.post("/login" , userLogin);
 route.get('/api/news' , verifyToken ,fectNews);
 
 route.get("/api/books", verifyToken ,fetchBooks);
+
+route.get("/api/get-my-interests", verifyToken, getMyInterests);
+route.post("/api/save-interests", verifyToken, saveInterests);
+route.post("/api/chat", verifyToken, getCareerAdvice);
+route.post("/api/generate-doc-from-chat", verifyToken, generateDocFromChat);
+route.get("/api/saved-docs", verifyToken, getSavedDocs);
+route.get("/api/saved-docs/:id", verifyToken, getSingleDoc);
 
 route.post("/logout", (req, res) => {
 
