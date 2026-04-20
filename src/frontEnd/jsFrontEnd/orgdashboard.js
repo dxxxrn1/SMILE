@@ -78,8 +78,10 @@ function switchTab(tabId, clickedBtn) {
   const panel = document.getElementById("tab-" + tabId);
   if (panel) panel.style.display = "block";
 
-  // Activate clicked tab button
-  if (clickedBtn) clickedBtn.classList.add("org-tab--active");
+  // Activate clicked tab button (ONLY if a button was passed)
+  if (clickedBtn && clickedBtn.classList) {
+    clickedBtn.classList.add("org-tab--active");
+  }
 
   // Lazy-init analytics charts when that tab opens
   if (tabId === "analytics" && !window._chartsBuilt) {
