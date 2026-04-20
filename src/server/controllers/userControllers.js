@@ -24,7 +24,7 @@ export const saveStudentDetails = async (req, res) => {
             .query(`SELECT * FROM Student WHERE StuEmail = @email`);
 
         if (results.recordset.length > 0) {
-            return res.sendStatus(403); // ✅ Bug 1 fixed - actually sends the response
+            return res.sendStatus(403); // Bug 1 fixed - actually sends the response
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -42,7 +42,7 @@ export const saveStudentDetails = async (req, res) => {
                 VALUES(@firstname, @lastname, @email, @province, @educationlevel, @password)
             `);
 
-        // ✅ Bug 2 fixed - await only, no callback
+        // Bug 2 fixed - await only, no callback
         const transport = nodemailer.createTransport({
             service: "gmail",
             auth: {
