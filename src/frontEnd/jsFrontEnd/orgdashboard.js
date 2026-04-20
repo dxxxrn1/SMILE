@@ -63,6 +63,9 @@ function initProfileDropdown() {
 /* ================================================================
    TABS
    ================================================================ */
+/* ================================================================
+   TABS
+   ================================================================ */
 function switchTab(tabId, clickedBtn) {
   // Hide all panels
   document.querySelectorAll(".tab-panel").forEach((p) => {
@@ -78,7 +81,7 @@ function switchTab(tabId, clickedBtn) {
   const panel = document.getElementById("tab-" + tabId);
   if (panel) panel.style.display = "block";
 
-  // Activate clicked tab button (ONLY if a button was passed)
+  // Activate clicked tab button (ONLY if a button was actually clicked)
   if (clickedBtn && clickedBtn.classList) {
     clickedBtn.classList.add("org-tab--active");
   }
@@ -693,13 +696,13 @@ function resetCreateForm() {
 }
 
 /* Quick "Post Opportunity" button in page header */
-function bindQuickCreate() {
-  document
-    .getElementById("createOppQuickBtn")
-    ?.addEventListener("click", function () {
-      switchTab("create", document.querySelector('[data-tab="create"]'));
-    });
-}
+// function bindQuickCreate() {
+//   document
+//     .getElementById("createOppQuickBtn")
+//     ?.addEventListener("click", function () {
+//       switchTab("create", document.querySelector('[data-tab="create"]'));
+//     });
+// }
 
 /* ================================================================
    TOAST
@@ -717,4 +720,12 @@ function showToast(msg, type) {
   _toastTimer = setTimeout(function () {
     toast.classList.remove("toast--show");
   }, 3200);
+}
+/* Quick "Post Opportunity" button in page header/sidebar */
+function bindQuickCreate() {
+  document
+    .getElementById("createOppQuickBtn")
+    ?.addEventListener("click", function () {
+      switchTab("create", null); // Safely switch to the create tab without needing an active sidebar link
+    });
 }
