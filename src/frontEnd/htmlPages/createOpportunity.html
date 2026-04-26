@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Post a new opportunity for South African youth on SMILE."
+    />
+    <title>Post Opportunity - SMILE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/createOpportunity.css" />
+  </head>
+  <body>
+    <!-- TOP BAR -->
+    <nav class="topbar">
+      <a href="home.html" class="topbar__logo">
+        <div class="topbar__logo-icon">&#9786;</div>
+        SMILE Org
+      </a>
+      <span class="topbar__sep">/</span>
+      <span class="topbar__crumb">Post Opportunity</span>
+      <a href="orgdashboard.html" class="topbar__back">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+        Back to Dashboard
+      </a>
+    </nav>
+
+    <div class="page">
+      <!-- PAGE HEADER -->
+      <div class="page__header">
+        <h1 class="page__title">Post a New Opportunity</h1>
+        <p class="page__sub">
+          Fill in the details below to list your opportunity for South African
+          youth.
+        </p>
+      </div>
+
+      <!-- PROGRESS STEPS -->
+      <div class="steps">
+        <div class="step step--active" id="step1">
+          <div class="step__dot">1</div>
+          Basic Info
+        </div>
+        <div class="step__line"></div>
+        <div class="step" id="step2">
+          <div class="step__dot">2</div>
+          Details
+        </div>
+        <div class="step__line"></div>
+        <div class="step" id="step3">
+          <div class="step__dot">3</div>
+          Publish
+        </div>
+      </div>
+
+      <form id="createOppForm" novalidate>
+        <!-- CARD 1: BASIC INFO -->
+        <div class="card">
+          <div class="card__title">
+            <div class="card__title-icon">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="2" y="7" width="20" height="14" rx="2" />
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+              </svg>
+            </div>
+            Basic Information
+          </div>
+
+          <div class="form-grid">
+            <!-- TITLE -->
+            <div class="form__group form-grid--full">
+              <label class="form__label" for="newTitle">
+                Opportunity Title <span class="required">*</span>
+              </label>
+              <input
+                type="text"
+                class="form__input"
+                id="newTitle"
+                placeholder="e.g. Youth Coding Bootcamp 2026"
+                maxlength="120"
+              />
+              <span class="form__error-msg">Title is required</span>
+            </div>
+
+            <!-- TYPE PICKER -->
+            <div class="form__group form-grid--full" id="typeGroup">
+              <label class="form__label">
+                Opportunity Type <span class="required">*</span>
+              </label>
+              <div class="type-grid">
+                <input
+                  type="radio"
+                  name="oppType"
+                  id="type-workshop"
+                  value="Workshop"
+                  class="type-option"
+                />
+                <label for="type-workshop" class="type-label">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                  </svg>
+                  Workshop
+                </label>
+
+                <input
+                  type="radio"
+                  name="oppType"
+                  id="type-scholarship"
+                  value="Scholarship"
+                  class="type-option"
+                />
+                <label for="type-scholarship" class="type-label">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                  </svg>
+                  Scholarship
+                </label>
+
+                <input
+                  type="radio"
+                  name="oppType"
+                  id="type-internship"
+                  value="Internship"
+                  class="type-option"
+                />
+                <label for="type-internship" class="type-label">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="2" y="7" width="20" height="14" rx="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                  Internship
+                </label>
+
+                <input
+                  type="radio"
+                  name="oppType"
+                  id="type-bursary"
+                  value="Bursary"
+                  class="type-option"
+                />
+                <label for="type-bursary" class="type-label">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path
+                      d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                    />
+                  </svg>
+                  Bursary
+                </label>
+
+                <input
+                  type="radio"
+                  name="oppType"
+                  id="type-learnership"
+                  value="Learnership"
+                  class="type-option"
+                />
+                <label for="type-learnership" class="type-label">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                  </svg>
+                  Learnership
+                </label>
+
+                <input
+                  type="radio"
+                  name="oppType"
+                  id="type-programme"
+                  value="Programme"
+                  class="type-option"
+                />
+                <label for="type-programme" class="type-label">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  Programme
+                </label>
+              </div>
+              <span class="form__error-msg">Please select a type</span>
+            </div>
+
+            <!-- PROVINCE -->
+            <div class="form__group">
+              <label class="form__label" for="newProvince">
+                Province <span class="required">*</span>
+              </label>
+              <select class="form__input" id="newProvince">
+                <option value="" disabled selected>Select province</option>
+                <option>Gauteng</option>
+                <option>Western Cape</option>
+                <option>KwaZulu-Natal</option>
+                <option>Eastern Cape</option>
+                <option>Limpopo</option>
+                <option>Mpumalanga</option>
+                <option>Free State</option>
+                <option>North West</option>
+                <option>Northern Cape</option>
+                <option>National (All Provinces)</option>
+              </select>
+              <span class="form__error-msg">Please select a province</span>
+            </div>
+
+            <!-- MAX APPLICANTS -->
+            <div class="form__group">
+              <label class="form__label" for="newMax">
+                Max Applicants <span class="optional">(optional)</span>
+              </label>
+              <input
+                type="number"
+                class="form__input"
+                id="newMax"
+                placeholder="e.g. 50"
+                min="1"
+              />
+              <span class="form__hint">Leave blank for unlimited</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: DETAILS -->
+        <div class="card">
+          <div class="card__title">
+            <div class="card__title-icon">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <line x1="8" y1="6" x2="21" y2="6" />
+                <line x1="8" y1="12" x2="21" y2="12" />
+                <line x1="8" y1="18" x2="21" y2="18" />
+                <line x1="3" y1="6" x2="3.01" y2="6" />
+                <line x1="3" y1="12" x2="3.01" y2="12" />
+                <line x1="3" y1="18" x2="3.01" y2="18" />
+              </svg>
+            </div>
+            Opportunity Details
+          </div>
+
+          <div class="form-grid">
+            <!-- DESCRIPTION -->
+            <div class="form__group form-grid--full">
+              <label class="form__label" for="newDesc">
+                Description <span class="required">*</span>
+              </label>
+              <div class="textarea-wrap">
+                <textarea
+                  class="form__input"
+                  id="newDesc"
+                  rows="5"
+                  placeholder="Describe the opportunity, who it is for, and what youth will gain..."
+                  maxlength="1000"
+                  oninput="updateCharCount(this, 'descCount', 1000)"
+                ></textarea>
+                <span class="char-count" id="descCount">0 / 1000</span>
+              </div>
+              <span class="form__error-msg">Description is required</span>
+            </div>
+
+            <!-- REQUIREMENTS -->
+            <div class="form__group form-grid--full">
+              <label class="form__label" for="newReq">
+                Requirements / Eligibility
+                <span class="optional">(optional)</span>
+              </label>
+              <textarea
+                class="form__input"
+                id="newReq"
+                rows="3"
+                placeholder="e.g. Must be between 16–25 years old, Grade 10 minimum, South African citizen..."
+              ></textarea>
+            </div>
+
+            <!-- DEADLINE -->
+            <div class="form__group">
+              <label class="form__label" for="newDeadline">
+                Application Deadline <span class="required">*</span>
+              </label>
+              <input type="date" class="form__input" id="newDeadline" />
+              <span class="form__error-msg">Deadline is required</span>
+            </div>
+
+            <!-- START DATE -->
+            <div class="form__group">
+              <label class="form__label" for="newStart">
+                Start Date <span class="optional">(optional)</span>
+              </label>
+              <input type="date" class="form__input" id="newStart" />
+            </div>
+
+            <!-- LINK / EMAIL -->
+            <div class="form__group form-grid--full">
+              <label class="form__label" for="newLink">
+                Application Link or Contact Email
+                <span class="optional">(optional)</span>
+              </label>
+              <input
+                type="text"
+                class="form__input"
+                id="newLink"
+                placeholder="https://apply.org.co.za or info@org.co.za"
+              />
+              <span class="form__hint"
+                >Where should applicants go to apply or get more info?</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- FORM MESSAGE -->
+        <div class="form-msg" id="formMsg"></div>
+
+        <!-- FORM ACTIONS -->
+        <div class="form-actions">
+          <button type="submit" class="btn btn--gradient" id="publishBtn">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M22 2 11 13" />
+              <path d="M22 2 15 22 11 13 2 9l20-7z" />
+            </svg>
+            Publish Opportunity
+          </button>
+          <button type="button" class="btn btn--outline" id="draftBtn">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+              />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+            Save as Draft
+          </button>
+          <button type="button" class="btn btn--ghost" id="clearBtn">
+            Clear
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script src="../jsFrontEnd/createOpportunityJS.js"></script>
+  </body>
+</html>
