@@ -4383,7 +4383,6 @@ img {
   }
 }
 
-
 /*add oppertunity html page */
 /* ── TOAST ── */
 .toast {
@@ -4398,24 +4397,56 @@ img {
   font-weight: 500;
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity 0.25s, transform 0.25s;
+  transition:
+    opacity 0.25s,
+    transform 0.25s;
   pointer-events: none;
   z-index: 9999;
   max-width: 320px;
 }
- 
+
 .toast--show {
   opacity: 1;
   transform: translateY(0);
 }
- 
+
 /* ── RESPONSIVE ── */
 @media (max-width: 600px) {
-  .form-grid { grid-template-columns: 1fr; }
-  .type-grid { grid-template-columns: repeat(2, 1fr); }
-  .topbar { padding: 0 1rem; }
-  .page { padding: 1.5rem 1rem 3rem; }
-  .card { padding: 1.25rem; }
-  .form-actions { flex-direction: column; align-items: stretch; }
-  .btn { justify-content: center; }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .type-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .topbar {
+    padding: 0 1rem;
+  }
+  .page {
+    padding: 1.5rem 1rem 3rem;
+  }
+  .card {
+    padding: 1.25rem;
+  }
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn {
+    justify-content: center;
+  }
+}
+.dashboard-sidebar__nav {
+  flex: 1;
+  padding: 2rem 1.5rem; /* Gives plenty of space above the tabs */
+  overflow-y: auto;
+}
+
+.org-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Adds nice spacing between each button */
+  width: 100%;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
 }

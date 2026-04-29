@@ -1,5 +1,5 @@
 import express from "express";
-import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,studentLandingPage,careersPage,orgDashboard} from "../controllers/pageControllers.js";
+import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,studentLandingPage,careersPage,orgDashboard, createOpportunity} from "../controllers/pageControllers.js";
 import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken } from "../controllers/sessionControllers.js";
@@ -7,6 +7,7 @@ import { fectNews } from "../apis/newsAPI.js";
 import { fetchJobs } from "../apis/careers.js";
 import { fetchBooks } from "../apis/booksAPI.js";
 import { forgotPassword, resetPassword } from "../controllers/passwordController.js";
+// import {createOpportunity} from '../controllers/pageControllers.js'
 
 import {
   getCareerAdvice,
@@ -71,6 +72,8 @@ route.post("/forgot-password", forgotPassword);
 route.post("/reset-password", resetPassword);
 route.get("/reset-password", resetPasswordPage);
 
+
+route.get('/org/dashboard/createOpportunity', createOpportunity)
 export default route;
 
 //Lucas Bohani Maluleke and Darren Foster
