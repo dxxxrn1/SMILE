@@ -272,20 +272,19 @@ function loadOpportunities(province) {
   currentProvince = province;
   filterResults();
 }
-
 function filterResults() {
   const type = document.getElementById("typeSelect").value;
   const keyword = document.getElementById("keywordInput").value.toLowerCase();
 
   filteredOpps = ALL_OPPORTUNITIES.filter(function (opp) {
-    const matchProv = !currentProvince || opp.province === currentProvince;
-    const matchType = !type || opp.type === type;
+    // Note: The API already filtered by province, so we only need to filter type/keyword locally
+    const matchType = !type || opp.OppType.toLowerCase() === type.toLowerCase();
     const matchKw =
       !keyword ||
-      opp.title.toLowerCase().includes(keyword) ||
-      opp.org.toLowerCase().includes(keyword) ||
-      opp.description.toLowerCase().includes(keyword);
-    return matchProv && matchType && matchKw;
+      opp.Title.toLowerCase().includes(keyword) ||
+      opp.OrgName.toLowerCase().includes(keyword) ||
+      opp.Description.toLowerCase().includes(keyword);
+    return matchType && matchKw;
   });
 
   addOpportunityPins(filteredOpps);
@@ -301,6 +300,34 @@ function filterResults() {
   document.getElementById("resultsCount").textContent =
     `${filteredOpps.length} found`;
 }
+// function filterResults() {
+//   const type = document.getElementById("typeSelect").value;
+//   const keyword = document.getElementById("keywordInput").value.toLowerCase();
+
+//   filteredOpps = ALL_OPPORTUNITIES.filter(function (opp) {
+//     const matchProv = !currentProvince || opp.province === currentProvince;
+//     const matchType = !type || opp.type === type;
+//     const matchKw =
+//       !keyword ||
+//       opp.title.toLowerCase().includes(keyword) ||
+//       opp.org.toLowerCase().includes(keyword) ||
+//       opp.description.toLowerCase().includes(keyword);
+//     return matchProv && matchType && matchKw;
+//   });
+
+//   addOpportunityPins(filteredOpps);
+//   renderCards(filteredOpps);
+
+//   const label = currentProvince || "South Africa";
+//   setMapStatus(
+//     "active",
+//     `Showing ${filteredOpps.length} opportunit${filteredOpps.length === 1 ? "y" : "ies"} in ${label}.`,
+//   );
+//   document.getElementById("resultsTitle").textContent =
+//     `Opportunities in ${label}`;
+//   document.getElementById("resultsCount").textContent =
+//     `${filteredOpps.length} found`;
+// }
 
 /* ================================================================
      CARD RENDERING
@@ -448,6 +475,33 @@ initMap();
      }
    }
      */
+async function loadOpportunities(province) {
+  currentProvince = province;
+  setMapStatus(
+    "loading",
+    `Loading opportunities in ${province || "South Africa"}...`,
+  );
+
+  try {
+    // Call the backend API you just built!
+    const url = province
+      ? `/api/opportunities?province=${encodeURIComponent(province)}`
+      : "/api/opportunities";
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data.success) {
+      ALL_OPPORTUNITIES = data.opportunities; // Replace static array with live DB data
+      filterResults(); // Apply local keyword/type filters to the new data
+    } else {
+      setMapStatus("error", "Could not load data from database.");
+    }
+  } catch (err) {
+    console.error("Failed to load opportunities:", err);
+    setMapStatus("error", "Server connection failed.");
+  }
+}
 
 const ALL_OPPORTUNITIES = [
   {
