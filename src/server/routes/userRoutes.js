@@ -8,7 +8,6 @@ import { fetchJobs } from "../apis/careers.js";
 import { fetchBooks } from "../apis/booksAPI.js";
 import { forgotPassword, resetPassword } from "../controllers/passwordController.js";
 // import {createOpportunity} from '../controllers/pageControllers.js'
-
 //createOpportunitiesPage
 import {
   getCareerAdvice,
@@ -18,6 +17,8 @@ import {
   getSavedDocs,
   getSingleDoc,
 } from "../controllers/chatbotController.js";
+
+import {createNewOpportunity,getAllOpportunities} from "../controllers/opportunitiesControllers.js";
 
 const route = express.Router();
 
@@ -77,10 +78,13 @@ route.get("/forgot-password" , forgotPasswordPage)
 route.post("/forgot-password", forgotPassword);
 route.post("/reset-password", resetPassword);
 route.get("/reset-password", resetPasswordPage);
+route.get('/org/dashboard/createOpportunity',verifyToken,createOpportunity);
+
+route.post("/api/opportunities/create",verifyToken,createNewOpportunity);
+
+route.get("/api/opportunities", verifyToken, getAllOpportunities);
 
 
-
-route.get('/org/dashboard/createOpportunity', createOpportunity);
 export default route;
 
 //Lucas Bohani Maluleke and Darren Foster

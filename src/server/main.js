@@ -17,6 +17,7 @@ const __dirname = path.dirname(__filepath);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname , ".." ,"frontEnd")));
+// app.use(express.static(path.join(__dirname , ".." ,"frontEnd" , "css")));
 
 app.use(cookieParser())
 

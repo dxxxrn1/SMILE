@@ -516,6 +516,7 @@ img {
 }
 
 /* ==================== AUTH PAGES (Login/Register) ==================== */
+
 .auth-page {
   min-height: 100vh;
   display: flex;
