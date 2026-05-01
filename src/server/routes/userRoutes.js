@@ -1,5 +1,8 @@
 import express from "express";
-import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,studentLandingPage,careersPage,orgDashboard} from "../controllers/pageControllers.js";
+import { homePage , loginPage  , registerPage ,nearMePage, newsPage,
+        opportunitiesPage,studentLandingPage,careersPage,
+        orgDashboard} from "../controllers/pageControllers.js";
+
 import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken } from "../controllers/sessionControllers.js";
@@ -8,6 +11,7 @@ import { fetchJobs } from "../apis/careers.js";
 import { fetchBooks } from "../apis/booksAPI.js";
 import { forgotPassword, resetPassword } from "../controllers/passwordController.js";
 
+//createOpportunitiesPage
 import {
   getCareerAdvice,
   generateDocFromChat,
@@ -46,10 +50,15 @@ route.get('/api/news' , verifyToken ,fectNews);
 route.get("/api/books", verifyToken ,fetchBooks);
 
 route.get("/api/get-my-interests", verifyToken, getMyInterests);
+
 route.post("/api/save-interests", verifyToken, saveInterests);
+
 route.post("/api/chat", verifyToken, getCareerAdvice);
+
 route.post("/api/generate-doc-from-chat", verifyToken, generateDocFromChat);
+
 route.get("/api/saved-docs", verifyToken, getSavedDocs);
+
 route.get("/api/saved-docs/:id", verifyToken, getSingleDoc);
 
 route.post("/logout", (req, res) => {
@@ -70,6 +79,8 @@ route.get("/forgot-password" , forgotPasswordPage)
 route.post("/forgot-password", forgotPassword);
 route.post("/reset-password", resetPassword);
 route.get("/reset-password", resetPasswordPage);
+
+// route.get("/create-oppor")
 
 export default route;
 
