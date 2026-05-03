@@ -67,10 +67,10 @@ document.addEventListener("DOMContentLoaded", function () {
             setFormMsg("Please fill in all required fields before publishing.", "error");
             return;
         }
-
         const payload = {
             title:           document.getElementById("newTitle").value.trim(),
             type:            selectedType.value,
+            address:         document.getElementById("newAddress").value.trim(), // <--- Added this
             province:        document.getElementById("newProvince").value,
             maxApplicants:   document.getElementById("newMax").value || null,
             description:     document.getElementById("newDesc").value.trim(),
@@ -79,6 +79,18 @@ document.addEventListener("DOMContentLoaded", function () {
             startDate:       document.getElementById("newStart").value || null,
             applicationLink: document.getElementById("newLink").value.trim()
         };
+
+        // const payload = {
+        //     title:           document.getElementById("newTitle").value.trim(),
+        //     type:            selectedType.value,
+        //     province:        document.getElementById("newProvince").value,
+        //     maxApplicants:   document.getElementById("newMax").value || null,
+        //     description:     document.getElementById("newDesc").value.trim(),
+        //     requirements:    document.getElementById("newReq").value.trim(),
+        //     deadline:        document.getElementById("newDeadline").value,
+        //     startDate:       document.getElementById("newStart").value || null,
+        //     applicationLink: document.getElementById("newLink").value.trim()
+        // };
 
         const publishBtn = document.getElementById("publishBtn");
         publishBtn.disabled = true;

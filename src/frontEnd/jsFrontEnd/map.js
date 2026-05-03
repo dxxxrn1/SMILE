@@ -86,9 +86,15 @@ function addOpportunityPins(opps) {
     const color = getColor(typeColor);
     const icon = createIcon(color);
 
-    // IMPORTANT: Make sure your DB returns Lat and Lng, or map to province centers if they are null
-    const lat = opp.Lat || getProvinceCenter(opp.Province).lat;
-    const lng = opp.Lng || getProvinceCenter(opp.Province).lng;
+    let lat = opp.Lat;
+    let lng = opp.Lng;
+
+    // SCATTER FIX: If DB has no exact coordinates, use province center + random offset
+    if (!lat || !lng) {
+      const center = getProvinceCenter(opp.Province);
+      lat = center.lat + (Math.random() - 0.5) * 0.08;
+      lng = center.lng + (Math.random() - 0.5) * 0.08;
+    }
 
     const marker = L.marker([lat, lng], { icon: icon })
       .addTo(map)
@@ -107,6 +113,11 @@ function addOpportunityPins(opps) {
   if (opps.length > 0) {
     const group = L.featureGroup(markers);
     map.fitBounds(group.getBounds().pad(0.15));
+
+    // Fixes the grey map edges issue
+    setTimeout(function () {
+      map.invalidateSize();
+    }, 400);
   }
 }
 

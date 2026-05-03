@@ -1,44 +1,23 @@
 import { connectToDB, sql } from "../dbConnection/dbconnection.js";
+import { getCoordinates } from '../apis/geoHelper.js'; 
 
 export const createNewOpportunity = async (req, res) => {
     try {
-        const {
-            title,
-            type,
-            province,
-            maxApplicants,
-            description,
-            requirements,
-            deadline,
-            startDate,
-            applicationLink
-        } = req.body;
+        const { title, type, address, province, maxApplicants, description, requirements, deadline, startDate, applicationLink } = req.body;
 
-        // Get OrgId from session/cookie of the logged-in organisation
         const orgId = req.user?.id;
-
         if (!orgId || req.user?.accountType !== "organization") {
-            return res.status(401).json({ 
-                success: false, 
-                message: "Unauthorised. Please log in as an organisation." 
-        });
-}
-
-        // if (!orgId) {
-        //     return res.status(401).json({ 
-        //         success: false, 
-        //         message: "Unauthorised. Please log in as an organisation." 
-        //     });
-        // }
-
-        if (!title || !type || !province || !description || !deadline) {
-            return res.status(400).json({ 
-                success: false, 
-                message: "Please fill in all required fields." 
-            });
+            return res.status(401).json({ success: false, message: "Unauthorised." });
         }
 
+        if (!title || !type || !province || !description || !deadline) {
+            return res.status(400).json({ success: false, message: "Please fill in all required fields." });
+        }
+
+        const coords = await getCoordinates(address, province);
+
         const pool = await connectToDB();
+
 
         await pool.request()
             .input("OrgId",               sql.Int,           orgId)
@@ -51,26 +30,22 @@ export const createNewOpportunity = async (req, res) => {
             .input("MaxApplicants",       sql.Int,           maxApplicants  || null)
             .input("ApplicationDeadline", sql.Date,          deadline)
             .input("StartDate",           sql.Date,          startDate      || null)
+            .input("Lat",                 sql.Decimal(9,6),  coords.lat)
+            .input("Lng",                 sql.Decimal(9,6),  coords.lng)
             .query(`
                 INSERT INTO [dbo].[Opportunities]
                     (OrgId, Title, OppType, Province, Description, Requirements,
-                     ApplicationLink, MaxApplicants, ApplicationDeadline, StartDate)
+                     ApplicationLink, MaxApplicants, ApplicationDeadline, StartDate, Lat, Lng)
                 VALUES
                     (@OrgId, @Title, @OppType, @Province, @Description, @Requirements,
-                     @ApplicationLink, @MaxApplicants, @ApplicationDeadline, @StartDate)
+                     @ApplicationLink, @MaxApplicants, @ApplicationDeadline, @StartDate, @Lat, @Lng)
             `);
 
-        return res.status(201).json({ 
-            success: true, 
-            message: "Opportunity published successfully!" 
-        });
+        return res.status(201).json({ success: true, message: "Opportunity published successfully!" });
 
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ 
-            success: false, 
-            message: "Something went wrong. Please try again." 
-        });
+        return res.status(500).json({ success: false, message: "Something went wrong. Please try again." });
     }
 };
 
