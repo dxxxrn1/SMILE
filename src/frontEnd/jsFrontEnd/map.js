@@ -1,3 +1,20 @@
+// Central coordinates for every South African Province
+const PROVINCE_CENTERS = {
+  Gauteng: { lat: -26.2041, lng: 28.0473 },
+  "Western Cape": { lat: -33.9249, lng: 18.4241 },
+  "KwaZulu-Natal": { lat: -29.8587, lng: 31.0218 },
+  "Eastern Cape": { lat: -33.0153, lng: 27.9116 },
+  Limpopo: { lat: -23.4013, lng: 29.4179 },
+  Mpumalanga: { lat: -25.5653, lng: 30.5279 },
+  "Free State": { lat: -29.0852, lng: 26.1596 },
+  "North West": { lat: -26.6638, lng: 25.2838 },
+  "Northern Cape": { lat: -29.0467, lng: 23.8837 },
+};
+
+function getProvinceCenter(provinceName) {
+  return PROVINCE_CENTERS[provinceName] || { lat: -28.4793, lng: 24.6727 }; // Defaults to center of SA
+}
+
 /* ================================================================
      MAP SETUP
      ================================================================ */
@@ -6,6 +23,7 @@ let markers = [];
 let userMarker = null;
 let currentProvince = "";
 let filteredOpps = [];
+let ALL_OPPORTUNITIES = [];
 
 // Custom gradient pin icon
 function createIcon(color) {
@@ -64,25 +82,28 @@ function addOpportunityPins(opps) {
   clearMarkers();
 
   opps.forEach(function (opp) {
-    const color = getColor(opp.type);
+    const typeColor = opp.OppType ? opp.OppType.toLowerCase() : "programme";
+    const color = getColor(typeColor);
     const icon = createIcon(color);
 
-    const marker = L.marker([opp.lat, opp.lng], { icon: icon })
+    // IMPORTANT: Make sure your DB returns Lat and Lng, or map to province centers if they are null
+    const lat = opp.Lat || getProvinceCenter(opp.Province).lat;
+    const lng = opp.Lng || getProvinceCenter(opp.Province).lng;
+
+    const marker = L.marker([lat, lng], { icon: icon })
       .addTo(map)
       .bindPopup(buildPopup(opp), {
         maxWidth: 280,
         className: "smile-popup-container",
       });
 
-    // Clicking a pin highlights the card below
     marker.on("click", function () {
-      highlightCard(opp.id);
+      highlightCard(opp.OppID);
     });
 
     markers.push(marker);
   });
 
-  // Fit map to show all pins
   if (opps.length > 0) {
     const group = L.featureGroup(markers);
     map.fitBounds(group.getBounds().pad(0.15));
@@ -90,22 +111,20 @@ function addOpportunityPins(opps) {
 }
 
 function buildPopup(opp) {
-  const color = getColor(opp.type);
+  const typeColor = opp.OppType ? opp.OppType.toLowerCase() : "programme";
+  const color = getColor(typeColor);
   return `
       <div class="smile-popup">
-        <div class="smile-popup__badge" style="background:${color}22;color:${color}">${opp.type.charAt(0).toUpperCase() + opp.type.slice(1)}</div>
-        <div class="smile-popup__title">${opp.title}</div>
-        <div class="smile-popup__org">${opp.org}</div>
+        <div class="smile-popup__badge" style="background:${color}22;color:${color}">${opp.OppType}</div>
+        <div class="smile-popup__title">${opp.Title}</div>
+        <div class="smile-popup__org">${opp.OrgName}</div>
         <div class="smile-popup__meta">
-          📍 ${opp.city} &nbsp;·&nbsp; ⏰ Closes ${formatDate(opp.deadline)}
+          📍 ${opp.Province} &nbsp;·&nbsp; ⏰ Closes ${formatDate(opp.ApplicationDeadline)}
         </div>
-        <button class="smile-popup__btn" onclick="scrollToCard(${opp.id})">View Details ↓</button>
+        <button class="smile-popup__btn" onclick="scrollToCard(${opp.OppID})">View Details ↓</button>
       </div>`;
 }
 
-/* ================================================================
-     GEOLOCATION — "Use My Location"
-     ================================================================ */
 function useMyLocation() {
   const btn = document.getElementById("locateBtn");
   btn.disabled = true;
@@ -258,20 +277,6 @@ function onProvinceChange() {
   }, 300);
 }
 
-/* ================================================================
-     LOAD OPPORTUNITIES
-     In production — replace the local filter with a real API call:
-
-     async function loadOpportunities(province) {
-       const res = await fetch(`/api/opportunities?province=${encodeURIComponent(province)}`);
-       const opps = await res.json();
-       displayOpportunities(opps, province);
-     }
-     ================================================================ */
-function loadOpportunities(province) {
-  currentProvince = province;
-  filterResults();
-}
 function filterResults() {
   const type = document.getElementById("typeSelect").value;
   const keyword = document.getElementById("keywordInput").value.toLowerCase();
@@ -300,34 +305,6 @@ function filterResults() {
   document.getElementById("resultsCount").textContent =
     `${filteredOpps.length} found`;
 }
-// function filterResults() {
-//   const type = document.getElementById("typeSelect").value;
-//   const keyword = document.getElementById("keywordInput").value.toLowerCase();
-
-//   filteredOpps = ALL_OPPORTUNITIES.filter(function (opp) {
-//     const matchProv = !currentProvince || opp.province === currentProvince;
-//     const matchType = !type || opp.type === type;
-//     const matchKw =
-//       !keyword ||
-//       opp.title.toLowerCase().includes(keyword) ||
-//       opp.org.toLowerCase().includes(keyword) ||
-//       opp.description.toLowerCase().includes(keyword);
-//     return matchProv && matchType && matchKw;
-//   });
-
-//   addOpportunityPins(filteredOpps);
-//   renderCards(filteredOpps);
-
-//   const label = currentProvince || "South Africa";
-//   setMapStatus(
-//     "active",
-//     `Showing ${filteredOpps.length} opportunit${filteredOpps.length === 1 ? "y" : "ies"} in ${label}.`,
-//   );
-//   document.getElementById("resultsTitle").textContent =
-//     `Opportunities in ${label}`;
-//   document.getElementById("resultsCount").textContent =
-//     `${filteredOpps.length} found`;
-// }
 
 /* ================================================================
      CARD RENDERING
@@ -347,31 +324,28 @@ function renderCards(opps) {
 
   grid.innerHTML = opps
     .map(function (opp) {
-      const color = getColor(opp.type);
+      const typeClass = opp.OppType ? opp.OppType.toLowerCase() : "programme";
       return `
-        <div class="nearme-card" id="card-${opp.id}" onclick="cardClicked(${opp.id})">
+        <div class="nearme-card" id="card-${opp.OppID}" onclick="cardClicked(${opp.OppID})">
           <div class="nearme-card__top">
-            <span class="nearme-badge nearme-badge--${opp.type}">${opp.type.charAt(0).toUpperCase() + opp.type.slice(1)}</span>
-            <span class="nearme-card__distance">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              ${opp.city}
-            </span>
+            <span class="nearme-badge nearme-badge--${typeClass}">${opp.OppType}</span>
+            <span class="nearme-card__distance">📍 ${opp.Province}</span>
           </div>
-          <div class="nearme-card__title">${opp.title}</div>
-          <div class="nearme-card__org">${opp.org}</div>
+          <div class="nearme-card__title">${opp.Title}</div>
+          <div class="nearme-card__org">${opp.OrgName}</div>
           <div class="nearme-card__meta">
-            <span>&#9201; Closes ${formatDate(opp.deadline)}</span>
+            <span>&#9201; Closes ${formatDate(opp.ApplicationDeadline)}</span>
           </div>
           <div class="nearme-card__actions">
-            <button class="btn btn--gradient btn--sm" onclick="event.stopPropagation();applyClicked('${opp.title}')">Apply Now</button>
-            <button class="btn btn--outline btn--sm" onclick="event.stopPropagation();saveClicked('${opp.title}')">Save</button>
+            <button class="btn btn--gradient btn--sm" onclick="event.stopPropagation();applyClicked('${opp.Title}', ${opp.OppID})">Apply Now</button>
+            <button class="btn btn--outline btn--sm" onclick="event.stopPropagation();saveClicked('${opp.Title}', ${opp.OppID})">Save</button>
           </div>
         </div>`;
     })
     .join("");
 }
 
-/* ── Card → map interaction ── */
+/* ── Card , map interaction ── */
 function cardClicked(id) {
   const opp = filteredOpps.find(function (o) {
     return o.id === id;
@@ -453,27 +427,11 @@ document.getElementById("mobileToggle")?.addEventListener("click", function () {
   document.getElementById("navMenu").classList.toggle("nav__menu--active");
 });
 
-/* ================================================================
-     INIT
-     ================================================================ */
 initMap();
 
 /*
   API call:
 
-   async function loadOpportunities(province) {
-     try {
-       const url = province
-         ? `/api/opportunities?province=${encodeURIComponent(province)}`
-         : '/api/opportunities';
-       const res  = await fetch();
-       const opps = await res.json();
-       displayOpportunities(opps, province);
-     } catch(err) {
-       console.error('Failed to load opportunities:', err);
-       setMapStatus('', 'Failed to load opportunities. Please try again.');
-     }
-   }
      */
 async function loadOpportunities(province) {
   currentProvince = province;
@@ -502,153 +460,3 @@ async function loadOpportunities(province) {
     setMapStatus("error", "Server connection failed.");
   }
 }
-
-const ALL_OPPORTUNITIES = [
-  {
-    id: 1,
-    title: "Sasol Bursary Program 2026",
-    org: "Sasol South Africa",
-    type: "scholarship",
-    province: "Gauteng",
-    city: "Sandton",
-    lat: -26.1076,
-    lng: 28.0567,
-    deadline: "2026-04-15",
-    description:
-      "Full bursary covering tuition, accommodation, and living expenses for engineering and science students.",
-    tags: ["Engineering", "Science"],
-  },
-  {
-    id: 2,
-    title: "Software Development Internship",
-    org: "Standard Bank",
-    type: "internship",
-    province: "Gauteng",
-    city: "Johannesburg CBD",
-    lat: -26.2041,
-    lng: 28.0473,
-    deadline: "2026-04-30",
-    description:
-      "12-month internship for IT graduates. Hands-on software development experience.",
-    tags: ["Technology", "IT"],
-  },
-  {
-    id: 3,
-    title: "Youth Coding Bootcamp",
-    org: "NYDA Gauteng",
-    type: "programme",
-    province: "Gauteng",
-    city: "Soweto",
-    lat: -26.2673,
-    lng: 27.8546,
-    deadline: "2026-05-10",
-    description:
-      "6-week intensive coding programme for youth aged 18–30. Free of charge.",
-    tags: ["Technology", "Coding"],
-  },
-  {
-    id: 4,
-    title: "Digital Skills Training",
-    org: "MTN Foundation",
-    type: "workshop",
-    province: "Gauteng",
-    city: "Midrand",
-    lat: -25.9969,
-    lng: 28.1281,
-    deadline: "2026-05-15",
-    description:
-      "Free digital skills workshop covering social media, e-commerce, and basic coding.",
-    tags: ["Digital", "Skills"],
-  },
-  {
-    id: 5,
-    title: "Cape Town Youth Leadership Summit",
-    org: "NYDA Western Cape",
-    type: "workshop",
-    province: "Western Cape",
-    city: "Cape Town",
-    lat: -33.9249,
-    lng: 18.4241,
-    deadline: "2026-05-20",
-    description:
-      "3-day leadership workshop for youth aged 15–35. Travel bursaries available.",
-    tags: ["Leadership", "Development"],
-  },
-  {
-    id: 6,
-    title: "Allan Gray Orbis Scholarship",
-    org: "Allan Gray Foundation",
-    type: "scholarship",
-    province: "Western Cape",
-    city: "Cape Town",
-    lat: -33.9258,
-    lng: 18.4232,
-    deadline: "2026-04-20",
-    description:
-      "Comprehensive scholarship for exceptional students with entrepreneurial potential.",
-    tags: ["Business", "Leadership"],
-  },
-  {
-    id: 7,
-    title: "Healthcare Assistant Learnership",
-    org: "Netcare",
-    type: "internship",
-    province: "KwaZulu-Natal",
-    city: "Durban",
-    lat: -29.8587,
-    lng: 31.0218,
-    deadline: "2026-05-30",
-    description:
-      "18-month learnership with NQF qualification in primary healthcare assistance.",
-    tags: ["Healthcare", "Medical"],
-  },
-  {
-    id: 8,
-    title: "Vodacom Bursary Programme",
-    org: "Vodacom Foundation",
-    type: "bursary",
-    province: "KwaZulu-Natal",
-    city: "Pietermaritzburg",
-    lat: -29.6006,
-    lng: 30.3794,
-    deadline: "2026-06-01",
-    description:
-      "Bursary covering full tuition and accommodation for ICT and engineering students.",
-    tags: ["Technology", "Engineering"],
-  },
-  {
-    id: 9,
-    title: "STEM Workshop for Girls",
-    org: "Limpopo Education Dept",
-    type: "workshop",
-    province: "Limpopo",
-    city: "Polokwane",
-    lat: -23.9045,
-    lng: 29.4688,
-    deadline: "2026-05-05",
-    description:
-      "Free STEM workshop for Grade 10–12 girls. Transport provided from nearby schools.",
-    tags: ["STEM", "Girls"],
-  },
-  {
-    id: 10,
-    title: "Eastern Cape Youth Skills Programme",
-    org: "Harambee",
-    type: "programme",
-    province: "Eastern Cape",
-    city: "East London",
-    lat: -33.0153,
-    lng: 27.9116,
-    deadline: "2026-06-10",
-    description:
-      "Work-readiness programme connecting young people to employment across the Eastern Cape.",
-    tags: ["Employment", "Skills"],
-  },
-];
-/*
-   backend opportunity objects need: id, title, org, type, province,
-   city, lat, lng, deadline, description.....
-   Store lat + lng  db when orgs post////
-   geocode the address with Nominatim server-side////
-     GET https://nominatim.openstreetmap.org/search?q=Sandton,Gauteng&format=json
-   */
