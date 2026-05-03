@@ -359,18 +359,18 @@ function renderCards(opps) {
 /* ── Card , map interaction ── */
 function cardClicked(id) {
   const opp = filteredOpps.find(function (o) {
-    return o.id === id;
+    return o.OppID === id;
   });
   if (!opp) return;
 
   // Pan map to that opportunity's marker
-  map.setView([opp.lat, opp.lng], 12, { animate: true, duration: 0.8 });
+  map.setView([opp.Lat, opp.Lng], 12, { animate: true, duration: 0.8 });
 
   // Open its popup
   const marker = markers.find(function (m) {
     const ll = m.getLatLng();
     return (
-      Math.abs(ll.lat - opp.lat) < 0.001 && Math.abs(ll.lng - opp.lng) < 0.001
+      Math.abs(ll.lat - opp.Lat) < 0.001 && Math.abs(ll.lng - opp.Lng) < 0.001
     );
   });
   if (marker) marker.openPopup();

@@ -61,6 +61,7 @@ export const getAllOpportunities = async (req, res) => {
                 o.OppID, o.Title, o.OppType, o.Province, o.Description,
                 o.ApplicationDeadline, o.StartDate, o.ApplicationLink,
                 o.MaxApplicants, o.Status, o.DateCreated,
+                o.Lat, o.Lng, 
                 org.OrgName
             FROM [dbo].[Opportunities] o
             JOIN [dbo].[Organisation] org ON o.OrgId = org.OrgId
