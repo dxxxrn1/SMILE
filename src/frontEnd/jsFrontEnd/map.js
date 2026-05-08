@@ -340,14 +340,31 @@ function renderCards(opps) {
         <div class="nearme-card" id="card-${opp.OppID}" onclick="cardClicked(${opp.OppID})">
           <div class="nearme-card__top">
             <span class="nearme-badge nearme-badge--${typeClass}">${opp.OppType}</span>
-            <span class="nearme-card__distance">📍 ${opp.Province}</span>
+            <span class="nearme-card__distance"> ${opp.Province}</span>
           </div>
           <div class="nearme-card__title">${opp.Title}</div>
           <div class="nearme-card__org">${opp.OrgName}</div>
           <div class="nearme-card__meta">
             <span>&#9201; Closes ${formatDate(opp.ApplicationDeadline)}</span>
           </div>
-          <div class="nearme-card__actions">
+
+          <div class="nearme-card__details" id="details-${opp.OppID}" style="display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--gray-200);">
+            <p style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 8px;">
+              <strong>Description:</strong><br>
+              ${opp.Description || "No description provided."}
+            </p>
+            ${
+              opp.Requirements
+                ? `
+            <p style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 8px;">
+              <strong>Requirements:</strong><br>
+              ${opp.Requirements}
+            </p>`
+                : ""
+            }
+          </div>
+          
+          <div class="nearme-card__actions" style="margin-top: 12px;">
             <button class="btn btn--gradient btn--sm" onclick="event.stopPropagation();applyClicked('${opp.Title}', ${opp.OppID})">Apply Now</button>
             <button class="btn btn--outline btn--sm" onclick="event.stopPropagation();saveClicked('${opp.Title}', ${opp.OppID})">Save</button>
           </div>
@@ -379,11 +396,23 @@ function cardClicked(id) {
 }
 
 function highlightCard(id) {
+  // 1. Remove active borders and hide ALL descriptions first
   document.querySelectorAll(".nearme-card").forEach(function (c) {
     c.classList.remove("nearme-card--active");
   });
+  document.querySelectorAll(".nearme-card__details").forEach(function (d) {
+    d.style.display = "none";
+  });
+
   const card = document.getElementById("card-" + id);
-  if (card) card.classList.add("nearme-card--active");
+  if (card) {
+    card.classList.add("nearme-card--active");
+  }
+
+  const details = document.getElementById("details-" + id);
+  if (details) {
+    details.style.display = "block";
+  }
 }
 
 /* ── Popup → scroll to card ── */
@@ -439,7 +468,7 @@ document.getElementById("mobileToggle")?.addEventListener("click", function () {
 });
 
 initMap();
-
+loadOpportunities("");
 /*
   API call:
 
