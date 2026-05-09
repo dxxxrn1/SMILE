@@ -454,6 +454,25 @@ function applyClicked(title) {
   );
 }
 
+// async function applyClicked(title, oppId) {
+//   // 1. Check if we know they have completed their profile
+//   const isProfileComplete = localStorage.getItem("profileComplete");
+
+//   if (isProfileComplete !== "true") {
+//     // 2.  Stop them and redirect.
+//     alert(
+//       `Wait! Before you can apply to "${title}", you need to complete your student profile.`,
+//     );
+//     window.location.href = "/student/profile"; // Send them to the new page
+//     return;
+//   }
+
+//   // 3. If they HAVE completed it, proceed
+//   alert(
+//     `Applying for: ${title}\n\n(Ready to trigger your backend POST /api/applications)`,
+//   );
+// }
+
 function saveClicked(title) {
   alert(
     `"${title}" saved! (Connect to your backend POST /api/student/saved-opportunities)`,
