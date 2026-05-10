@@ -4,10 +4,12 @@ import bcrypt from "bcrypt";
 import nodemailer from  "nodemailer";
 import { error } from "node:console";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
  
 export const saveStudentDetails = async (req, res) => {
+    console.log("The request is received!!")
     try {
         const { firstName, lastName, email, province, educationLevel, password } = req.body;
 
@@ -17,32 +19,45 @@ export const saveStudentDetails = async (req, res) => {
 
         const pool = await connectToDB();
 
+        console.log("the database is connected!!")
+
         // Check if email already exists
+
+        console.log("3️⃣ connected, about to SELECT");
         const results = await pool
             .request()
             .input("email", sql.VarChar, email)
             .query(`SELECT * FROM Student WHERE StuEmail = @email`);
 
         if (results.recordset.length > 0) {
+<<<<<<< HEAD
             return res.sendStatus(403); // Bug 1 fixed - actually sends the response
+=======
+            return res.sendStatus(403);
+>>>>>>> 8a326e4b496828b2a1b176109c943b63b47e5af8
         }
+
+        console.log(" about to hash password");
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await pool
-            .request()
-            .input("firstname", sql.VarChar, firstName)
-            .input("lastname", sql.VarChar, lastName)
-            .input("email", sql.VarChar, email)
-            .input("province", sql.VarChar, province)
-            .input("educationlevel", sql.VarChar, educationLevel)
-            .input("password", sql.VarChar, hashedPassword)
-            .query(`
-                INSERT INTO Student(StuName, StuLastName, StuEmail, StuProvince, StuEducationLevel, StuPassword)
-                VALUES(@firstname, @lastname, @email, @province, @educationlevel, @password)
-            `);
+        .request()
+        .input("firstname", sql.VarChar, firstName)
+        .input("lastname", sql.VarChar, lastName)
+        .input("email", sql.VarChar, email)
+        .input("province", sql.VarChar, province)
+        .input("educationlevel", sql.VarChar, educationLevel)
+        .input("password", sql.VarChar, hashedPassword)
+        .query(`
+            INSERT INTO Student(StuName, StuLastName, StuEmail, StuProvince, StuEducationLevel, StuPassword)
+            VALUES(@firstname, @lastname, @email, @province, @educationlevel, @password)
+        `);
 
+<<<<<<< HEAD
         // Bug 2 fixed - await only, no callback
+=======
+>>>>>>> 8a326e4b496828b2a1b176109c943b63b47e5af8
         const transport = nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -74,8 +89,9 @@ export const saveStudentDetails = async (req, res) => {
 };
 
 export const saveOrganisationDetails = async(req,res)=>{
-
     try{
+
+        console.log("Saving org details");
 
         const strengthOfpassWord = 10;
 
@@ -88,21 +104,28 @@ export const saveOrganisationDetails = async(req,res)=>{
             })
 
         }
+
+        const pool = await connectToDB();
+
+        console.log("connected, about to SELECT");
         
         const results = await pool
         .request()
         .input("email" , sql.VarChar , orgEmail)
         .query(`
-            SELECT * FROM Student WHERE StuEmail = @email;
+            SELECT * FROM Organisation WHERE OrgEmail = @email;
         `)
+
+        console.log("SELECT done, rows:", results.recordset.length);
 
         if(results.recordset.length > 0){
             return res.status(403);
         }
 
-        const hashedPassword = await bcrypt.hash(password , strengthOfpassWord);
 
-        const pool = await connectToDB();
+        console.log("about to hash password");
+
+        const hashedPassword = await bcrypt.hash(password , strengthOfpassWord);
 
         await pool
         .request()
@@ -115,6 +138,8 @@ export const saveOrganisationDetails = async(req,res)=>{
             INSERT INTO Organisation(OrgName,OrgEmail,Type,Province,Password)
             VALUES(@orgname,@orgemail,@orgtype,@orgprovince,@orgpassword)
         `)
+
+        console.log("INSERT successful"); 
 
         const transport = nodemailer.createTransport({
             service:"gmail",
@@ -139,7 +164,6 @@ export const saveOrganisationDetails = async(req,res)=>{
             console.log("Email failed but user was still registered:", emailError);
         }
         
-
         console.log("Successfully registered the organisation!!!");
 
         return res.sendStatus(201);
@@ -150,5 +174,172 @@ export const saveOrganisationDetails = async(req,res)=>{
             message: "Opps something went wrong!!!!"
         });
     }
-
 }
+
+export const userLogin = async (req, res) => {
+
+    try {
+        const { email, password, accountType } = req.body;
+
+        if (!email || !password || !accountType) {
+            return res.sendStatus(400);
+        }
+
+        const pool = await connectToDB();
+
+        if (accountType === "student") {
+            const results = await pool
+                .request()
+                .input("email", sql.VarChar, email)
+                .query(`SELECT * FROM Student WHERE StuEmail = @email`);
+
+            if (results.recordset.length <= 0) {
+                return res.sendStatus(401);
+            }
+
+            const user = results.recordset[0];
+
+
+            console.log(user);
+
+            // ✅ correct variable name
+            const passwordMatch = await bcrypt.compare(password, user.StuPassword);
+
+            if (!passwordMatch) {
+                return res.status(401).json({ message: "Invalid credentials" });
+            }
+
+            // ✅ correct env variable names
+            const token = jwt.sign(
+                { id: user.StuID, email: user.StuEmail, accountType: "student" },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN }
+            );
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: false,
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+
+            let stuName = user.StuName[0];
+            let lastName = user.StuLastName[0];
+
+            let initials = stuName + lastName;
+
+            console.log(stuName);
+
+            
+    
+            console.log("✅ Student login successfully!");
+            return res.status(200).json({ token, accountType: "student" , name: user.StuName,userinitials:initials});
+
+        } else if (accountType === "organization") {
+            const results = await pool
+                .request()
+                .input("email", sql.VarChar, email)
+                .query(`SELECT * FROM Organisation WHERE OrgEmail = @email`);
+
+            if (results.recordset.length <= 0) {
+                return res.sendStatus(401);
+            }
+
+            const user = results.recordset[0];
+
+            // ✅ await added, correct variable name
+            const passwordMatch = await bcrypt.compare(password, user.Password);
+
+            if (!passwordMatch) {
+                return res.status(401).json({ message: "Invalid credentials" });
+            }
+
+            // ✅ correct env variable names
+            const token = jwt.sign(
+                { id: user.OrgId, email: user.OrgEmail, accountType: "organization" },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN }
+            );
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: false,
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
+
+            console.log("✅ Organisation login successfully!");
+            return res.status(200).json({ token, accountType: "organization" , name: user.OrgName });        }
+
+    } catch (err) {
+        console.error("❌ Login error:", err);
+        return res.sendStatus(500);
+    }
+};
+
+//Lucas Bohani Maluleke
+
+// export const userLogin = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+
+//         if (!email || !password) {
+//             return res.sendStatus(400);
+//         }
+
+//         const pool = await connectToDB();
+
+//         // ✅ Try student first
+//         const studentResult = await pool
+//             .request()
+//             .input("email", sql.VarChar, email)
+//             .query(`SELECT * FROM Student WHERE StuEmail = @email`);
+
+//         if (studentResult.recordset.length > 0) {
+//             const user = studentResult.recordset[0];
+//             const passwordMatch = await bcrypt.compare(password, user.StuPassword);
+//             if (!passwordMatch) return res.status(401).json({ message: "Invalid credentials" });
+
+//             const token = jwt.sign(
+//                 { id: user.StuID, email: user.StuEmail, accountType: "student" },
+//                 process.env.JWT_SECRET,
+//                 { expiresIn: process.env.JWT_EXPIRES_IN }
+//             );
+
+//             res.cookie('token', token, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
+
+//             const initials = user.StuName[0] + user.StuLastName[0];
+//             console.log("✅ Student login successfully!");
+//             return res.status(200).json({ token, accountType: "student", name: user.StuName, userinitials: initials });
+//         }
+
+//         // ✅ Try organisation second
+//         const orgResult = await pool
+//             .request()
+//             .input("email", sql.VarChar, email)
+//             .query(`SELECT * FROM Organisation WHERE OrgEmail = @email`);
+
+//         if (orgResult.recordset.length > 0) {
+//             const user = orgResult.recordset[0];
+//             const passwordMatch = await bcrypt.compare(password, user.Password);
+//             if (!passwordMatch) return res.status(401).json({ message: "Invalid credentials" });
+
+//             const token = jwt.sign(
+//                 { id: user.OrgId, email: user.OrgEmail, accountType: "organization" },
+//                 process.env.JWT_SECRET,
+//                 { expiresIn: process.env.JWT_EXPIRES_IN }
+//             );
+
+//             res.cookie('token', token, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
+
+//             const initials = user.OrgName[0];
+//             console.log("✅ Organisation login successfully!");
+//             return res.status(200).json({ token, accountType: "organization", name: user.OrgName, userinitials: initials });
+//         }
+
+//         // ✅ Email not found in either table
+//         return res.sendStatus(401);
+
+//     } catch (err) {
+//         console.error("❌ Login error:", err);
+//         return res.sendStatus(500);
+//     }
+// };

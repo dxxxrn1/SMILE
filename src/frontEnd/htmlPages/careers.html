@@ -1,427 +1,358 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Explore different career paths and discover which school subjects lead to your dream profession.">
-  <title>Career Path Explorer - SMILE</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body class="dashboard-page">
-  <!-- Header / Navigation -->
-  <header class="header header--dashboard">
-    <nav class="nav container">
-      <a href="home.html" class="nav__logo">
-        <span class="nav__logo-icon">&#9786;</span>
-        <span>SMILE</span>
-      </a>
-      
-      <ul class="nav__menu nav__menu--dashboard" id="navMenu">
-        <li><a href="home.html" class="nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-          </svg>
-          Home
-        </a></li>
-        <li><a href="opportunities.html" class="nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-          </svg>
-          Opportunities
-        </a></li>
-        <li><a href="careers.html" class="nav__link nav__link--active">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
-            <path d="M2 12h20"></path>
-          </svg>
-          Careers
-        </a></li>
-        <li><a href="nearme.html" class="nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-            <circle cx="12" cy="10" r="3"></circle>
-          </svg>
-          Near Me
-        </a></li>
-        <li><a href="news.html" class="nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
-            <path d="M18 14h-8"></path>
-            <path d="M15 18h-5"></path>
-            <path d="M10 6h8v4h-8V6Z"></path>
-          </svg>
-          News
-        </a></li>
-        <li><a href="dashboard.html" class="nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect width="7" height="9" x="3" y="3" rx="1"></rect>
-            <rect width="7" height="5" x="14" y="3" rx="1"></rect>
-            <rect width="7" height="9" x="14" y="12" rx="1"></rect>
-            <rect width="7" height="5" x="3" y="16" rx="1"></rect>
-          </svg>
-          Dashboard
-        </a></li>
-      </ul>
-      
-      <div class="nav__actions nav__actions--dashboard">
-        <button class="nav__icon-btn" aria-label="Notifications">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-          </svg>
-          <span class="nav__notification-badge">3</span>
-        </button>
-        <div class="nav__profile" id="profileDropdown">
-          <button class="nav__profile-btn" aria-label="Profile menu">
-            <div class="nav__avatar">
-              <span>TM</span>
-            </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </button>
-          <div class="nav__profile-menu" id="profileMenu">
-            <a href="#" class="nav__profile-link">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-              My Profile
-            </a>
-            <a href="#" class="nav__profile-link">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-              Settings
-            </a>
-            <hr class="nav__profile-divider">
-            <a href="login.html" class="nav__profile-link nav__profile-link--logout">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                <polyline points="16 17 21 12 16 7"></polyline>
-                <line x1="21" x2="9" y1="12" y2="12"></line>
-              </svg>
-              Log Out
-            </a>
-          </div>
-        </div>
-      </div>
-      
-      <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
-        &#9776;
-      </button>
-    </nav>
-  </header>
-
-  <main class="page-content">
-    <div class="container">
-      <!-- Page Header -->
-      <div class="page-header">
-        <h1 class="page-header__title">Career Path Explorer</h1>
-        <p class="page-header__subtitle">Discover different careers and learn which school subjects will lead you to your dream profession.</p>
-      </div>
-
-      <!-- Search Bar -->
-      <div class="career-search">
-        <svg class="career-search__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.3-4.3"></path>
-        </svg>
-        <input type="text" class="career-search__input" placeholder="Search careers or fields..." id="careerSearchInput">
-      </div>
-
-      <!-- Career Categories Filter -->
-      <div class="career-categories">
-        <button class="career-category career-category--active" data-category="all">All Careers</button>
-        <button class="career-category" data-category="technology">Technology</button>
-        <button class="career-category" data-category="healthcare">Healthcare</button>
-        <button class="career-category" data-category="engineering">Engineering</button>
-        <button class="career-category" data-category="business">Business</button>
-        <button class="career-category" data-category="creative">Creative Arts</button>
-        <button class="career-category" data-category="education">Education</button>
-        <button class="career-category" data-category="law">Law & Government</button>
-      </div>
-
-      <!-- Careers Grid -->
-      <div class="careers-grid" id="careersGrid">
-        <!-- Career Card 1 - Technology -->
-        <article class="career-card">
-          <div class="career-card__image">
-            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=220&fit=crop" alt="Software Developer" crossorigin="anonymous">
-          </div>
-          <div class="career-card__content">
-            <span class="career-card__category career-card__category--technology">Technology</span>
-            <h3 class="career-card__title">Software Developer</h3>
-            <p class="career-card__description">Design, develop, and maintain software applications and systems. Work with various programming languages and frameworks to solve real-world problems.</p>
-            <div class="career-card__subjects">
-              <span class="career-card__subjects-label">Key Subjects:</span>
-              <div class="career-card__subjects-list">
-                <span class="career-card__subject">Mathematics</span>
-                <span class="career-card__subject">IT / CAT</span>
-                <span class="career-card__subject">Physical Science</span>
-              </div>
-            </div>
-            <div class="career-card__footer">
-              <span class="career-card__salary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" x2="12" y1="2" y2="22"></line>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg>
-                R350k - R850k/year
-              </span>
-              <a href="#" class="btn btn--primary btn--sm">Learn More</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Career Card 2 - Healthcare -->
-        <article class="career-card">
-          <div class="career-card__image">
-            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=220&fit=crop" alt="Medical Doctor" crossorigin="anonymous">
-          </div>
-          <div class="career-card__content">
-            <span class="career-card__category career-card__category--healthcare">Healthcare</span>
-            <h3 class="career-card__title">Medical Doctor</h3>
-            <p class="career-card__description">Diagnose and treat illnesses, injuries, and various health conditions. Provide preventive care and health education to patients.</p>
-            <div class="career-card__subjects">
-              <span class="career-card__subjects-label">Key Subjects:</span>
-              <div class="career-card__subjects-list">
-                <span class="career-card__subject">Life Sciences</span>
-                <span class="career-card__subject">Physical Science</span>
-                <span class="career-card__subject">Mathematics</span>
-              </div>
-            </div>
-            <div class="career-card__footer">
-              <span class="career-card__salary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" x2="12" y1="2" y2="22"></line>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg>
-                R600k - R1.5M/year
-              </span>
-              <a href="#" class="btn btn--primary btn--sm">Learn More</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Career Card 3 - Engineering -->
-        <article class="career-card">
-          <div class="career-card__image">
-            <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=400&h=220&fit=crop" alt="Civil Engineer" crossorigin="anonymous">
-          </div>
-          <div class="career-card__content">
-            <span class="career-card__category career-card__category--engineering">Engineering</span>
-            <h3 class="career-card__title">Civil Engineer</h3>
-            <p class="career-card__description">Design, plan, and oversee construction of infrastructure projects including roads, bridges, buildings, and water systems.</p>
-            <div class="career-card__subjects">
-              <span class="career-card__subjects-label">Key Subjects:</span>
-              <div class="career-card__subjects-list">
-                <span class="career-card__subject">Mathematics</span>
-                <span class="career-card__subject">Physical Science</span>
-                <span class="career-card__subject">Engineering Graphics</span>
-              </div>
-            </div>
-            <div class="career-card__footer">
-              <span class="career-card__salary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" x2="12" y1="2" y2="22"></line>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg>
-                R400k - R900k/year
-              </span>
-              <a href="#" class="btn btn--primary btn--sm">Learn More</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Career Card 4 - Business -->
-        <article class="career-card">
-          <div class="career-card__image">
-            <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&h=220&fit=crop" alt="Chartered Accountant" crossorigin="anonymous">
-          </div>
-          <div class="career-card__content">
-            <span class="career-card__category career-card__category--business">Business</span>
-            <h3 class="career-card__title">Chartered Accountant</h3>
-            <p class="career-card__description">Manage financial records, prepare tax returns, conduct audits, and provide financial advice to businesses and individuals.</p>
-            <div class="career-card__subjects">
-              <span class="career-card__subjects-label">Key Subjects:</span>
-              <div class="career-card__subjects-list">
-                <span class="career-card__subject">Accounting</span>
-                <span class="career-card__subject">Mathematics</span>
-                <span class="career-card__subject">Business Studies</span>
-              </div>
-            </div>
-            <div class="career-card__footer">
-              <span class="career-card__salary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" x2="12" y1="2" y2="22"></line>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg>
-                R500k - R1.2M/year
-              </span>
-              <a href="#" class="btn btn--primary btn--sm">Learn More</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Career Card 5 - Creative -->
-        <article class="career-card">
-          <div class="career-card__image">
-            <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=220&fit=crop" alt="Graphic Designer" crossorigin="anonymous">
-          </div>
-          <div class="career-card__content">
-            <span class="career-card__category career-card__category--creative">Creative Arts</span>
-            <h3 class="career-card__title">Graphic Designer</h3>
-            <p class="career-card__description">Create visual content for brands, websites, marketing materials, and digital platforms using design software and creative skills.</p>
-            <div class="career-card__subjects">
-              <span class="career-card__subjects-label">Key Subjects:</span>
-              <div class="career-card__subjects-list">
-                <span class="career-card__subject">Visual Arts</span>
-                <span class="career-card__subject">IT / CAT</span>
-                <span class="career-card__subject">English</span>
-              </div>
-            </div>
-            <div class="career-card__footer">
-              <span class="career-card__salary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" x2="12" y1="2" y2="22"></line>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg>
-                R200k - R500k/year
-              </span>
-              <a href="#" class="btn btn--primary btn--sm">Learn More</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Career Card 6 - Education -->
-        <article class="career-card">
-          <div class="career-card__image">
-            <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&h=220&fit=crop" alt="Teacher" crossorigin="anonymous">
-          </div>
-          <div class="career-card__content">
-            <span class="career-card__category career-card__category--education">Education</span>
-            <h3 class="career-card__title">High School Teacher</h3>
-            <p class="career-card__description">Educate and inspire the next generation by teaching your subject specialty and helping students achieve their academic goals.</p>
-            <div class="career-card__subjects">
-              <span class="career-card__subjects-label">Key Subjects:</span>
-              <div class="career-card__subjects-list">
-                <span class="career-card__subject">Your Specialty</span>
-                <span class="career-card__subject">English</span>
-                <span class="career-card__subject">Life Orientation</span>
-              </div>
-            </div>
-            <div class="career-card__footer">
-              <span class="career-card__salary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" x2="12" y1="2" y2="22"></line>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg>
-                R250k - R450k/year
-              </span>
-              <a href="#" class="btn btn--primary btn--sm">Learn More</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Career Card 7 - Law -->
-        <article class="career-card">
-          <div class="career-card__image">
-            <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=220&fit=crop" alt="Attorney" crossorigin="anonymous">
-          </div>
-          <div class="career-card__content">
-            <span class="career-card__category career-card__category--law">Law & Government</span>
-            <h3 class="career-card__title">Attorney / Advocate</h3>
-            <p class="career-card__description">Represent clients in legal matters, provide legal advice, draft contracts, and advocate for justice in court proceedings.</p>
-            <div class="career-card__subjects">
-              <span class="career-card__subjects-label">Key Subjects:</span>
-              <div class="career-card__subjects-list">
-                <span class="career-card__subject">English</span>
-                <span class="career-card__subject">History</span>
-                <span class="career-card__subject">Business Studies</span>
-              </div>
-            </div>
-            <div class="career-card__footer">
-              <span class="career-card__salary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" x2="12" y1="2" y2="22"></line>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg>
-                R400k - R1.5M/year
-              </span>
-              <a href="#" class="btn btn--primary btn--sm">Learn More</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Career Card 8 - Healthcare -->
-        <article class="career-card">
-          <div class="career-card__image">
-            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=220&fit=crop" alt="Nurse" crossorigin="anonymous">
-          </div>
-          <div class="career-card__content">
-            <span class="career-card__category career-card__category--healthcare">Healthcare</span>
-            <h3 class="career-card__title">Registered Nurse</h3>
-            <p class="career-card__description">Provide patient care, administer medications, assist doctors, and support patients through illness and recovery.</p>
-            <div class="career-card__subjects">
-              <span class="career-card__subjects-label">Key Subjects:</span>
-              <div class="career-card__subjects-list">
-                <span class="career-card__subject">Life Sciences</span>
-                <span class="career-card__subject">Mathematics</span>
-                <span class="career-card__subject">English</span>
-              </div>
-            </div>
-            <div class="career-card__footer">
-              <span class="career-card__salary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" x2="12" y1="2" y2="22"></line>
-                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                </svg>
-                R200k - R450k/year
-              </span>
-              <a href="#" class="btn btn--primary btn--sm">Learn More</a>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <!-- Load More -->
-      <div class="load-more">
-        <button class="btn btn--outline btn--lg" id="loadMoreBtn">
-          Load More Careers
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__content">
-        <div class="footer__logo">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Explore different career paths and discover which school subjects lead to your dream profession."
+    />
+    <title>Career Path Explorer - SMILE</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="dashboard-page">
+    <header class="header header--dashboard">
+      <nav class="nav container">
+        <a href="/" class="nav__logo">
           <span class="nav__logo-icon">&#9786;</span>
           <span>SMILE</span>
-        </div>
-        <ul class="footer__links">
-          <li><a href="#" class="footer__link">About</a></li>
-          <li><a href="#" class="footer__link">Contact</a></li>
-          <li><a href="#" class="footer__link">Privacy Policy</a></li>
-          <li><a href="#" class="footer__link">Terms of Service</a></li>
+        </a>
+
+        <ul class="nav__menu nav__menu--dashboard" id="navMenu">
+          <li><a href="/" class="nav__link">Home</a></li>
+          <li>
+            <a href="/opportunities/browse" class="nav__link">Opportunities</a>
+          </li>
+          <li>
+            <a href="/careers/explore" class="nav__link nav__link--active"
+              >Careers</a
+            >
+          </li>
+          <li><a href="/near/me" class="nav__link">Near Me</a></li>
+          <li><a href="/news/daily" class="nav__link">News</a></li>
+          <li><a href="/student/dashboard" class="nav__link">Dashboard</a></li>
         </ul>
-        <p class="footer__copy">&copy; 2026 SMILE. All rights reserved.</p>
+
+        <div class="nav__actions nav__actions--dashboard">
+          <div class="nav__profile" id="profileDropdown">
+            <button class="nav__profile-btn" aria-label="Profile menu">
+              <div class="nav__avatar">
+                <span>TM</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="page-content">
+      <div class="container">
+        <div class="page-header">
+          <h1 class="page-header__title">Career Path Explorer</h1>
+          <p class="page-header__subtitle">
+            Discover different careers and chat with our AI to build your
+            future.
+          </p>
+        </div>
+
+        <div class="careers-layout">
+          <div class="careers-explorer">
+            <div class="career-search">
+              <!-- <svg
+                class="career-search__icon"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </svg> -->
+              <!-- <input
+                type="text"
+                class="career-search__input"
+                placeholder="Search careers or fields..."
+                id="careerSearchInput"
+              />
+            </div> -->
+
+            <!-- <div class="career-categories">
+              <button
+                class="career-category career-category--active"
+                data-category="all"
+              >
+                All Careers
+              </button>
+              <button class="career-category" data-category="technology">
+                Technology
+              </button>
+              <button class="career-category" data-category="healthcare"> -->
+                <!-- Healthcare
+              </button>
+              <button class="career-category" data-category="engineering">
+                Engineering
+              </button>
+              <button class="career-category" data-category="business">
+                Business
+              </button>
+            </div>
+
+            <div class="careers-grid" id="careersGrid">
+              <article class="career-card">
+                <div class="career-card__image">
+                  <img
+                    src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=220&fit=crop"
+                    alt="Software Developer"
+                    crossorigin="anonymous"
+                  />
+                </div>
+                <div class="career-card__content">
+                  <span
+                    class="career-card__category career-card__category--technology"
+                    >Technology</span
+                  >
+                  <h3 class="career-card__title">Software Developer</h3>
+                  <p class="career-card__description">
+                    Design, develop, and maintain software applications and
+                    systems.
+                  </p>
+                  <div class="career-card__subjects">
+                    <span class="career-card__subjects-label"
+                      >Key Subjects:</span
+                    >
+                    <div class="career-card__subjects-list">
+                      <span class="career-card__subject">Mathematics</span>
+                      <span class="career-card__subject">IT / CAT</span>
+                    </div>
+                  </div>
+                  <div class="career-card__footer">
+                    <span class="career-card__salary">R350k - R850k/year</span>
+                  </div>
+                </div>
+              </article> -->
+
+              <!-- <article class="career-card">
+                <div class="career-card__image">
+                  <img
+                    src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=220&fit=crop"
+                    alt="Medical Doctor"
+                    crossorigin="anonymous"
+                  />
+                </div>
+                <div class="career-card__content">
+                  <span
+                    class="career-card__category career-card__category--healthcare"
+                    >Healthcare</span
+                  >
+                  <h3 class="career-card__title">Medical Doctor</h3>
+                  <p class="career-card__description">
+                    Diagnose and treat illnesses, injuries, and various health
+                    conditions.
+                  </p>
+                  <div class="career-card__subjects">
+                    <span class="career-card__subjects-label"
+                      >Key Subjects:</span
+                    >
+                    <div class="career-card__subjects-list">
+                      <span class="career-card__subject">Life Sciences</span>
+                      <span class="career-card__subject">Mathematics</span>
+                    </div>
+                  </div>
+                  <div class="career-card__footer">
+                    <span class="career-card__salary">R600k - R1.5M/year</span>
+                  </div>
+                </div>
+              </article>
+            </div> -->
+
+            <!-- <div class="load-more">
+              <button class="btn btn--outline btn--lg" id="loadMoreBtn">
+                Load More Careers
+              </button>
+            </div>
+          </div> -->
+
+          <aside class="careers-chatbot-sidebar">
+            <div
+              class="chatbot-section"
+              style="
+                display: flex;
+                flex-direction: column;
+                min-height: 600px;
+                padding: 24px;
+              "
+            >
+              <div
+                id="quizStatusCard"
+                class="quiz-prompt-card"
+                style="
+                  display: none;
+                  flex: 1;
+                  flex-direction: column;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <div
+                  class="quiz-prompt-icon"
+                  style="width: 80px; height: 80px; margin-bottom: 16px"
+                >
+                  <svg
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </div>
+                <h3>Career Guidance Needed</h3>
+                <p>
+                  You haven't taken the personality test yet! Take it now to
+                  unlock personalized AI career advice.
+                </p>
+                <button
+                  class="btn btn--gradient"
+                  onclick="showQuiz()"
+                  style="margin-top: 1rem; width: 100%"
+                >
+                  Take Personality Quiz
+                </button>
+              </div>
+
+              <div
+                id="chatSection"
+                style="display: none; flex: 1; flex-direction: column"
+              >
+                <div class="chat-header">
+                  <div class="chat-header__info">
+                    <div class="chat-avatar">🤖</div>
+                    <div>
+                      <h3>SMILE Career AI</h3>
+                      <span
+                        class="chat-status"
+                        style="color: #059669; font-size: 0.75rem"
+                        >Online • Ready to assist</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="chat-window"
+                  id="chatWindow"
+                  style="
+                    flex: 1;
+                    height: 350px;
+                    overflow-y: auto;
+                    background: #f8fafc;
+                    padding: 16px;
+                    border-radius: 8px;
+                    margin-bottom: 16px;
+                    border: 1px solid #e5e7eb;
+                  "
+                ></div>
+
+                <div
+                  class="chat-input-area"
+                  style="display: flex; gap: 8px; flex-direction: column"
+                >
+                  <div style="display: flex; gap: 8px">
+                    <input
+                      type="text"
+                      id="chatInput"
+                      class="chat-input"
+                      placeholder="Ask about careers..."
+                      onkeypress="if (event.key === 'Enter') sendChat();"
+                      style="
+                        flex: 1;
+                        padding: 12px;
+                        border-radius: 8px;
+                        border: 1px solid #d1d5db;
+                      "
+                    />
+                    <button class="btn btn--gradient" onclick="sendChat()">
+                      Send
+                    </button>
+                  </div>
+                  <button
+                    id="downloadDocBtn"
+                    class="btn btn--outline btn--sm"
+                    onclick="downloadCareerDoc()"
+                    style="
+                      display: none;
+                      width: 100%;
+                      justify-content: center;
+                      margin-top: 8px;
+                    "
+                  >
+                     Download Career Path
+                  </button>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal-overlay" id="quizOverlay" style="display: none">
+      <div
+        class="modal-card"
+        style="
+          background: white;
+          border-radius: 12px;
+          padding: 24px;
+          max-width: 500px;
+          width: 90%;
+        "
+      >
+        <div
+          class="modal-header"
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+          "
+        >
+          <h3 style="margin: 0; font-size: 1.25rem">RIASEC Personality Quiz</h3>
+          <button
+            class="modal-close"
+            style="
+              background: none;
+              border: none;
+              font-size: 1.5rem;
+              cursor: pointer;
+            "
+            onclick="closeQuiz()"
+          >
+            &times;
+          </button>
+        </div>
+        <form id="riasecForm"></form>
+        <div class="modal-actions" style="margin-top: 20px; text-align: right">
+          <button class="btn btn--gradient" onclick="saveQuizResults()">
+            Save & Start Chatting
+          </button>
+        </div>
       </div>
     </div>
-  </footer>
-
-  <script src="../jsFrontEnd/dashboardJS.js"></script>
-</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="../jsFrontEnd/dashboardJS.js"></script>
+  </body>
 </html>

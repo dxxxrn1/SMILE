@@ -6,6 +6,9 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
+  console.log("✅ auth.js loaded");
+
+
   // Mobile Navigation Toggle
   const mobileToggle = document.getElementById('mobileToggle');
   const navMenu = document.getElementById('navMenu');
@@ -28,12 +31,16 @@ document.addEventListener('DOMContentLoaded', function() {
     loginForm.addEventListener('submit', handleLoginSubmit);
   }
 
-  // ✅ Fixed - attach to both separate forms
+  // Attach to both separate forms
   const studentForm = document.getElementById('studentForm');
+
+  console.log("studentForm found:", studentForm);
+
   const organizationForm = document.getElementById('organizationForm');
 
   if (studentForm) {
     studentForm.addEventListener('submit', handleRegisterSubmit);
+    console.log("✅ submit listener attached to studentForm");
   }
 
   if (organizationForm) {
@@ -90,12 +97,208 @@ function initAccountTypeSelector() {
 /**
  * Handle login form submission
  */
+// function handleLoginSubmit(event) {
+//   event.preventDefault();
+
+//   const form = event.target;
+
+//   // ✅ Disable submit button immediately to prevent multiple requests
+//   const submitBtn = form.querySelector('.form__submit');
+//   if (submitBtn) {
+//     submitBtn.disabled = true;
+//     submitBtn.style.opacity = '0.7';
+//   }
+
+
+//   submitBtn.addEventListener("click" , ()=>{
+//      const accountType = form.querySelector('#accountType').value;
+
+//      console.log(accountType);
+
+//   })
+
+//   const email = form.querySelector('#email');
+//   const password = form.querySelector('#password');
+//   const accountType = form.querySelector('#accountType').value;
+
+//   console.log(accountType);
+
+//   let isValid = true;
+
+//   // console.log("password field:", password);
+//   // console.log("terms field:", terms);
+
+//   if (!validateEmail(email.value)) {
+//     showError(email, 'Please enter a valid email address');
+//     isValid = false;
+//   }
+
+//   if (!password.value.trim()) {
+//     showError(password, 'Password is required');
+//     isValid = false;
+//   }
+
+//   // ✅ Re-enable button if validation fails so user can correct and resubmit
+//   if (!isValid) {
+//     if (submitBtn) {
+//       submitBtn.disabled = false;
+//       submitBtn.style.opacity = '1';
+//     }
+//     return;
+//   }
+
+//   const formData = {
+//     email: email.value.trim().toLowerCase(),
+//     password: password.value,
+//     accountType
+//   };
+
+//   fetch('/login', {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(formData)
+//   })
+//   .then(response => {
+//     if (response.status === 200) {
+//         return response.json();
+//     }
+//      if (response.status === 403) {
+//       showSuccessMessage(form, 'Invalid email or password.');
+//       resetSubmitButton(submitBtn);
+//     } else if (response.status === 401) {
+//       showSuccessMessage(form, 'Invalid email or password.');
+//       resetSubmitButton(submitBtn);
+//     } else {
+//       showSuccessMessage(form, 'Something went wrong. Please try again.');
+//       resetSubmitButton(submitBtn);
+//     }
+//   })
+//   .then(data =>{
+//       if (!data) return;
+
+//   localStorage.setItem("token", data.token);
+//   localStorage.setItem("accountType", data.accountType);
+//   localStorage.setItem("userName", data.name);
+//   localStorage.setItem("initials", data.userinitials);
+
+//   showSuccessMessage(form, 'Login successful! Redirecting...');
+//   setTimeout(() => {
+//   if (data.accountType === 'student') {
+//     window.location.href = '/student/dashboard';
+//   } else if (data.accountType === 'organization') {
+//     window.location.href = '/org/dashboard';
+//   }
+// }, 3000);
+//   })
+//   .catch(error => {
+//     console.error('Login error:', error);
+//     showSuccessMessage(form, 'Network error. Please try again.');
+//     resetSubmitButton(submitBtn);
+//   });
+// }
+
+// function handleLoginSubmit(event) {
+//   event.preventDefault();
+
+//   const form = event.target;
+
+//   const submitBtn = form.querySelector('.form__submit');
+//   if (submitBtn) {
+//     submitBtn.disabled = true;
+//     submitBtn.style.opacity = '0.7';
+//   }
+
+//   const email = form.querySelector('#email');
+//   const password = form.querySelector('#password');
+
+//   let isValid = true;
+
+//   if (!validateEmail(email.value)) {
+//     showError(email, 'Please enter a valid email address');
+//     isValid = false;
+//   }
+
+//   if (!password.value.trim()) {
+//     showError(password, 'Password is required');
+//     isValid = false;
+//   }
+
+//   if (!isValid) {
+//     resetSubmitButton(submitBtn);
+//     return;
+//   }
+
+//   // ✅ No accountType — server detects it by checking both tables
+//   const formData = {
+//     email: email.value.trim().toLowerCase(),
+//     password: password.value
+//   };
+
+//   fetch('/login', {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(formData)
+//   })
+//   .then(response => {
+//     if (response.status === 200) {
+//       return response.json();
+//     }
+//     if (response.status === 401) {
+//       showSuccessMessage(form, 'Invalid email or password.');
+//       resetSubmitButton(submitBtn);
+//     } else if (response.status === 403) {
+//       showSuccessMessage(form, 'Invalid email or password.');
+//       resetSubmitButton(submitBtn);
+//     } else {
+//       showSuccessMessage(form, 'Something went wrong. Please try again.');
+//       resetSubmitButton(submitBtn);
+//     }
+//   })
+//   .then(data => {
+//     if (!data) return;
+
+//     localStorage.setItem("token", data.token);
+//     localStorage.setItem("accountType", data.accountType);
+//     localStorage.setItem("userName", data.name);
+//     localStorage.setItem("initials", data.userinitials);
+
+//     showSuccessMessage(form, 'Login successful! Redirecting...');
+//     setTimeout(() => {
+//       // ✅ Redirect based on what SERVER says, not the form dropdown
+//       if (data.accountType === 'student') {
+//         window.location.href = '/student/dashboard';
+//       } else if (data.accountType === 'organization') {
+//         window.location.href = '/org/dashboard';
+//       }
+//     }, 3000);
+//   })
+//   .catch(error => {
+//     console.error('Login error:', error);
+//     showSuccessMessage(form, 'Network error. Please try again.');
+//     resetSubmitButton(submitBtn);
+//   });
+// }
+
 function handleLoginSubmit(event) {
   event.preventDefault();
 
   const form = event.target;
+
+  const submitBtn = form.querySelector('.form__submit');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.7';
+  }
+
   const email = form.querySelector('#email');
   const password = form.querySelector('#password');
+  const accountTypeSelect = document.getElementById('accountType');
+
+  // ✅ Read accountType from the card that is currently active
+  const activeCard = document.querySelector('.account-type-card--active');
+  const accountType = activeCard ? activeCard.dataset.type : accountTypeSelect?.value || 'student';
+
+  console.log("accountType on submit:", accountType);
 
   let isValid = true;
 
@@ -109,49 +312,265 @@ function handleLoginSubmit(event) {
     isValid = false;
   }
 
-  if (isValid) {
-    const formData = {
-      email: email.value.trim().toLowerCase(),
-      password: password.value
-    };
-
-    fetch('/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
-    .then(response => {
-      if (response.status === 200) {
-        showSuccessMessage(form, 'Login successful! Redirecting...');
-        setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 1500);
-      } else if(response.status === 403){
-        showSuccessMessage(form, "User/Organisation with the email exists pleaselog in");
-      }
-      else if (response.status === 401) {
-        showSuccessMessage(form, 'Invalid email or password.');
-      } else {
-        showSuccessMessage(form, 'Something went wrong. Please try again.');
-      }
-    })
-    .catch(error => {
-      console.error('Login error:', error);
-      showSuccessMessage(form, 'Network error. Please try again.');
-    });
+  if (!isValid) {
+    resetSubmitButton(submitBtn);
+    return;
   }
+
+  const formData = {
+    email: email.value.trim().toLowerCase(),
+    password: password.value,
+    accountType // ✅ Now correctly reflects which card was clicked
+  };
+
+  fetch('/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData)
+  })
+  .then(response => {
+    if (response.status === 200) {
+      return response.json();
+    }
+    if (response.status === 401) {
+      showSuccessMessage(form, 'Invalid email or password.');
+      resetSubmitButton(submitBtn);
+    } else if (response.status === 403) {
+      showSuccessMessage(form, 'Invalid email or password.');
+      resetSubmitButton(submitBtn);
+    } else {
+      showSuccessMessage(form, 'Something went wrong. Please try again.');
+      resetSubmitButton(submitBtn);
+    }
+  })
+  .then(data => {
+    if (!data) return;
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("accountType", data.accountType);
+    localStorage.setItem("userName", data.name);
+    localStorage.setItem("initials", data.userinitials);
+
+    showSuccessMessage(form, 'Login successful! Redirecting...');
+    setTimeout(() => {
+      if (data.accountType === 'student') {
+        window.location.href = '/student/dashboard';
+      } else if (data.accountType === 'organization') {
+        window.location.href = '/org/dashboard';
+      }
+    }, 3000);
+    resetSubmitButton(submitBtn);
+  })
+  .catch(error => {
+    console.error('Login error:', error);
+    showSuccessMessage(form, 'Network error. Please try again.');
+    resetSubmitButton(submitBtn);
+  });
 }
 
 /**
  * Handle registration form submission
  */
+// function handleRegisterSubmit(event) {
+//   event.preventDefault();
+
+//   const form = event.target;
+
+//   console.log("🔥 handleRegisterSubmit fired");
+//   console.log("form:", event.target);
+//   console.log("accountType:", event.target.querySelector('[name="accountType"]')?.value)
+
+//   // ✅ Disable submit button immediately to prevent multiple requests
+//   const submitBtn = form.querySelector('.form__submit');
+//   if (submitBtn) {
+//     submitBtn.disabled = true;
+//     submitBtn.style.opacity = '0.7';
+//   }
+//   console.log("submitBtn found:", submitBtn);
+
+//   const accountType = form.querySelector('[name="accountType"]')?.value || 'student';
+
+
+
+//   console.log("accountType:", accountType);
+
+  
+
+//   const password = accountType === 'student'
+//     ? form.querySelector('#studentPassword')
+//     : form.querySelector('#orgPassword');
+
+//   const terms = accountType === 'student'
+//     ? form.querySelector('#studentTerms')
+//     : form.querySelector('#orgTerms');
+
+//     console.log("password field:", password);
+// console.log("terms field:", terms);
+
+//   let isValid = true;
+
+//   if (accountType === 'student') {
+//     const firstName = form.querySelector('#firstName');
+//     const lastName = form.querySelector('#lastName');
+//     const email = form.querySelector('#email');
+//     const province = form.querySelector('#province');
+//     const educationLevel = form.querySelector('#educationLevel');
+
+//     if (!firstName.value.trim()) {
+//       showError(firstName, 'First name is required');
+//       isValid = false;
+//     }
+
+//     if (!lastName.value.trim()) {
+//       showError(lastName, 'Last name is required');
+//       isValid = false;
+//     }
+
+//     if (!validateEmail(email.value)) {
+//       showError(email, 'Please enter a valid email address');
+//       isValid = false;
+//     }
+
+//     if (!province.value) {
+//       showError(province, 'Please select your province');
+//       isValid = false;
+//     }
+
+//     if (!educationLevel.value) {
+//       showError(educationLevel, 'Please select your education level');
+//       isValid = false;
+//     }
+
+//   } else {
+//     const orgName = form.querySelector('#orgName');
+//     const orgEmail = form.querySelector('#orgEmail');
+//     const orgType = form.querySelector('#orgType');
+//     const orgProvince = form.querySelector('#orgProvince');
+
+//     console.log({ orgName, orgEmail, orgType, orgProvince });
+
+//     if (!orgName || !orgEmail || !orgType || !orgProvince) {
+//     console.error('One or more org fields not found in form');
+//     resetSubmitButton(submitBtn);
+//     return;
+//     }
+
+//     if (!orgName.value.trim()) {
+//       showError(orgName, 'Organization name is required');
+//       isValid = false;
+//     }
+
+//     if (!validateEmail(orgEmail.value)) {
+//       showError(orgEmail, 'Please enter a valid email address');
+//       isValid = false;
+//     }
+
+//     if (!orgType.value) {
+//       showError(orgType, 'Please select organization type');
+//       isValid = false;
+//     }
+
+//     if (!orgProvince.value) {
+//       showError(orgProvince, 'Please select province');
+//       isValid = false;
+//     }
+//   }
+
+//   if (!password || password.value.length < 8) {
+//     showError(password, 'Password must be at least 8 characters');
+//     isValid = false;
+//   }
+
+//   if (!terms || !terms.checked) {
+//     const termsGroup = terms?.closest('.form__group');
+//     if (termsGroup) {
+//       termsGroup.classList.add('form__group--error');
+//     }
+//     isValid = false;
+//   }
+
+//   // ✅ Re-enable button if validation fails so user can correct and resubmit
+//   if (!isValid) {
+//     resetSubmitButton(submitBtn);
+//     return;
+//   }
+
+//   let formData;
+//   let url;
+
+//   if (accountType === 'student') {
+//     url = '/register/student';
+//     formData = {
+//       firstName: form.querySelector('#firstName').value.trim(),
+//       lastName: form.querySelector('#lastName').value.trim(),
+//       email: form.querySelector('#email').value.trim().toLowerCase(),
+//       province: form.querySelector('#province').value,
+//       educationLevel: form.querySelector('#educationLevel').value,
+//       password: password.value
+//     };
+//   } else if(accountType === 'organization'){
+
+//     if (!url || !formData) {
+//       console.error("accountType not resolved:", accountType);
+//       showSuccessMessage(form, 'Could not determine account type. Please try again.');
+//       resetSubmitButton(submitBtn);
+//       return;
+//     }
+
+//     console.log("This tried to run");
+
+//     url = '/register/organization'; // /register/organization
+//     formData = {
+//       orgName: form.querySelector('#orgName').value.trim(),
+//       orgEmail: form.querySelector('#orgEmail').value.trim().toLowerCase(),
+//       orgType: form.querySelector('#orgType').value,
+//       orgProvince: form.querySelector('#orgProvince').value,
+//       password: password.value
+//     };
+//   }
+
+//   fetch(url, {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(formData)
+//   })
+//   .then(response => {
+//     if (response.status === 201) {
+//       showSuccessMessage(form, 'Account created! Redirecting to login...');
+//       setTimeout(() => {
+//         window.location.href = '/login-page';
+//       }, 3000);
+//     } else if (response.status === 403) {
+//       showSuccessMessage(form, 'This email is already registered. Please log in.');
+//       resetSubmitButton(submitBtn);
+//     } else if (response.status === 400) {
+//       showSuccessMessage(form, 'Please fill in all your details.');
+//       resetSubmitButton(submitBtn);
+//     } else {
+//       showSuccessMessage(form, 'Something went wrong. Please try again.');
+//       resetSubmitButton(submitBtn);
+//     }
+//   })
+//   .catch(error => {
+//     console.error('Registration error:', error);
+//     showSuccessMessage(form, 'Network error. Please try again.');
+//     resetSubmitButton(submitBtn);
+//   });
+// }
+
 function handleRegisterSubmit(event) {
   event.preventDefault();
 
   const form = event.target;
+  const submitBtn = form.querySelector('.form__submit');
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.7';
+  }
+
   const accountType = form.querySelector('[name="accountType"]')?.value || 'student';
 
-  // ✅ Fixed - get correct password and terms based on which form was submitted
   const password = accountType === 'student'
     ? form.querySelector('#studentPassword')
     : form.querySelector('#orgPassword');
@@ -173,22 +592,18 @@ function handleRegisterSubmit(event) {
       showError(firstName, 'First name is required');
       isValid = false;
     }
-
     if (!lastName.value.trim()) {
       showError(lastName, 'Last name is required');
       isValid = false;
     }
-
     if (!validateEmail(email.value)) {
       showError(email, 'Please enter a valid email address');
       isValid = false;
     }
-
     if (!province.value) {
       showError(province, 'Please select your province');
       isValid = false;
     }
-
     if (!educationLevel.value) {
       showError(educationLevel, 'Please select your education level');
       isValid = false;
@@ -204,99 +619,105 @@ function handleRegisterSubmit(event) {
       showError(orgName, 'Organization name is required');
       isValid = false;
     }
-
     if (!validateEmail(orgEmail.value)) {
       showError(orgEmail, 'Please enter a valid email address');
       isValid = false;
     }
-
     if (!orgType.value) {
       showError(orgType, 'Please select organization type');
       isValid = false;
     }
-
     if (!orgProvince.value) {
       showError(orgProvince, 'Please select province');
       isValid = false;
     }
   }
 
-  // Validate password
   if (!password || password.value.length < 8) {
     showError(password, 'Password must be at least 8 characters');
     isValid = false;
   }
 
-  // Validate terms
   if (!terms || !terms.checked) {
     const termsGroup = terms?.closest('.form__group');
-
     if (termsGroup) {
       termsGroup.classList.add('form__group--error');
     }
+    showSuccessMessage(form, 'You must agree to the Terms and Conditions.');
     isValid = false;
-
   }
 
-  if (isValid) {
-    let formData;
-    let url;
+  if (!isValid) {
+    resetSubmitButton(submitBtn);
+    return;
+  }
 
-    if (accountType === 'student') {
-      url = '/register/student';
-      formData = {
-        firstName: form.querySelector('#firstName').value.trim(),
-        lastName: form.querySelector('#lastName').value.trim(),
-        email: form.querySelector('#email').value.trim().toLowerCase(),
-        province: form.querySelector('#province').value,
-        educationLevel: form.querySelector('#educationLevel').value,
-        password: password.value
-      };
+  let url;
+  let formData;
+
+  if (accountType === 'student') {
+    url = '/register/student';
+    formData = {
+      firstName: form.querySelector('#firstName').value.trim(),
+      lastName: form.querySelector('#lastName').value.trim(),
+      email: form.querySelector('#email').value.trim().toLowerCase(),
+      province: form.querySelector('#province').value,
+      educationLevel: form.querySelector('#educationLevel').value,
+      password: password.value
+    };
+  } else if (accountType === 'organization') {
+    url = '/register/organization';
+    formData = {
+      orgName: form.querySelector('#orgName').value.trim(),
+      orgEmail: form.querySelector('#orgEmail').value.trim().toLowerCase(),
+      orgType: form.querySelector('#orgType').value,
+      orgProvince: form.querySelector('#orgProvince').value,
+      password: password.value
+    };
+  }
+
+  if (!url || !formData) {
+    showSuccessMessage(form, 'Could not determine account type. Please try again.');
+    resetSubmitButton(submitBtn);
+    return;
+  }
+
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData)
+  })
+  .then(response => {
+    if (response.status === 201) {
+      showSuccessMessage(form, 'Account created! Redirecting to login...');
+      setTimeout(() => {
+        window.location.href = '/login-page';
+      }, 3000);
+    } else if (response.status === 403) {
+      showSuccessMessage(form, 'This email is already registered. Please log in.');
+      resetSubmitButton(submitBtn);
+    } else if (response.status === 400) {
+      showSuccessMessage(form, 'Please fill in all your details.');
+      resetSubmitButton(submitBtn);
     } else {
-      url = '/register/organization';
-      formData = {
-        orgName: form.querySelector('#orgName').value.trim(),
-        orgEmail: form.querySelector('#orgEmail').value.trim().toLowerCase(),
-        orgType: form.querySelector('#orgType').value,
-        orgProvince: form.querySelector('#orgProvince').value,
-        password: password.value
-      };
+      showSuccessMessage(form, 'Something went wrong. Please try again.');
+      resetSubmitButton(submitBtn);
     }
+  })
+  .catch(error => {
+    console.error('Registration error:', error);
+    showSuccessMessage(form, 'Network error. Please try again.');
+    resetSubmitButton(submitBtn);
+  });
+}
 
-    fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    })
-    .then(response => {
-      if (response.status === 201) {
-
-        showSuccessMessage(form, 'Account created! Redirecting to login...');
-
-        setTimeout(() => {
-          window.location.href = '/login-page';
-        }, 3000);
-
-      } else if (response.status === 403) {
-        showSuccessMessage(form, 'This email is already registered. Please log in.');
-      }
-      else if (response.status === 400) {
-
-        showSuccessMessage(form, 'Please fill in all your details.');
-
-      } else {
-
-        showSuccessMessage(form, 'Something went wrong. Please try again.');
-
-      }
-    })
-    .catch(error => {
-
-      console.error('Registration error:', error);
-
-      showSuccessMessage(form, 'Network error. Please try again.');
-
-    });
+/**
+ * Re-enable submit button after error so user can try again
+ */
+function resetSubmitButton(submitBtn) {
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.style.opacity = '1';
   }
 }
 
@@ -365,7 +786,7 @@ function showError(input, message) {
 }
 
 /**
- * Show success or error message on the form
+ * Show success or info message on the form
  */
 function showSuccessMessage(form, message) {
   const existingMessage = form.querySelector('.form__success');
@@ -388,8 +809,17 @@ function showSuccessMessage(form, message) {
 
   const submitButton = form.querySelector('.form__submit');
   if (submitButton) {
-    submitButton.disabled = true;
-    submitButton.style.opacity = '0.7';
     form.insertBefore(successDiv, submitButton);
   }
+}
+
+function handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('accountType');
+
+    // ✅ Call logout endpoint to clear cookie on server
+    fetch('/logout', { method: 'POST' })
+    .then(() => {
+        window.location.href = '/login-page';
+    });
 }

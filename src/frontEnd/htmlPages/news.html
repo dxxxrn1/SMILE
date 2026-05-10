@@ -14,26 +14,26 @@
   <!-- Header / Navigation -->
   <header class="header header--dashboard">
     <nav class="nav container">
-      <a href="home.html" class="nav__logo">
+      <a href="/" class="nav__logo">
         <span class="nav__logo-icon">&#9786;</span>
         <span>SMILE</span>
       </a>
       
       <ul class="nav__menu nav__menu--dashboard" id="navMenu">
-        <li><a href="home.html" class="nav__link">
+        <li><a href="/" class="nav__link">
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
             <polyline points="9 22 9 12 15 12 15 22"></polyline>
           </svg>
           Home
         </a></li>
-        <li><a href="opportunities.html" class="nav__link">
+        <li><a href="/opportunities/browse" class="nav__link">
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
           </svg>
           Opportunities
         </a></li>
-        <li><a href="careers.html" class="nav__link">
+        <li><a href="/careers/explore" class="nav__link">
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
@@ -41,14 +41,14 @@
           </svg>
           Careers
         </a></li>
-        <li><a href="nearme.html" class="nav__link">
+        <li><a href="/near/me" class="nav__link">
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
             <circle cx="12" cy="10" r="3"></circle>
           </svg>
           Near Me
         </a></li>
-        <li><a href="news.html" class="nav__link nav__link--active">
+        <li><a href="/news/daily" class="nav__link nav__link--active">
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
             <path d="M18 14h-8"></path>
@@ -57,7 +57,7 @@
           </svg>
           News
         </a></li>
-        <li><a href="dashboard.html" class="nav__link">
+        <li><a href="/student/dashboard" class="nav__link">
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect width="7" height="9" x="3" y="3" rx="1"></rect>
             <rect width="7" height="5" x="14" y="3" rx="1"></rect>
@@ -79,7 +79,7 @@
         <div class="nav__profile" id="profileDropdown">
           <button class="nav__profile-btn" aria-label="Profile menu">
             <div class="nav__avatar">
-              <span>TM</span>
+              <span id="initials">TM</span>
             </div>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 12 15 18 9"></polyline>
@@ -101,7 +101,7 @@
               Settings
             </a>
             <hr class="nav__profile-divider">
-            <a href="login.html" class="nav__profile-link nav__profile-link--logout">
+            <a href="/login-page" class="nav__profile-link nav__profile-link--logout">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                 <polyline points="16 17 21 12 16 7"></polyline>
@@ -128,7 +128,7 @@
       </div>
 
       <!-- Featured Article -->
-      <article class="featured-article">
+      <!-- <article class="featured-article">
         <div class="featured-article__image">
           <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop" alt="Youth Employment Initiative" crossorigin="anonymous">
         </div>
@@ -155,7 +155,7 @@
             </svg>
           </a>
         </div>
-      </article>
+      </article> -->
 
       <!-- News Categories -->
       <div class="news-categories">
@@ -321,5 +321,6 @@
 <script src="../jsFrontEnd/news.js"></script>
 
   <script src="../jsFrontEnd/dashboardJS.js"></script>
+  <script src="../jsFrontEnd/newsAPI.js"></script>
 </body>
 </html>

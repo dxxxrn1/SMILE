@@ -20,14 +20,14 @@
     <!-- Dashboard Header / Navigation -->
     <header class="header header--dashboard">
       <nav class="nav container">
-        <a href="home.html" class="nav__logo">
+        <a href="/" class="nav__logo">
           <span class="nav__logo-icon">&#9786;</span>
           <span>SMILE</span>
         </a>
 
         <ul class="nav__menu nav__menu--dashboard" id="navMenu">
           <li>
-            <a href="#" class="nav__link">
+            <a href="/opportunities/browse" class="nav__link">
               <svg
                 class="nav__link-svg"
                 width="20"
@@ -46,8 +46,16 @@
               Opportunities
             </a>
           </li>
+          <li><a href="/careers/explore" class="nav__link">
+          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+            <path d="M2 12h20"></path>
+          </svg>
+          Careers
+        </a></li>
           <li>
-            <a href="#" class="nav__link">
+            <a href="/near/me" class="nav__link">
               <svg
                 class="nav__link-svg"
                 width="20"
@@ -66,7 +74,7 @@
             </a>
           </li>
           <li>
-            <a href="#" class="nav__link">
+            <a href="/news/daily" class="nav__link">
               <svg
                 class="nav__link-svg"
                 width="20"
@@ -89,7 +97,7 @@
             </a>
           </li>
           <li>
-            <a href="dashboard.html" class="nav__link nav__link--active">
+            <a href="/student/dashboard" class="nav__link nav__link--active">
               <svg
                 class="nav__link-svg"
                 width="20"
@@ -131,7 +139,7 @@
           <div class="nav__profile" id="profileDropdown">
             <button class="nav__profile-btn" aria-label="Profile menu">
               <div class="nav__avatar">
-                <span>TM</span>
+                <span id="initials">TM</span>
               </div>
               <svg
                 width="16"
@@ -161,7 +169,7 @@
                   <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                   <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                My Profile
+                <!-- My Profile
               </a>
               <a href="#" class="nav__profile-link">
                 <svg
@@ -179,7 +187,7 @@
                   ></path>
                   <circle cx="12" cy="12" r="3"></circle>
                 </svg>
-                <!-- Settings
+                 Settings
             </a>
             <hr class="nav__profile-divider">
             <a href="login.html" class="nav__profile-link nav__profile-link--logout">
@@ -187,12 +195,33 @@
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                 <polyline points="16 17 21 12 16 7"></polyline>
                 <line x1="21" x2="9" y1="12" y2="12"></line>
-              </svg> -->
+              </svg> 
                 Log Out
               </a>
             </div>
           </div>
+        </div> -->
+         My Profile
+            </a>
+            <a href="#" class="nav__profile-link">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              Settings
+            </a>
+            <hr class="nav__profile-divider">
+            <a href="/login-page" class="nav__profile-link nav__profile-link--logout">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" x2="9" y1="12" y2="12"></line>
+              </svg>
+              Log Out
+            </a>
+          </div>
         </div>
+      </div>
 
         <button
           class="nav__mobile-toggle"
@@ -209,12 +238,12 @@
         <!-- Dashboard Welcome Header -->
         <div class="dashboard__header">
           <div class="dashboard__welcome">
-            <h1 class="dashboard__title">Welcome back, Thabo!</h1>
+            <h1 class="dashboard__title">Welcome back,<span id="userName">Thabo!</span></h1>
             <p class="dashboard__subtitle">
               Here&apos;s what&apos;s happening with your opportunities today.
             </p>
           </div>
-          <a href="#" class="btn btn--primary">
+          <a href="/opportunities/browse" class="btn btn--primary">
             <svg
               width="18"
               height="18"
@@ -893,7 +922,7 @@
           </section>
 
           <!-- Near Me Map Section -->
-          <section class="dashboard__section dashboard__section--map">
+          <!-- <section class="dashboard__section dashboard__section--map">
             <div class="section__header">
               <h2 class="section__title">
                 <svg
@@ -952,7 +981,7 @@
                 </button>
               </div>
             </div>
-          </section>
+          </section> -->
         </div>
       </div>
     </main>
@@ -977,5 +1006,15 @@
     </footer>
 
     <script src="../jsFrontEnd/dashboardJS.js"></script>
+
+    <script>
+      const token = localStorage.getItem('token');
+      const accountType = localStorage.getItem('accountType');
+
+      // If no token or wrong account type, redirect to login
+      if (!token || accountType !== 'student') {
+          window.location.href = '/login-page';
+      }
+</script>
   </body>
 </html>

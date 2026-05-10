@@ -8,6 +8,28 @@ document.addEventListener("DOMContentLoaded", function () {
   initProfileDropdown();
   initLocationButton();
   initOpportunityActions();
+  loadEbooks();
+
+  const spanID = document.getElementById("userName");
+
+  const spanInitials = document.getElementById("initials");
+
+  //This is were we will display the user information
+  const userStored = localStorage.getItem("userName");
+
+  if (userStored) {
+    spanID.textContent = userStored;
+  } else {
+    spanID.textContent = "User not Found!!!!";
+  }
+
+  const initialStored = localStorage.getItem("initials");
+
+  if (initialStored) {
+    spanInitials.textContent = initialStored;
+  } else {
+    spanInitials.textContent = "?";
+  }
 });
 
 /**
@@ -270,3 +292,380 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+
+function loadEbooks(query = "career development south africa youth") {
+  const ebooksGrid = document.querySelector(".ebooks-grid");
+  if (!ebooksGrid) return;
+
+  const token = localStorage.getItem("token");
+
+  // Show skeletons while loading
+  ebooksGrid.innerHTML = Array(4)
+    .fill(
+      `
+    <article class="ebook-card" style="opacity:0.5;pointer-events:none;">
+      <div class="ebook-card__cover ebook-card__cover--orange"></div>
+      <div class="ebook-card__content">
+        <div style="height:10px;background:#e5e7eb;border-radius:4px;margin-bottom:8px;width:60%;"></div>
+        <div style="height:14px;background:#e5e7eb;border-radius:4px;margin-bottom:6px;"></div>
+        <div style="height:12px;background:#e5e7eb;border-radius:4px;width:40%;"></div>
+      </div>
+    </article>
+  `,
+    )
+    .join("");
+
+  fetch(`/api/books?q=${encodeURIComponent(query)}&maxResults=4`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (!data.success || !data.books.length) {
+        ebooksGrid.innerHTML =
+          "<p style='color:#888;padding:1rem;'>No books found.</p>";
+        return;
+      }
+
+      // Colour cycle for covers
+      const colors = ["orange", "blue", "green", "purple"];
+
+      ebooksGrid.innerHTML = "";
+
+      data.books.forEach((book, i) => {
+        const color = colors[i % colors.length];
+        const shortDesc =
+          book.description.slice(0, 80) +
+          (book.description.length > 80 ? "…" : "");
+        const pages = book.pageCount
+          ? `${book.pageCount} pages`
+          : "Preview available";
+        const stars = book.rating
+          ? "★".repeat(Math.round(book.rating)) +
+            "☆".repeat(5 - Math.round(book.rating))
+          : "";
+
+        const card = document.createElement("article");
+        card.className = "ebook-card";
+        card.innerHTML = `
+          <div class="ebook-card__cover ebook-card__cover--${color}">
+            ${
+              book.thumbnail
+                ? `<img src="${book.thumbnail}" alt="${book.title}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+                : `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                 </svg>`
+            }
+          </div>
+          <div class="ebook-card__content">
+            <span class="ebook-card__category">${book.categories[0] || "Reference"}</span>
+            <h3 class="ebook-card__title">${book.title}</h3>
+            <p class="ebook-card__pages">${book.authors} · ${pages}</p>
+            ${stars ? `<p style="font-size:12px;color:#f59e0b;letter-spacing:1px;">${stars}</p>` : ""}
+            <a href="${book.previewLink}" target="_blank" rel="noopener noreferrer"
+               class="btn btn--outline btn--sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" x2="12" y1="15" y2="3"></line>
+              </svg>
+              Read / Preview
+            </a>
+          </div>
+        `;
+
+        ebooksGrid.appendChild(card);
+      });
+    })
+    .catch((err) => {
+      console.error("[SMILE Books]", err);
+      ebooksGrid.innerHTML =
+        "<p style='color:#888;padding:1rem;'>Could not load books. Please try again.</p>";
+    });
+}
+// ─── CHATBOT ─────────────────────────────────────────────────────────────────
+
+const riasecQuestions = [
+  { id: "Realistic", q: "I like working with my hands, tools, or machines." },
+  {
+    id: "Investigative",
+    q: "I enjoy solving math problems or doing research.",
+  },
+  {
+    id: "Artistic",
+    q: "I love being creative, making art, or creating content.",
+  },
+  {
+    id: "Social",
+    q: "I find fulfillment in helping, teaching, or healing people.",
+  },
+  {
+    id: "Enterprising",
+    q: "I enjoy leading people or starting my own business.",
+  },
+  {
+    id: "Conventional",
+    q: "I like having a clear schedule and organizing data.",
+  },
+];
+
+let chatHistory = [];
+
+// NEW: Function to cleanly format AI Markdown into readable HTML
+function formatBotResponse(text) {
+  let formatted = text;
+
+  // 1. Format Headers (e.g., ### Title)
+  formatted = formatted.replace(
+    /### (.*?)\n/g,
+    '<h4 style="margin-top: 16px; margin-bottom: 8px; color: var(--gray-900); font-size: 1.05rem;">$1</h4>',
+  );
+
+  // 2. Format Bold text
+  formatted = formatted.replace(
+    /\*\*(.*?)\*\*/g,
+    '<strong style="color: var(--gray-900); font-weight: 600;">$1</strong>',
+  );
+
+  // 3. Format Bullet Points (lines starting with * or -)
+  formatted = formatted.replace(
+    /(?:\n|^)[*-]\s+(.*)/g,
+    '<li style="margin-left: 20px; margin-bottom: 6px;">$1</li>',
+  );
+
+  // 4. Clean up remaining newlines into proper paragraph breaks
+  formatted = formatted.replace(
+    /\n\n/g,
+    '</p><p style="margin-bottom: 12px;">',
+  );
+  formatted = formatted.replace(/\n/g, "<br>");
+
+  // Wrap in a starting paragraph tag to ensure proper flow
+  return `<p style="margin-bottom: 12px;">${formatted}</p>`;
+}
+
+async function checkQuizStatus() {
+  try {
+    const res = await fetch("/api/get-my-interests", {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    const data = await res.json();
+
+    if (data.exists) {
+      document.getElementById("quizStatusCard").style.display = "none";
+      document.getElementById("chatSection").style.display = "flex";
+
+      if (chatHistory.length === 0) {
+        const win = document.getElementById("chatWindow");
+        win.innerHTML = `
+          <div style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; border: 1px solid #fbcfe8; box-shadow: var(--shadow-sm);">
+              🤖
+            </div>
+            <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6;">
+              <p style="margin-bottom: 8px;">Welcome back! I see your top career interest is <strong style="color: var(--primary-pink);">${data.interest}</strong>.</p>
+              <p>What would you like to explore today? Ask me for career suggestions, university requirements, or salary info!</p>
+            </div>
+          </div>`;
+      }
+    } else {
+      document.getElementById("quizStatusCard").style.display = "flex";
+      document.getElementById("chatSection").style.display = "none";
+    }
+  } catch (e) {
+    console.error("Error loading quiz status:", e);
+  }
+}
+
+window.showQuiz = function () {
+  const form = document.getElementById("riasecForm");
+  form.innerHTML = riasecQuestions
+    .map(
+      (item) => `
+    <div style="margin-bottom:1rem; text-align: left;">
+      <label style="display:block; font-size:0.9rem; margin-bottom:0.5rem; font-weight:500; color: #374151;">${item.q}</label>
+      <input type="range" name="${item.id}" min="1" max="5" value="3" style="width:100%; accent-color:var(--primary-orange);">
+      <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--gray-500); font-weight:600;">
+        <span>1 - Not me</span><span>5 - Totally me</span>
+      </div>
+    </div>
+  `,
+    )
+    .join("");
+
+  const overlay = document.getElementById("quizOverlay");
+  overlay.style.display = "flex";
+  overlay.style.opacity = "1";
+  overlay.style.visibility = "visible";
+};
+
+window.closeQuiz = function () {
+  const overlay = document.getElementById("quizOverlay");
+  overlay.style.display = "none";
+};
+
+window.saveQuizResults = async function () {
+  const formData = new FormData(document.getElementById("riasecForm"));
+  const results = Object.fromEntries(formData.entries());
+  const response = await fetch("/api/save-interests", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify(results),
+  });
+  if (response.ok) {
+    window.closeQuiz();
+    await checkQuizStatus();
+    document.getElementById("chatInput").value =
+      "Hi! I just completed my personality test. What careers suit me?";
+    window.sendChat();
+  }
+};
+
+window.sendChat = async function () {
+  const input = document.getElementById("chatInput");
+  const win = document.getElementById("chatWindow");
+  const userText = input.value.trim();
+  if (!userText) return;
+
+  // NEW: Styled User Bubble
+  win.innerHTML += `
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+      <div style="background: var(--gradient-primary); color: white; padding: 12px 16px; border-radius: 16px 16px 0px 16px; max-width: 80%; box-shadow: var(--shadow-sm); font-size: 0.9375rem; line-height: 1.5;">
+        ${userText}
+      </div>
+    </div>`;
+
+  input.value = "";
+  win.scrollTop = win.scrollHeight;
+
+  document.getElementById("downloadDocBtn").style.display = "inline-flex";
+  chatHistory.push({ role: "user", content: userText });
+
+  // Add a temporary "Typing..." bubble
+  const typingId = "typing-" + Date.now();
+  win.innerHTML += `
+    <div id="${typingId}" style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px;">
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; border: 1px solid #fbcfe8;">🤖</div>
+      <div style="background: #ffffff; color: var(--gray-500); padding: 16px; border-radius: 0px 16px 16px 16px; border: 1px solid var(--gray-200); font-size: 0.9375rem; font-style: italic;">
+        Thinking...
+      </div>
+    </div>`;
+  win.scrollTop = win.scrollHeight;
+
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ userPrompt: userText }),
+    });
+    const data = await res.json();
+    chatHistory.push({ role: "assistant", content: data.response });
+
+    // Remove typing indicator
+    document.getElementById(typingId).remove();
+
+    // Process the text with our new formatter
+    let formattedResponse = formatBotResponse(data.response);
+
+    // NEW: Styled AI Response Bubble
+    win.innerHTML += `
+      <div style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px;">
+        <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; border: 1px solid #fbcfe8; box-shadow: var(--shadow-sm);">
+          🤖
+        </div>
+        <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6;">
+          ${formattedResponse}
+        </div>
+      </div>`;
+
+    win.scrollTop = win.scrollHeight;
+  } catch (err) {
+    console.error("Chat error:", err);
+    document.getElementById(typingId).remove();
+  }
+};
+
+window.downloadCareerDoc = async function () {
+  if (chatHistory.length === 0) {
+    alert("Please chat with the AI first before downloading your career path.");
+    return;
+  }
+
+  const btn = document.getElementById("downloadDocBtn");
+  btn.textContent = "Generating PDF...";
+  btn.disabled = true;
+
+  try {
+    const res = await fetch("/api/generate-doc-from-chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ history: chatHistory }),
+    });
+
+    const data = await res.json();
+
+    if (!data.doc) {
+      throw new Error("No document content received.");
+    }
+
+    // 1. Format the AI's markdown text into HTML using our existing function
+    const formattedContent = formatBotResponse(data.doc);
+
+    // 2. Create a hidden, beautifully styled document layout for the PDF
+    const element = document.createElement("div");
+    element.innerHTML = `
+      <div style="font-family: 'Inter', Helvetica, Arial, sans-serif; padding: 40px; color: #1f2937;">
+        
+        <div style="text-align: center; border-bottom: 2px solid #ec4899; padding-bottom: 20px; margin-bottom: 30px;">
+          <h1 style="color: #f97316; margin: 0; font-size: 28px; letter-spacing: 1px;">SMILE</h1>
+          <h2 style="color: #111827; margin: 10px 0 0 0; font-size: 20px;">Your Personalized Career Path</h2>
+        </div>
+        
+        <div style="line-height: 1.6; font-size: 14px;">
+          ${formattedContent}
+        </div>
+        
+        <div style="margin-top: 50px; text-align: center; font-size: 11px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 20px;">
+          Generated by SMILE AI Career Assistant • ${new Date().toLocaleDateString()}
+        </div>
+        
+      </div>
+    `;
+
+    // 3. Configure the PDF settings
+    const opt = {
+      margin: [0.5, 0.5, 0.5, 0.5], // Top, Left, Bottom, Right margins in inches
+      filename: "My_SMILE_Career_Path.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    };
+
+    // 4. Generate and save the PDF!
+    await html2pdf().set(opt).from(element).save();
+
+    // Reset the button
+    btn.textContent = " PDF Downloaded!";
+    setTimeout(() => {
+      btn.textContent = " Download Career Path";
+      btn.disabled = false;
+    }, 3000);
+  } catch (err) {
+    console.error("PDF Generation Error:", err);
+    alert("Failed to generate PDF. Check your connection.");
+    btn.textContent = " Download Career Path";
+    btn.disabled = false;
+  }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  checkQuizStatus();
+});
