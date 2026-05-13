@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
 export const getCareerAdvice = async (req, res) => {
   try {
     const pool = await connectToDB();
@@ -27,6 +26,9 @@ export const getCareerAdvice = async (req, res) => {
       });
     }
 
+    // 🟢 Grab the whole history from the frontend!
+    const { history } = req.body;
+
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       max_tokens: 1024,
@@ -34,14 +36,17 @@ export const getCareerAdvice = async (req, res) => {
         {
           role: "system",
           content: `You are the SMILE Career Guide. Your SOLE purpose is to provide career, education, and professional development advice for South African students.
-            Student Name: ${student.StuName}. Top Interest: ${student.TopInterest}.
+            Student Name: ${student.StuName}. 
+            Quiz Result Top Interest: ${student.TopInterest}.
             
             STRICT RULES:
             1. If the user asks about ANYTHING unrelated to careers, universities, jobs, or studying, politely refuse and steer back to their career path.
-            2. When suggesting careers, always provide 3 South African options that fit their personality, including Required Subjects, Study Duration, and ZAR Salary range.
-            3. Keep your tone encouraging, professional, and focused on their future.`,
+            2. STAY IN CONTEXT. If the student says they want to pursue a specific career (e.g., Web Development), ignore their Quiz Result and help them with their chosen path!
+            3. When suggesting careers, always provide 3 South African options including Required High School Subjects, Study Duration, and ZAR Salary range.
+            4. Keep your tone encouraging, professional, and focused on their future.`,
         },
-        { role: "user", content: req.body.userPrompt },
+        // 🟢 Spread the entire chat history right here so the AI remembers everything!
+        ...history,
       ],
     });
 
@@ -51,7 +56,7 @@ export const getCareerAdvice = async (req, res) => {
     res.status(500).json({ response: "AI connection error." });
   }
 };
-
+// 
 export const generateDocFromChat = async (req, res) => {
   try {
     const { history } = req.body;
@@ -64,9 +69,18 @@ export const generateDocFromChat = async (req, res) => {
 
     const student = result.recordset[0];
 
-    const summary = history
-      .map((m) => `${m.role === "user" ? "Student" : "AI"}: ${m.content}`)
-      .join("\n");
+    // Build summary only if chat has meaningful content
+    const hasRealChat = history && history.length >= 2;
+
+    const summary = hasRealChat
+      ? history
+          .map((m) => `${m.role === "user" ? "Student" : "AI"}: ${m.content}`)
+          .join("\n")
+      : null;
+
+    const userPrompt = hasRealChat
+      ? `Here is our career counselling conversation:\n\n${summary}\n\nBased on what was discussed, generate a career path document. If no specific career was chosen, use the student's top interest (${student.TopInterest}) as the focus.`
+      : `No detailed conversation happened yet. Generate a comprehensive career path document based on the student's top interest: ${student.TopInterest}.`;
 
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
@@ -74,11 +88,13 @@ export const generateDocFromChat = async (req, res) => {
       messages: [
         {
           role: "system",
-          content: `You are the SMILE Career Guide. Based on a career counselling chat, generate a structured career path document for ${student.StuName} from ${student.StuProvince}, whose top interest is ${student.TopInterest}.`,
+          content: `You are the SMILE Career Guide. Generate a detailed, structured career path document for ${student.StuName} from ${student.StuProvince}, whose top interest is ${student.TopInterest}. Always produce a FULL document even if no specific career was discussed — use the top interest as the career focus.`,
         },
         {
           role: "user",
-          content: `Here is our career counselling conversation:\n\n${summary}\n\nGenerate a career path document with these sections:
+          content: `${userPrompt}
+
+Generate a career path document with these sections:
 ## Career Overview
 ## Required High School Subjects
 ## Qualifications & Universities in South Africa
@@ -92,10 +108,14 @@ export const generateDocFromChat = async (req, res) => {
 
     const docContent = completion.choices[0].message.content;
 
+    // Detect the career title from the AI response or fallback to TopInterest
+    const titleMatch = docContent.match(/##\s*Career Overview[\s\S]*?(?:as a|in|for)\s+([A-Z][a-zA-Z\s]+)/);
+    const careerTitle = titleMatch ? titleMatch[1].trim() : student.TopInterest;
+
     await pool
       .request()
       .input("stuID", sql.Int, req.user.id)
-      .input("title", sql.VarChar(100), `Career Path - ${student.TopInterest}`)
+      .input("title", sql.VarChar(100), `Career Path - ${careerTitle}`)
       .input("content", sql.NVarChar(sql.MAX), docContent)
       .query(
         `INSERT INTO SavedCareerDocs (StuID, CareerTitle, DocContent) VALUES (@stuID, @title, @content)`,
@@ -107,7 +127,6 @@ export const generateDocFromChat = async (req, res) => {
     res.status(500).json({ doc: "Error generating document." });
   }
 };
-
 export const getMyInterests = async (req, res) => {
   try {
     const pool = await connectToDB();
