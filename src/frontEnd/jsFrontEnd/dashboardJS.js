@@ -108,7 +108,7 @@ function initLocationButton() {
           const { latitude, longitude } = position.coords;
 
           const mapPlaceholder = document.querySelector(
-            ".map-placeholder__content"
+            ".map-placeholder__content",
           );
           if (mapPlaceholder) {
             mapPlaceholder.innerHTML = `
@@ -152,7 +152,7 @@ function initLocationButton() {
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 0,
-        }
+        },
       );
     } else {
       alert("Geolocation is not supported by your browser.");
@@ -165,7 +165,7 @@ function initLocationButton() {
  */
 function initOpportunityActions() {
   const removeButtons = document.querySelectorAll(
-    ".opportunity-card__actions .btn--icon"
+    ".opportunity-card__actions .btn--icon",
   );
 
   removeButtons.forEach(function (btn) {
@@ -284,7 +284,7 @@ function loadEbooks(query = "career development south africa youth") {
         <div style="height:12px;background:#e5e7eb;border-radius:4px;width:40%;"></div>
       </div>
     </article>
-  `
+  `,
     )
     .join("");
 
@@ -356,12 +356,27 @@ function loadEbooks(query = "career development south africa youth") {
 // ─── CHATBOT ─────────────────────────────────────────────────────────────────
 
 const riasecQuestions = [
-  { id: "Realistic",     q: "I like working with my hands, tools, or machines." },
-  { id: "Investigative", q: "I enjoy solving math problems or doing research." },
-  { id: "Artistic",      q: "I love being creative, making art, or creating content." },
-  { id: "Social",        q: "I find fulfillment in helping, teaching, or healing people." },
-  { id: "Enterprising",  q: "I enjoy leading people or starting my own business." },
-  { id: "Conventional",  q: "I like having a clear schedule and organizing data." },
+  { id: "Realistic", q: "I like working with my hands, tools, or machines." },
+  {
+    id: "Investigative",
+    q: "I enjoy solving math problems or doing research.",
+  },
+  {
+    id: "Artistic",
+    q: "I love being creative, making art, or creating content.",
+  },
+  {
+    id: "Social",
+    q: "I find fulfillment in helping, teaching, or healing people.",
+  },
+  {
+    id: "Enterprising",
+    q: "I enjoy leading people or starting my own business.",
+  },
+  {
+    id: "Conventional",
+    q: "I like having a clear schedule and organizing data.",
+  },
 ];
 
 let chatHistory = [];
@@ -371,19 +386,19 @@ function formatBotResponse(text) {
 
   formatted = formatted.replace(
     /### (.*?)\n/g,
-    '<h4 style="margin-top: 16px; margin-bottom: 8px; color: var(--gray-900); font-size: 1.05rem;">$1</h4>'
+    '<h4 style="margin-top: 16px; margin-bottom: 8px; color: var(--gray-900); font-size: 1.05rem;">$1</h4>',
   );
   formatted = formatted.replace(
     /\*\*(.*?)\*\*/g,
-    '<strong style="color: var(--gray-900); font-weight: 600;">$1</strong>'
+    '<strong style="color: var(--gray-900); font-weight: 600;">$1</strong>',
   );
   formatted = formatted.replace(
     /(?:\n|^)[*-]\s+(.*)/g,
-    '<li style="margin-left: 20px; margin-bottom: 6px;">$1</li>'
+    '<li style="margin-left: 20px; margin-bottom: 6px;">$1</li>',
   );
   formatted = formatted.replace(
     /\n\n/g,
-    '</p><p style="margin-bottom: 12px;">'
+    '</p><p style="margin-bottom: 12px;">',
   );
   formatted = formatted.replace(/\n/g, "<br>");
 
@@ -395,20 +410,23 @@ function formatBotResponse(text) {
  */
 async function checkQuizStatus() {
   const quizStatusCard = document.getElementById("quizStatusCard");
-  const chatSection    = document.getElementById("chatSection");
+  const chatSection = document.getElementById("chatSection");
 
   // Exit silently if not on the dashboard page
   if (!quizStatusCard || !chatSection) return;
 
   try {
-    const res  = await fetch("/api/get-my-interests", {
+    const res = await fetch("/api/get-my-interests", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     const data = await res.json();
 
     if (data.exists) {
       quizStatusCard.style.display = "none";
-      chatSection.style.display    = "flex";
+      chatSection.style.display = "flex";
+
+      const downloadDocBtn = document.getElementById("downloadDocBtn");
+      if (downloadDocBtn) downloadDocBtn.style.display = "inline-flex";
 
       if (chatHistory.length === 0) {
         const win = document.getElementById("chatWindow");
@@ -427,7 +445,7 @@ async function checkQuizStatus() {
       }
     } else {
       quizStatusCard.style.display = "flex";
-      chatSection.style.display    = "none";
+      chatSection.style.display = "none";
     }
   } catch (e) {
     console.error("Error loading quiz status:", e);
@@ -448,14 +466,14 @@ window.showQuiz = function () {
         <span>1 - Not me</span><span>5 - Totally me</span>
       </div>
     </div>
-  `
+  `,
     )
     .join("");
 
   const overlay = document.getElementById("quizOverlay");
   if (!overlay) return;
-  overlay.style.display    = "flex";
-  overlay.style.opacity    = "1";
+  overlay.style.display = "flex";
+  overlay.style.opacity = "1";
   overlay.style.visibility = "visible";
 };
 
@@ -466,7 +484,7 @@ window.closeQuiz = function () {
 
 window.saveQuizResults = async function () {
   const formData = new FormData(document.getElementById("riasecForm"));
-  const results  = Object.fromEntries(formData.entries());
+  const results = Object.fromEntries(formData.entries());
 
   const response = await fetch("/api/save-interests", {
     method: "POST",
@@ -482,15 +500,16 @@ window.saveQuizResults = async function () {
     await checkQuizStatus();
     const chatInput = document.getElementById("chatInput");
     if (chatInput) {
-      chatInput.value = "Hi! I just completed my personality test. What careers suit me?";
+      chatInput.value =
+        "Hi! I just completed my personality test. What careers suit me?";
       window.sendChat();
     }
   }
 };
 
 window.sendChat = async function () {
-  const input   = document.getElementById("chatInput");
-  const win     = document.getElementById("chatWindow");
+  const input = document.getElementById("chatInput");
+  const win = document.getElementById("chatWindow");
   if (!input || !win) return;
 
   const userText = input.value.trim();
@@ -507,7 +526,7 @@ window.sendChat = async function () {
   win.scrollTop = win.scrollHeight;
 
   const downloadDocBtn = document.getElementById("downloadDocBtn");
-  if (downloadDocBtn) downloadDocBtn.style.display = "inline-flex";
+  // if (downloadDocBtn) downloadDocBtn.style.display = "inline-flex";
 
   chatHistory.push({ role: "user", content: userText });
 
@@ -522,13 +541,14 @@ window.sendChat = async function () {
   win.scrollTop = win.scrollHeight;
 
   try {
-    const res  = await fetch("/api/chat", {
+    const res = await fetch("/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-      body: JSON.stringify({ userPrompt: userText }),
+      // body: JSON.stringify({ userPrompt: userText }),
+      body: JSON.stringify({ history: chatHistory }),
     });
     const data = await res.json();
     chatHistory.push({ role: "assistant", content: data.response });
@@ -555,19 +575,21 @@ window.sendChat = async function () {
 };
 
 window.downloadCareerDoc = async function () {
-  if (chatHistory.length === 0) {
-    alert("Please chat with the AI first before downloading your career path.");
-    return;
-  }
+  console.log("downloadCareerDoc done, history length:", chatHistory.length);
+  // ... rest of function
+  // if (chatHistory.length === 0) {
+  //   alert("Please chat with the AI first before downloading your career path.");
+  //   return;
+  // }
 
   const btn = document.getElementById("downloadDocBtn");
   if (!btn) return;
 
   btn.textContent = "Generating PDF...";
-  btn.disabled    = true;
+  btn.disabled = true;
 
   try {
-    const res  = await fetch("/api/generate-doc-from-chat", {
+    const res = await fetch("/api/generate-doc-from-chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -579,44 +601,75 @@ window.downloadCareerDoc = async function () {
 
     if (!data.doc) throw new Error("No document content received.");
 
+    // Format the text using your existing function
     const formattedContent = formatBotResponse(data.doc);
 
+    // Create the PDF container
     const element = document.createElement("div");
+
+    // CSS
     element.innerHTML = `
-      <div style="font-family: 'Inter', Helvetica, Arial, sans-serif; padding: 40px; color: #1f2937;">
-        <div style="text-align: center; border-bottom: 2px solid #ec4899; padding-bottom: 20px; margin-bottom: 30px;">
-          <h1 style="color: #f97316; margin: 0; font-size: 28px; letter-spacing: 1px;">SMILE</h1>
-          <h2 style="color: #111827; margin: 10px 0 0 0; font-size: 20px;">Your Personalized Career Path</h2>
+      <style>
+        .pdf-container { font-family: 'Inter', Helvetica, Arial, sans-serif; padding: 40px 50px; color: #1f2937; background: #ffffff; }
+        
+        /* Premium Header */
+        .pdf-header { text-align: center; border-bottom: 3px solid #ec4899; padding-bottom: 25px; margin-bottom: 35px; background: #fdf2f8; padding-top: 30px; border-radius: 12px 12px 0 0;}
+        .pdf-header h1 { color: #f97316; margin: 0; font-size: 32px; letter-spacing: 2px; text-transform: uppercase; }
+        .pdf-header h2 { color: #111827; margin: 10px 0 0 0; font-size: 22px; font-weight: 600;}
+        
+        /* Standard Content */
+        .pdf-content { line-height: 1.7; font-size: 14px; }
+        .pdf-content h4 { color: #ec4899; font-size: 18px; margin-top: 30px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }
+        .pdf-content strong { color: #111827; }
+        
+    
+        /* This automatically turns normal bullet points into a connected visual path */
+        .pdf-content ul { list-style: none; padding-left: 10px; position: relative; }
+        .pdf-content ul::before { content: ''; position: absolute; left: 14px; top: 10px; bottom: 10px; width: 2px; background: #fbcfe8; }
+        .pdf-content li { position: relative; margin-bottom: 15px; padding-left: 35px; }
+        .pdf-content li::before { content: ''; position: absolute; left: 9px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: #ec4899; border: 3px solid #ffffff; box-shadow: 0 0 0 2px #fbcfe8; }
+        
+        /* Footer */
+        .pdf-footer { margin-top: 50px; text-align: center; font-size: 11px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+      </style>
+
+      <div class="pdf-container">
+        <div class="pdf-header">
+          <h1>SMILE</h1>
+          <h2>Your Personalized Career Blueprint</h2>
         </div>
-        <div style="line-height: 1.6; font-size: 14px;">
+        
+        <div class="pdf-content">
           ${formattedContent}
         </div>
-        <div style="margin-top: 50px; text-align: center; font-size: 11px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 20px;">
-          Generated by SMILE AI Career Assistant • ${new Date().toLocaleDateString()}
+        
+        <div class="pdf-footer">
+          Generated securely by the SMILE AI Career Assistant • ${new Date().toLocaleDateString()}
         </div>
       </div>
     `;
 
+    // High-Quality PDF Options
     const opt = {
-      margin:     [0.5, 0.5, 0.5, 0.5],
-      filename:   "My_SMILE_Career_Path.pdf",
-      image:      { type: "jpeg", quality: 0.98 },
-      html2canvas:{ scale: 2, useCORS: true },
-      jsPDF:      { unit: "in", format: "letter", orientation: "portrait" },
+      margin: 0,
+      filename: "My_SMILE_Career_Path.pdf",
+      image: { type: "jpeg", quality: 1 },
+      html2canvas: { scale: 3, useCORS: true, logging: false }, // Scale 3 makes text crystal clear
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
     };
 
     await html2pdf().set(opt).from(element).save();
 
-    btn.textContent = " PDF Downloaded!";
+    btn.textContent = "Blueprint Saved";
     setTimeout(() => {
-      btn.textContent = " Download Career Path";
-      btn.disabled    = false;
+      btn.textContent = "Download Career Path";
+      btn.disabled = false;
     }, 3000);
   } catch (err) {
     console.error("PDF Generation Error:", err);
     alert("Failed to generate PDF. Check your connection.");
-    btn.textContent = " Download Career Path";
-    btn.disabled    = false;
+    btn.textContent = "Download Career Path";
+    btn.disabled = false;
   }
 };
 
