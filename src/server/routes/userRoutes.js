@@ -57,7 +57,7 @@ route.get("/reset-password", resetPasswordPage);
 route.get('/org/dashboard/createOpportunity',verifyToken,createOpportunity);
 route.post("/api/opportunities/create",verifyToken,createNewOpportunity);
 route.get("/api/opportunities", verifyToken, getAllOpportunities);
-route.get("/admin/dashboard",verifyToken,requireAdmin,adminDashBoard )
+// route.get("/admin/dashboard",verifyToken,requireAdmin,adminDashBoard )
 
 export default route;
 

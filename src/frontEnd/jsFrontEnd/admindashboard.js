@@ -1,191 +1,274 @@
-// State
-let organisations = [];
-let filteredOrganisations = [];
+// ─────────────────────────────────────────────────────────
+// admindashboard.js  —  powers the admin dashboard HTML
+// ─────────────────────────────────────────────────────────
 
-// DOM Elements
-const tableBody = document.getElementById("org-table-body");
-const searchInput = document.getElementById("search-input");
-const statusFilter = document.getElementById("status-filter");
-const detailsModal = document.getElementById("details-modal");
+let allOrganisations = []; // cache for filtering
 
 document.addEventListener("DOMContentLoaded", () => {
-  fetchOrganisations();
+    loadOrganisations();
 
-  // Listeners for filters
-  searchInput.addEventListener("input", filterOrganisations);
-  statusFilter.addEventListener("change", filterOrganisations);
+    // Search filter
+    document.getElementById("search-input").addEventListener("input", filterTable);
+
+    // Status filter
+    document.getElementById("status-filter").addEventListener("change", filterTable);
 });
 
-// Fetch Data from Backend
-async function fetchOrganisations() {
-  try {
-    const response = await fetch("/api/admin/organizations");
-    if (!response.ok) throw new Error("API not ready");
+// ─────────────────────────────────────────────
+// FETCH all organisations from the backend
+// ─────────────────────────────────────────────
+async function loadOrganisations() {
+    try {
+        const token = localStorage.getItem("token");
 
-    organisations = await response.json();
-  } catch (error) {
-    console.warn("Backend not connected yet. Loading Demo Data...");
-    loadMockData(); // Fallback so you can see it working
-  }
+        const res = await fetch("/admin/organisations", {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
 
-  filteredOrganisations = [...organisations];
-  updateStats();
-  renderTable();
+        if (res.status === 401 || res.status === 403) {
+            window.location.href = "/login-page";
+            return;
+        }
+
+        const data = await res.json();
+        allOrganisations = data.organisations;
+
+        // Update stat cards
+        document.getElementById("pending-count").textContent  = data.stats.pending;
+        document.getElementById("active-count").textContent   = data.stats.active;
+        document.getElementById("rejected-count").textContent = data.stats.rejected;
+
+        renderTable(allOrganisations);
+
+    } catch (err) {
+        console.error("❌ Failed to load organisations:", err);
+    }
 }
 
-function filterOrganisations() {
-  const term = searchInput.value.toLowerCase();
-  const status = statusFilter.value;
+// ─────────────────────────────────────────────
+// RENDER table rows
+// ─────────────────────────────────────────────
+function renderTable(orgs) {
+    const tbody = document.getElementById("org-table-body");
+    tbody.innerHTML = "";
 
-  filteredOrganisations = organisations.filter((org) => {
-    const matchesSearch = org.OrgName.toLowerCase().includes(term);
-    const matchesStatus = status === "all" || org.Status === status;
-    return matchesSearch && matchesStatus;
-  });
-
-  renderTable();
-}
-
-function renderTable() {
-  tableBody.innerHTML = filteredOrganisations
-    .map((org) => {
-      const isPending = org.Status === "Pending";
-      return `
+    if (orgs.length === 0) {
+        tbody.innerHTML = `
             <tr>
-                <td><strong>${org.OrgName}</strong></td>
-                <td>${org.RegNumber}</td>
-                <td>${org.EmailDomain}</td>
-                <td>${formatDate(org.DateJoined)}</td>
-                <td><span class="status-badge ${org.Status.toLowerCase()}">${org.Status}</span></td>
-                <td>
-                    <button class="btn btn-secondary" onclick="viewDetails(${org.OrgId})">View Details</button>
-                    ${
-                      isPending
-                        ? `
-                        <button class="btn btn--gradient" style="margin-left:8px;" onclick="updateStatus(${org.OrgId}, 'Active')">Approve</button>
-                        <button class="btn btn-danger" style="margin-left:8px;" onclick="updateStatus(${org.OrgId}, 'Rejected')">Reject</button>
-                    `
-                        : ""
-                    }
+                <td colspan="6" style="text-align:center; padding: 2rem; color: var(--color-text-muted)">
+                    No organisations found.
                 </td>
-            </tr>
+            </tr>`;
+        return;
+    }
+
+    orgs.forEach(org => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${org.OrgName}</td>
+            <td>${org.OrgId}</td>
+            <td>${org.OrgEmail}</td>
+            <td>${formatDate(org.DateCreated)}</td>
+            <td><span class="status-badge status-${org.Status.toLowerCase()}">${org.Status}</span></td>
+            <td class="action-buttons">
+                <button class="btn-view"    onclick="openDetailsModal(${org.OrgId})">View</button>
+                ${org.Status === "Pending" ? `
+                    <button class="btn-approve" onclick="handleApprove(${org.OrgId})">Approve</button>
+                    <button class="btn-reject"  onclick="handleReject(${org.OrgId})">Reject</button>
+                ` : ""}
+                <button class="btn-delete" onclick="handleDelete(${org.OrgId})">Delete</button>
+            </td>
         `;
-    })
-    .join("");
+        tbody.appendChild(row);
+    });
 }
 
-function viewDetails(orgId) {
-  const org = organisations.find((o) => o.OrgId === orgId);
-  if (!org) return;
+// ─────────────────────────────────────────────
+// FILTER table by search + status
+// ─────────────────────────────────────────────
+function filterTable() {
+    const search = document.getElementById("search-input").value.toLowerCase();
+    const status = document.getElementById("status-filter").value;
 
-  document.getElementById("modal-org-name").textContent = org.OrgName;
-  document.getElementById("detail-name").textContent = org.OrgName;
-  document.getElementById("detail-reg").textContent = org.RegNumber;
-  document.getElementById("detail-email").textContent = org.EmailDomain;
-  document.getElementById("detail-date").textContent = formatDate(
-    org.DateJoined,
-  );
-
-  const actions = document.getElementById("modal-actions");
-  if (org.Status === "Pending") {
-    // Uses your specific SMILE Gradient button!
-    actions.innerHTML = `
-            <button class="btn btn-secondary" onclick="closeDetailsModal()">Close</button>
-            <button class="btn btn-danger" onclick="updateStatus(${orgId}, 'Rejected')">Reject</button>
-            <button class="btn btn--gradient" onclick="updateStatus(${orgId}, 'Active')">Approve Organisation</button>
-        `;
-  } else {
-    actions.innerHTML = `<button class="btn btn-secondary" onclick="closeDetailsModal()">Close</button>`;
-  }
-
-  detailsModal.classList.remove("hidden");
-}
-
-function closeDetailsModal() {
-  detailsModal.classList.add("hidden");
-}
-
-// API Call to Approve/Reject
-async function updateStatus(orgId, newStatus) {
-  if (!confirm(`Are you sure you want to change this status to ${newStatus}?`))
-    return;
-
-  try {
-    const response = await fetch(`/api/admin/organizations/${orgId}/status`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: newStatus }),
+    const filtered = allOrganisations.filter(org => {
+        const matchesSearch = org.OrgName.toLowerCase().includes(search);
+        const matchesStatus = status === "all" || org.Status === status;
+        return matchesSearch && matchesStatus;
     });
 
-    //( we are using mock data), update UI for testing
-    const orgIndex = organisations.findIndex((o) => o.OrgId === orgId);
-    if (orgIndex !== -1) {
-      organisations[orgIndex].Status = newStatus;
-      filterOrganisations();
-      updateStats();
-      closeDetailsModal();
-      alert(
-        `Organisation successfully ${newStatus === "Active" ? "Approved" : "Rejected"}!`,
-      );
+    renderTable(filtered);
+}
+
+// ─────────────────────────────────────────────
+// APPROVE
+// ─────────────────────────────────────────────
+async function handleApprove(orgId) {
+    if (!confirm("Approve this organisation?")) return;
+
+    try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(`/admin/organisations/${orgId}/approve`, {
+            method: "PATCH",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+            showToast("✅ Organisation approved!");
+            loadOrganisations(); // refresh table
+        } else {
+            showToast("❌ Failed to approve.", "error");
+        }
+    } catch (err) {
+        console.error("❌ Approve error:", err);
+        showToast("❌ Network error.", "error");
     }
-  } catch (err) {
-    console.error("Error updating:", err);
-  }
 }
 
-function updateStats() {
-  const counts = { Pending: 0, Active: 0, Rejected: 0 };
-  organisations.forEach((org) => {
-    if (counts[org.Status] !== undefined) counts[org.Status]++;
-  });
+// ─────────────────────────────────────────────
+// REJECT
+// ─────────────────────────────────────────────
+async function handleReject(orgId) {
+    if (!confirm("Reject this organisation?")) return;
 
-  document.getElementById("pending-count").textContent = counts.Pending;
-  document.getElementById("active-count").textContent = counts.Active;
-  document.getElementById("rejected-count").textContent = counts.Rejected;
+    try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(`/admin/organisations/${orgId}/reject`, {
+            method: "PATCH",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+            showToast("✅ Organisation rejected.");
+            loadOrganisations();
+        } else {
+            showToast("❌ Failed to reject.", "error");
+        }
+    } catch (err) {
+        console.error("❌ Reject error:", err);
+        showToast("❌ Network error.", "error");
+    }
 }
 
-function formatDate(dateString) {
-  return new Date(dateString).toLocaleDateString("en-ZA", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+// ─────────────────────────────────────────────
+// DELETE
+// ─────────────────────────────────────────────
+async function handleDelete(orgId) {
+    if (!confirm("Permanently delete this organisation? This cannot be undone.")) return;
+
+    try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(`/admin/organisations/${orgId}`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+            showToast("✅ Organisation deleted.");
+            loadOrganisations();
+        } else {
+            showToast("❌ Failed to delete.", "error");
+        }
+    } catch (err) {
+        console.error("❌ Delete error:", err);
+        showToast("❌ Network error.", "error");
+    }
 }
 
-// Dummy Data Generator
-function loadMockData() {
-  organisations = [
-    {
-      OrgId: 1,
-      OrgName: "Tech Solutions SA",
-      RegNumber: "2020/123456/07",
-      EmailDomain: "techsolutions.co.za",
-      DateJoined: "2026-05-01",
-      Status: "Pending",
-    },
-    {
-      OrgId: 2,
-      OrgName: "Youth Empowerment Foundation",
-      RegNumber: "2019/789012/08",
-      EmailDomain: "youthempower.org.za",
-      DateJoined: "2026-04-15",
-      Status: "Active",
-    },
-    {
-      OrgId: 3,
-      OrgName: "Digital Learning Hub",
-      RegNumber: "2018/901234/08",
-      EmailDomain: "digitallearn.edu.za",
-      DateJoined: "2026-05-05",
-      Status: "Rejected",
-    },
-    {
-      OrgId: 4,
-      OrgName: "Cape Town Innovators",
-      RegNumber: "2022/567890/07",
-      EmailDomain: "ctinnovate.co.za",
-      DateJoined: "2026-05-08",
-      Status: "Pending",
-    },
-  ];
+// ─────────────────────────────────────────────
+// OPEN details modal
+// ─────────────────────────────────────────────
+async function openDetailsModal(orgId) {
+    try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(`/admin/organisations/${orgId}`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        const data = await res.json();
+        const org  = data.organisation;
+
+        document.getElementById("modal-org-name").textContent = org.OrgName;
+        document.getElementById("detail-name").textContent    = org.OrgName;
+        document.getElementById("detail-reg").textContent     = org.OrgId;
+        document.getElementById("detail-email").textContent   = org.OrgEmail;
+        document.getElementById("detail-date").textContent    = formatDate(org.DateCreated);
+
+        // Action buttons inside modal
+        const modalActions = document.getElementById("modal-actions");
+        modalActions.innerHTML = "";
+
+        if (org.Status === "Pending") {
+            modalActions.innerHTML = `
+                <button class="btn-approve" onclick="handleApprove(${org.OrgId}); closeDetailsModal()">Approve</button>
+                <button class="btn-reject"  onclick="handleReject(${org.OrgId});  closeDetailsModal()">Reject</button>
+            `;
+        } else {
+            modalActions.innerHTML = `<span class="status-badge status-${org.Status.toLowerCase()}">${org.Status}</span>`;
+        }
+
+        document.getElementById("details-modal").classList.remove("hidden");
+
+    } catch (err) {
+        console.error("❌ openDetailsModal error:", err);
+    }
+}
+
+// ─────────────────────────────────────────────
+// CLOSE details modal
+// ─────────────────────────────────────────────
+function closeDetailsModal() {
+    document.getElementById("details-modal").classList.add("hidden");
+}
+
+// ─────────────────────────────────────────────
+// SWITCH tabs (dashboard / tickets)
+// ─────────────────────────────────────────────
+function switchTab(tab) {
+    console.log("Switching to tab:", tab);
+    // Extend this when you add the tickets section
+}
+
+// ─────────────────────────────────────────────
+// TOAST notification
+// ─────────────────────────────────────────────
+function showToast(message, type = "success") {
+    const existing = document.getElementById("toast");
+    if (existing) existing.remove();
+
+    const toast = document.createElement("div");
+    toast.id = "toast";
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: ${type === "error" ? "#EF4444" : "#10B981"};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 9999;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// ─────────────────────────────────────────────
+// FORMAT date helper
+// ─────────────────────────────────────────────
+function formatDate(dateStr) {
+    if (!dateStr) return "-";
+    return new Date(dateStr).toLocaleDateString("en-ZA", {
+        year:  "numeric",
+        month: "short",
+        day:   "numeric"
+    });
 }
