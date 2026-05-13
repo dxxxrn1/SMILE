@@ -53,4 +53,8 @@ export const createOpportunity = (req,res)=>{
     res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "createOpportunity.html"));
 }
 
+export const adminDashBoard = (req,res)=>{
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "admin.html"));
+}
+
 //Lucas Bohani Maluleke and Darren Foster

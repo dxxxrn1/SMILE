@@ -723,10 +723,11 @@ img {
 
 /* Account Type Selector */
 .account-type-selector {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: row;
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-xl);
+  justify-content: center;
 }
 
 .account-type-card {
@@ -741,6 +742,8 @@ img {
   cursor: pointer;
   transition: all 0.2s ease;
   gap: var(--spacing-sm);
+  flex: 1;
+  max-width: 160px;   /* stops cards stretching too wide */
 }
 
 .account-type-card:hover {
