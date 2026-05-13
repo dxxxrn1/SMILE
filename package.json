@@ -14,13 +14,9 @@
   "dependencies": {
     "axios": "^1.15.0",
     "bcrypt": "^6.0.0",
-<<<<<<< HEAD
-    "dotenv": "^17.4.2",
-=======
     "cookie-parser": "^1.4.7",
     "crypto": "^1.0.1",
     "dotenv": "^17.4.0",
->>>>>>> 8a326e4b496828b2a1b176109c943b63b47e5af8
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "groq-sdk": "^1.1.2",

@@ -30,11 +30,7 @@ export const saveStudentDetails = async (req, res) => {
             .query(`SELECT * FROM Student WHERE StuEmail = @email`);
 
         if (results.recordset.length > 0) {
-<<<<<<< HEAD
-            return res.sendStatus(403); // Bug 1 fixed - actually sends the response
-=======
             return res.sendStatus(403);
->>>>>>> 8a326e4b496828b2a1b176109c943b63b47e5af8
         }
 
         console.log(" about to hash password");
@@ -54,10 +50,6 @@ export const saveStudentDetails = async (req, res) => {
             VALUES(@firstname, @lastname, @email, @province, @educationlevel, @password)
         `);
 
-<<<<<<< HEAD
-        // Bug 2 fixed - await only, no callback
-=======
->>>>>>> 8a326e4b496828b2a1b176109c943b63b47e5af8
         const transport = nodemailer.createTransport({
             service: "gmail",
             auth: {
