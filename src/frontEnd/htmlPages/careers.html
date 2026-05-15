@@ -18,38 +18,101 @@
   </head>
   <body class="dashboard-page">
     <header class="header header--dashboard">
-      <nav class="nav container">
-        <a href="/" class="nav__logo">
-          <span class="nav__logo-icon">&#9786;</span>
-          <span>SMILE</span>
-        </a>
+      <header class="header header--dashboard">
+    <nav class="nav container">
+    <a href="/" class="nav__logo">
+      <span class="nav__logo-icon">&#9786;</span>
+      <span>SMILE</span>
+    </a>
 
-        <ul class="nav__menu nav__menu--dashboard" id="navMenu">
-          <li><a href="/" class="nav__link">Home</a></li>
-          <li>
-            <a href="/opportunities/browse" class="nav__link">Opportunities</a>
-          </li>
-          <li>
-            <a href="/careers/explore" class="nav__link nav__link--active"
-              >Careers</a
-            >
-          </li>
-          <li><a href="/near/me" class="nav__link">Near Me</a></li>
-          <li><a href="/news/daily" class="nav__link">News</a></li>
-          <li><a href="/student/dashboard" class="nav__link">Dashboard</a></li>
-        </ul>
+    <ul class="nav__menu nav__menu--dashboard" id="navMenu">
+      
+      <li><a href="/opportunities/browse" class="nav__link">
+        <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Opportunities
+      </a></li>
+      <li><a href="/careers/explore" class="nav__link nav__link--active">
+        <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+        Careers
+      </a></li>
+      <li><a href="/near/me" class="nav__link">
+        <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        Near Me
+      </a></li>
+      <li><a href="/news/daily" class="nav__link">
+          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+            <path d="M18 14h-8"></path>
+            <path d="M15 18h-5"></path>
+            <path d="M10 6h8v4h-8V6Z"></path>
+          </svg>
+        News
+      </a></li>
+      <li><a href="/student/dashboard" class="nav__link">
+          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+            <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+            <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+            <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+          </svg>
+        Dashboard
+      </a></li>
+    </ul>
 
-        <div class="nav__actions nav__actions--dashboard">
-          <div class="nav__profile" id="profileDropdown">
-            <button class="nav__profile-btn" aria-label="Profile menu">
-              <div class="nav__avatar">
-                <span>TM</span>
-              </div>
-            </button>
+    <div class="nav__actions nav__actions--dashboard">
+      <button class="nav__icon-btn" aria-label="Notifications">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+        <span class="nav__notification-badge">3</span>
+      </button>
+      <div class="nav__profile" id="profileDropdown">
+        <button class="nav__profile-btn" aria-label="Profile menu">
+          <div class="nav__avatar">
+              <span id="initials">TM</span>
           </div>
-        </div>
-      </nav>
-    </header>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div class="nav__profile-menu" id="profileMenu">
+            <a href="#" class="nav__profile-link">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              My Profile
+            </a>
+            <a href="#" class="nav__profile-link">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              Settings
+            </a>
+            <hr class="nav__profile-divider">
+            <a href="/login-page" class="nav__profile-link nav__profile-link--logout">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" x2="9" y1="12" y2="12"></line>
+              </svg>
+              Log Out
+            </a>
+      </div>
+    </div>
+  </nav>
+</header>
 
     <main class="page-content">
       <div class="container">
@@ -60,125 +123,6 @@
             future.
           </p>
         </div>
-
-        <div class="careers-layout">
-          <div class="careers-explorer">
-            <div class="career-search">
-              <!-- <svg
-                class="career-search__icon"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </svg> -->
-              <!-- <input
-                type="text"
-                class="career-search__input"
-                placeholder="Search careers or fields..."
-                id="careerSearchInput"
-              />
-            </div> -->
-
-            <!-- <div class="career-categories">
-              <button
-                class="career-category career-category--active"
-                data-category="all"
-              >
-                All Careers
-              </button>
-              <button class="career-category" data-category="technology">
-                Technology
-              </button>
-              <button class="career-category" data-category="healthcare"> -->
-                <!-- Healthcare
-              </button>
-              <button class="career-category" data-category="engineering">
-                Engineering
-              </button>
-              <button class="career-category" data-category="business">
-                Business
-              </button>
-            </div>
-
-            <div class="careers-grid" id="careersGrid">
-              <article class="career-card">
-                <div class="career-card__image">
-                  <img
-                    src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400&h=220&fit=crop"
-                    alt="Software Developer"
-                    crossorigin="anonymous"
-                  />
-                </div>
-                <div class="career-card__content">
-                  <span
-                    class="career-card__category career-card__category--technology"
-                    >Technology</span
-                  >
-                  <h3 class="career-card__title">Software Developer</h3>
-                  <p class="career-card__description">
-                    Design, develop, and maintain software applications and
-                    systems.
-                  </p>
-                  <div class="career-card__subjects">
-                    <span class="career-card__subjects-label"
-                      >Key Subjects:</span
-                    >
-                    <div class="career-card__subjects-list">
-                      <span class="career-card__subject">Mathematics</span>
-                      <span class="career-card__subject">IT / CAT</span>
-                    </div>
-                  </div>
-                  <div class="career-card__footer">
-                    <span class="career-card__salary">R350k - R850k/year</span>
-                  </div>
-                </div>
-              </article> -->
-
-              <!-- <article class="career-card">
-                <div class="career-card__image">
-                  <img
-                    src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=220&fit=crop"
-                    alt="Medical Doctor"
-                    crossorigin="anonymous"
-                  />
-                </div>
-                <div class="career-card__content">
-                  <span
-                    class="career-card__category career-card__category--healthcare"
-                    >Healthcare</span
-                  >
-                  <h3 class="career-card__title">Medical Doctor</h3>
-                  <p class="career-card__description">
-                    Diagnose and treat illnesses, injuries, and various health
-                    conditions.
-                  </p>
-                  <div class="career-card__subjects">
-                    <span class="career-card__subjects-label"
-                      >Key Subjects:</span
-                    >
-                    <div class="career-card__subjects-list">
-                      <span class="career-card__subject">Life Sciences</span>
-                      <span class="career-card__subject">Mathematics</span>
-                    </div>
-                  </div>
-                  <div class="career-card__footer">
-                    <span class="career-card__salary">R600k - R1.5M/year</span>
-                  </div>
-                </div>
-              </article>
-            </div> -->
-
-            <!-- <div class="load-more">
-              <button class="btn btn--outline btn--lg" id="loadMoreBtn">
-                Load More Careers
-              </button>
-            </div>
-          </div> -->
 
           <aside class="careers-chatbot-sidebar">
             <div

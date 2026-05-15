@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Browse scholarships, internships, workshops and youth programs across South Africa.">
   <title>Opportunities - SMILE</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="/css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="dashboard-page">
+
   <!-- Header / Navigation -->
   <header class="header header--dashboard">
     <nav class="nav container">
@@ -18,15 +19,67 @@
         <span class="nav__logo-icon">&#9786;</span>
         <span>SMILE</span>
       </a>
-      
+
       <ul class="nav__menu nav__menu--dashboard" id="navMenu">
-        <li><a href="/" class="nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-          </svg>
-          Home
-        </a></li>
+        <li>
+          <a href="/" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Home
+          </a>
+        </li>
+        <li>
+          <a href="/opportunities/browse" class="nav__link nav__link--active">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Opportunities
+          </a>
+        </li>
+        <li>
+          <a href="/careers/explore" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+              <path d="M2 12h20"></path>
+            </svg>
+            Careers
+          </a>
+        </li>
+        <li>
+          <a href="/near/me" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            Near Me
+          </a>
+        </li>
+        <li>
+          <a href="/news/daily" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
+              <path d="M18 14h-8"></path>
+              <path d="M15 18h-5"></path>
+              <path d="M10 6h8v4h-8V6Z"></path>
+            </svg>
+            News
+          </a>
+        </li>
+        <li>
+          <a href="/student/dashboard" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+              <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+              <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+              <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+            </svg>
+            Dashboard
+          </a>
+        </li>
+        
         <!-- <li><a href="opportunities.html" class="nav__link nav__link--active"> -->
         <li><a href="/opportunities/browse" class="nav__link nav__link--active">
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -69,7 +122,7 @@
           Dashboard
         </a></li>
       </ul>
-      
+
       <div class="nav__actions nav__actions--dashboard">
         <button class="nav__icon-btn" aria-label="Notifications">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -114,7 +167,7 @@
           </div>
         </div>
       </div>
-      
+
       <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
         &#9776;
       </button>
@@ -123,6 +176,7 @@
 
   <main class="page-content">
     <div class="container">
+
       <!-- Page Header -->
       <div class="page-header">
         <h1 class="page-header__title">Discover Opportunities</h1>
@@ -143,41 +197,35 @@
             <label class="search-filters__label">Type</label>
             <select class="search-filters__select" id="typeFilter">
               <option value="">All Types</option>
-              <option value="scholarship">Scholarship</option>
-              <option value="internship">Internship</option>
-              <option value="workshop">Workshop</option>
-              <option value="learnership">Learnership</option>
-              <option value="bursary">Bursary</option>
-              <option value="program">Program</option>
+              <option value="Scholarship">Scholarship</option>
+              <option value="Internship">Internship</option>
+              <option value="Workshop">Workshop</option>
+              <option value="Learnership">Learnership</option>
+              <option value="Bursary">Bursary</option>
+              <option value="Programme">Programme</option>
             </select>
           </div>
           <div class="search-filters__group">
             <label class="search-filters__label">Province</label>
             <select class="search-filters__select" id="provinceFilter">
               <option value="">All Provinces</option>
-              <option value="gauteng">Gauteng</option>
-              <option value="western-cape">Western Cape</option>
-              <option value="kwazulu-natal">KwaZulu-Natal</option>
-              <option value="eastern-cape">Eastern Cape</option>
-              <option value="free-state">Free State</option>
-              <option value="mpumalanga">Mpumalanga</option>
-              <option value="limpopo">Limpopo</option>
-              <option value="north-west">North West</option>
-              <option value="northern-cape">Northern Cape</option>
+              <option value="Gauteng">Gauteng</option>
+              <option value="Western Cape">Western Cape</option>
+              <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+              <option value="Eastern Cape">Eastern Cape</option>
+              <option value="Free State">Free State</option>
+              <option value="Mpumalanga">Mpumalanga</option>
+              <option value="Limpopo">Limpopo</option>
+              <option value="North West">North West</option>
+              <option value="Northern Cape">Northern Cape</option>
+              <option value="National (All Provinces)">National</option>
             </select>
           </div>
           <div class="search-filters__group">
-            <label class="search-filters__label">Field</label>
-            <select class="search-filters__select" id="fieldFilter">
-              <option value="">All Fields</option>
-              <option value="technology">Technology</option>
-              <option value="engineering">Engineering</option>
-              <option value="healthcare">Healthcare</option>
-              <option value="business">Business</option>
-              <option value="arts">Arts & Design</option>
-              <option value="education">Education</option>
-              <option value="science">Science</option>
-              <option value="agriculture">Agriculture</option>
+            <label class="search-filters__label">Sort By</label>
+            <select class="search-filters__select" id="sortSelect">
+              <option value="newest">Newest First</option>
+              <option value="deadline">Deadline</option>
             </select>
           </div>
           <button class="btn btn--primary search-filters__btn" id="filterBtn">
@@ -191,263 +239,14 @@
 
       <!-- Results Count -->
       <div class="results-info">
-        <p class="results-info__count"><span id="resultsCount">24</span> opportunities found</p>
-        <div class="results-info__sort">
-          <label>Sort by:</label>
-          <select class="results-info__select" id="sortSelect">
-            <option value="newest">Newest First</option>
-            <option value="deadline">Deadline</option>
-            <option value="relevance">Relevance</option>
-          </select>
-        </div>
+        <p class="results-info__count">
+          <span id="resultsCount">0</span> opportunities found
+        </p>
       </div>
 
-      <!-- Opportunities Grid -->
+      <!-- Opportunities Grid — filled dynamically by opportunitiesJS.js -->
       <div class="opportunities-grid" id="opportunitiesGrid">
-        <!-- Opportunity Card 1 - With Image -->
-        <article class="opp-card opp-card--with-image">
-          <div class="opp-card__image">
-            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=200&fit=crop" alt="Sasol Bursary Program" crossorigin="anonymous">
-            <span class="opp-card__badge opp-card__badge--scholarship">Scholarship</span>
-          </div>
-          <div class="opp-card__content">
-            <div class="opp-card__org-row">
-              <span class="opp-card__org">Sasol South Africa</span>
-              <button class="opp-card__save" aria-label="Save opportunity">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                </svg>
-              </button>
-            </div>
-            <h3 class="opp-card__title">Sasol Bursary Program 2026</h3>
-            <p class="opp-card__description">Full bursary covering tuition, accommodation, and living expenses for engineering and science students.</p>
-            <div class="opp-card__meta">
-              <span class="opp-card__location">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                Gauteng
-              </span>
-              <span class="opp-card__deadline">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                Closes: Apr 15, 2026
-              </span>
-            </div>
-            <div class="opp-card__tags">
-              <span class="opp-card__tag">Engineering</span>
-              <span class="opp-card__tag">Science</span>
-            </div>
-            <a href="#" class="btn btn--gradient btn--full">View Details</a>
-          </div>
-        </article>
-
-        <!-- Opportunity Card 2 - With Image -->
-        <article class="opp-card opp-card--with-image">
-          <div class="opp-card__image">
-            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=200&fit=crop" alt="Standard Bank Internship" crossorigin="anonymous">
-            <span class="opp-card__badge opp-card__badge--internship">Internship</span>
-          </div>
-          <div class="opp-card__content">
-            <div class="opp-card__org-row">
-              <span class="opp-card__org">Standard Bank</span>
-              <button class="opp-card__save" aria-label="Save opportunity">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                </svg>
-              </button>
-            </div>
-            <h3 class="opp-card__title">Software Development Internship</h3>
-            <p class="opp-card__description">12-month internship program for IT graduates to gain hands-on experience in software development.</p>
-            <div class="opp-card__meta">
-              <span class="opp-card__location">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                Johannesburg
-              </span>
-              <span class="opp-card__deadline">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                Closes: Apr 30, 2026
-              </span>
-            </div>
-            <div class="opp-card__tags">
-              <span class="opp-card__tag">Technology</span>
-              <span class="opp-card__tag">IT</span>
-            </div>
-            <a href="#" class="btn btn--gradient btn--full">View Details</a>
-          </div>
-        </article>
-
-        <!-- Opportunity Card 3 - With Image -->
-        <article class="opp-card opp-card--with-image">
-          <div class="opp-card__image">
-            <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=400&h=200&fit=crop" alt="Youth Leadership Summit" crossorigin="anonymous">
-            <span class="opp-card__badge opp-card__badge--workshop">Workshop</span>
-          </div>
-          <div class="opp-card__content">
-            <div class="opp-card__org-row">
-              <span class="opp-card__org">NYDA</span>
-              <button class="opp-card__save" aria-label="Save opportunity">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                </svg>
-              </button>
-            </div>
-            <h3 class="opp-card__title">Youth Leadership Summit 2026</h3>
-            <p class="opp-card__description">3-day leadership workshop focused on personal development, public speaking, and entrepreneurship.</p>
-            <div class="opp-card__meta">
-              <span class="opp-card__location">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                Cape Town
-              </span>
-              <span class="opp-card__deadline">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                Closes: May 10, 2026
-              </span>
-            </div>
-            <div class="opp-card__tags">
-              <span class="opp-card__tag">Leadership</span>
-              <span class="opp-card__tag">Development</span>
-            </div>
-            <a href="#" class="btn btn--gradient btn--full">View Details</a>
-          </div>
-        </article>
-
-        <!-- Opportunity Card 4 -->
-        <article class="opp-card opp-card--with-image">
-          <div class="opp-card__image">
-            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=200&fit=crop" alt="Healthcare Learnership" crossorigin="anonymous">
-            <span class="opp-card__badge opp-card__badge--learnership">Learnership</span>
-          </div>
-          <div class="opp-card__content">
-            <div class="opp-card__org-row">
-              <span class="opp-card__org">Netcare</span>
-              <button class="opp-card__save" aria-label="Save opportunity">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                </svg>
-              </button>
-            </div>
-            <h3 class="opp-card__title">Healthcare Assistant Learnership</h3>
-            <p class="opp-card__description">18-month learnership program with NQF qualification in primary healthcare assistance.</p>
-            <div class="opp-card__meta">
-              <span class="opp-card__location">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                KwaZulu-Natal
-              </span>
-              <span class="opp-card__deadline">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                Closes: May 20, 2026
-              </span>
-            </div>
-            <div class="opp-card__tags">
-              <span class="opp-card__tag">Healthcare</span>
-            </div>
-            <a href="#" class="btn btn--gradient btn--full">View Details</a>
-          </div>
-        </article>
-
-        <!-- Opportunity Card 5 -->
-        <article class="opp-card opp-card--with-image">
-          <div class="opp-card__image">
-            <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=200&fit=crop" alt="Business Program" crossorigin="anonymous">
-            <span class="opp-card__badge opp-card__badge--program">Program</span>
-          </div>
-          <div class="opp-card__content">
-            <div class="opp-card__org-row">
-              <span class="opp-card__org">MTN Foundation</span>
-              <button class="opp-card__save" aria-label="Save opportunity">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                </svg>
-              </button>
-            </div>
-            <h3 class="opp-card__title">MTN Youth Skills Development</h3>
-            <p class="opp-card__description">6-month digital skills program focusing on coding, data analytics, and digital marketing.</p>
-            <div class="opp-card__meta">
-              <span class="opp-card__location">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                National
-              </span>
-              <span class="opp-card__deadline">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                Closes: Jun 1, 2026
-              </span>
-            </div>
-            <div class="opp-card__tags">
-              <span class="opp-card__tag">Technology</span>
-              <span class="opp-card__tag">Digital</span>
-            </div>
-            <a href="#" class="btn btn--gradient btn--full">View Details</a>
-          </div>
-        </article>
-
-        <!-- Opportunity Card 6 -->
-        <article class="opp-card opp-card--with-image">
-          <div class="opp-card__image">
-            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=200&fit=crop" alt="Allan Gray Bursary" crossorigin="anonymous">
-            <span class="opp-card__badge opp-card__badge--bursary">Bursary</span>
-          </div>
-          <div class="opp-card__content">
-            <div class="opp-card__org-row">
-              <span class="opp-card__org">Allan Gray Foundation</span>
-              <button class="opp-card__save opp-card__save--active" aria-label="Saved">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                </svg>
-              </button>
-            </div>
-            <h3 class="opp-card__title">Allan Gray Orbis Fellowship</h3>
-            <p class="opp-card__description">Comprehensive bursary and fellowship for high-achieving students with entrepreneurial potential.</p>
-            <div class="opp-card__meta">
-              <span class="opp-card__location">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                National
-              </span>
-              <span class="opp-card__deadline">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                Closes: Apr 20, 2026
-              </span>
-            </div>
-            <div class="opp-card__tags">
-              <span class="opp-card__tag">Business</span>
-              <span class="opp-card__tag">Leadership</span>
-            </div>
-            <a href="#" class="btn btn--gradient btn--full">View Details</a>
-          </div>
-        </article>
+        <!-- Cards are injected here by JavaScript -->
       </div>
 
       <!-- Pagination -->
@@ -472,6 +271,7 @@
           </svg>
         </button>
       </div>
+
     </div>
   </main>
 
@@ -494,6 +294,8 @@
     </div>
   </footer>
 
-  <script src="../jsFrontEnd/dashboardJS.js"></script>
+  <script src="/jsFrontEnd/dashboardJS.js"></script>
+  <script src="/jsFrontEnd/opportunitiesJS.js"></script>
+
 </body>
 </html>

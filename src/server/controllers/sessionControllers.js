@@ -40,3 +40,10 @@ export const verifyToken = (req, res, next) => {
         return res.redirect('/login-page');
     }
 };
+
+export const requireAdmin = (req, res, next) => {
+    if (req.user?.accountType !== "admin") {
+        return res.redirect('/login-page');
+    }
+    next();
+};

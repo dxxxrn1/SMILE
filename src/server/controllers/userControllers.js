@@ -12,17 +12,12 @@ export const saveStudentDetails = async (req, res) => {
     console.log("The request is received!!")
     try {
         const { firstName, lastName, email, province, educationLevel, password } = req.body;
-
         if (!firstName || !lastName || !email || !province || !educationLevel || !password) {
             return res.sendStatus(400);
         }
-
         const pool = await connectToDB();
-
         console.log("the database is connected!!")
-
         // Check if email already exists
-
         console.log("3️⃣ connected, about to SELECT");
         const results = await pool
             .request()
@@ -32,11 +27,8 @@ export const saveStudentDetails = async (req, res) => {
         if (results.recordset.length > 0) {
             return res.sendStatus(403);
         }
-
         console.log(" about to hash password");
-
         const hashedPassword = await bcrypt.hash(password, 10);
-
         await pool
         .request()
         .input("firstname", sql.VarChar, firstName)
@@ -64,7 +56,6 @@ export const saveStudentDetails = async (req, res) => {
             subject: "Registration Received",  
             text: "You have successfully registered on SMILE!"
         };
-
         try {
             await transport.sendMail(mailOptions);
             console.log("Email sent successfully");
@@ -82,9 +73,7 @@ export const saveStudentDetails = async (req, res) => {
 
 export const saveOrganisationDetails = async(req,res)=>{
     try{
-
         console.log("Saving org details");
-
         const strengthOfpassWord = 10;
 
         const {orgName,orgEmail,orgType,orgProvince,password} = req.body;
@@ -96,25 +85,19 @@ export const saveOrganisationDetails = async(req,res)=>{
             })
 
         }
-
         const pool = await connectToDB();
-
         console.log("connected, about to SELECT");
-        
         const results = await pool
         .request()
         .input("email" , sql.VarChar , orgEmail)
         .query(`
             SELECT * FROM Organisation WHERE OrgEmail = @email;
         `)
-
         console.log("SELECT done, rows:", results.recordset.length);
 
         if(results.recordset.length > 0){
             return res.status(403);
         }
-
-
         console.log("about to hash password");
 
         const hashedPassword = await bcrypt.hash(password , strengthOfpassWord);
@@ -190,8 +173,6 @@ export const userLogin = async (req, res) => {
             }
 
             const user = results.recordset[0];
-
-
             console.log(user);
 
             // ✅ correct variable name
@@ -221,45 +202,76 @@ export const userLogin = async (req, res) => {
 
             console.log(stuName);
 
-            
-    
             console.log("✅ Student login successfully!");
             return res.status(200).json({ token, accountType: "student" , name: user.StuName,userinitials:initials});
 
         } else if (accountType === "organization") {
-            const results = await pool
-                .request()
-                .input("email", sql.VarChar, email)
-                .query(`SELECT * FROM Organisation WHERE OrgEmail = @email`);
 
-            if (results.recordset.length <= 0) {
-                return res.sendStatus(401);
-            }
+    // ✅ Check Admin table first
+    const adminResult = await pool
+        .request()
+        .input("email", sql.VarChar, email)
+        .query(`SELECT * FROM Admin WHERE AdminEmail = @email`);
 
-            const user = results.recordset[0];
+    if (adminResult.recordset.length > 0) {
+        // --- ADMIN LOGIN ---
+        const admin = adminResult.recordset[0];
 
-            // ✅ await added, correct variable name
-            const passwordMatch = await bcrypt.compare(password, user.Password);
+        const passwordMatch = await bcrypt.compare(password, admin.AdminPassword);
 
-            if (!passwordMatch) {
-                return res.status(401).json({ message: "Invalid credentials" });
-            }
+        if (!passwordMatch) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
 
-            // ✅ correct env variable names
-            const token = jwt.sign(
-                { id: user.OrgId, email: user.OrgEmail, accountType: "organization" },
-                process.env.JWT_SECRET,
-                { expiresIn: process.env.JWT_EXPIRES_IN }
-            );
+        const token = jwt.sign(
+            { id: admin.AdminID, email: admin.AdminEmail, accountType: "admin" },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN }
+        );
 
-            res.cookie('token', token, {
-                httpOnly: true,
-                secure: false,
-                maxAge: 7 * 24 * 60 * 60 * 1000
-            });
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: false,
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
 
-            console.log("✅ Organisation login successfully!");
-            return res.status(200).json({ token, accountType: "organization" , name: user.OrgName });        }
+        console.log("✅ Admin login via organisation card!");
+        return res.status(200).json({ token, accountType: "admin", name: admin.AdminName });
+    }
+
+    // ✅ Not an admin — check Organisation table as normal
+    const orgResult = await pool
+        .request()
+        .input("email", sql.VarChar, email)
+        .query(`SELECT * FROM Organisation WHERE OrgEmail = @email`);
+
+    if (orgResult.recordset.length <= 0) {
+        return res.sendStatus(401);
+    }
+
+    const user = orgResult.recordset[0];
+
+    const passwordMatch = await bcrypt.compare(password, user.Password);
+
+    if (!passwordMatch) {
+        return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign(
+        { id: user.OrgId, email: user.OrgEmail, accountType: "organization" },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
+
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    console.log("✅ Organisation login successfully!");
+    return res.status(200).json({ token, accountType: "organization", name: user.OrgName });
+}
 
     } catch (err) {
         console.error("❌ Login error:", err);
