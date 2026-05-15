@@ -382,27 +382,31 @@ const riasecQuestions = [
 let chatHistory = [];
 
 function formatBotResponse(text) {
-  let formatted = text;
+  let html = text;
 
-  formatted = formatted.replace(
-    /### (.*?)\n/g,
-    '<h4 style="margin-top: 16px; margin-bottom: 8px; color: var(--gray-900); font-size: 1.05rem;">$1</h4>',
-  );
-  formatted = formatted.replace(
-    /\*\*(.*?)\*\*/g,
-    '<strong style="color: var(--gray-900); font-weight: 600;">$1</strong>',
-  );
-  formatted = formatted.replace(
-    /(?:\n|^)[*-]\s+(.*)/g,
-    '<li style="margin-left: 20px; margin-bottom: 6px;">$1</li>',
-  );
-  formatted = formatted.replace(
-    /\n\n/g,
-    '</p><p style="margin-bottom: 12px;">',
-  );
-  formatted = formatted.replace(/\n/g, "<br>");
+  // 1.Bold text
+  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
-  return `<p style="margin-bottom: 12px;">${formatted}</p>`;
+  // 2.Headings
+  html = html.replace(
+    /^(#{2,3})\s+(.*)$/gm,
+    '<h4 style="color: var(--primary-pink); margin-top: 16px; margin-bottom: 8px;">$2</h4>',
+  );
+
+  // 3. Bullet Points & Numbers
+  html = html.replace(/^[\*\-]\s+(.*)$/gm, "<li>$1</li>");
+  html = html.replace(/^\d+\.\s+(.*)$/gm, "<li>$1</li>");
+
+  // 4. Wrap list items in <ul> so the PDF CSS boxes work!
+  html = html.replace(/(<li>.*?<\/li>(?:\n|$))+/g, function (match) {
+    return `<ul>${match.replace(/\n/g, "")}</ul>`;
+  });
+
+  // 5. Paragraphs
+  html = html.replace(/\n\n/g, '</p><p style="margin-bottom: 12px;">');
+  html = html.replace(/\n/g, "<br>");
+
+  return `<p style="margin-bottom: 12px;">${html}</p>`;
 }
 
 /**
@@ -575,12 +579,10 @@ window.sendChat = async function () {
 };
 
 window.downloadCareerDoc = async function () {
-  console.log("downloadCareerDoc done, history length:", chatHistory.length);
-  // ... rest of function
-  // if (chatHistory.length === 0) {
-  //   alert("Please chat with the AI first before downloading your career path.");
-  //   return;
-  // }
+  if (chatHistory.length === 0) {
+    alert("Please chat with the AI first before downloading your career path.");
+    return;
+  }
 
   const btn = document.getElementById("downloadDocBtn");
   if (!btn) return;
@@ -601,70 +603,62 @@ window.downloadCareerDoc = async function () {
 
     if (!data.doc) throw new Error("No document content received.");
 
-    // Format the text using your existing function
     const formattedContent = formatBotResponse(data.doc);
 
-    // Create the PDF container
+    // 1. Create the container (We don't need to attach it to the screen anymore!)
     const element = document.createElement("div");
 
-    // CSS
     element.innerHTML = `
       <style>
-        .pdf-container { font-family: 'Inter', Helvetica, Arial, sans-serif; padding: 40px 50px; color: #1f2937; background: #ffffff; }
+        .pdf-wrapper { font-family: 'Inter', Helvetica, Arial, sans-serif; color: #1f2937; background: #ffffff; width: 100%; }
+        .pdf-header { text-align: center; border-bottom: 3px solid #ec4899; padding-bottom: 20px; margin-bottom: 25px; background: #fdf2f8; padding-top: 20px; border-radius: 8px 8px 0 0;}
+        .pdf-header h1 { color: #f97316; margin: 0; font-size: 28px; font-weight: bold;}
+        .pdf-header h2 { color: #111827; margin: 8px 0 0 0; font-size: 18px; font-weight: 600;}
+        .pdf-content { line-height: 1.5; font-size: 13px; }
+        .pdf-content h4 { color: #ec4899; font-size: 16px; margin-top: 20px; margin-bottom: 10px; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px; }
         
-        /* Premium Header */
-        .pdf-header { text-align: center; border-bottom: 3px solid #ec4899; padding-bottom: 25px; margin-bottom: 35px; background: #fdf2f8; padding-top: 30px; border-radius: 12px 12px 0 0;}
-        .pdf-header h1 { color: #f97316; margin: 0; font-size: 32px; letter-spacing: 2px; text-transform: uppercase; }
-        .pdf-header h2 { color: #111827; margin: 10px 0 0 0; font-size: 22px; font-weight: 600;}
+        /* The Timeline Boxes */
+        .pdf-content ul { list-style: none; padding-left: 15px; position: relative; margin-top: 10px; border-left: 2px solid #ec4899; margin-left: 10px;}
+        .pdf-content li { position: relative; background: #fdf2f8; border: 1px solid #fbcfe8; padding: 12px 16px; margin-bottom: 12px; border-radius: 6px; margin-left: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
+        .pdf-content li::before { content: ''; position: absolute; left: -37px; top: 15px; width: 12px; height: 12px; border-radius: 50%; background: #f97316; border: 2px solid #ffffff; box-shadow: 0 0 0 2px #ec4899; }
+        .pdf-content li::after { content: ''; position: absolute; left: -6px; top: 17px; width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-right: 6px solid #fbcfe8; }
         
-        /* Standard Content */
-        .pdf-content { line-height: 1.7; font-size: 14px; }
-        .pdf-content h4 { color: #ec4899; font-size: 18px; margin-top: 30px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; }
-        .pdf-content strong { color: #111827; }
-        
-    
-        /* This automatically turns normal bullet points into a connected visual path */
-        .pdf-content ul { list-style: none; padding-left: 10px; position: relative; }
-        .pdf-content ul::before { content: ''; position: absolute; left: 14px; top: 10px; bottom: 10px; width: 2px; background: #fbcfe8; }
-        .pdf-content li { position: relative; margin-bottom: 15px; padding-left: 35px; }
-        .pdf-content li::before { content: ''; position: absolute; left: 9px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: #ec4899; border: 3px solid #ffffff; box-shadow: 0 0 0 2px #fbcfe8; }
-        
-        /* Footer */
-        .pdf-footer { margin-top: 50px; text-align: center; font-size: 11px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+        .pdf-footer { margin-top: 30px; text-align: center; font-size: 10px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 15px; }
       </style>
 
-      <div class="pdf-container">
+      <div class="pdf-wrapper">
         <div class="pdf-header">
           <h1>SMILE</h1>
           <h2>Your Personalized Career Blueprint</h2>
         </div>
-        
         <div class="pdf-content">
           ${formattedContent}
         </div>
-        
         <div class="pdf-footer">
           Generated securely by the SMILE AI Career Assistant • ${new Date().toLocaleDateString()}
         </div>
       </div>
     `;
 
-    // High-Quality PDF Options
+    // 2. The Golden Options that fix bugs
     const opt = {
-      margin: 0,
-      filename: "My_SMILE_Career_Path.pdf",
-      image: { type: "jpeg", quality: 1 },
-      html2canvas: { scale: 3, useCORS: true, logging: false }, // Scale 3 makes text crystal clear
-      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+      margin:       0.4, 
+      filename:     "My_SMILE_Career_Path.pdf",
+      image:        { type: "jpeg", quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true, scrollY: 0 }, // scrollY: 0 fixes the blank page bug!
+      jsPDF:        { unit: "in", format: "a4", orientation: "portrait" },
+      pagebreak:    { mode: ['css', 'avoid-all'] } // Stops boxes from slicing in half across pages!
     };
 
+    // 3. Generate the PDF straight from the element in memory
     await html2pdf().set(opt).from(element).save();
 
-    btn.textContent = "Blueprint Saved";
+    btn.textContent = "✓ Blueprint Saved";
     setTimeout(() => {
       btn.textContent = "Download Career Path";
       btn.disabled = false;
     }, 3000);
+
   } catch (err) {
     console.error("PDF Generation Error:", err);
     alert("Failed to generate PDF. Check your connection.");
