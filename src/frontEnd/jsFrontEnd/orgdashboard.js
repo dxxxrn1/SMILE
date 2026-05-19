@@ -67,6 +67,11 @@ function initProfileDropdown() {
    TABS
    ================================================================ */
 function switchTab(tabId, clickedBtn) {
+  if (tabId === "applicants") {
+    window.location.href = "applicants.html";
+    return;
+  }
+
   // Hide all panels
   document.querySelectorAll(".tab-panel").forEach((p) => {
     p.style.display = "none";

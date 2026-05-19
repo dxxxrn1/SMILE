@@ -448,35 +448,68 @@ function setMapStatus(type, text) {
   span.textContent = text;
 }
 
-function applyClicked(title) {
-  alert(
-    `Applying for: ${title}\n\n(Connect to your backend POST /api/applications to submit real applications)`,
-  );
+async function applyClicked(title, oppId) {
+  if (!confirm(`Are you sure you want to apply for "${title}"?`)) return;
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Please log in to apply.");
+    window.location.href = "/login-page";
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/student/applications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ oppId })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      alert("Application submitted successfully!");
+      window.location.href = "/student/dashboard";
+    } else {
+      alert(data.message || "Failed to submit application.");
+    }
+  } catch (err) {
+    console.error("Error applying:", err);
+    alert("Network error occurred while applying.");
+  }
 }
 
-// async function applyClicked(title, oppId) {
-//   // 1. Check if we know they have completed their profile
-//   const isProfileComplete = localStorage.getItem("profileComplete");
+async function saveClicked(title, oppId) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Please log in to save opportunities.");
+    window.location.href = "/login-page";
+    return;
+  }
 
-//   if (isProfileComplete !== "true") {
-//     // 2.  Stop them and redirect.
-//     alert(
-//       `Wait! Before you can apply to "${title}", you need to complete your student profile.`,
-//     );
-//     window.location.href = "/student/profile"; // Send them to the new page
-//     return;
-//   }
-
-//   // 3. If they HAVE completed it, proceed
-//   alert(
-//     `Applying for: ${title}\n\n(Ready to trigger your backend POST /api/applications)`,
-//   );
-// }
-
-function saveClicked(title) {
-  alert(
-    `"${title}" saved! (Connect to your backend POST /api/student/saved-opportunities)`,
-  );
+  try {
+    const res = await fetch("/api/student/saved-opportunities", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ oppId })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      alert(`"${title}" saved successfully!`);
+      window.location.href = "/student/dashboard";
+    } else {
+      alert(data.message || "Failed to save opportunity.");
+    }
+  } catch (err) {
+    console.error("Error saving:", err);
+    alert("Network error occurred while saving.");
+  }
 }
 
 /* ================================================================

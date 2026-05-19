@@ -1,0 +1,58 @@
+/* ================================================================
+   SMILE - Applicants Page Styles
+   applicants.css
+   Specific styles for the standalone applicants management page.
+   ================================================================ */
+
+/* Enhanced hover effect for clickable applicant rows */
+#applicantTableBody .applicant-cell {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  border-radius: 6px;
+  padding: 4px;
+  margin: -4px;
+}
+
+#applicantTableBody .applicant-cell:hover {
+  background-color: var(--gray-50);
+  transform: translateX(4px);
+}
+
+#applicantTableBody .applicant-cell .applicant-name {
+  color: var(--gray-800);
+  transition: color 0.2s ease;
+}
+
+#applicantTableBody .applicant-cell:hover .applicant-name {
+  color: var(--primary-pink);
+}
+
+/* Page specific header adjustments */
+.dashboard__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 0.25rem;
+}
+
+.dashboard__subtitle {
+  color: var(--gray-500);
+  font-size: 0.9375rem;
+}
+
+/* Make sure the main layout stretches correctly */
+.dashboard-main {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+/* Smooth transition for status badges */
+.app-status {
+  transition: all 0.3s ease;
+}
+
+/* Export CSV button hover state */
+.btn--outline:hover {
+  background-color: var(--gray-50);
+  border-color: var(--gray-300);
+  color: var(--gray-900);
+}

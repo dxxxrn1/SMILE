@@ -92,11 +92,10 @@
             </svg>
             My Opportunities
           </button>
-          <button
+          <a
+            href="applicants.html"
             class="org-tab"
-            role="tab"
-            data-tab="applicants"
-            onclick="switchTab('applicants', this)"
+            style="text-decoration: none;"
           >
             <svg
               width="18"
@@ -112,7 +111,7 @@
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
             Applicants
-          </button>
+          </a>
           <button
             class="org-tab"
             role="tab"
@@ -393,92 +392,33 @@
                     </svg>
                     Recent Activity
                   </h2>
-                  <button
-                    class="org-section__link"
-                    onclick="
-                      switchTab(
-                        'applicants',
-                        document.querySelector('[data-tab=applicants]'),
-                      )
-                    "
-                  >
-                    View All
-                  </button>
                 </div>
-                <p class="org-section__sub">Latest applications and updates</p>
-                <div class="activity-feed" id="activityFeed">
-                  <div class="activity-item">
-                    <div class="activity-item__avatar">TM</div>
-                    <div class="activity-item__info">
-                      <span class="activity-item__name">Thabo M.</span>
-                      <span class="activity-item__action"
-                        >applied to <strong>Youth Coding Bootcamp</strong></span
-                      >
+                <p class="org-section__sub" style="margin-bottom: 24px;">Manage all recent applications and updates.</p>
+                <ul class="recent-applicants-list" style="list-style: none; padding: 0; margin: 0 0 24px 0;">
+                  <li style="padding: 12px 0; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <strong style="color: #111827;">Thabo Mokoena</strong><br>
+                      <span style="font-size: 13px; color: #6b7280;">Applied to: Youth Coding Bootcamp</span>
                     </div>
-                    <span class="activity-item__time">2 hrs ago</span>
-                  </div>
-                  <div class="activity-item">
-                    <div
-                      class="activity-item__avatar"
-                      style="background: #7c3aed"
-                    >
-                      NK
+                    <a href="applicants.html" style="font-size: 13px; color: #2563eb; text-decoration: none; font-weight: 500;">View</a>
+                  </li>
+                  <li style="padding: 12px 0; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <strong style="color: #111827;">Naledi Khumalo</strong><br>
+                      <span style="font-size: 13px; color: #6b7280;">Applied to: Digital Skills Training</span>
                     </div>
-                    <div class="activity-item__info">
-                      <span class="activity-item__name">Naledi K.</span>
-                      <span class="activity-item__action"
-                        >applied to
-                        <strong>Digital Skills Training</strong></span
-                      >
+                    <a href="applicants.html" style="font-size: 13px; color: #2563eb; text-decoration: none; font-weight: 500;">View</a>
+                  </li>
+                  <li style="padding: 12px 0; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <strong style="color: #111827;">Sipho Dlamini</strong><br>
+                      <span style="font-size: 13px; color: #6b7280;">Applied to: Youth Coding Bootcamp</span>
                     </div>
-                    <span class="activity-item__time">5 hrs ago</span>
-                  </div>
-                  <div class="activity-item">
-                    <div
-                      class="activity-item__avatar"
-                      style="background: #059669"
-                    >
-                      SD
-                    </div>
-                    <div class="activity-item__info">
-                      <span class="activity-item__name">Sipho D.</span>
-                      <span class="activity-item__action"
-                        >applied to <strong>Youth Coding Bootcamp</strong></span
-                      >
-                    </div>
-                    <span class="activity-item__time">1 day ago</span>
-                  </div>
-                  <div class="activity-item">
-                    <div
-                      class="activity-item__avatar"
-                      style="background: #ec4899"
-                    >
-                      AN
-                    </div>
-                    <div class="activity-item__info">
-                      <span class="activity-item__name">Amahle N.</span>
-                      <span class="activity-item__action"
-                        >applied to <strong>Leadership Workshop</strong></span
-                      >
-                    </div>
-                    <span class="activity-item__time">1 day ago</span>
-                  </div>
-                  <div class="activity-item">
-                    <div
-                      class="activity-item__avatar"
-                      style="background: #2563eb"
-                    >
-                      LM
-                    </div>
-                    <div class="activity-item__info">
-                      <span class="activity-item__name">Lethabo M.</span>
-                      <span class="activity-item__action"
-                        >applied to
-                        <strong>Digital Skills Training</strong></span
-                      >
-                    </div>
-                    <span class="activity-item__time">2 days ago</span>
-                  </div>
+                    <a href="applicants.html" style="font-size: 13px; color: #2563eb; text-decoration: none; font-weight: 500;">View</a>
+                  </li>
+                </ul>
+                <div style="text-align: center;">
+                  <a href="applicants.html" class="btn btn--gradient" style="display: inline-block; text-decoration: none; padding: 10px 24px; border-radius: 8px;">View All Applicants</a>
                 </div>
               </div>
 
@@ -1059,347 +999,7 @@
             </div>
           </div>
 
-          <div class="tab-panel" id="tab-applicants" style="display: none">
-            <div class="org-section">
-              <div class="org-section__header">
-                <h2 class="org-section__title">All Applicants</h2>
-                <div style="display: flex; gap: 0.625rem; align-items: center">
-                  <select
-                    class="org-select"
-                    id="applicantOppFilter"
-                    onchange="filterApplicants()"
-                  >
-                    <option value="">All opportunities</option>
-                    <option value="Youth Coding Bootcamp">
-                      Youth Coding Bootcamp
-                    </option>
-                    <option value="Digital Skills Training">
-                      Digital Skills Training
-                    </option>
-                    <option value="Leadership Workshop">
-                      Leadership Workshop
-                    </option>
-                  </select>
-                  <select
-                    class="org-select"
-                    id="applicantStatusFilter"
-                    onchange="filterApplicants()"
-                  >
-                    <option value="">All statuses</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Reviewed">Reviewed</option>
-                    <option value="Shortlisted">Shortlisted</option>
-                    <option value="Rejected">Rejected</option>
-                  </select>
-                  <button
-                    class="btn btn--outline btn--sm"
-                    onclick="showToast('Exporting CSV...')"
-                  >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    Export CSV
-                  </button>
-                </div>
-              </div>
-              <p class="org-section__sub">
-                Manage applications across all your opportunities
-              </p>
 
-              <div class="org-table-wrap">
-                <table class="org-table" id="applicantTable">
-                  <thead>
-                    <tr>
-                      <th>Applicant</th>
-                      <th>Opportunity</th>
-                      <th>Province</th>
-                      <th>Education</th>
-                      <th>Applied</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="applicantTableBody">
-                    <tr data-opp="Youth Coding Bootcamp" data-status="Pending">
-                      <td>
-                        <div class="applicant-cell">
-                          <div
-                            class="applicant-avatar"
-                            style="background: var(--gradient-primary)"
-                          >
-                            TM
-                          </div>
-                          <div>
-                            <div class="applicant-name">Thabo Mokoena</div>
-                            <div class="applicant-email">
-                              t.mokoena@email.co.za
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>Youth Coding Bootcamp</td>
-                      <td>Gauteng</td>
-                      <td>Grade 12</td>
-                      <td>20 Mar 2026</td>
-                      <td>
-                        <span class="app-status app-status--pending"
-                          >Pending</span
-                        >
-                      </td>
-                      <td class="table-actions">
-                        <button
-                          class="tbl-btn tbl-btn--view"
-                          onclick="
-                            showApplicantModal(
-                              'Thabo Mokoena',
-                              'Youth Coding Bootcamp',
-                              'Gauteng',
-                              'Grade 12',
-                              't.mokoena@email.co.za',
-                            )
-                          "
-                        >
-                          View
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--shortlist"
-                          onclick="changeApplicantStatus(this, 'Shortlisted')"
-                        >
-                          Shortlist
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--danger"
-                          onclick="changeApplicantStatus(this, 'Rejected')"
-                        >
-                          Reject
-                        </button>
-                      </td>
-                    </tr>
-                    <tr
-                      data-opp="Digital Skills Training"
-                      data-status="Reviewed"
-                    >
-                      <td>
-                        <div class="applicant-cell">
-                          <div
-                            class="applicant-avatar"
-                            style="background: #7c3aed"
-                          >
-                            NK
-                          </div>
-                          <div>
-                            <div class="applicant-name">Naledi Khumalo</div>
-                            <div class="applicant-email">
-                              naledi.k@gmail.com
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>Digital Skills Training</td>
-                      <td>Western Cape</td>
-                      <td>Diploma</td>
-                      <td>18 Mar 2026</td>
-                      <td>
-                        <span class="app-status app-status--reviewed"
-                          >Reviewed</span
-                        >
-                      </td>
-                      <td class="table-actions">
-                        <button
-                          class="tbl-btn tbl-btn--view"
-                          onclick="
-                            showApplicantModal(
-                              'Naledi Khumalo',
-                              'Digital Skills Training',
-                              'Western Cape',
-                              'Diploma',
-                              'naledi.k@gmail.com',
-                            )
-                          "
-                        >
-                          View
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--shortlist"
-                          onclick="changeApplicantStatus(this, 'Shortlisted')"
-                        >
-                          Shortlist
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--danger"
-                          onclick="changeApplicantStatus(this, 'Rejected')"
-                        >
-                          Reject
-                        </button>
-                      </td>
-                    </tr>
-                    <tr
-                      data-opp="Youth Coding Bootcamp"
-                      data-status="Shortlisted"
-                    >
-                      <td>
-                        <div class="applicant-cell">
-                          <div
-                            class="applicant-avatar"
-                            style="background: #059669"
-                          >
-                            SD
-                          </div>
-                          <div>
-                            <div class="applicant-name">Sipho Dlamini</div>
-                            <div class="applicant-email">
-                              sipho.d@outlook.com
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>Youth Coding Bootcamp</td>
-                      <td>KwaZulu-Natal</td>
-                      <td>Undergraduate</td>
-                      <td>15 Mar 2026</td>
-                      <td>
-                        <span class="app-status app-status--shortlisted"
-                          >Shortlisted</span
-                        >
-                      </td>
-                      <td class="table-actions">
-                        <button
-                          class="tbl-btn tbl-btn--view"
-                          onclick="
-                            showApplicantModal(
-                              'Sipho Dlamini',
-                              'Youth Coding Bootcamp',
-                              'KwaZulu-Natal',
-                              'Undergraduate',
-                              'sipho.d@outlook.com',
-                            )
-                          "
-                        >
-                          View
-                        </button>
-                        <button
-                          class="tbl-btn"
-                          onclick="showToast('Email sent to Sipho Dlamini')"
-                        >
-                          Notify
-                        </button>
-                      </td>
-                    </tr>
-                    <tr data-opp="Leadership Workshop" data-status="Pending">
-                      <td>
-                        <div class="applicant-cell">
-                          <div
-                            class="applicant-avatar"
-                            style="background: #ec4899"
-                          >
-                            AN
-                          </div>
-                          <div>
-                            <div class="applicant-name">Amahle Nkosi</div>
-                            <div class="applicant-email">
-                              amahle.n@yahoo.com
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>Leadership Workshop</td>
-                      <td>Gauteng</td>
-                      <td>Grade 11</td>
-                      <td>12 Mar 2026</td>
-                      <td>
-                        <span class="app-status app-status--pending"
-                          >Pending</span
-                        >
-                      </td>
-                      <td class="table-actions">
-                        <button
-                          class="tbl-btn tbl-btn--view"
-                          onclick="
-                            showApplicantModal(
-                              'Amahle Nkosi',
-                              'Leadership Workshop',
-                              'Gauteng',
-                              'Grade 11',
-                              'amahle.n@yahoo.com',
-                            )
-                          "
-                        >
-                          View
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--shortlist"
-                          onclick="changeApplicantStatus(this, 'Shortlisted')"
-                        >
-                          Shortlist
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--danger"
-                          onclick="changeApplicantStatus(this, 'Rejected')"
-                        >
-                          Reject
-                        </button>
-                      </td>
-                    </tr>
-                    <tr
-                      data-opp="Digital Skills Training"
-                      data-status="Rejected"
-                    >
-                      <td>
-                        <div class="applicant-cell">
-                          <div
-                            class="applicant-avatar"
-                            style="background: #2563eb"
-                          >
-                            LM
-                          </div>
-                          <div>
-                            <div class="applicant-name">Lethabo Molefe</div>
-                            <div class="applicant-email">
-                              lethabo.m@webmail.co.za
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>Digital Skills Training</td>
-                      <td>Limpopo</td>
-                      <td>Certificate</td>
-                      <td>10 Mar 2026</td>
-                      <td>
-                        <span class="app-status app-status--rejected"
-                          >Rejected</span
-                        >
-                      </td>
-                      <td class="table-actions">
-                        <button
-                          class="tbl-btn tbl-btn--view"
-                          onclick="
-                            showApplicantModal(
-                              'Lethabo Molefe',
-                              'Digital Skills Training',
-                              'Limpopo',
-                              'Certificate',
-                              'lethabo.m@webmail.co.za',
-                            )
-                          "
-                        >
-                          View
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
         </div>
       </main>
     </div>
@@ -1461,6 +1061,6 @@
     <div class="toast" id="toast" role="alert"></div>
 
     <script src="../jsFrontEnd/dashboardJS.js"></script>
-    <script src="../jsFrontEnd/orgdashboardJS.js"></script>
+    <script src="../jsFrontEnd/orgdashboard.js"></script>
   </body>
 </html>

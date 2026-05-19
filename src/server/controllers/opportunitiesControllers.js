@@ -102,3 +102,41 @@ export const getAllOpportunities = async (req, res) => {
         return res.status(500).json({ success: false, message: "Failed to fetch opportunities." });
     }
 };
+
+export const getOrganizationApplicants = async (req, res) => {
+    try {
+        const orgId = req.user?.id;
+        if (!orgId || req.user?.accountType !== "organization") {
+            return res.status(401).json({ success: false, message: "Unauthorised." });
+        }
+
+        const pool = await connectToDB();
+        const request = pool.request();
+        
+        request.input("OrgId", sql.Int, orgId);
+
+        // Fetch applications for opportunities belonging to this organization
+        const query = `
+            SELECT 
+                a.AppID, a.Status AS ApplicationStatus, a.DateApplied,
+                o.Title AS OpportunityTitle, o.OppType, o.Province AS OpportunityProvince,
+                s.StuID, s.StuName, s.StuLastName, s.StuEmail, s.StuProvince, s.StuEducationLevel
+            FROM [dbo].[Applications] a
+            JOIN [dbo].[Opportunities] o ON a.OppID = o.OppID
+            JOIN [dbo].[Student] s ON a.StuID = s.StuID
+            WHERE o.OrgId = @OrgId
+            ORDER BY a.DateApplied DESC
+        `;
+
+        const result = await request.query(query);
+
+        return res.status(200).json({
+            success: true,
+            applicants: result.recordset
+        });
+
+    } catch (err) {
+        console.error("Error fetching org applicants:", err);
+        return res.status(500).json({ success: false, message: "Failed to fetch applicants." });
+    }
+};

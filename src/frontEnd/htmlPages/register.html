@@ -6,75 +6,107 @@
   <meta name="description" content="Create your free SMILE account to access opportunities for South African youth.">
   <title>Create Account - SMILE</title>
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/auth-redesign.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="auth-page">
+<body class="auth-v2-page auth-v2-light">
 
-  <header class="header">
-    <nav class="nav container">
-      <a href="/" class="nav__logo">
-        <span class="nav__logo-icon">&#9786;</span>
-        <span>SMILE</span>
+  <!-- LEFT PANEL -->
+  <div class="auth-v2-left">
+    <div class="auth-v2-left__circles">
+      <span></span><span></span><span></span>
+    </div>
+
+    <!-- Logo -->
+    <a href="/" class="auth-v2-logo">
+      <div class="auth-v2-logo__icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+          <line x1="9" y1="9" x2="9.01" y2="9"/>
+          <line x1="15" y1="9" x2="15.01" y2="9"/>
+        </svg>
+      </div>
+      SMILE
+    </a>
+
+    <!-- Headline -->
+    <div class="auth-v2-headline">
+      <h2>Join us<br>today.</h2>
+      <p>Your future starts here. Create an account to unlock opportunities across South Africa.</p>
+    </div>
+
+    <!-- Benefits -->
+    <div class="auth-v2-benefits">
+      <div class="auth-v2-benefit">
+        <div class="auth-v2-benefit__check">✓</div>
+        500+ active opportunities
+      </div>
+      <div class="auth-v2-benefit">
+        <div class="auth-v2-benefit__check">✓</div>
+        Connect with NGOs and Companies
+      </div>
+      <div class="auth-v2-benefit">
+        <div class="auth-v2-benefit__check">✓</div>
+        Free forever for students
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="auth-v2-right">
+    <div class="auth-v2-form-wrap">
+
+      <!-- Mobile-only logo -->
+      <a href="/" class="auth-v2-mobile-logo">
+        <div class="auth-v2-mobile-logo__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+        </div>
+        SMILE
       </a>
-      <ul class="nav__menu" id="navMenu">
-        <li><a href="/" class="nav__link">
-          <span class="nav__link-icon">&#127968;</span> Home
-        </a></li>
-      </ul>
-      <div class="nav__actions">
-        <a href="/login-page" class="btn btn--outline">Log In</a>
-        <a href="/register-page" class="btn btn--primary">Sign Up</a>
-      </div>
-      <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
-        &#9776;
-      </button>
-    </nav>
-  </header>
 
-  <main class="auth-container">
-    <div class="auth-card auth-card--wide">
-
-      <div class="auth-card__header">
-        <h1 class="auth-card__title">Create Account</h1>
-        <p class="auth-card__subtitle">Choose your account type to get started</p>
+      <div class="auth-v2-heading">
+        <h1>Create Account</h1>
+        <p>Choose your account type to get started</p>
       </div>
 
-      <!-- Account Type Selector -->
-      <div class="account-type-selector account-type-selector--detailed">
-        <button type="button" class="account-type-card account-type-card--detailed account-type-card--active" data-type="student">
-          <div class="account-type-card__icon account-type-card__icon--student">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Account type pills -->
+      <div class="auth-v2-type-pills">
+        <button type="button" class="auth-v2-pill auth-v2-pill--active" data-type="student" id="pillStudent">
+          <div class="auth-v2-pill__icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
               <path d="M6 12v5c3 3 9 3 12 0v-5"/>
             </svg>
           </div>
-          <span class="account-type-card__label">Student</span>
-          <span class="account-type-card__description">Find opportunities</span>
-          <span class="account-type-card__badge account-type-card__badge--green">Free Forever</span>
+          <div>
+            Student
+            <span class="auth-v2-pill__sub">Find opportunities</span>
+          </div>
         </button>
-
-        <button type="button" class="account-type-card account-type-card--detailed" data-type="organization">
-          <div class="account-type-card__icon account-type-card__icon--organization">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 21h18"/>
-              <path d="M5 21V7l8-4v18"/>
+        <button type="button" class="auth-v2-pill" data-type="organization" id="pillOrg">
+          <div class="auth-v2-pill__icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 21h18"/><path d="M5 21V7l8-4v18"/>
               <path d="M19 21V11l-6-4"/>
-              <path d="M9 9v.01"/>
-              <path d="M9 12v.01"/>
-              <path d="M9 15v.01"/>
-              <path d="M9 18v.01"/>
             </svg>
           </div>
-          <span class="account-type-card__label">Organization</span>
-          <span class="account-type-card__description">Post opportunities</span>
-          <span class="account-type-card__badge account-type-card__badge--blue">NGOs & Companies</span>
+          <div>
+            Organisation
+            <span class="auth-v2-pill__sub">Post opportunities</span>
+          </div>
         </button>
       </div>
 
       <!-- STUDENT FORM -->
-      <form id="studentForm" class="form"  novalidate>
+      <form id="studentForm" class="form auth-v2-form" novalidate>
         <input type="hidden" name="accountType" value="student">
 
         <div class="form__row">
@@ -96,39 +128,41 @@
           <span class="form__error">Please enter a valid email address</span>
         </div>
 
-        <div class="form__group">
-          <label for="province" class="form__label">Province</label>
-          <select id="province" name="province" class="form__input form__select" required>
-            <option value="" disabled selected>Select your province</option>
-            <option value="eastern-cape">Eastern Cape</option>
-            <option value="free-state">Free State</option>
-            <option value="gauteng">Gauteng</option>
-            <option value="kwazulu-natal">KwaZulu-Natal</option>
-            <option value="limpopo">Limpopo</option>
-            <option value="mpumalanga">Mpumalanga</option>
-            <option value="northern-cape">Northern Cape</option>
-            <option value="north-west">North West</option>
-            <option value="western-cape">Western Cape</option>
-          </select>
-          <span class="form__error">Please select your province</span>
-        </div>
+        <div class="form__row">
+          <div class="form__group">
+            <label for="province" class="form__label">Province</label>
+            <select id="province" name="province" class="form__input form__select" required>
+              <option value="" disabled selected>Select province</option>
+              <option value="eastern-cape">Eastern Cape</option>
+              <option value="free-state">Free State</option>
+              <option value="gauteng">Gauteng</option>
+              <option value="kwazulu-natal">KwaZulu-Natal</option>
+              <option value="limpopo">Limpopo</option>
+              <option value="mpumalanga">Mpumalanga</option>
+              <option value="northern-cape">Northern Cape</option>
+              <option value="north-west">North West</option>
+              <option value="western-cape">Western Cape</option>
+            </select>
+            <span class="form__error">Please select your province</span>
+          </div>
 
-        <div class="form__group">
-          <label for="educationLevel" class="form__label">Education Level</label>
-          <select id="educationLevel" name="educationLevel" class="form__input form__select" required>
-            <option value="" disabled selected>Select education level</option>
-            <option value="grade-8">Grade 8</option>
-            <option value="grade-9">Grade 9</option>
-            <option value="grade-10">Grade 10</option>
-            <option value="grade-11">Grade 11</option>
-            <option value="grade-12">Grade 12 (Matric)</option>
-            <option value="certificate">Certificate</option>
-            <option value="diploma">Diploma</option>
-            <option value="undergraduate">Undergraduate Degree</option>
-            <option value="postgraduate">Postgraduate Degree</option>
-            <option value="other">Other</option>
-          </select>
-          <span class="form__error">Please select your education level</span>
+          <div class="form__group">
+            <label for="educationLevel" class="form__label">Education Level</label>
+            <select id="educationLevel" name="educationLevel" class="form__input form__select" required>
+              <option value="" disabled selected>Select level</option>
+              <option value="grade-8">Grade 8</option>
+              <option value="grade-9">Grade 9</option>
+              <option value="grade-10">Grade 10</option>
+              <option value="grade-11">Grade 11</option>
+              <option value="grade-12">Grade 12 (Matric)</option>
+              <option value="certificate">Certificate</option>
+              <option value="diploma">Diploma</option>
+              <option value="undergraduate">Undergraduate Degree</option>
+              <option value="postgraduate">Postgraduate Degree</option>
+              <option value="other">Other</option>
+            </select>
+            <span class="form__error">Please select education level</span>
+          </div>
         </div>
 
         <div class="form__group">
@@ -137,24 +171,26 @@
           <span class="form__error">Password must be at least 8 characters</span>
         </div>
 
-        <div class="form__group">
+        <div class="form__actions">
           <div class="form__checkbox">
             <input type="checkbox" id="studentTerms" name="terms" required>
-            <label for="studentTerms">I agree to the
-              <a href="#" class="form__link">Terms of Service</a> and
-              <a href="#" class="form__link">Privacy Policy</a>
-            </label>
+            <label for="studentTerms">I agree to the <a href="#" class="form__link">Terms</a> and <a href="#" class="form__link">Privacy Policy</a></label>
           </div>
-          <span class="form__error">You must agree to the Terms and Conditions</span>
+        </div>
+        <div class="form__group" style="margin-top: -15px;">
+          <span class="form__error" id="studentTermsError">You must agree to the Terms and Conditions</span>
         </div>
 
-        <button type="submit" class="btn btn--gradient form__submit">
-          Create Student Account
+        <button type="submit" class="btn--auth-submit">
+          Create Account
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
         </button>
       </form>
 
       <!-- ORGANIZATION FORM -->
-      <form id="organizationForm" class="form" novalidate style="display: none;">
+      <form id="organizationForm" class="form auth-v2-form" novalidate style="display: none;">
         <input type="hidden" name="accountType" value="organization">
 
         <div class="form__group">
@@ -169,35 +205,37 @@
           <span class="form__error">Please enter a valid email address</span>
         </div>
 
-        <div class="form__group">
-          <label for="orgType" class="form__label">Organization Type</label>
-          <select id="orgType" name="orgType" class="form__input form__select" required>
-            <option value="" disabled selected>Select organization type</option>
-            <option value="ngo">NGO / Non-Profit</option>
-            <option value="company">Company / Business</option>
-            <option value="government">Government</option>
-            <option value="educational">Educational Institution</option>
-            <option value="other">Other</option>
-          </select>
-          <span class="form__error">Please select organization type</span>
-        </div>
+        <div class="form__row">
+          <div class="form__group">
+            <label for="orgType" class="form__label">Organization Type</label>
+            <select id="orgType" name="orgType" class="form__input form__select" required>
+              <option value="" disabled selected>Select type</option>
+              <option value="ngo">NGO / Non-Profit</option>
+              <option value="company">Company / Business</option>
+              <option value="government">Government</option>
+              <option value="educational">Educational Institution</option>
+              <option value="other">Other</option>
+            </select>
+            <span class="form__error">Please select type</span>
+          </div>
 
-        <div class="form__group">
-          <label for="orgProvince" class="form__label">Province</label>
-          <select id="orgProvince" name="orgProvince" class="form__input form__select" required>
-            <option value="" disabled selected>Select province</option>
-            <option value="eastern-cape">Eastern Cape</option>
-            <option value="free-state">Free State</option>
-            <option value="gauteng">Gauteng</option>
-            <option value="kwazulu-natal">KwaZulu-Natal</option>
-            <option value="limpopo">Limpopo</option>
-            <option value="mpumalanga">Mpumalanga</option>
-            <option value="northern-cape">Northern Cape</option>
-            <option value="north-west">North West</option>
-            <option value="western-cape">Western Cape</option>
-            <option value="national">National / Multiple Provinces</option>
-          </select>
-          <span class="form__error">Please select province</span>
+          <div class="form__group">
+            <label for="orgProvince" class="form__label">Province</label>
+            <select id="orgProvince" name="orgProvince" class="form__input form__select" required>
+              <option value="" disabled selected>Select province</option>
+              <option value="eastern-cape">Eastern Cape</option>
+              <option value="free-state">Free State</option>
+              <option value="gauteng">Gauteng</option>
+              <option value="kwazulu-natal">KwaZulu-Natal</option>
+              <option value="limpopo">Limpopo</option>
+              <option value="mpumalanga">Mpumalanga</option>
+              <option value="northern-cape">Northern Cape</option>
+              <option value="north-west">North West</option>
+              <option value="western-cape">Western Cape</option>
+              <option value="national">National / Multiple</option>
+            </select>
+            <span class="form__error">Please select province</span>
+          </div>
         </div>
 
         <div class="form__group">
@@ -206,58 +244,41 @@
           <span class="form__error">Password must be at least 8 characters</span>
         </div>
 
-        <div class="form__group">
+        <div class="form__actions">
           <div class="form__checkbox">
             <input type="checkbox" id="orgTerms" name="terms" required>
-            <label for="orgTerms">I agree to the
-              <a href="#" class="form__link">Terms of Service</a> and
-              <a href="#" class="form__link">Privacy Policy</a>
-            </label>
+            <label for="orgTerms">I agree to the <a href="#" class="form__link">Terms</a> and <a href="#" class="form__link">Privacy Policy</a></label>
           </div>
-          <span class="form__error">You must agree to the Terms and Conditions</span>
+        </div>
+        <div class="form__group" style="margin-top: -15px;">
+          <span class="form__error" id="orgTermsError">You must agree to the Terms and Conditions</span>
         </div>
 
-        <button type="submit" class="btn btn--gradient form__submit">
-          Create Organization Account
+        <button type="submit" class="btn--auth-submit">
+          Create Account
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
         </button>
       </form>
 
-      <p class="auth-card__footer">
+      <p class="auth-v2-footer">
         Already have an account? <a href="/login-page">Log in</a>
       </p>
     </div>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__content">
-        <a href="/login-page" class="footer__logo">
-          <span class="nav__logo-icon">&#9786;</span>
-          <span>SMILE</span>
-        </a>
-        <nav class="footer__links">
-          <a href="#" class="footer__link">About Us</a>
-          <a href="#" class="footer__link">Contact</a>
-          <a href="#" class="footer__link">Privacy Policy</a>
-          <a href="#" class="footer__link">Terms of Service</a>
-        </nav>
-        <p class="footer__copy">&copy; 2026 SMILE. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+  </div>
 
   <script src="../jsFrontEnd/auth.js"></script>
-
   <script>
-    const cards = document.querySelectorAll('.account-type-card');
+    const pills = document.querySelectorAll('.auth-v2-pill');
     const studentForm = document.getElementById('studentForm');
     const organizationForm = document.getElementById('organizationForm');
 
-    cards.forEach(card => {
-      card.addEventListener('click', function () {
-        cards.forEach(c => c.classList.remove('account-type-card--active'));
-        this.classList.add('account-type-card--active');
-
+    pills.forEach(pill => {
+      pill.addEventListener('click', function() {
+        pills.forEach(p => p.classList.remove('auth-v2-pill--active'));
+        this.classList.add('auth-v2-pill--active');
+        
         if (this.dataset.type === 'student') {
           studentForm.style.display = 'block';
           organizationForm.style.display = 'none';
@@ -268,6 +289,5 @@
       });
     });
   </script>
-
 </body>
 </html>

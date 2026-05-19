@@ -41,6 +41,14 @@ export const orgDashboard = (req,res)=>{
     res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "orgdashboard.html"));
 }
 
+export const applicantsPage = (req,res)=>{
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "applicants.html"));
+}
+
+export const studentProfilePage = (req,res)=>{
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "studentProfile.html"));
+}
+
 export const forgotPasswordPage = (req,res)=>{
     res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" ,"htmlPages" , "forget-password.html"));
 }

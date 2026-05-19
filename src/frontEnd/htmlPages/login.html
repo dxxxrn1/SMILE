@@ -1,160 +1,233 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Log in to your SMILE account to access opportunities and resources for South African youth.">
-  <title>Log In - SMILE</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body class="auth-page">
-  <!-- Header / Navigation -->
-  <header class="header">
-    <nav class="nav container">
-      <a href="/" class="nav__logo">
-        <span class="nav__logo-icon">&#9786;</span>
-        <span>SMILE</span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Log in to your SMILE account to access opportunities and resources for South African youth."
+    />
+    <title>Log In - SMILE</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/auth-redesign.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="auth-v2-page">
+    <!-- LEFT PANEL -->
+    <div class="auth-v2-left">
+      <div class="auth-v2-left__circles">
+        <span></span><span></span><span></span>
+      </div>
+
+      <!-- Logo -->
+      <a href="/" class="auth-v2-logo">
+        <div class="auth-v2-logo__icon">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#fff"
+            stroke-width="2.5"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
+          </svg>
+        </div>
+        SMILE
       </a>
-      
-      <ul class="nav__menu" id="navMenu">
-        <li><a href="/" class="nav__link">
-          <!-- <span class="nav__link-icon">&#127968;</span> Home -->
-        </a></li>
-      </ul>
-      
-      <div class="nav__actions">
-        <a href="/login-page" class="btn btn--outline">Log In</a>
-        <a href="/register-page" class="btn btn--primary">Sign Up</a>
-      </div>
-      
-      <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
-        &#9776;
-      </button>
-    </nav>
-  </header>
 
-  <main class="auth-container">
-    <div class="auth-card">
-
-      <div class="auth-card__header">
-        <h1 class="auth-card__title">Log In</h1>
-        <p class="auth-card__subtitle">Choose your account type</p>
+      <!-- Headline -->
+      <div class="auth-v2-headline">
+        <h2>Welcome<br />back.</h2>
+        <p>
+          Your future doesn't wait. Log in and keep building the life you
+          deserve.
+        </p>
       </div>
 
-      <!-- Account Type Selector -->
-      <div class="account-type-selector">
-        <button type="button" class="account-type-card account-type-card--active" data-type="student">
-          <div class="account-type-card__icon account-type-card__icon--student">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-              <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-            </svg>
-          </div>
-          <span class="account-type-card__label">Student</span>
-        </button>
-        <button type="button" class="account-type-card" data-type="organization">
-          <div class="account-type-card__icon account-type-card__icon--organization">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 21h18"/>
-              <path d="M5 21V7l8-4v18"/>
-              <path d="M19 21V11l-6-4"/>
-              <path d="M9 9v.01"/>
-              <path d="M9 12v.01"/>
-              <path d="M9 15v.01"/>
-              <path d="M9 18v.01"/>
-            </svg>
-          </div>
-          <span class="account-type-card__label">Organization</span>
-        </button>
-        <!-- <button type="button" class="account-type-card" data-type="admin">
-          <div class="account-type-card__icon account-type-card__icon--admin">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-          </div>
-          <span class="account-type-card__label">Admin</span>
-      </button> -->
+      <!-- Benefits -->
+      <div class="auth-v2-benefits">
+        <div class="auth-v2-benefit">
+          <div class="auth-v2-benefit__check">✓</div>
+          500+ active opportunities across South Africa
+        </div>
+        <div class="auth-v2-benefit">
+          <div class="auth-v2-benefit__check">✓</div>
+          Trusted by 50+ organisations and NGOs
+        </div>
+        <div class="auth-v2-benefit">
+          <div class="auth-v2-benefit__check">✓</div>
+          Free forever for students
+        </div>
       </div>
+    </div>
 
-      <form id="loginForm" class="form" novalidate>
-        <input type="hidden" id="accountType" name="accountType" value="student">
+    <!-- RIGHT PANEL -->
+    <div class="auth-v2-right">
+      <div class="auth-v2-form-wrap">
+        <!-- Mobile-only logo -->
+        <a href="/" class="auth-v2-mobile-logo">
+          <div class="auth-v2-mobile-logo__icon">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#fff"
+              stroke-width="2.5"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+              <line x1="9" y1="9" x2="9.01" y2="9" />
+              <line x1="15" y1="9" x2="15.01" y2="9" />
+            </svg>
+          </div>
+          SMILE
+        </a>
 
-        <div class="form__group">
-          <label for="email" class="form__label">Email Address</label>
-          <input type="email" id="email" name="email" class="form__input" placeholder="Enter your email" required autocomplete="email">
-          <span class="form__error">Please enter a valid email address</span>
+        <div class="auth-v2-heading">
+          <h1>Log In</h1>
+          <p>Choose your account type to continue</p>
         </div>
 
-        <div class="form__group">
-          <label for="password" class="form__label">Password</label>
-          <input type="password" id="password" name="password" class="form__input" placeholder="Enter your password" required autocomplete="current-password">
-          <span class="form__error">Password is required</span>
+        <!-- Account type pills -->
+        <div class="auth-v2-type-pills">
+          <button
+            type="button"
+            class="auth-v2-pill auth-v2-pill--active"
+            data-type="student"
+            id="pillStudent"
+          >
+            <div class="auth-v2-pill__icon">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                <path d="M6 12v5c3 3 9 3 12 0v-5" />
+              </svg>
+            </div>
+            <div>
+              Student
+              <span class="auth-v2-pill__sub">Find opportunities</span>
+            </div>
+          </button>
+          <button
+            type="button"
+            class="auth-v2-pill"
+            data-type="organization"
+            id="pillOrg"
+          >
+            <div class="auth-v2-pill__icon">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 21h18" />
+                <path d="M5 21V7l8-4v18" />
+                <path d="M19 21V11l-6-4" />
+              </svg>
+            </div>
+            <div>
+              Organisation
+              <span class="auth-v2-pill__sub">Post opportunities</span>
+            </div>
+          </button>
         </div>
 
-        <div class="form__actions">
-          <div class="form__checkbox">
+        <!-- Login Form -->
+        <form id="loginForm" class="form auth-v2-form" novalidate>
+          <input
+            type="hidden"
+            id="accountType"
+            name="accountType"
+            value="student"
+          />
+
+          <div class="form__group">
+            <label for="email" class="form__label">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form__input"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <span class="form__error">Please enter a valid email address</span>
+          </div>
+
+          <div class="form__group">
+            <label for="password" class="form__label">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form__input"
+              placeholder="Enter your password"
+              required
+              autocomplete="current-password"
+            />
+            <span class="form__error">Password is required</span>
+          </div>
+
+          <div class="form__actions">
+            <!-- <div class="form__checkbox">
             <input type="checkbox" id="remember" name="remember">
             <label for="remember">Remember me</label>
+          </div> -->
+            <a href="/forgot-password" class="form__forgot">Forgot password?</a>
           </div>
-          <a href="/forgot-password" class="form__forgot">Forgot password?</a>
-        </div>
 
-        <button type="submit" class="btn btn--gradient form__submit">
-          Log In
-        </button>
+          <button type="submit" class="btn--auth-submit">
+            Log In
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </button>
+        </form>
 
-      </form>
-
-      <p class="auth-card__footer">
-        Don&apos;t have an account? <a href="/register-page">Sign up for free</a>
-      </p>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__content">
-        <a href="/" class="footer__logo">
-          <span class="nav__logo-icon">&#9786;</span>
-          <span>SMILE</span>
-        </a>
-        <nav class="footer__links">
-          <a href="#" class="footer__link">About Us</a>
-          <a href="#" class="footer__link">Contact</a>
-          <a href="#" class="footer__link">Privacy Policy</a>
-          <a href="#" class="footer__link">Terms of Service</a>
-        </nav>
-        <p class="footer__copy">&copy; 2026 SMILE. All rights reserved.</p>
+        <p class="auth-v2-footer">
+          Don't have an account? <a href="/register-page">Sign up free</a>
+        </p>
       </div>
     </div>
-  </footer>
 
-  <script src="../jsFrontEnd/auth.js"></script>
-</body>
+    <script src="../jsFrontEnd/auth.js"></script>
+    <script>
+      const pills = document.querySelectorAll(".auth-v2-pill");
+      const accountTypeInput = document.getElementById("accountType");
+      pills.forEach((pill) => {
+        pill.addEventListener("click", function () {
+          pills.forEach((p) => p.classList.remove("auth-v2-pill--active"));
+          this.classList.add("auth-v2-pill--active");
+          accountTypeInput.value = this.dataset.type;
+        });
+      });
+    </script>
+  </body>
 </html>
-
-<!--
-
-<li><a href="#" class="nav__link">
-          <span class="nav__link-icon">&#127891;</span> Opportunities
-        </a></li>
-        <li><a href="#" class="nav__link">
-          <span class="nav__link-icon">&#128188;</span> Careers
-        </a></li>
-        <li><a href="#" class="nav__link">
-          <span class="nav__link-icon">&#128205;</span> Near Me
-        </a></li>
-        <li><a href="#" class="nav__link">
-          <span class="nav__link-icon">&#128240;</span> News
-        </a></li>
-        <li><a href="#" class="nav__link">
-          <span class="nav__link-icon">&#128202;</span> Dashboard
-        </a></li>
-
--->
-  
