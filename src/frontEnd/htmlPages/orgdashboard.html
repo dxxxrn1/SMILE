@@ -1,140 +1,74 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="SMILE Organization Dashboard - Manage opportunities, track applications, and view analytics."
-    />
-    <title>Organization Dashboard - SMILE</title>
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/orgdashboard.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"
-      defer
-    ></script>
-  </head>
-  <body class="dashboard-page layout-with-sidebar">
-    <div class="dashboard-layout">
-      <aside class="dashboard-sidebar">
-        <div class="dashboard-sidebar__header">
-          <a href="home.html" class="nav__logo">
-            <span class="nav__logo-icon">&#9786;</span>
-            <span>SMILE Org</span>
-          </a>
-        </div>
 
-        <div class="dashboard-sidebar__nav org-tabs" role="tablist">
-          <button
-            class="org-tab org-tab--active"
-            role="tab"
-            data-tab="overview"
-            onclick="switchTab('overview', this)"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <rect width="7" height="9" x="3" y="3" rx="1" />
-              <rect width="7" height="5" x="14" y="3" rx="1" />
-              <rect width="7" height="9" x="14" y="12" rx="1" />
-              <rect width="7" height="5" x="3" y="16" rx="1" />
-            </svg>
-            Overview
-          </button>
-          <button
-            class="org-tab"
-            role="tab"
-            data-tab="analytics"
-            onclick="switchTab('analytics', this)"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <line x1="18" y1="20" x2="18" y2="10" />
-              <line x1="12" y1="20" x2="12" y2="4" />
-              <line x1="6" y1="20" x2="6" y2="14" />
-            </svg>
-            Analytics
-          </button>
-          <button
-            class="org-tab"
-            role="tab"
-            data-tab="myopps"
-            onclick="switchTab('myopps', this)"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <rect x="2" y="7" width="20" height="14" rx="2" />
-              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-            </svg>
-            My Opportunities
-          </button>
-          <a
-            href="applicants.html"
-            class="org-tab"
-            style="text-decoration: none;"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-            Applicants
-          </a>
-          <button
-            class="org-tab"
-            role="tab"
-            data-tab="create"
-            onclick="switchTab('create', this)"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Create New
-          </button>
-        </div>
-        <div class="dashboard-sidebar__links" style="padding: 0 1rem 1rem 1rem">
-          <p
-            style="
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="SMILE Organization Dashboard - Manage opportunities, track applications, and view analytics." />
+  <title>Organization Dashboard - SMILE</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/orgdashboard.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" defer></script>
+</head>
+
+<body class="dashboard-page layout-with-sidebar">
+  <div class="dashboard-layout">
+    <aside class="dashboard-sidebar">
+      <div class="dashboard-sidebar__header">
+        <a href="/" class="nav__logo">
+          <span class="nav__logo-icon">&#9786;</span>
+          <span>SMILE Org</span>
+        </a>
+      </div>
+
+      <div class="dashboard-sidebar__nav org-tabs" role="tablist">
+        <a href="/org/dashboard?tab=overview" class="org-tab org-tab--active" data-tab="overview" style="text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="7" height="9" x="3" y="3" rx="1" />
+            <rect width="7" height="5" x="14" y="3" rx="1" />
+            <rect width="7" height="9" x="14" y="12" rx="1" />
+            <rect width="7" height="5" x="3" y="16" rx="1" />
+          </svg>
+          Overview
+        </a>
+        <a href="/org/analytics" class="org-tab" data-tab="analytics" style="text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>
+          Analytics
+        </a>
+        <a href="/org/dashboard?tab=myopps" class="org-tab" data-tab="myopps" style="text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" />
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+          </svg>
+          My Opportunities
+        </a>
+        <a href="/org/dashboard/applicants" class="org-tab" data-tab="applicants" style="text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          Applicants
+        </a>
+        <a href="/org/dashboard/createOpportunity" class="org-tab" data-tab="create" style="text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Create New
+        </a>
+      </div>
+      <div class="dashboard-sidebar__links" style="padding: 0 1rem 1rem 1rem">
+        <p style="
               font-size: 11px;
               text-transform: uppercase;
               color: #9ca3af;
@@ -143,47 +77,10 @@
               margin-bottom: 12px;
               margin-top: 12px;
               font-weight: 600;
-            "
-          >
-            Actions
-          </p>
-          <!-- <button
-            id="createOppQuickBtn"
-            class="btn btn--gradient org-tab"
-            data-tab="create"
-            onclick="switchTab('create', this)"
-            style="
-              width: 100%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              gap: 8px;
-              padding: 12px;
-              border-radius: 8px;
-              cursor: pointer;
-              color: white;
-              border: none;
-            "
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Post Opportunity
-          </button> -->
-          <a
-            href="/org/dashboard/createOpportunity"
-            id="createOppQuickBtn"
-            class="btn btn--gradient"
-            style="
+            ">
+          Actions
+        </p>
+        <a href="/org/dashboard/createOpportunity" id="createOppQuickBtn" class="btn btn--gradient" style="
               width: 100%;
               display: flex;
               align-items: center;
@@ -196,377 +93,314 @@
               border: none;
               font-weight: 500;
               text-decoration: none;
-            "
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              stroke-linecap="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Post Opportunity
-          </a>
+            ">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Post Opportunity
+        </a>
+      </div>
+      <div class="dashboard-sidebar__footer">
+        <div class="org-profile-info" style="padding: 0 0 1rem 0">
+          <div class="org-profile-avatar" id="sidebarInitials">SA</div>
+          <div>
+            <div class="org-profile-name" id="sidebarOrgName">SMILE Africa NGO</div>
+            <div class="org-profile-type">Organization</div>
+          </div>
         </div>
-        <div class="dashboard-sidebar__footer">
-          <div class="org-profile-info" style="padding: 0 0 1rem 0">
-            <div class="org-profile-avatar">SA</div>
-            <div>
-              <div class="org-profile-name">SMILE Africa NGO</div>
-              <div class="org-profile-type">Organization</div>
+        <a href="/login-page" class="nav__profile-link nav__profile-link--logout" style="padding: 0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" x2="9" y1="12" y2="12" />
+          </svg>
+          Log Out
+        </a>
+      </div>
+    </aside>
+
+    <main class="dashboard-main">
+      <div class="dashboard-container">
+        <div class="dashboard__header">
+          <div class="dashboard__welcome">
+            <h1 class="dashboard__title">Organization Dashboard</h1>
+            <p class="dashboard__subtitle">
+              Manage your opportunities and track engagement
+            </p>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-overview">
+          <div class="dashboard__stats">
+            <div class="stat-card">
+              <div class="stat-card__icon stat-card__icon--orange">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="7" width="20" height="14" rx="2" />
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                </svg>
+              </div>
+              <div class="stat-card__content">
+                <span class="stat-card__number" id="stat-total-opps">...</span>
+                <span class="stat-card__label">Total Opportunities</span>
+                <span class="stat-card__delta stat-card__delta--up" id="stat-opps-delta"></span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__icon stat-card__icon--blue">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                  <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                </svg>
+              </div>
+              <div class="stat-card__content">
+                <span class="stat-card__number" id="stat-total-apps">...</span>
+                <span class="stat-card__label">Total Applications</span>
+                <span class="stat-card__delta stat-card__delta--up" id="stat-apps-delta"></span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__icon stat-card__icon--green">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+              </div>
+              <div class="stat-card__content">
+                <span class="stat-card__number" id="stat-active-opps">...</span>
+                <span class="stat-card__label">Active Programs</span>
+                <span class="stat-card__delta stat-card__delta--neutral">Currently running</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card__icon stat-card__icon--purple">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+              <div class="stat-card__content">
+                <span class="stat-card__number" id="stat-youth-reached">...</span>
+                <span class="stat-card__label">Youth Reached</span>
+                <span class="stat-card__delta stat-card__delta--up">Total impact</span>
+              </div>
             </div>
           </div>
-          <a
-            href="login.html"
-            class="nav__profile-link nav__profile-link--logout"
-            style="padding: 0"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" x2="9" y1="12" y2="12" />
-            </svg>
-            Log Out
-          </a>
-        </div>
-      </aside>
 
-      <main class="dashboard-main">
-        <div class="dashboard-container">
-          <!-- <div class="dashboard__header">
-            <div class="dashboard__welcome">
-              <h1 class="dashboard__title">Organization Dashboard</h1>
-              <p class="dashboard__subtitle">
-                Manage your opportunities and track engagement
-              </p>
-            </div>
-            <button class="btn btn--gradient" id="createOppQuickBtn">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-              >
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              Post Opportunity
-            </button>
-          </div> -->
-          <div class="dashboard__header">
-            <div class="dashboard__welcome">
-              <h1 class="dashboard__title">Organization Dashboard</h1>
-              <p class="dashboard__subtitle">
-                Manage your opportunities and track engagement
-              </p>
-            </div>
-          </div>
-
-          <div class="tab-panel" id="tab-overview">
-            <div class="dashboard__stats">
-              <div class="stat-card">
-                <div class="stat-card__icon stat-card__icon--orange">
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <rect x="2" y="7" width="20" height="14" rx="2" />
-                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                  </svg>
-                </div>
-                <div class="stat-card__content">
-                  <span class="stat-card__number">12</span>
-                  <span class="stat-card__label">Total Opportunities</span>
-                  <span class="stat-card__delta stat-card__delta--up"
-                    >+3 this month</span
-                  >
-                </div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-card__icon stat-card__icon--blue">
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
-                    />
-                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
-                  </svg>
-                </div>
-                <div class="stat-card__content">
-                  <span class="stat-card__number">285</span>
-                  <span class="stat-card__label">Total Applications</span>
-                  <span class="stat-card__delta stat-card__delta--up"
-                    >+47 this week</span
-                  >
-                </div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-card__icon stat-card__icon--green">
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                  </svg>
-                </div>
-                <div class="stat-card__content">
-                  <span class="stat-card__number">8</span>
-                  <span class="stat-card__label">Active Programs</span>
-                  <span class="stat-card__delta stat-card__delta--neutral"
-                    >Currently running</span
-                  >
-                </div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-card__icon stat-card__icon--purple">
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                  </svg>
-                </div>
-                <div class="stat-card__content">
-                  <span class="stat-card__number">1.2K</span>
-                  <span class="stat-card__label">Youth Reached</span>
-                  <span class="stat-card__delta stat-card__delta--up"
-                    >Total impact</span
-                  >
-                </div>
-              </div>
-            </div>
-
-            <div class="overview-grid">
-              <div class="org-section overview-grid__activity">
-                <div class="org-section__header">
-                  <h2 class="org-section__title">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    Recent Activity
-                  </h2>
-                </div>
-                <p class="org-section__sub" style="margin-bottom: 24px;">Manage all recent applications and updates.</p>
-                <ul class="recent-applicants-list" style="list-style: none; padding: 0; margin: 0 0 24px 0;">
-                  <li style="padding: 12px 0; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                      <strong style="color: #111827;">Thabo Mokoena</strong><br>
-                      <span style="font-size: 13px; color: #6b7280;">Applied to: Youth Coding Bootcamp</span>
-                    </div>
-                    <a href="applicants.html" style="font-size: 13px; color: #2563eb; text-decoration: none; font-weight: 500;">View</a>
-                  </li>
-                  <li style="padding: 12px 0; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                      <strong style="color: #111827;">Naledi Khumalo</strong><br>
-                      <span style="font-size: 13px; color: #6b7280;">Applied to: Digital Skills Training</span>
-                    </div>
-                    <a href="applicants.html" style="font-size: 13px; color: #2563eb; text-decoration: none; font-weight: 500;">View</a>
-                  </li>
-                  <li style="padding: 12px 0; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                      <strong style="color: #111827;">Sipho Dlamini</strong><br>
-                      <span style="font-size: 13px; color: #6b7280;">Applied to: Youth Coding Bootcamp</span>
-                    </div>
-                    <a href="applicants.html" style="font-size: 13px; color: #2563eb; text-decoration: none; font-weight: 500;">View</a>
-                  </li>
-                </ul>
-                <div style="text-align: center;">
-                  <a href="applicants.html" class="btn btn--gradient" style="display: inline-block; text-decoration: none; padding: 10px 24px; border-radius: 8px;">View All Applicants</a>
-                </div>
-              </div>
-
-              <div class="org-section overview-grid__chart">
-                <div class="org-section__header">
-                  <h2 class="org-section__title">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
+          <div class="org-workspace-grid">
+            <!-- Left Main Column (Weekly Views Chart & Recent Activity) -->
+            <div class="org-workspace-main">
+              <!-- Mini Timeline Performance Chart Card -->
+              <div class="premium-card">
+                <div class="premium-card__header">
+                  <h2 class="premium-card__title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <line x1="18" y1="20" x2="18" y2="10" />
                       <line x1="12" y1="20" x2="12" y2="4" />
                       <line x1="6" y1="20" x2="6" y2="14" />
                     </svg>
                     This Week
                   </h2>
-                  <button
-                    class="org-section__link"
-                    onclick="
-                      switchTab(
-                        'analytics',
-                        document.querySelector('[data-tab=analytics]'),
-                      )
-                    "
-                  >
+                  <button class="org-section__link" onclick="
+                        switchTab(
+                          'analytics',
+                          document.querySelector('[data-tab=analytics]'),
+                        )
+                      ">
                     Full Analytics
                   </button>
                 </div>
+                <p class="premium-card__sub">Engagement and application volume.</p>
                 <div class="mini-chart-wrap">
-                  <canvas id="miniChart" height="200"></canvas>
+                  <canvas id="miniChart" height="180"></canvas>
                 </div>
                 <div class="mini-chart-legend">
-                  <span class="legend-dot" style="background: #f97316"></span
-                  ><span>Views</span>
-                  <span class="legend-dot" style="background: #ec4899"></span
-                  ><span>Applications</span>
+                  <span class="legend-dot" style="background: #f97316"></span><span>Views</span>
+                  <span class="legend-dot" style="background: #ec4899"></span><span>Applications</span>
                 </div>
               </div>
 
-              <div class="org-section overview-grid__top">
-                <div class="org-section__header">
-                  <h2 class="org-section__title">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
+              <!-- Recent Applicants Dribbble-Style Card -->
+              <div class="premium-card">
+                <div class="premium-card__header">
+                  <h2 class="premium-card__title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    Recent Activity
+                  </h2>
+                </div>
+                <p class="premium-card__sub">
+                  Track and review the latest applications in real time.
+                </p>
+                <ul class="recent-applicants-list" id="recent-applicants-list">
+                  <li style="padding: 12px 0; color: #9ca3af; font-size: 13px;">Loading recent applicants...</li>
+                </ul>
+                <div style="text-align: center; margin-top: 1.5rem;">
+                  <a href="/org/dashboard/applicants" class="btn btn--gradient" style="
+                        display: inline-block;
+                        text-decoration: none;
+                        padding: 10px 24px;
+                        border-radius: 8px;
+                      ">View All Applicants</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Sidebar Column (Upcoming Events & Top Performing) -->
+            <div class="org-workspace-sidebar">
+              <!-- Upcoming Events Widget -->
+              <div class="premium-card">
+                <div class="premium-card__header">
+                  <h2 class="premium-card__title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                      <line x1="16" y1="2" x2="16" y2="6" />
+                      <line x1="8" y1="2" x2="8" y2="6" />
+                      <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    Upcoming Events
+                  </h2>
+                </div>
+                <p class="premium-card__sub">Scheduled workshops and key sessions this week.</p>
+                
+                <div class="events-list">
+                  <!-- Event Item 1 -->
+                  <div class="event-item">
+                    <div class="event-date-badge event-date-badge--indigo">
+                      <span class="event-date-badge__month">May</span>
+                      <span class="event-date-badge__day">24</span>
+                    </div>
+                    <div class="event-details">
+                      <span class="event-title">Coding Bootcamp Q&amp;A</span>
+                      <span class="event-time">5:00 pm - 6:30 pm</span>
+                    </div>
+                  </div>
+                  <!-- Event Item 2 -->
+                  <div class="event-item">
+                    <div class="event-date-badge event-date-badge--amber">
+                      <span class="event-date-badge__month">May</span>
+                      <span class="event-date-badge__day">26</span>
+                    </div>
+                    <div class="event-details">
+                      <span class="event-title">Digital Skills Workshop</span>
+                      <span class="event-time">10:00 am - 12:30 pm</span>
+                    </div>
+                  </div>
+                  <!-- Event Item 3 -->
+                  <div class="event-item">
+                    <div class="event-date-badge event-date-badge--rose">
+                      <span class="event-date-badge__month">May</span>
+                      <span class="event-date-badge__day">28</span>
+                    </div>
+                    <div class="event-details">
+                      <span class="event-title">Leadership Fair 2026</span>
+                      <span class="event-time">Daylong Session</span>
+                    </div>
+                  </div>
+                  <!-- Event Item 4 -->
+                  <div class="event-item">
+                    <div class="event-date-badge event-date-badge--emerald">
+                      <span class="event-date-badge__month">Jun</span>
+                      <span class="event-date-badge__day">02</span>
+                    </div>
+                    <div class="event-details">
+                      <span class="event-title">CV Building Bootcamp</span>
+                      <span class="event-time">2:00 pm - 4:00 pm</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="events-pagination">
+                  <span class="events-pag-dot events-pag-dot--active"></span>
+                  <span class="events-pag-dot"></span>
+                  <span class="events-pag-dot"></span>
+                </div>
+              </div>
+
+              <!-- Top Performing Opportunities Card -->
+              <div class="premium-card">
+                <div class="premium-card__header">
+                  <h2 class="premium-card__title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
                       <polyline points="16 7 22 7 22 13" />
                     </svg>
                     Top Performing
                   </h2>
-                  <button
-                    class="org-section__link"
-                    onclick="
-                      switchTab(
-                        'myopps',
-                        document.querySelector('[data-tab=myopps]'),
-                      )
-                    "
-                  >
+                  <button class="org-section__link" onclick="
+                        switchTab(
+                          'myopps',
+                          document.querySelector('[data-tab=myopps]'),
+                        )
+                      ">
                     All Opps
                   </button>
                 </div>
-                <div class="top-opps-list">
+                <p class="premium-card__sub">Opportunities generating the highest engagement.</p>
+                <div class="top-opps-list" id="top-performing-list">
                   <div class="top-opp-item">
                     <div class="top-opp-item__info">
-                      <span class="top-opp-item__name"
-                        >Youth Coding Bootcamp</span
-                      >
+                      <span class="top-opp-item__name">Youth Coding Bootcamp</span>
                       <div class="top-opp-item__bar-wrap">
-                        <div
-                          class="top-opp-item__bar"
-                          style="
-                            width: 90%;
-                            background: var(--gradient-primary);
-                          "
-                        ></div>
+                        <div class="top-opp-item__bar" style="
+                              width: 90%;
+                              background: var(--gradient-primary);
+                            "></div>
                       </div>
                     </div>
                     <span class="top-opp-item__count">83</span>
                   </div>
                   <div class="top-opp-item">
                     <div class="top-opp-item__info">
-                      <span class="top-opp-item__name"
-                        >Digital Skills Training</span
-                      >
+                      <span class="top-opp-item__name">Digital Skills Training</span>
                       <div class="top-opp-item__bar-wrap">
-                        <div
-                          class="top-opp-item__bar"
-                          style="
-                            width: 75%;
-                            background: linear-gradient(
-                              90deg,
-                              #7c3aed,
-                              #a855f7
-                            );
-                          "
-                        ></div>
+                        <div class="top-opp-item__bar" style="
+                              width: 75%;
+                              background: linear-gradient(
+                                90deg,
+                                #7c3aed,
+                                #a855f7
+                              );
+                            "></div>
                       </div>
                     </div>
                     <span class="top-opp-item__count">71</span>
                   </div>
                   <div class="top-opp-item">
                     <div class="top-opp-item__info">
-                      <span class="top-opp-item__name"
-                        >Leadership Workshop</span
-                      >
+                      <span class="top-opp-item__name">Leadership Workshop</span>
                       <div class="top-opp-item__bar-wrap">
-                        <div
-                          class="top-opp-item__bar"
-                          style="
-                            width: 50%;
-                            background: linear-gradient(
-                              90deg,
-                              #0284c7,
-                              #38bdf8
-                            );
-                          "
-                        ></div>
+                        <div class="top-opp-item__bar" style="
+                              width: 50%;
+                              background: linear-gradient(
+                                90deg,
+                                #0284c7,
+                                #38bdf8
+                              );
+                            "></div>
                       </div>
                     </div>
                     <span class="top-opp-item__count">47</span>
                   </div>
                   <div class="top-opp-item">
                     <div class="top-opp-item__info">
-                      <span class="top-opp-item__name"
-                        >STEM Scholarship 2025</span
-                      >
+                      <span class="top-opp-item__name">STEM Scholarship 2025</span>
                       <div class="top-opp-item__bar-wrap">
-                        <div
-                          class="top-opp-item__bar"
-                          style="
-                            width: 30%;
-                            background: linear-gradient(
-                              90deg,
-                              #059669,
-                              #34d399
-                            );
-                          "
-                        ></div>
+                        <div class="top-opp-item__bar" style="
+                              width: 30%;
+                              background: linear-gradient(
+                                90deg,
+                                #059669,
+                                #34d399
+                              );
+                            "></div>
                       </div>
                     </div>
                     <span class="top-opp-item__count">29</span>
@@ -575,492 +409,459 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="tab-panel" id="tab-analytics" style="display: none">
-            <div class="analytics-controls">
-              <div class="range-tabs">
-                <button
-                  class="range-tab range-tab--active"
-                  onclick="setRange(7, this)"
-                >
-                  7 days
-                </button>
-                <button class="range-tab" onclick="setRange(30, this)">
-                  30 days
-                </button>
-                <button class="range-tab" onclick="setRange(90, this)">
-                  90 days
-                </button>
-              </div>
-              <div class="analytics-meta" id="analyticsMeta">
-                Showing last 7 days
+        <div class="tab-panel" id="tab-analytics" style="display: none">
+          <div class="analytics-controls">
+            <div class="range-tabs">
+              <button class="range-tab range-tab--active" onclick="setRange(7, this)">
+                7 days
+              </button>
+              <button class="range-tab" onclick="setRange(30, this)">
+                30 days
+              </button>
+              <button class="range-tab" onclick="setRange(90, this)">
+                90 days
+              </button>
+            </div>
+            <div class="analytics-meta" id="analyticsMeta">
+              Showing last 7 days
+            </div>
+          </div>
+
+          <div class="analytics-metrics">
+            <div class="metric-card">
+              <div class="metric-card__label">Total views</div>
+              <div class="metric-card__value" id="mViews">1,842</div>
+              <div class="metric-card__delta metric-card__delta--up">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="18 15 12 9 6 15" />
+                </svg>
+                14% vs last period
               </div>
             </div>
-
-            <div class="analytics-metrics">
-              <div class="metric-card">
-                <div class="metric-card__label">Total views</div>
-                <div class="metric-card__value" id="mViews">1,842</div>
-                <div class="metric-card__delta metric-card__delta--up">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                  >
-                    <polyline points="18 15 12 9 6 15" />
-                  </svg>
-                  14% vs last period
-                </div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card__label">Applications</div>
-                <div class="metric-card__value" id="mApps">285</div>
-                <div class="metric-card__delta metric-card__delta--up">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                  >
-                    <polyline points="18 15 12 9 6 15" />
-                  </svg>
-                  +47 this week
-                </div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card__label">Conversion rate</div>
-                <div class="metric-card__value" id="mConv">15%</div>
-                <div class="metric-card__delta metric-card__delta--up">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                  >
-                    <polyline points="18 15 12 9 6 15" />
-                  </svg>
-                  +2pp vs last period
-                </div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card__label">Saves</div>
-                <div class="metric-card__value" id="mSaves">634</div>
-                <div class="metric-card__delta metric-card__delta--down">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                  3% vs last period
-                </div>
+            <div class="metric-card">
+              <div class="metric-card__label">Applications</div>
+              <div class="metric-card__value" id="mApps">285</div>
+              <div class="metric-card__delta metric-card__delta--up">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="18 15 12 9 6 15" />
+                </svg>
+                +47 this week
               </div>
             </div>
-
-            <div class="analytics-charts-row">
-              <div class="org-section analytics-charts-row__main">
-                <div class="org-section__header">
-                  <h2 class="org-section__title">
-                    Views &amp; Applications over time
-                  </h2>
-                </div>
-                <div class="chart-wrap">
-                  <canvas id="timelineChart"></canvas>
-                </div>
-              </div>
-              <div class="org-section analytics-charts-row__side">
-                <div class="org-section__header">
-                  <h2 class="org-section__title">Education breakdown</h2>
-                </div>
-                <div class="chart-wrap chart-wrap--sm">
-                  <canvas id="eduChart"></canvas>
-                </div>
+            <div class="metric-card">
+              <div class="metric-card__label">Conversion rate</div>
+              <div class="metric-card__value" id="mConv">15%</div>
+              <div class="metric-card__delta metric-card__delta--up">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="18 15 12 9 6 15" />
+                </svg>
+                +2pp vs last period
               </div>
             </div>
-
-            <div class="analytics-charts-row">
-              <div class="org-section analytics-charts-row__main">
-                <div class="org-section__header">
-                  <h2 class="org-section__title">Application funnel</h2>
-                  <select
-                    class="org-select"
-                    id="funnelOppSelect"
-                    onchange="updateFunnel(this.value)"
-                  >
-                    <option value="all">All opportunities</option>
-                    <option value="bootcamp">Youth Coding Bootcamp</option>
-                    <option value="digital">Digital Skills Training</option>
-                    <option value="leadership">Leadership Workshop</option>
-                  </select>
-                </div>
-                <div class="funnel-list" id="funnelList"></div>
-              </div>
-              <div class="org-section analytics-charts-row__side">
-                <div class="org-section__header">
-                  <h2 class="org-section__title">Applicants by province</h2>
-                </div>
-                <div class="prov-list" id="provList"></div>
+            <div class="metric-card">
+              <div class="metric-card__label">Saves</div>
+              <div class="metric-card__value" id="mSaves">634</div>
+              <div class="metric-card__delta metric-card__delta--down">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+                3% vs last period
               </div>
             </div>
           </div>
 
-          <div class="tab-panel" id="tab-myopps" style="display: none">
-            <div class="org-section">
+          <div class="analytics-charts-row">
+            <div class="org-section analytics-charts-row__main">
               <div class="org-section__header">
-                <h2 class="org-section__title">My Opportunities</h2>
-                <button
-                  class="btn btn--gradient btn--sm"
-                  onclick="
+                <h2 class="org-section__title">
+                  Views &amp; Applications over time
+                </h2>
+              </div>
+              <div class="chart-wrap">
+                <canvas id="timelineChart"></canvas>
+              </div>
+            </div>
+            <div class="org-section analytics-charts-row__side">
+              <div class="org-section__header">
+                <h2 class="org-section__title">Education breakdown</h2>
+              </div>
+              <div class="chart-wrap chart-wrap--sm">
+                <canvas id="eduChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="analytics-charts-row">
+            <div class="org-section analytics-charts-row__main">
+              <div class="org-section__header">
+                <h2 class="org-section__title">Application funnel</h2>
+                <select class="org-select" id="funnelOppSelect" onchange="updateFunnel(this.value)">
+                  <option value="all">All opportunities</option>
+                  <option value="bootcamp">Youth Coding Bootcamp</option>
+                  <option value="digital">Digital Skills Training</option>
+                  <option value="leadership">Leadership Workshop</option>
+                </select>
+              </div>
+              <div class="funnel-list" id="funnelList"></div>
+            </div>
+            <div class="org-section analytics-charts-row__side">
+              <div class="org-section__header">
+                <h2 class="org-section__title">Applicants by province</h2>
+              </div>
+              <div class="prov-list" id="provList"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-myopps" style="display: none">
+          <div class="org-section">
+            <div class="org-section__header">
+              <h2 class="org-section__title">My Opportunities</h2>
+              <button class="btn btn--gradient btn--sm" onclick="
                     switchTab(
                       'create',
                       document.querySelector('[data-tab=create]'),
                     )
-                  "
-                >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                  Create New
-                </button>
-              </div>
-              <p class="org-section__sub">
-                All opportunities posted by your organisation
-              </p>
+                  ">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Create New
+              </button>
+            </div>
+            <p class="org-section__sub">
+              All opportunities posted by your organisation
+            </p>
 
-              <div class="table-filters">
-                <div class="table-search-wrap">
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.3-4.3" />
-                  </svg>
-                  <input
-                    type="text"
-                    class="table-search"
-                    placeholder="Search opportunities..."
-                    id="oppSearch"
-                    oninput="filterOppTable(this.value)"
-                  />
-                </div>
-                <select
-                  class="org-select"
-                  id="statusFilter"
-                  onchange="filterOppTable()"
-                >
-                  <option value="">All statuses</option>
-                  <option value="Active">Active</option>
-                  <option value="Draft">Draft</option>
-                  <option value="Closed">Closed</option>
-                </select>
-                <select
-                  class="org-select"
-                  id="typeFilter"
-                  onchange="filterOppTable()"
-                >
-                  <option value="">All types</option>
-                  <option value="Workshop">Workshop</option>
-                  <option value="Scholarship">Scholarship</option>
-                  <option value="Internship">Internship</option>
-                  <option value="Bursary">Bursary</option>
-                </select>
+            <div class="table-filters">
+              <div class="table-search-wrap">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <input type="text" class="table-search" placeholder="Search opportunities..." id="oppSearch"
+                  oninput="filterOppTable(this.value)" />
               </div>
+              <select class="org-select" id="statusFilter" onchange="filterOppTable()">
+                <option value="">All statuses</option>
+                <option value="Active">Active</option>
+                <option value="Draft">Draft</option>
+                <option value="Closed">Closed</option>
+              </select>
+              <select class="org-select" id="typeFilter" onchange="filterOppTable()">
+                <option value="">All types</option>
+                <option value="Workshop">Workshop</option>
+                <option value="Scholarship">Scholarship</option>
+                <option value="Internship">Internship</option>
+                <option value="Bursary">Bursary</option>
+              </select>
+            </div>
 
-              <div class="org-table-wrap">
-                <table class="org-table" id="oppTable">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Type</th>
-                      <th>Province</th>
-                      <th>Applications</th>
-                      <th>Deadline</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="oppTableBody">
-                    <tr data-status="Active" data-type="Workshop">
-                      <td><strong>Youth Coding Bootcamp</strong></td>
-                      <td>
-                        <span class="opp-type-badge opp-type-badge--workshop"
-                          >Workshop</span
-                        >
-                      </td>
-                      <td>Gauteng</td>
-                      <td><span class="app-count">83</span></td>
-                      <td>2026/05/01</td>
-                      <td>
-                        <span class="status-badge status-badge--active"
-                          >Active</span
-                        >
-                      </td>
-                      <td class="table-actions">
-                        <button
-                          class="tbl-btn"
-                          onclick="showToast('Opening editor...')"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--view"
-                          onclick="
+            <div class="org-table-wrap">
+              <table class="org-table" id="oppTable">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Province</th>
+                    <th>Applications</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="oppTableBody">
+                  <tr data-status="Active" data-type="Workshop">
+                    <td><strong>Youth Coding Bootcamp</strong></td>
+                    <td>
+                      <span class="opp-type-badge opp-type-badge--workshop">Workshop</span>
+                    </td>
+                    <td>Gauteng</td>
+                    <td><span class="app-count">83</span></td>
+                    <td>2026/05/01</td>
+                    <td>
+                      <span class="status-badge status-badge--active">Active</span>
+                    </td>
+                    <td class="table-actions">
+                      <button class="tbl-btn" onclick="showToast('Opening editor...')">
+                        Edit
+                      </button>
+                      <button class="tbl-btn tbl-btn--view" onclick="
                             switchTab(
                               'applicants',
                               document.querySelector('[data-tab=applicants]'),
                             )
-                          "
-                        >
-                          Applicants
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--danger"
-                          onclick="confirmDelete(this)"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                    <tr data-status="Active" data-type="Workshop">
-                      <td><strong>Digital Skills Training</strong></td>
-                      <td>
-                        <span class="opp-type-badge opp-type-badge--workshop"
-                          >Workshop</span
-                        >
-                      </td>
-                      <td>Western Cape</td>
-                      <td><span class="app-count">71</span></td>
-                      <td>2026/04/15</td>
-                      <td>
-                        <span class="status-badge status-badge--active"
-                          >Active</span
-                        >
-                      </td>
-                      <td class="table-actions">
-                        <button
-                          class="tbl-btn"
-                          onclick="showToast('Opening editor...')"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--view"
-                          onclick="
+                          ">
+                        Applicants
+                      </button>
+                      <button class="tbl-btn tbl-btn--danger" onclick="confirmDelete(this)">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                  <tr data-status="Active" data-type="Workshop">
+                    <td><strong>Digital Skills Training</strong></td>
+                    <td>
+                      <span class="opp-type-badge opp-type-badge--workshop">Workshop</span>
+                    </td>
+                    <td>Western Cape</td>
+                    <td><span class="app-count">71</span></td>
+                    <td>2026/04/15</td>
+                    <td>
+                      <span class="status-badge status-badge--active">Active</span>
+                    </td>
+                    <td class="table-actions">
+                      <button class="tbl-btn" onclick="showToast('Opening editor...')">
+                        Edit
+                      </button>
+                      <button class="tbl-btn tbl-btn--view" onclick="
                             switchTab(
                               'applicants',
                               document.querySelector('[data-tab=applicants]'),
                             )
-                          "
-                        >
-                          Applicants
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--danger"
-                          onclick="confirmDelete(this)"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                    <tr data-status="Active" data-type="Workshop">
-                      <td><strong>Leadership Workshop</strong></td>
-                      <td>
-                        <span class="opp-type-badge opp-type-badge--workshop"
-                          >Workshop</span
-                        >
-                      </td>
-                      <td>KwaZulu-Natal</td>
-                      <td><span class="app-count">47</span></td>
-                      <td>2026/04/30</td>
-                      <td>
-                        <span class="status-badge status-badge--active"
-                          >Active</span
-                        >
-                      </td>
-                      <td class="table-actions">
-                        <button
-                          class="tbl-btn"
-                          onclick="showToast('Opening editor...')"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--view"
-                          onclick="
+                          ">
+                        Applicants
+                      </button>
+                      <button class="tbl-btn tbl-btn--danger" onclick="confirmDelete(this)">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                  <tr data-status="Active" data-type="Workshop">
+                    <td><strong>Leadership Workshop</strong></td>
+                    <td>
+                      <span class="opp-type-badge opp-type-badge--workshop">Workshop</span>
+                    </td>
+                    <td>KwaZulu-Natal</td>
+                    <td><span class="app-count">47</span></td>
+                    <td>2026/04/30</td>
+                    <td>
+                      <span class="status-badge status-badge--active">Active</span>
+                    </td>
+                    <td class="table-actions">
+                      <button class="tbl-btn" onclick="showToast('Opening editor...')">
+                        Edit
+                      </button>
+                      <button class="tbl-btn tbl-btn--view" onclick="
                             switchTab(
                               'applicants',
                               document.querySelector('[data-tab=applicants]'),
                             )
-                          "
-                        >
-                          Applicants
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--danger"
-                          onclick="confirmDelete(this)"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                    <tr data-status="Closed" data-type="Scholarship">
-                      <td><strong>STEM Scholarship 2025</strong></td>
-                      <td>
-                        <span class="opp-type-badge opp-type-badge--scholarship"
-                          >Scholarship</span
-                        >
-                      </td>
-                      <td>National</td>
-                      <td><span class="app-count">126</span></td>
-                      <td>2025/11/30</td>
-                      <td>
-                        <span class="status-badge status-badge--closed"
-                          >Closed</span
-                        >
-                      </td>
-                      <td class="table-actions">
-                        <button
-                          class="tbl-btn"
-                          onclick="showToast('Opening viewer...')"
-                        >
-                          View
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--danger"
-                          onclick="confirmDelete(this)"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                    <tr data-status="Draft" data-type="Internship">
-                      <td><strong>Graduate Internship Programme</strong></td>
-                      <td>
-                        <span class="opp-type-badge opp-type-badge--internship"
-                          >Internship</span
-                        >
-                      </td>
-                      <td>Gauteng</td>
-                      <td><span class="app-count">0</span></td>
-                      <td>2026/06/01</td>
-                      <td>
-                        <span class="status-badge status-badge--draft"
-                          >Draft</span
-                        >
-                      </td>
-                      <td class="table-actions">
-                        <button
-                          class="tbl-btn"
-                          onclick="showToast('Opening editor...')"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--publish"
-                          onclick="publishDraft(this)"
-                        >
-                          Publish
-                        </button>
-                        <button
-                          class="tbl-btn tbl-btn--danger"
-                          onclick="confirmDelete(this)"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                          ">
+                        Applicants
+                      </button>
+                      <button class="tbl-btn tbl-btn--danger" onclick="confirmDelete(this)">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                  <tr data-status="Closed" data-type="Scholarship">
+                    <td><strong>STEM Scholarship 2025</strong></td>
+                    <td>
+                      <span class="opp-type-badge opp-type-badge--scholarship">Scholarship</span>
+                    </td>
+                    <td>National</td>
+                    <td><span class="app-count">126</span></td>
+                    <td>2025/11/30</td>
+                    <td>
+                      <span class="status-badge status-badge--closed">Closed</span>
+                    </td>
+                    <td class="table-actions">
+                      <button class="tbl-btn" onclick="showToast('Opening viewer...')">
+                        View
+                      </button>
+                      <button class="tbl-btn tbl-btn--danger" onclick="confirmDelete(this)">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                  <tr data-status="Draft" data-type="Internship">
+                    <td><strong>Graduate Internship Programme</strong></td>
+                    <td>
+                      <span class="opp-type-badge opp-type-badge--internship">Internship</span>
+                    </td>
+                    <td>Gauteng</td>
+                    <td><span class="app-count">0</span></td>
+                    <td>2026/06/01</td>
+                    <td>
+                      <span class="status-badge status-badge--draft">Draft</span>
+                    </td>
+                    <td class="table-actions">
+                      <button class="tbl-btn" onclick="showToast('Opening editor...')">
+                        Edit
+                      </button>
+                      <button class="tbl-btn tbl-btn--publish" onclick="publishDraft(this)">
+                        Publish
+                      </button>
+                      <button class="tbl-btn tbl-btn--danger" onclick="confirmDelete(this)">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="modal-overlay" id="applicantModal" role="dialog" aria-modal="true">
+    <div class="applicant-modal">
+      <button class="modal-close" onclick="closeApplicantModal()" aria-label="Close">
+        &times;
+      </button>
+      <div id="applicantModalContent"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true">
+    <div class="confirm-modal">
+      <div class="confirm-modal__icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+        </svg>
+      </div>
+      <h3 class="confirm-modal__title">Delete opportunity?</h3>
+      <p class="confirm-modal__text">
+        This will permanently delete the opportunity and all associated
+        applications. This cannot be undone.
+      </p>
+      <div class="confirm-modal__actions">
+        <button class="btn btn--outline" onclick="closeDeleteModal()">
+          Cancel
+        </button>
+        <button class="btn" style="background: #dc2626; color: #fff; border-color: #dc2626" onclick="executeDelete()">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT OPPORTUNITY MODAL (PREMIUM & IN-PAGE) -->
+  <div class="modal-overlay" id="editOppModal" role="dialog" aria-modal="true">
+    <div class="applicant-modal" style="max-width: 680px; width: 95%; max-height: 85vh; overflow-y: auto; padding: 2rem; border-radius: 16px; background: #fff; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
+      <button class="modal-close" onclick="closeEditModal()" aria-label="Close" style="position: absolute; right: 1.5rem; top: 1.5rem; border: none; background: none; font-size: 1.75rem; cursor: pointer; color: #6b7280;">
+        &times;
+      </button>
+      <h2 style="font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+        </svg>
+        Edit Opportunity
+      </h2>
+      <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1.5rem;">Update the details of your posted opportunity. All changes will be saved to the database immediately.</p>
+
+      <form id="editOppForm" novalidate onsubmit="submitOpportunityEdit(event)">
+        <input type="hidden" id="editOppID" />
+        
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <!-- TITLE -->
+          <div>
+            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem;">Opportunity Title <span style="color:#ef4444;">*</span></label>
+            <input type="text" id="editTitle" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.875rem; transition: border-color 0.15s;" />
+          </div>
+
+          <!-- TYPE & STATUS ROW -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem;">Opportunity Type <span style="color:#ef4444;">*</span></label>
+              <select id="editType" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.875rem; background:#fff;">
+                <option>Workshop</option>
+                <option>Scholarship</option>
+                <option>Internship</option>
+                <option>Bursary</option>
+                <option>Learnership</option>
+                <option>Programme</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem;">Status <span style="color:#ef4444;">*</span></label>
+              <select id="editStatus" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.875rem; background:#fff;">
+                <option value="Active">Active</option>
+                <option value="Draft">Draft</option>
+                <option value="Closed">Closed</option>
+              </select>
             </div>
           </div>
 
+          <!-- STREET ADDRESS -->
+          <div>
+            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem;">Street Address or City Area <span style="font-weight:400;color:#9ca3af;">(optional)</span></label>
+            <input type="text" id="editAddress" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.875rem;" placeholder="e.g. 120 Main Street, Sandton" />
+          </div>
 
+          <!-- PROVINCE & MAX APPLICANTS ROW -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem;">Province <span style="color:#ef4444;">*</span></label>
+              <select id="editProvince" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.875rem; background:#fff;">
+                <option>Gauteng</option>
+                <option>Western Cape</option>
+                <option>KwaZulu-Natal</option>
+                <option>Eastern Cape</option>
+                <option>Limpopo</option>
+                <option>Mpumalanga</option>
+                <option>Free State</option>
+                <option>North West</option>
+                <option>Northern Cape</option>
+                <option>National (All Provinces)</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem;">Max Applicants <span style="font-weight:400;color:#9ca3af;">(optional)</span></label>
+              <input type="number" id="editMax" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.875rem;" min="1" placeholder="Unlimited" />
+            </div>
+          </div>
+
+          <!-- DESCRIPTION -->
+          <div>
+            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem;">Description <span style="color:#ef4444;">*</span></label>
+            <textarea id="editDesc" rows="4" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.875rem; resize: vertical;" placeholder="Describe the opportunity..."></textarea>
+          </div>
+
+          <!-- REQUIREMENTS -->
+          <div>
+            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem;">Requirements / Eligibility <span style="font-weight:400;color:#9ca3af;">(optional)</span></label>
+            <textarea id="editReq" rows="2" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.875rem; resize: vertical;" placeholder="e.g. Min Grade 10..."></textarea>
+          </div>
+
+          <!-- DEADLINE & START DATE ROW -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem;">Application Deadline <span style="color:#ef4444;">*</span></label>
+              <input type="date" id="editDeadline" required style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.875rem;" />
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem;">Start Date <span style="font-weight:400;color:#9ca3af;">(optional)</span></label>
+              <input type="date" id="editStart" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.875rem;" />
+            </div>
+          </div>
+
+          <!-- APPLICATION LINK -->
+          <div>
+            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.35rem;">Application Link or Contact Email <span style="font-weight:400;color:#9ca3af;">(optional)</span></label>
+            <input type="text" id="editLink" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.875rem;" placeholder="https://apply.org.co.za or email" />
+          </div>
         </div>
-      </main>
-    </div>
-    <div
-      class="modal-overlay"
-      id="applicantModal"
-      role="dialog"
-      aria-modal="true"
-    >
-      <div class="applicant-modal">
-        <button
-          class="modal-close"
-          onclick="closeApplicantModal()"
-          aria-label="Close"
-        >
-          &times;
-        </button>
-        <div id="applicantModalContent"></div>
-      </div>
-    </div>
 
-    <div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true">
-      <div class="confirm-modal">
-        <div class="confirm-modal__icon">
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#dc2626"
-            stroke-width="2"
-          >
-            <polyline points="3 6 5 6 21 6" />
-            <path
-              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"
-            />
-          </svg>
+        <!-- ACTIONS -->
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.75rem; border-top: 1px solid #f3f4f6; padding-top: 1.25rem;">
+          <button type="button" class="btn btn--outline" onclick="closeEditModal()">Cancel</button>
+          <button type="submit" class="btn btn--gradient" id="editSaveBtn">Save Changes</button>
         </div>
-        <h3 class="confirm-modal__title">Delete opportunity?</h3>
-        <p class="confirm-modal__text">
-          This will permanently delete the opportunity and all associated
-          applications. This cannot be undone.
-        </p>
-        <div class="confirm-modal__actions">
-          <button class="btn btn--outline" onclick="closeDeleteModal()">
-            Cancel
-          </button>
-          <button
-            class="btn"
-            style="background: #dc2626; color: #fff; border-color: #dc2626"
-            onclick="executeDelete()"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
+      </form>
     </div>
+  </div>
 
-    <div class="toast" id="toast" role="alert"></div>
+  <div class="toast" id="toast" role="alert"></div>
 
-    <script src="../jsFrontEnd/dashboardJS.js"></script>
-    <script src="../jsFrontEnd/orgdashboard.js"></script>
-  </body>
+  <script src="/jsFrontEnd/orgdashboard.js"></script>
+</body>
+
 </html>

@@ -1,4 +1,7 @@
 import { sql } from "../dbConnection/dbconnection.js";
+import fs from "fs";
+import path from "path";
+
 
 // Fetch Student's Saved Opportunities
 export const getSavedOpportunities = async (req, res) => {
@@ -153,3 +156,102 @@ export const applyForOpportunity = async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal server error." });
   }
 };
+
+// Fetch Student's Profile Details
+export const getStudentProfile = async (req, res) => {
+  try {
+    const stuId = req.user.id;
+    const request = new sql.Request();
+    request.input("StuID", stuId);
+    
+    const result = await request.query(`
+      SELECT StuID, StuName, StuLastName, StuEmail, StuProvince, StuEducationLevel, StuBio, ProfilePicUrl
+      FROM Student
+      WHERE StuID = @StuID
+    `);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ success: false, message: "Student profile not found." });
+    }
+
+    return res.status(200).json({
+      success: true,
+      profile: result.recordset[0]
+    });
+  } catch (error) {
+    console.error("Error fetching student profile:", error);
+    return res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+
+// Update Student's Profile Details
+export const updateStudentProfile = async (req, res) => {
+  try {
+    const stuId = req.user.id;
+    const { firstName, lastName, educationLevel, bio, profilePic } = req.body;
+
+    if (!firstName || !lastName || !bio) {
+      return res.status(400).json({ success: false, message: "Please fill in all required fields." });
+    }
+
+    let profilePicUrl = null;
+    if (profilePic) {
+      if (profilePic.startsWith("data:image/")) {
+        const matches = profilePic.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+        if (matches && matches.length === 3) {
+          const mimeType = matches[1];
+          const base64Data = matches[2];
+          const buffer = Buffer.from(base64Data, 'base64');
+          
+          let extension = "png";
+          if (mimeType.includes("jpeg") || mimeType.includes("jpg")) {
+            extension = "jpg";
+          } else if (mimeType.includes("gif")) {
+            extension = "gif";
+          }
+
+          const fileName = `student_${stuId}_${Date.now()}.${extension}`;
+          const uploadDir = path.join(process.cwd(), "src", "frontEnd", "Assets", "uploads");
+          if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+          }
+
+          const filePath = path.join(uploadDir, fileName);
+          fs.writeFileSync(filePath, buffer);
+
+          profilePicUrl = `/Assets/uploads/${fileName}`;
+        }
+      } else if (profilePic.startsWith("/Assets/")) {
+        profilePicUrl = profilePic;
+      }
+    }
+
+    const request = new sql.Request();
+    request.input("StuID", stuId);
+    request.input("firstName", firstName);
+    request.input("lastName", lastName);
+    request.input("educationLevel", educationLevel || null);
+    request.input("bio", bio);
+    request.input("profilePicUrl", profilePicUrl);
+
+    await request.query(`
+      UPDATE Student
+      SET StuName = @firstName,
+          StuLastName = @lastName,
+          StuEducationLevel = @educationLevel,
+          StuBio = @bio,
+          ProfilePicUrl = @profilePicUrl
+      WHERE StuID = @StuID
+    `);
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully.",
+      profilePicUrl: profilePicUrl
+    });
+  } catch (error) {
+    console.error("Error updating student profile:", error);
+    return res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+

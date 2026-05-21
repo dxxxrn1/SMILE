@@ -65,4 +65,8 @@ export const adminDashBoard = (req,res)=>{
     res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "admin.html"));
 }
 
+export const analyticsPage = (req,res)=>{
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "analytics.html"));
+}
+
 //Lucas Bohani Maluleke and Darren Foster
