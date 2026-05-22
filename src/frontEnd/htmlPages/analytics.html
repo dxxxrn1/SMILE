@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="SMILE Organisation Analytics – Detailed insights on your opportunities and applicants." />
+  <title>Analytics – SMILE</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/orgdashboard.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" defer></script>
+  <style>
+    /* ── Analytics Page Styles ───────────────────────────── */
+    .analytics-page {
+      background: #f8fafc;
+      min-height: 100vh;
+    }
+
+    /* KPI cards row */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e5e7eb;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.09);
+    }
+
+    .kpi-card__accent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 14px 14px 0 0;
+    }
+
+    .kpi-card__label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .kpi-card__value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .kpi-card__sub {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .kpi-card__trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+      padding: 2px 8px;
+      border-radius: 99px;
+    }
+
+    .kpi-card__trend--up {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .kpi-card__trend--down {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    /* Range tabs */
+    .analytics-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .analytics-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .analytics-subtitle {
+      font-size: 14px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    /* Charts grid */
+    .charts-row {
+      display: grid;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .charts-row--2col {
+      grid-template-columns: 2fr 1fr;
+    }
+
+    .charts-row--2equal {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 900px) {
+
+      .charts-row--2col,
+      .charts-row--2equal {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e5e7eb;
+    }
+
+    .chart-card__title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chart-canvas-wrap {
+      position: relative;
+      height: 240px;
+    }
+
+    .chart-canvas-wrap--sm {
+      height: 200px;
+    }
+
+    /* Funnel */
+    .funnel-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e5e7eb;
+      margin-bottom: 20px;
+    }
+
+    .funnel-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .funnel-label {
+      width: 90px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+      flex-shrink: 0;
+    }
+
+    .funnel-bar-outer {
+      flex: 1;
+      background: #f3f4f6;
+      border-radius: 99px;
+      height: 20px;
+      overflow: hidden;
+    }
+
+    .funnel-bar-inner {
+      height: 100%;
+      border-radius: 99px;
+      background: var(--gradient-primary, linear-gradient(90deg, #f97316, #ec4899));
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      transition: width 0.8s ease;
+    }
+
+    .funnel-bar-pct {
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .funnel-num {
+      width: 50px;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      flex-shrink: 0;
+    }
+
+    /* Province list */
+    .prov-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .prov-name {
+      width: 110px;
+      font-size: 13px;
+      color: #374151;
+      flex-shrink: 0;
+    }
+
+    .prov-bar-outer {
+      flex: 1;
+      background: #f3f4f6;
+      border-radius: 99px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .prov-bar-inner {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #7c3aed, #a855f7);
+      transition: width 0.8s ease;
+    }
+
+    .prov-num {
+      width: 36px;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      flex-shrink: 0;
+    }
+
+    /* Empty / loading states */
+    .loading-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 160px;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6b7280;
+      text-decoration: none;
+      margin-bottom: 24px;
+      transition: color 0.15s;
+    }
+
+    .back-link:hover {
+      color: #111827;
+    }
+  </style>
+</head>
+
+<body class="dashboard-page layout-with-sidebar analytics-page">
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="dashboard-sidebar__header">
+        <a href="/" class="nav__logo">
+          <span class="nav__logo-icon">&#9786;</span>
+          <span>SMILE Org</span>
+        </a>
+      </div>
+      <div class="dashboard-sidebar__nav org-tabs" role="tablist">
+        <a href="/org/dashboard?tab=overview" class="org-tab" data-tab="overview" style="text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="7" height="9" x="3" y="3" rx="1" />
+            <rect width="7" height="5" x="14" y="3" rx="1" />
+            <rect width="7" height="9" x="14" y="12" rx="1" />
+            <rect width="7" height="5" x="3" y="16" rx="1" />
+          </svg>
+          Overview
+        </a>
+        <a href="/org/analytics" class="org-tab org-tab--active" data-tab="analytics" style="text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>
+          Analytics
+        </a>
+        <a href="/org/dashboard?tab=myopps" class="org-tab" data-tab="myopps" style="text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" />
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+          </svg>
+          My Opportunities
+        </a>
+        <a href="/org/dashboard/applicants" class="org-tab" data-tab="applicants" style="text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          Applicants
+        </a>
+        <a href="/org/dashboard/createOpportunity" class="org-tab" data-tab="create" style="text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Create New
+        </a>
+      </div>
+
+      <div class="dashboard-sidebar__links" style="padding: 0 1rem 1rem 1rem">
+        <p
+          style="font-size:11px;text-transform:uppercase;color:#9ca3af;letter-spacing:0.05em;padding-left:8px;margin-bottom:12px;margin-top:12px;font-weight:600;">
+          Actions
+        </p>
+        <a href="/org/dashboard/createOpportunity" class="btn btn--gradient"
+          style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:8px;color:white;border:none;font-weight:500;text-decoration:none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Post Opportunity
+        </a>
+      </div>
+
+      <div class="dashboard-sidebar__footer">
+        <div class="org-profile-info" style="padding: 0 0 1rem 0">
+          <div class="org-profile-avatar" id="sidebarInitials">SA</div>
+          <div>
+            <div class="org-profile-name" id="sidebarOrgName">My Organisation</div>
+            <div class="org-profile-type">Organisation</div>
+          </div>
+        </div>
+        <a href="/login-page" class="nav__profile-link nav__profile-link--logout" style="padding:0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" x2="9" y1="12" y2="12" />
+          </svg>
+          Log Out
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <div class="dashboard-container">
+
+        <!-- Header -->
+        <div class="analytics-header">
+          <div>
+            <h1 class="analytics-title">Analytics Dashboard</h1>
+            <p class="analytics-subtitle">Real-time insights into your opportunities and applicants</p>
+          </div>
+          <div class="range-tabs" id="rangeTabs">
+            <button class="range-tab range-tab--active" onclick="setRange(7, this)">7 days</button>
+            <button class="range-tab" onclick="setRange(30, this)">30 days</button>
+            <button class="range-tab" onclick="setRange(90, this)">90 days</button>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-card__accent" style="background:linear-gradient(90deg,#f97316,#fb923c)"></div>
+            <div class="kpi-card__label">Total Applications</div>
+            <div class="kpi-card__value" id="kpiApps">—</div>
+            <div class="kpi-card__trend kpi-card__trend--up" id="kpiAppsTrend">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="18 15 12 9 6 15" />
+              </svg>
+              Live data
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-card__accent" style="background:linear-gradient(90deg,#7c3aed,#a855f7)"></div>
+            <div class="kpi-card__label">Youth Reached</div>
+            <div class="kpi-card__value" id="kpiYouth">—</div>
+            <div class="kpi-card__trend kpi-card__trend--up">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="18 15 12 9 6 15" />
+              </svg>
+              Unique students
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-card__accent" style="background:linear-gradient(90deg,#0284c7,#38bdf8)"></div>
+            <div class="kpi-card__label">Shortlisted</div>
+            <div class="kpi-card__value" id="kpiShortlisted">—</div>
+            <div class="kpi-card__trend kpi-card__trend--up">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="18 15 12 9 6 15" />
+              </svg>
+              Approved
+            </div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-card__accent" style="background:linear-gradient(90deg,#059669,#34d399)"></div>
+            <div class="kpi-card__label">Conversion Rate</div>
+            <div class="kpi-card__value" id="kpiConv">—</div>
+            <div class="kpi-card__sub">Shortlisted / Total</div>
+          </div>
+        </div>
+
+        <!-- Charts Row 1: Timeline + Education -->
+        <div class="charts-row charts-row--2col">
+          <div class="chart-card">
+            <div class="chart-card__title">
+              Applications Over Time
+              <span id="chartMeta" style="font-size:12px;color:#9ca3af;font-weight:400;">Last 7 days</span>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="timelineChart"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card__title">Education Breakdown</div>
+            <div class="chart-canvas-wrap chart-canvas-wrap--sm">
+              <canvas id="eduChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row 2: Province bars + Funnel -->
+        <div class="charts-row charts-row--2equal">
+          <div class="chart-card">
+            <div class="chart-card__title">Applicants by Province</div>
+            <div id="provList">
+              <div class="loading-state">Loading province data...</div>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card__title">Application Funnel</div>
+            <div id="funnelList">
+              <div class="loading-state">Loading funnel data...</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="alert"></div>
+
+  <script src="/jsFrontEnd/analyticsJS.js" defer></script>
+</body>
+
+</html>

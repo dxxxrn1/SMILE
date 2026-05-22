@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
   initLocationButton();
   initOpportunityActions();
   loadEbooks();
+  loadSavedOpportunities();
+  loadApplications();
 
   // Only run on pages that have these elements
   const spanID = document.getElementById("userName");
@@ -671,3 +673,182 @@ window.downloadCareerDoc = async function () {
 document.addEventListener("DOMContentLoaded", () => {
   checkQuizStatus();
 });
+
+// ─── DYNAMIC DATA FETCHING ───────────────────────────────────────────────────
+
+async function loadSavedOpportunities() {
+  const container = document.querySelector(".dashboard__section--opportunities .opportunities-list");
+  if (!container) return;
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch("/api/student/saved-opportunities", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (data.success && data.savedOpportunities.length > 0) {
+      container.innerHTML = data.savedOpportunities.map(opp => {
+        // Format the date
+        const deadline = new Date(opp.ApplicationDeadline).toLocaleDateString("en-US", {
+          month: "short", day: "numeric", year: "numeric"
+        });
+        
+        return `
+          <article class="opportunity-card" data-oppid="${opp.OppID}">
+            <div class="opportunity-card__badge opportunity-card__badge--${opp.OppType.toLowerCase()}">
+              ${opp.OppType}
+            </div>
+            <h3 class="opportunity-card__title">${opp.Title}</h3>
+            <p class="opportunity-card__org">${opp.OrgName}</p>
+            <div class="opportunity-card__meta">
+              <span class="opportunity-card__location">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                ${opp.Province}
+              </span>
+              <span class="opportunity-card__deadline">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                Closes: ${deadline}
+              </span>
+            </div>
+            <div class="opportunity-card__actions">
+              <a href="${opp.ApplicationLink || '#'}" class="btn btn--primary btn--sm" target="_blank">Apply Now</a>
+              <button class="btn btn--outline btn--sm btn--icon btn-remove-saved" aria-label="Remove from saved">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6h18"></path>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                </svg>
+              </button>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      // Re-initialize remove buttons for the dynamic content
+      initDynamicRemoveButtons();
+    } else {
+      container.innerHTML = "<p style='color:#888;padding:1rem;'>No saved opportunities yet.</p>";
+    }
+  } catch (err) {
+    console.error("Error loading saved opportunities:", err);
+    container.innerHTML = "<p style='color:#dc2626;padding:1rem;'>Failed to load saved opportunities.</p>";
+  }
+}
+
+async function loadApplications() {
+  const container = document.querySelector(".dashboard__section--applications .applications-list");
+  if (!container) return;
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch("/api/student/applications", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (data.success && data.applications.length > 0) {
+      container.innerHTML = data.applications.map(app => {
+        const dateApplied = new Date(app.DateApplied).toLocaleDateString("en-US", {
+          month: "short", day: "numeric", year: "numeric"
+        });
+        
+        let statusIcon = '';
+        let statusClass = '';
+        
+        if (app.Status === 'Pending' || app.Status === 'Pending Review') {
+          statusClass = 'application-card__status--pending';
+          statusIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>';
+        } else if (app.Status === 'Reviewed') {
+          statusClass = 'application-card__status--interview';
+          statusIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>';
+        } else if (app.Status === 'Shortlisted') {
+          statusClass = 'application-card__status--accepted';
+          statusIcon = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>';
+        } else if (app.Status === 'Interview') {
+          statusClass = 'application-card__status--interview';
+          statusIcon = '<rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line>';
+        } else if (app.Status === 'Accepted') {
+          statusClass = 'application-card__status--accepted';
+          statusIcon = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>';
+        } else if (app.Status === 'Rejected') {
+          statusClass = 'application-card__status--rejected';
+          statusIcon = '<circle cx="12" cy="12" r="10"></circle><line x1="15" x2="9" y1="9" y2="15"></line><line x1="9" x2="15" y1="9" y2="15"></line>';
+        } else {
+          statusClass = 'application-card__status--pending';
+          statusIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>';
+        }
+
+        return `
+          <article class="application-card" onclick="window.location.href='/careers/explore'" style="cursor: pointer;">
+            <div class="application-card__status ${statusClass}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                ${statusIcon}
+              </svg>
+              ${app.Status}
+            </div>
+            <h3 class="application-card__title">${app.Title}</h3>
+            <p class="application-card__org">${app.OrgName}</p>
+            <p class="application-card__date">Applied: ${dateApplied}</p>
+          </article>
+        `;
+      }).join("");
+    } else {
+      container.innerHTML = "<p style='color:#888;padding:1rem;'>No applications sent yet.</p>";
+    }
+  } catch (err) {
+    console.error("Error loading applications:", err);
+    container.innerHTML = "<p style='color:#dc2626;padding:1rem;'>Failed to load applications.</p>";
+  }
+}
+
+function initDynamicRemoveButtons() {
+  const removeButtons = document.querySelectorAll(".btn-remove-saved");
+
+  removeButtons.forEach(function (btn) {
+    btn.addEventListener("click", async function (event) {
+      event.preventDefault();
+
+      const card = btn.closest(".opportunity-card");
+      const title = card.querySelector(".opportunity-card__title").textContent;
+      const oppId = card.getAttribute("data-oppid");
+
+      if (confirm(`Remove "${title}" from saved opportunities?`)) {
+        try {
+          const res = await fetch(`/api/student/saved-opportunities/${oppId}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+          });
+          const data = await res.json();
+          
+          if (data.success) {
+            card.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+            card.style.opacity = "0";
+            card.style.transform = "translateX(-20px)";
+
+            setTimeout(function () {
+              card.remove();
+              updateSavedCount(-1);
+            }, 300);
+          } else {
+            alert(data.message || "Failed to remove opportunity.");
+          }
+        } catch (err) {
+          console.error("Error deleting opportunity:", err);
+          alert("Network error while trying to remove opportunity.");
+        }
+      }
+    });
+  });
+}
+
