@@ -16,6 +16,14 @@ document.addEventListener("DOMContentLoaded", function () {
   loadApplicants();
   checkUrlParams();
   bindTabInterceptors();
+
+  const logoutTag = document.getElementById("logout");
+      logoutTag.addEventListener("click" , ()=>{
+          localStorage.removeItem("token");
+          localStorage.removeItem("accountType");
+          localStorage.removeItem("userName");
+          localStorage.removeItem("initials");
+      })
 });
 
 /* ================================================================

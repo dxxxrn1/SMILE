@@ -50,9 +50,9 @@ route.post("/api/chat", verifyToken, getCareerAdvice);
 route.post("/api/generate-doc-from-chat", verifyToken, generateDocFromChat);
 route.get("/api/saved-docs", verifyToken, getSavedDocs);
 route.get("/api/saved-docs/:id", verifyToken, getSingleDoc);
-route.post("/logout", (req, res) => {
+route.get("/logout", (req, res) => {
     res.clearCookie('token');
-    return res.sendStatus(200);
+    return res.redirect("/login-page");
 });
 route.get("/api/jobs", fetchJobs);
 route.get("/org/dashboard", verifyToken ,orgDashboard);

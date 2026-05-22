@@ -151,4 +151,13 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".form__group--error").forEach(g => g.classList.remove("form__group--error"));
         showToast("Form cleared.");
     });
+
+
+    const logoutTag = document.getElementById("logout");
+    logoutTag.addEventListener("click" , ()=>{
+        localStorage.removeItem("token");
+        localStorage.removeItem("accountType");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("initials");
+    })
 });

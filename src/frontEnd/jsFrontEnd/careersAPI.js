@@ -293,4 +293,16 @@ window.saveQuizResults = async function () {
   } catch (err) {
     console.error("Error saving quiz:", err);
   }
+
+
+    const logoutTag = document.getElementById("logout");
+    logoutTag.addEventListener("click" , ()=>{
+        localStorage.removeItem("token");
+        localStorage.removeItem("accountType");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("initials");
+    })
+
+
+
 };

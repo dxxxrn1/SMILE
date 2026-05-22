@@ -82,6 +82,17 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.stats__item, .feature-card').forEach(element => {
     observer.observe(element);
   });
+
+
+  const logoutTag = document.getElementById("logout");
+      logoutTag.addEventListener("click" , ()=>{
+          localStorage.removeItem("token");
+          localStorage.removeItem("accountType");
+          localStorage.removeItem("userName");
+          localStorage.removeItem("initials");
+      })
+  
+
 });
 
 // Add CSS for animations dynamically
