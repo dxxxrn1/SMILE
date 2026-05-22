@@ -134,10 +134,28 @@
           <span class="form__error" id="lastName-error">Last name is required</span>
         </div>
 
+        <!-- STUDENT EMAIL + OTP -->
         <div class="form__group">
           <label for="email" class="form__label">Email Address</label>
           <input type="email" id="email" name="email" class="form__input" placeholder="Enter your email" required autocomplete="email">
-          <span class="form__error">Please enter a valid email address</span>
+          <div id="email-status" style="min-height:18px; margin-top:4px; font-size:12px;"></div>
+          <span class="form__error" id="email-error" style="display:none;"></span>
+          <span id="email-hint" style="display:none; color:green; font-size:12px;">✓ Email verified!</span>
+        </div>
+
+        <div id="otp-section" style="display:none; margin-bottom:1rem; padding:1rem; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;">
+          <p style="font-size:13px; margin-bottom:8px;">We sent a 6-digit code to <strong id="otp-email-display"></strong></p>
+          <div style="display:flex; gap:8px; margin-bottom:10px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+          </div>
+          <button type="button" onclick="verifyOTP()" style="padding:8px 16px;background:#4CAF50;color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;">Verify Code</button>
+          <a href="#" onclick="resendCode(event)" style="font-size:12px; margin-left:12px; color:#555;">Resend code</a>
+          <div id="otp-error" style="display:none; color:red; font-size:12px; margin-top:6px;">❌ Incorrect code. Please try again.</div>
         </div>
 
         <div class="form__row">
@@ -241,10 +259,28 @@
           <span class="form__error">Organization name is required</span>
         </div>
 
+        <!-- ORG EMAIL + OTP -->
         <div class="form__group">
           <label for="orgEmail" class="form__label">Organization Email</label>
           <input type="email" id="orgEmail" name="orgEmail" class="form__input" placeholder="Enter organization email" required autocomplete="email">
-          <span class="form__error">Please enter a valid email address</span>
+          <div id="org-email-status" style="min-height:18px; margin-top:4px; font-size:12px;"></div>
+          <span class="form__error" id="org-email-error" style="display:none;"></span>
+          <span id="org-email-hint" style="display:none; color:green; font-size:12px;">✓ Email verified!</span>
+        </div>
+
+        <div id="org-otp-section" style="display:none; margin-bottom:1rem; padding:1rem; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;">
+          <p style="font-size:13px; margin-bottom:8px;">We sent a 6-digit code to <strong id="org-otp-email-display"></strong></p>
+          <div style="display:flex; gap:8px; margin-bottom:10px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+          </div>
+          <button type="button" onclick="verifyOrgOTP()" style="padding:8px 16px;background:#4CAF50;color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;">Verify Code</button>
+          <a href="#" onclick="resendOrgCode(event)" style="font-size:12px; margin-left:12px; color:#555;">Resend code</a>
+          <div id="org-otp-error" style="display:none; color:red; font-size:12px; margin-top:6px;">❌ Incorrect code. Please try again.</div>
         </div>
 
         <div class="form__row">
@@ -311,7 +347,9 @@
   </div>
 
   <script src="../jsFrontEnd/auth.js"></script>
+
   <script>
+    // --- Tab switching ---
     const pills = document.querySelectorAll('.auth-v2-pill');
     const studentForm = document.getElementById('studentForm');
     const organizationForm = document.getElementById('organizationForm');
@@ -320,7 +358,6 @@
       pill.addEventListener('click', function() {
         pills.forEach(p => p.classList.remove('auth-v2-pill--active'));
         this.classList.add('auth-v2-pill--active');
-        
         if (this.dataset.type === 'student') {
           studentForm.style.display = 'block';
           organizationForm.style.display = 'none';
@@ -330,6 +367,221 @@
         }
       });
     });
+
+    // --- Email verification config ---
+    const ABSTRACT_KEY = '446e36****'; // ← paste your full Abstract API key
+
+    let studentVerified = false, orgVerified = false;
+    let studentDebounce, orgDebounce;
+    let lastStudentEmail = '', lastOrgEmail = '';
+
+    function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e); }
+
+    // ─── STUDENT EMAIL ───────────────────────────────────────────
+    document.getElementById('email').addEventListener('input', function () {
+      const val = this.value.trim();
+      studentVerified = false;
+      document.getElementById('otp-section').style.display = 'none';
+      document.getElementById('email-hint').style.display = 'none';
+      document.getElementById('email-error').style.display = 'none';
+      document.getElementById('email-status').textContent = '';
+      clearTimeout(studentDebounce);
+      if (!val || !isValidEmail(val)) return;
+      studentDebounce = setTimeout(() => checkStudentEmail(val), 800);
+    });
+
+    async function checkStudentEmail(email) {
+      if (email === lastStudentEmail) return;
+      lastStudentEmail = email;
+      document.getElementById('email-status').innerHTML = '⏳ Checking email...';
+      try {
+        // Step 1: Check email exists in the real world via Abstract API
+        const absRes = await fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=${ABSTRACT_KEY}&email=${encodeURIComponent(email)}`);
+        const absData = await absRes.json();
+        document.getElementById('email-status').textContent = '';
+        if (absData.deliverability === 'UNDELIVERABLE') { 
+          document.getElementById('email-error').textContent = '❌ This email does not exist or cannot receive mail.';
+          document.getElementById('email-error').style.display = 'block';
+          return;
+        }
+
+        // Step 2: Check email not already registered + send OTP via backend
+        const otpRes = await fetch('/api/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const otpData = await otpRes.json();
+
+        if (!otpData.success) {
+          document.getElementById('email-error').textContent = '❌ ' + otpData.message;
+          document.getElementById('email-error').style.display = 'block';
+          return;
+        }
+
+        document.getElementById('otp-email-display').textContent = email;
+        document.getElementById('otp-section').style.display = 'block';
+
+      } catch (e) {
+        document.getElementById('email-status').textContent = '';
+      }
+    }
+
+    function verifyOTP() {
+      const entered = Array.from(document.querySelectorAll('.otp-digit')).map(d => d.value).join('');
+      if (entered.length < 6) return;
+
+      fetch('/api/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: document.getElementById('email').value.trim(), otp: entered })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          studentVerified = true;
+          document.getElementById('otp-section').style.display = 'none';
+          document.getElementById('email-hint').style.display = 'block';
+          document.getElementById('otp-error').style.display = 'none';
+        } else {
+          document.getElementById('otp-error').style.display = 'block';
+          document.getElementById('otp-error').textContent = '❌ ' + data.message;
+          document.querySelectorAll('.otp-digit').forEach(d => d.value = '');
+          document.querySelectorAll('.otp-digit')[0].focus();
+        }
+      });
+    }
+
+    function resendCode(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      lastStudentEmail = '';
+      checkStudentEmail(email);
+      document.querySelectorAll('.otp-digit').forEach(d => d.value = '');
+      document.getElementById('otp-error').style.display = 'none';
+    }
+
+    // ─── ORGANISATION EMAIL ───────────────────────────────────────
+    document.getElementById('orgEmail').addEventListener('input', function () {
+      const val = this.value.trim();
+      orgVerified = false;
+      document.getElementById('org-otp-section').style.display = 'none';
+      document.getElementById('org-email-hint').style.display = 'none';
+      document.getElementById('org-email-error').style.display = 'none';
+      document.getElementById('org-email-status').textContent = '';
+      clearTimeout(orgDebounce);
+      if (!val || !isValidEmail(val)) return;
+      orgDebounce = setTimeout(() => checkOrgEmail(val), 800);
+    });
+
+    async function checkOrgEmail(email) {
+      if (email === lastOrgEmail) return;
+      lastOrgEmail = email;
+      document.getElementById('org-email-status').innerHTML = '⏳ Checking email...';
+      try {
+        // Step 1: Check email exists in the real world via Abstract API
+        const absRes = await fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=${ABSTRACT_KEY}&email=${encodeURIComponent(email)}`);
+        const absData = await absRes.json();
+        document.getElementById('org-email-status').textContent = '';
+
+        if (absData.deliverability === 'UNDELIVERABLE') { 
+          document.getElementById('org-email-error').textContent = '❌ This email does not exist or cannot receive mail.';
+          document.getElementById('org-email-error').style.display = 'block';
+          return;
+        }
+
+        // Step 2: Check email not already registered + send OTP via backend
+        const otpRes = await fetch('/api/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const otpData = await otpRes.json();
+
+        if (!otpData.success) {
+          document.getElementById('org-email-error').textContent = '❌ ' + otpData.message;
+          document.getElementById('org-email-error').style.display = 'block';
+          return;
+        }
+
+        document.getElementById('org-otp-email-display').textContent = email;
+        document.getElementById('org-otp-section').style.display = 'block';
+
+      } catch (e) {
+        document.getElementById('org-email-status').textContent = '';
+      }
+    }
+
+    function verifyOrgOTP() {
+      const entered = Array.from(document.querySelectorAll('.org-otp-digit')).map(d => d.value).join('');
+      if (entered.length < 6) return;
+
+      fetch('/api/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: document.getElementById('orgEmail').value.trim(), otp: entered })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          orgVerified = true;
+          document.getElementById('org-otp-section').style.display = 'none';
+          document.getElementById('org-email-hint').style.display = 'block';
+          document.getElementById('org-otp-error').style.display = 'none';
+        } else {
+          document.getElementById('org-otp-error').style.display = 'block';
+          document.getElementById('org-otp-error').textContent = '❌ ' + data.message;
+          document.querySelectorAll('.org-otp-digit').forEach(d => d.value = '');
+          document.querySelectorAll('.org-otp-digit')[0].focus();
+        }
+      });
+    }
+
+    function resendOrgCode(e) {
+      e.preventDefault();
+      const email = document.getElementById('orgEmail').value.trim();
+      lastOrgEmail = '';
+      checkOrgEmail(email);
+      document.querySelectorAll('.org-otp-digit').forEach(d => d.value = '');
+      document.getElementById('org-otp-error').style.display = 'none';
+    }
+
+    // ─── OTP keyboard navigation (both forms) ────────────────────
+    document.addEventListener('input', function (e) {
+      if (e.target.classList.contains('otp-digit') || e.target.classList.contains('org-otp-digit')) {
+        const val = e.target.value.replace(/\D/g, '');
+        e.target.value = val;
+        if (val) {
+          const next = e.target.nextElementSibling;
+          if (next && (next.classList.contains('otp-digit') || next.classList.contains('org-otp-digit'))) next.focus();
+        }
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if ((e.target.classList.contains('otp-digit') || e.target.classList.contains('org-otp-digit')) && e.key === 'Backspace' && !e.target.value) {
+        const prev = e.target.previousElementSibling;
+        if (prev) prev.focus();
+      }
+    });
+
+    // ─── Block submit if email not verified ──────────────────────
+    document.getElementById('studentForm').addEventListener('submit', function (e) {
+      if (!studentVerified) {
+        e.preventDefault();
+        document.getElementById('email-error').textContent = '⚠️ Please verify your email before submitting.';
+        document.getElementById('email-error').style.display = 'block';
+      }
+    });
+
+    document.getElementById('organizationForm').addEventListener('submit', function (e) {
+      if (!orgVerified) {
+        e.preventDefault();
+        document.getElementById('org-email-error').textContent = '⚠️ Please verify your email before submitting.';
+        document.getElementById('org-email-error').style.display = 'block';
+      }
+    });
   </script>
+
 </body>
 </html>
