@@ -1,6 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-   alert("Dom is loaded!!!");
+    // Populate sidebar initials and organization name
+    const orgName = localStorage.getItem("orgName") || localStorage.getItem("userName") || "SMILE Africa NGO";
+    const initials = localStorage.getItem("orgInitials") || localStorage.getItem("initials") || orgName.slice(0, 2).toUpperCase();
+    const avatarEl = document.getElementById("sidebarInitials");
+    const nameEl = document.getElementById("sidebarOrgName");
+    if (avatarEl) avatarEl.textContent = initials;
+    if (nameEl) nameEl.textContent = orgName;
 
     // Character counter
     window.updateCharCount = function (el, countId, max) {
