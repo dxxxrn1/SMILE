@@ -441,3 +441,148 @@ function handleLogout() {
         window.location.href = '/login-page';
     });
 }
+// ── NAME VALIDATION — NO NUMBERS ALLOWED ─────────────────────
+
+function blockNumbers(input) {
+  const errorEl = document.getElementById(`${input.id}-error`);
+
+  // Remove any digits the user typed
+  const cleaned = input.value.replace(/[0-9]/g, "");
+
+  // If digits were found, show error and strip them
+  if (input.value !== cleaned) {
+    input.value = cleaned;
+    input.classList.add("input-error");
+    input.classList.remove("input-valid");
+    if (errorEl) {
+      errorEl.textContent = "Name cannot contain numbers.";
+    }
+  } else if (cleaned.length > 0) {
+    // Valid input
+    input.classList.remove("input-error");
+    input.classList.add("input-valid");
+    if (errorEl) {
+      errorEl.textContent = "";
+    }
+  } else {
+    // Empty — reset
+    input.classList.remove("input-error", "input-valid");
+    if (errorEl) errorEl.textContent = "";
+  }
+}
+
+// Also block on keypress so numbers never even appear
+["firstName", "lastName"].forEach(id => {
+  const el = document.getElementById(id);
+  el?.addEventListener("keypress", (e) => {
+    if (/[0-9]/.test(e.key)) {
+      e.preventDefault();
+    }
+  });
+
+  // Block paste of numbers
+  el?.addEventListener("paste", (e) => {
+    e.preventDefault();
+    const pasted = (e.clipboardData || window.clipboardData)
+      .getData("text")
+      .replace(/[0-9]/g, "");
+    document.execCommand("insertText", false, pasted);
+  });
+});
+
+// Add name validation to form submit check
+document.querySelector("form")?.addEventListener("submit", (e) => {
+  const firstName = document.getElementById("firstName");
+  const lastName  = document.getElementById("lastName");
+  let hasError = false;
+
+  [firstName, lastName].forEach(input => {
+    if (!input) return;
+    const errorEl = document.getElementById(`${input.id}-error`);
+    if (/[0-9]/.test(input.value)) {
+      input.classList.add("input-error");
+      if (errorEl) errorEl.textContent = "Name cannot contain numbers.";
+      hasError = true;
+    } else if (input.value.trim() === "") {
+      input.classList.add("input-error");
+      if (errorEl) errorEl.textContent = "This field is required.";
+      hasError = true;
+    }
+  });
+
+  if (hasError) e.preventDefault();
+});
+// ── CONFIRM PASSWORD ──────────────────────────────────────────
+
+const confirmInput   = document.getElementById("confirmPassword");
+const confirmMessage = document.getElementById("confirmMessage");
+const confirmIcon    = document.getElementById("confirmIcon");
+const confirmText    = document.getElementById("confirmText");
+const passwordInput  = document.getElementById("password");
+
+// Check match as user types in confirm field
+confirmInput?.addEventListener("input", checkPasswordMatch);
+
+// Re-check if original password changes after confirm is filled
+passwordInput?.addEventListener("input", () => {
+  if (confirmInput.value.length > 0) checkPasswordMatch();
+});
+
+function checkPasswordMatch() {
+  const password = passwordInput.value;
+  const confirm  = confirmInput.value;
+
+  if (confirm.length === 0) {
+    confirmMessage.style.display = "none";
+    confirmInput.classList.remove("form__input--success", "form__input--error");
+    return;
+  }
+
+  confirmMessage.style.display = "flex";
+
+  if (password === confirm) {
+    confirmMessage.className     = "match";
+    confirmIcon.textContent      = "✓";
+    confirmText.textContent      = "Passwords match";
+    confirmInput.style.borderColor = "#10B981";
+    confirmInput.classList.remove("form__input--error");
+  } else {
+    confirmMessage.className     = "no-match";
+    confirmIcon.textContent      = "✕";
+    confirmText.textContent      = "Passwords do not match";
+    confirmInput.style.borderColor = "#EF4444";
+  }
+}
+document.addEventListener("DOMContentLoaded", () => {
+
+  // ── LOGIN EYE TOGGLE ────────────────────────────────────────
+  const loginPasswordInput = document.getElementById("password");
+  const loginToggleBtn     = document.getElementById("toggleLoginPassword");
+
+  if (loginPasswordInput && loginToggleBtn) {
+    loginToggleBtn.addEventListener("click", () => {
+      const isHidden = loginPasswordInput.type === "password";
+
+      // Toggle
+      loginPasswordInput.type = isHidden ? "text" : "password";
+      loginToggleBtn.style.color = isHidden ? "#F97316" : "#9CA3AF";
+
+      // Swap icon
+      loginToggleBtn.innerHTML = isHidden
+        ? // Eye CLOSED — password now visible
+          `<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8
+                     a18.45 18.45 0 015.06-5.94" stroke-width="2" stroke-linecap="round"/>
+            <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8
+                     a18.5 18.5 0 01-2.16 3.19" stroke-width="2" stroke-linecap="round"/>
+            <line x1="1" y1="1" x2="23" y2="23" stroke-width="2" stroke-linecap="round"/>
+           </svg>`
+        : // Eye OPEN — password now hidden
+          `<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-width="2"/>
+            <circle cx="12" cy="12" r="3" stroke-width="2"/>
+           </svg>`;
+    });
+  }
+
+});

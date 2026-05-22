@@ -109,7 +109,7 @@
       <form id="studentForm" class="form auth-v2-form" novalidate>
         <input type="hidden" name="accountType" value="student">
 
-        <div class="form__row">
+        <!-- <div class="form__row">
           <div class="form__group">
             <label for="firstName" class="form__label">First Name</label>
             <input type="text" id="firstName" name="firstName" class="form__input" placeholder="Enter first name" required autocomplete="given-name">
@@ -120,6 +120,18 @@
             <input type="text" id="lastName" name="lastName" class="form__input" placeholder="Enter last name" required autocomplete="family-name">
             <span class="form__error">Last name is required</span>
           </div>
+        </div> -->
+        <div class="form__group">
+          <label for="firstName" class="form__label">First Name</label>
+          <input type="text" id="firstName" name="firstName" class="form__input"placeholder="Enter first name" required autocomplete="given-name"
+          oninput="blockNumbers(this)" />
+          <span class="form__error" id="firstName-error">First name is required</span>
+        </div>
+        <div class="form__group">
+          <label for="lastName" class="form__label">Last Name</label>
+          <input type="text" id="lastName" name="lastName" class="form__input"placeholder="Enter last name" required autocomplete="family-name"
+          oninput="blockNumbers(this)" />
+          <span class="form__error" id="lastName-error">Last name is required</span>
         </div>
 
         <div class="form__group">
@@ -164,13 +176,42 @@
             <span class="form__error">Please select education level</span>
           </div>
         </div>
-
         <div class="form__group">
-          <label for="studentPassword" class="form__label">Password</label>
-          <input type="password" id="studentPassword" name="password" class="form__input" placeholder="Create a password" required autocomplete="new-password" minlength="8">
-          <span class="form__error">Password must be at least 8 characters</span>
-        </div>
+          <label for="password" class="form__label">Password</label>
+          <input 
+          type="password" 
+          id="password" 
+          name="password"
+          class="form__input"
+          placeholder="Create a password"
+          required
+          autocomplete="new-password"
+        />
+    <span class="form__error" id="password-error"></span>
+      </div>
+        
+  <div class="form__group">
+  <label class="form__label">CONFIRM PASSWORD</label>
 
+  <div style="position: relative;">
+    <input type="password" id="confirmPassword" name="confirmPassword"
+           class="form__input" placeholder="Confirm your password"
+           style="padding-right: 44px;" required />
+
+    
+  <!-- Match message -->
+  <div id="confirmMessage" style="display:none; margin-top: 6px;
+       font-size: 12px; font-weight: 500; align-items: center; gap: 5px;">
+    <span id="confirmIcon"></span>
+    <span id="confirmText"></span>
+  </div>
+
+  <span class="form__error" id="confirmPassword-error"></span>
+</div>
+
+  <span class="form__error" id="password-error"></span>
+</div>
+        
         <div class="form__actions">
           <div class="form__checkbox">
             <input type="checkbox" id="studentTerms" name="terms" required>
@@ -180,6 +221,7 @@
         <div class="form__group" style="margin-top: -15px;">
           <span class="form__error" id="studentTermsError">You must agree to the Terms and Conditions</span>
         </div>
+
 
         <button type="submit" class="btn--auth-submit">
           Create Account
