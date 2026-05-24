@@ -69,4 +69,12 @@ export const analyticsPage = (req,res)=>{
     res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "analytics.html"));
 }
 
+export const userModeration = (req,res)=>{
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "userModeration.html"));
+}
+
+export const userTicket = (req,res)=>{
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "userTicket.html"));
+}
+
 //Lucas Bohani Maluleke and Darren Foster
