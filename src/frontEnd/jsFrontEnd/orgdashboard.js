@@ -18,12 +18,12 @@ document.addEventListener("DOMContentLoaded", function () {
   bindTabInterceptors();
 
   const logoutTag = document.getElementById("logout");
-      logoutTag.addEventListener("click" , ()=>{
-          localStorage.removeItem("token");
-          localStorage.removeItem("accountType");
-          localStorage.removeItem("userName");
-          localStorage.removeItem("initials");
-      })
+  logoutTag.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("accountType");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("initials");
+  })
 });
 
 /* ================================================================
@@ -200,7 +200,7 @@ function buildMiniChart(timeline) {
           const localStr = getLocalDateString(parsedD);
           timelineMap[utcStr] = t.Count || 0;
           timelineMap[localStr] = t.Count || 0;
-        } catch (e) {}
+        } catch (e) { }
       }
     });
   }
@@ -498,19 +498,19 @@ function showEditModal(oppId) {
   document.getElementById("editMax").value = opp.MaxApplicants || "";
   document.getElementById("editDesc").value = opp.Description || "";
   document.getElementById("editReq").value = opp.Requirements || "";
-  
+
   if (opp.ApplicationDeadline) {
     document.getElementById("editDeadline").value = opp.ApplicationDeadline.slice(0, 10);
   } else {
     document.getElementById("editDeadline").value = "";
   }
-  
+
   if (opp.StartDate) {
     document.getElementById("editStart").value = opp.StartDate.slice(0, 10);
   } else {
     document.getElementById("editStart").value = "";
   }
-  
+
   document.getElementById("editLink").value = opp.ApplicationLink || "";
 
   document.getElementById("editOppModal").classList.add("modal-overlay--active");
@@ -527,17 +527,17 @@ async function submitOpportunityEdit(e) {
 
   const oppId = document.getElementById("editOppID").value;
   const payload = {
-    title:           document.getElementById("editTitle").value.trim(),
-    type:            document.getElementById("editType").value,
-    address:         document.getElementById("editAddress").value.trim(),
-    province:        document.getElementById("editProvince").value,
-    maxApplicants:   document.getElementById("editMax").value || null,
-    description:     document.getElementById("editDesc").value.trim(),
-    requirements:    document.getElementById("editReq").value.trim(),
-    deadline:        document.getElementById("editDeadline").value,
-    startDate:       document.getElementById("editStart").value || null,
+    title: document.getElementById("editTitle").value.trim(),
+    type: document.getElementById("editType").value,
+    address: document.getElementById("editAddress").value.trim(),
+    province: document.getElementById("editProvince").value,
+    maxApplicants: document.getElementById("editMax").value || null,
+    description: document.getElementById("editDesc").value.trim(),
+    requirements: document.getElementById("editReq").value.trim(),
+    deadline: document.getElementById("editDeadline").value,
+    startDate: document.getElementById("editStart").value || null,
     applicationLink: document.getElementById("editLink").value.trim(),
-    status:          document.getElementById("editStatus").value
+    status: document.getElementById("editStatus").value
   };
 
   const btn = document.getElementById("editSaveBtn");
@@ -748,7 +748,7 @@ function resetCreateForm() {
 /* ================================================================
    TOAST
    ================================================================ */
-// let _toastTimer;
+let _toastTimer;
 
 function showToast(msg, type) {
   const toast = document.getElementById("toast");
@@ -1089,8 +1089,8 @@ function renderApplicantRows(list) {
       <tr data-opp="${a.OpportunityTitle}" data-status="${a.ApplicationStatus}">
         <td style="display:flex;align-items:center;gap:12px;border:none;">
           ${a.ProfilePicUrl
-            ? `<img src="${a.ProfilePicUrl}" class="applicant-circular-avatar" style="width:36px;height:36px;object-fit:cover;" alt="${fullName}">`
-            : `<div class="applicant-circular-avatar avatar-theme-${a.AppID % 5}" style="width:36px;height:36px;font-size:12px;">${initials}</div>`}
+        ? `<img src="${a.ProfilePicUrl}" class="applicant-circular-avatar" style="width:36px;height:36px;object-fit:cover;" alt="${fullName}">`
+        : `<div class="applicant-circular-avatar avatar-theme-${a.AppID % 5}" style="width:36px;height:36px;font-size:12px;">${initials}</div>`}
           <div>
             <div style="font-weight:600;color:#111827">${fullName}</div>
             <div style="font-size:12px;color:#6b7280">${a.StuEmail}</div>

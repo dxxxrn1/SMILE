@@ -86,7 +86,7 @@ function handleLoginSubmit(event) {
 
   const form = event.target;
 
-  const submitBtn = form.querySelector('.form__submit');
+  const submitBtn = form.querySelector('.btn--auth-submit') || form.querySelector('.form__submit');
   if (submitBtn) {
     submitBtn.disabled = true;
     submitBtn.style.opacity = '0.7';
@@ -135,13 +135,13 @@ function handleLoginSubmit(event) {
       return response.json();
     }
     if (response.status === 401) {
-      showSuccessMessage(form, 'Invalid email or password.');
+      showFormMessage(form, 'Invalid email or password.', 'error');
       resetSubmitButton(submitBtn);
     } else if (response.status === 403) {
-      showSuccessMessage(form, 'Invalid email or password.');
+      showFormMessage(form, 'Invalid email or password.', 'error');
       resetSubmitButton(submitBtn);
     } else {
-      showSuccessMessage(form, 'Something went wrong. Please try again.');
+      showFormMessage(form, 'Something went wrong. Please try again.', 'error');
       resetSubmitButton(submitBtn);
     }
   })
@@ -153,7 +153,7 @@ function handleLoginSubmit(event) {
     localStorage.setItem("userName", data.name);
     localStorage.setItem("initials", data.userinitials);
 
-    showSuccessMessage(form, 'Login successful! Redirecting...');
+    showFormMessage(form, 'Login successful! Redirecting...', 'success');
 
     // ✅ Redirect based on accountType — admin checked before organization
     // since admins log in via the Organization card but receive accountType: "admin"
@@ -171,7 +171,7 @@ function handleLoginSubmit(event) {
   })
   .catch(error => {
     console.error('Login error:', error);
-    showSuccessMessage(form, 'Network error. Please try again.');
+    showFormMessage(form, 'Network error. Please try again.', 'error');
     resetSubmitButton(submitBtn);
   });
 }
@@ -180,7 +180,7 @@ function handleRegisterSubmit(event) {
   event.preventDefault();
 
   const form = event.target;
-  const submitBtn = form.querySelector('.form__submit');
+  const submitBtn = form.querySelector('.btn--auth-submit') || form.querySelector('.form__submit');
 
   if (submitBtn) {
     submitBtn.disabled = true;
@@ -261,7 +261,7 @@ function handleRegisterSubmit(event) {
     if (termsGroup) {
       termsGroup.classList.add('form__group--error');
     }
-    showSuccessMessage(form, 'You must agree to the Terms and Conditions.');
+    showFormMessage(form, 'You must agree to the Terms and Conditions.', 'error');
     isValid = false;
   }
 
@@ -295,7 +295,7 @@ function handleRegisterSubmit(event) {
   }
 
   if (!url || !formData) {
-    showSuccessMessage(form, 'Could not determine account type. Please try again.');
+    showFormMessage(form, 'Could not determine account type. Please try again.', 'error');
     resetSubmitButton(submitBtn);
     return;
   }
@@ -307,24 +307,24 @@ function handleRegisterSubmit(event) {
   })
   .then(response => {
     if (response.status === 201) {
-      showSuccessMessage(form, 'Account created! Redirecting to login...');
+      showFormMessage(form, 'Account created! Redirecting to login...', 'success');
       setTimeout(() => {
         window.location.href = '/login-page';
       }, 3000);
     } else if (response.status === 403) {
-      showSuccessMessage(form, 'This email is already registered. Please log in.');
+      showFormMessage(form, 'This email is already registered. Please log in.', 'error');
       resetSubmitButton(submitBtn);
     } else if (response.status === 400) {
-      showSuccessMessage(form, 'Please fill in all your details.');
+      showFormMessage(form, 'Please fill in all your details.', 'error');
       resetSubmitButton(submitBtn);
     } else {
-      showSuccessMessage(form, 'Something went wrong. Please try again.');
+      showFormMessage(form, 'Something went wrong. Please try again.', 'error');
       resetSubmitButton(submitBtn);
     }
   })
   .catch(error => {
     console.error('Registration error:', error);
-    showSuccessMessage(form, 'Network error. Please try again.');
+    showFormMessage(form, 'Network error. Please try again.', 'error');
     resetSubmitButton(submitBtn);
   });
 }
@@ -404,30 +404,23 @@ function showError(input, message) {
 }
 
 /**
- * Show success or info message on the form
+ * Show success or error global message on the form
  */
-function showSuccessMessage(form, message) {
-  const existingMessage = form.querySelector('.form__success');
+function showFormMessage(form, message, type = 'success') {
+  const existingMessage = form.querySelector('.form__success') || form.querySelector('.form-global-msg');
   if (existingMessage) {
     existingMessage.remove();
   }
 
-  const successDiv = document.createElement('div');
-  successDiv.className = 'form__success';
-  successDiv.style.cssText = `
-    background: #10B981;
-    color: white;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    text-align: center;
-    margin-bottom: 1rem;
-    font-weight: 500;
-  `;
-  successDiv.textContent = message;
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `form-global-msg form-global-msg--${type}`;
+  msgDiv.textContent = message;
 
-  const submitButton = form.querySelector('.form__submit');
+  const submitButton = form.querySelector('.btn--auth-submit') || form.querySelector('.form__submit');
   if (submitButton) {
-    form.insertBefore(successDiv, submitButton);
+    form.insertBefore(msgDiv, submitButton);
+  } else {
+    form.appendChild(msgDiv);
   }
 }
 

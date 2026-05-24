@@ -190,6 +190,14 @@
                 Settings
               </a>
               <hr class="nav__profile-divider" />
+              <a href="#" id="myTicketsDropdownBtn" class="nav__profile-link" onclick="openTicketsTab(event)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                My Tickets
+              </a>
+              <hr class="nav__profile-divider" />
               <a href="/logout"  id="logout" class="nav__profile-link nav__profile-link--logout">
                 <svg
                   width="18"
@@ -596,70 +604,187 @@
             </div>
           </section>
 
-          <!-- Near Me Map Section -->
-          <!-- <section class="dashboard__section dashboard__section--map">
-            <div class="section__header">
-              <h2 class="section__title">
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path
-                    d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
-                  ></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                Opportunities Near You
-              </h2>
-              <a href="#" class="section__link">Open Map</a>
-            </div>
-            <div class="map-placeholder">
-              <div class="map-placeholder__content">
-                <svg
-                  width="48"
-                  height="48"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path
-                    d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
-                  ></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-                <p class="map-placeholder__text">
-                  Interactive map showing opportunities in your area
-                </p>
-                <button class="btn btn--primary" id="enableLocation">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+          <!-- Near Me Map Section commented out -->
+        </div>
+
+        <!-- ─── My Tickets Tab ─── -->
+        <div id="tickets-panel" style="display:none; margin-top: 2rem;">
+
+          <style>
+            /* Tickets tab inline styles */
+            .tickets-layout { display: grid; grid-template-columns: 1fr 1.6fr; gap: 24px; align-items: start; }
+            @media (max-width: 900px) { .tickets-layout { grid-template-columns: 1fr; } }
+
+            .ticket-form-card {
+              background: #fff;
+              border-radius: 14px;
+              border: 1px solid #e2e8f0;
+              box-shadow: 0 2px 8px rgba(0,0,0,.06);
+              overflow: hidden;
+            }
+            .ticket-form-card__header {
+              padding: 20px 24px 16px;
+              border-bottom: 1px solid #e2e8f0;
+            }
+            .ticket-form-card__header h3 {
+              font-size: 16px; font-weight: 600; color: #0f172a;
+              display: flex; align-items: center; gap: 8px;
+            }
+            .ticket-form-card__body { padding: 20px 24px 24px; }
+            .tkt-form-group { margin-bottom: 16px; }
+            .tkt-form-group label {
+              display: block; font-size: 11px; font-weight: 600;
+              color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px;
+            }
+            .tkt-input {
+              width: 100%; padding: 10px 12px;
+              border: 1px solid #e2e8f0; border-radius: 8px;
+              font-size: 14px; font-family: inherit; background: #f8fafc;
+              transition: border-color .2s, box-shadow .2s;
+            }
+            .tkt-input:focus { outline: none; border-color: #ec4899; box-shadow: 0 0 0 3px rgba(236,72,153,.12); background:#fff; }
+            textarea.tkt-input { resize: vertical; min-height: 100px; }
+            .tkt-submit-btn {
+              width: 100%; padding: 12px;
+              background: linear-gradient(135deg, #f97316, #ec4899);
+              color: #fff; border: none; border-radius: 8px;
+              font-size: 14px; font-weight: 600; cursor: pointer;
+              transition: opacity .2s, transform .2s;
+              display: flex; align-items: center; justify-content: center; gap: 8px;
+            }
+            .tkt-submit-btn:hover { opacity: .9; transform: translateY(-1px); }
+            .tkt-submit-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+            /* Tickets table card */
+            .tickets-table-card {
+              background: #fff; border-radius: 14px;
+              border: 1px solid #e2e8f0;
+              box-shadow: 0 2px 8px rgba(0,0,0,.06);
+              overflow: hidden;
+            }
+            .tickets-table-card__header {
+              padding: 20px 24px 16px; border-bottom: 1px solid #e2e8f0;
+              display: flex; align-items: center; justify-content: space-between;
+            }
+            .tickets-table-card__header h3 {
+              font-size: 16px; font-weight: 600; color: #0f172a;
+              display: flex; align-items: center; gap: 8px;
+            }
+            .tkt-table { width: 100%; border-collapse: collapse; }
+            .tkt-table th {
+              padding: 10px 16px; font-size: 11px; font-weight: 600;
+              color: #94a3b8; text-transform: uppercase; letter-spacing: .5px;
+              text-align: left; border-bottom: 1px solid #e2e8f0; background: #f8fafc;
+            }
+            .tkt-table td { padding: 12px 16px; font-size: 13px; color: #374151; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+            .tkt-table tr:last-child td { border-bottom: none; }
+            .tkt-table tr:hover td { background: #fafafa; }
+            .tkt-badge {
+              display: inline-flex; align-items: center; gap: 4px;
+              padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+            }
+            .tkt-badge--open    { background: #fef3c7; color: #92400e; }
+            .tkt-badge--resolved { background: #d1fae5; color: #065f46; }
+            .tkt-feedback { font-size: 12px; color: #64748b; margin-top: 4px; font-style: italic; }
+            .tkt-empty { text-align: center; padding: 2.5rem; color: #9ca3af; font-size: 14px; }
+            .tkt-toast {
+              position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+              padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 500;
+              color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.15);
+              animation: slideUp .3s ease; display: none;
+            }
+            .tkt-toast--success { background: linear-gradient(135deg,#059669,#10b981); }
+            .tkt-toast--error   { background: linear-gradient(135deg,#dc2626,#ef4444); }
+            @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+          </style>
+
+          <div class="section__header" style="margin-bottom: 20px;">
+            <h2 class="section__title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              My Support Tickets
+            </h2>
+          </div>
+
+          <div class="tickets-layout">
+
+            <!-- Create Ticket Form -->
+            <div class="ticket-form-card">
+              <div class="ticket-form-card__header">
+                <h3>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
                   </svg>
-                  Enable Location
+                  Report an Issue
+                </h3>
+              </div>
+              <div class="ticket-form-card__body">
+                <div class="tkt-form-group">
+                  <label for="tktType">Issue Type</label>
+                  <select id="tktType" class="tkt-input">
+                    <option value="">Select type...</option>
+                    <option value="Bug / Issue">🐛 App Bug / Issue</option>
+                    <option value="Report">🚩 Report Content</option>
+                  </select>
+                </div>
+                <div class="tkt-form-group">
+                  <label for="tktSubject">Subject</label>
+                  <input type="text" id="tktSubject" class="tkt-input" placeholder="Brief description of the issue..." maxlength="255" />
+                </div>
+                <div class="tkt-form-group">
+                  <label for="tktDesc">Full Description</label>
+                  <textarea id="tktDesc" class="tkt-input" placeholder="Please describe the issue in detail — include any steps to reproduce, screenshots or context..."></textarea>
+                </div>
+                <button class="tkt-submit-btn" id="tktSubmitBtn" onclick="submitStudentTicket()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  Submit Ticket
                 </button>
               </div>
             </div>
-          </section> -->
-        </div>
+
+            <!-- Tickets History -->
+            <div class="tickets-table-card">
+              <div class="tickets-table-card__header">
+                <h3>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                  </svg>
+                  My Past Tickets
+                </h3>
+                <button onclick="loadStudentTickets()" style="font-size:12px;color:#ec4899;background:none;border:none;cursor:pointer;font-weight:600;">↻ Refresh</button>
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="tkt-table">
+                  <thead>
+                    <tr>
+                      <th>#ID</th>
+                      <th>Type</th>
+                      <th>Subject</th>
+                      <th>Status</th>
+                      <th>Admin Feedback</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tkt-table-body">
+                    <tr><td colspan="6" class="tkt-empty">Loading tickets...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div><!-- /tickets-layout -->
+
+          <!-- Toast notification -->
+          <div class="tkt-toast" id="tktToast"></div>
+        </div><!-- /tickets-panel -->
+
       </div>
+    </div>
     </main>
+
+
 
     <!-- Footer -->
     <footer class="footer">

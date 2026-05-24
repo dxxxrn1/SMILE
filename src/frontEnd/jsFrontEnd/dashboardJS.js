@@ -860,3 +860,145 @@ function initDynamicRemoveButtons() {
   });
 }
 
+
+// ─── SUPPORT TICKETS ────────────────────────────────────────────────────────
+
+/**
+ * Opens the Tickets panel from the profile dropdown
+ */
+function openTicketsTab(event) {
+    event.preventDefault();
+
+    // Hide the main dashboard grid, show tickets panel
+    const dashGrid = document.querySelector(".dashboard__grid");
+    const ticketsPanel = document.getElementById("tickets-panel");
+    const profileMenu = document.getElementById("profileMenu");
+
+    if (dashGrid) dashGrid.style.display = "none";
+    if (ticketsPanel) ticketsPanel.style.display = "block";
+    if (profileMenu) profileMenu.classList.remove("nav__profile-menu--active");
+
+    // Scroll to top smoothly
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Load tickets list
+    loadStudentTickets();
+}
+
+/**
+ * Fetch and render the student's own tickets
+ */
+async function loadStudentTickets() {
+    const tbody = document.getElementById("tkt-table-body");
+    if (!tbody) return;
+
+    tbody.innerHTML = `<tr><td colspan="6" class="tkt-empty">Loading...</td></tr>`;
+
+    try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("/api/tickets/my", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (!data.success || data.tickets.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="tkt-empty">You haven't submitted any tickets yet.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = data.tickets.map(t => {
+            const date = new Date(t.DateCreated).toLocaleDateString("en-ZA", {
+                day: "2-digit", month: "short", year: "numeric"
+            });
+            const badge = t.Status === "Resolved"
+                ? `<span class="tkt-badge tkt-badge--resolved">✓ Resolved</span>`
+                : `<span class="tkt-badge tkt-badge--open">● Open</span>`;
+            const feedback = t.AdminFeedback
+                ? `<p class="tkt-feedback">💬 ${t.AdminFeedback}</p>`
+                : `<span style="color:#cbd5e1;font-size:12px;">—</span>`;
+
+            return `
+                <tr>
+                    <td style="font-weight:600;color:#ec4899;">#${t.TicketID}</td>
+                    <td>${t.TicketType}</td>
+                    <td style="max-width:200px;">${t.Subject}</td>
+                    <td>${badge}</td>
+                    <td>${feedback}</td>
+                    <td style="white-space:nowrap;color:#94a3b8;">${date}</td>
+                </tr>`;
+        }).join("");
+
+    } catch (err) {
+        console.error("Error loading tickets:", err);
+        document.getElementById("tkt-table-body").innerHTML =
+            `<tr><td colspan="6" class="tkt-empty" style="color:#dc2626;">Could not load tickets.</td></tr>`;
+    }
+}
+
+/**
+ * Submit a new support ticket
+ */
+async function submitStudentTicket() {
+    const ticketType  = document.getElementById("tktType").value.trim();
+    const subject     = document.getElementById("tktSubject").value.trim();
+    const description = document.getElementById("tktDesc").value.trim();
+
+    if (!ticketType || !subject || !description) {
+        showTktToast("Please fill in all fields before submitting.", "error");
+        return;
+    }
+
+    const btn = document.getElementById("tktSubmitBtn");
+    btn.disabled = true;
+    btn.innerHTML = `<svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Submitting...`;
+
+    try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("/api/tickets", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ ticketType, subject, description })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            showTktToast(`Ticket #${data.ticketId} submitted successfully!`, "success");
+            // Reset form
+            document.getElementById("tktType").value    = "";
+            document.getElementById("tktSubject").value = "";
+            document.getElementById("tktDesc").value    = "";
+            // Refresh history table
+            await loadStudentTickets();
+        } else {
+            showTktToast(data.message || "Failed to submit ticket.", "error");
+        }
+    } catch (err) {
+        console.error("Error submitting ticket:", err);
+        showTktToast("Server error. Please try again.", "error");
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit Ticket`;
+    }
+}
+
+/**
+ * Show a toast notification in the tickets panel
+ */
+function showTktToast(message, type = "success") {
+    const toast = document.getElementById("tktToast");
+    if (!toast) return;
+
+    toast.className = `tkt-toast tkt-toast--${type}`;
+    toast.textContent = message;
+    toast.style.display = "block";
+
+    setTimeout(() => { toast.style.display = "none"; }, 4000);
+}
+
+// Expose to HTML onclick attributes
+window.openTicketsTab       = openTicketsTab;
+window.loadStudentTickets   = loadStudentTickets;
+window.submitStudentTicket  = submitStudentTicket;
