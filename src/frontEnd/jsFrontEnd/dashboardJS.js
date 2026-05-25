@@ -773,23 +773,24 @@ async function loadApplications() {
         
         let statusIcon = '';
         let statusClass = '';
+        const status = app.Status || 'Pending';
         
-        if (app.Status === 'Pending' || app.Status === 'Pending Review') {
+        if (status === 'Pending' || status === 'Pending Review') {
           statusClass = 'application-card__status--pending';
           statusIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>';
-        } else if (app.Status === 'Reviewed') {
+        } else if (status === 'Reviewed') {
           statusClass = 'application-card__status--interview';
           statusIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>';
-        } else if (app.Status === 'Shortlisted') {
+        } else if (status === 'Shortlisted') {
           statusClass = 'application-card__status--accepted';
           statusIcon = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>';
-        } else if (app.Status === 'Interview') {
+        } else if (status === 'Interview') {
           statusClass = 'application-card__status--interview';
           statusIcon = '<rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line>';
-        } else if (app.Status === 'Accepted') {
+        } else if (status === 'Accepted') {
           statusClass = 'application-card__status--accepted';
           statusIcon = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>';
-        } else if (app.Status === 'Rejected') {
+        } else if (status === 'Rejected') {
           statusClass = 'application-card__status--rejected';
           statusIcon = '<circle cx="12" cy="12" r="10"></circle><line x1="15" x2="9" y1="9" y2="15"></line><line x1="9" x2="15" y1="9" y2="15"></line>';
         } else {
@@ -797,17 +798,84 @@ async function loadApplications() {
           statusIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>';
         }
 
+        // Horizontal Timeline logic mapping
+        const isReviewed = ['Reviewed', 'Shortlisted', 'Interview', 'Accepted', 'Rejected'].includes(status);
+        const isShortlisted = ['Shortlisted', 'Interview', 'Accepted', 'Rejected'].includes(status);
+        const isFinal = ['Accepted', 'Rejected'].includes(status);
+        const isRejected = status === 'Rejected';
+
+        const step1Class = "app-timeline__step--active";
+        const step2Class = isReviewed ? "app-timeline__step--reviewed" : "";
+        const step3Class = isShortlisted ? "app-timeline__step--shortlisted" : "";
+        
+        let step4Class = "";
+        let step4Title = "4. Decision";
+        let step4Sub = "Pending";
+        if (isFinal) {
+          if (isRejected) {
+            step4Class = "app-timeline__step--rejected";
+            step4Title = "4. Rejected";
+            step4Sub = "Ended";
+          } else {
+            step4Class = "app-timeline__step--accepted";
+            step4Title = "4. Accepted";
+            step4Sub = "Success";
+          }
+        }
+        
+        const conn1 = isReviewed ? "app-timeline__connector--active" : "";
+        const conn2 = isShortlisted ? "app-timeline__connector--active" : "";
+        const conn3 = isFinal ? "app-timeline__connector--active" : "";
+
         return `
           <article class="application-card" onclick="window.location.href='/careers/explore'" style="cursor: pointer;">
-            <div class="application-card__status ${statusClass}">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                ${statusIcon}
-              </svg>
-              ${app.Status}
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+              <div>
+                <h3 class="application-card__title" style="margin: 0; font-size: 0.9375rem;">${app.Title}</h3>
+                <p class="application-card__org" style="margin: 2px 0 0; font-size: 0.8125rem;">${app.OrgName}</p>
+              </div>
+              <div class="application-card__status ${statusClass}" style="margin: 0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  ${statusIcon}
+                </svg>
+                ${app.Status}
+              </div>
             </div>
-            <h3 class="application-card__title">${app.Title}</h3>
-            <p class="application-card__org">${app.OrgName}</p>
-            <p class="application-card__date">Applied: ${dateApplied}</p>
+            
+            <!-- Horizontal Scrollable Timeline Pipeline -->
+            <div class="app-timeline-container" onclick="event.stopPropagation();">
+              <div class="app-timeline">
+                <!-- Step 1: Applied -->
+                <div class="app-timeline__step ${step1Class}">
+                  <span class="app-timeline__step-title">1. Applied</span>
+                  <span class="app-timeline__step-subtitle">${dateApplied}</span>
+                </div>
+                
+                <div class="app-timeline__connector ${conn1}"></div>
+                
+                <!-- Step 2: Under Review -->
+                <div class="app-timeline__step ${step2Class}">
+                  <span class="app-timeline__step-title">2. Reviewed</span>
+                  <span class="app-timeline__step-subtitle">${isReviewed ? 'Completed' : 'Pending'}</span>
+                </div>
+                
+                <div class="app-timeline__connector ${conn2}"></div>
+                
+                <!-- Step 3: Shortlisted -->
+                <div class="app-timeline__step ${step3Class}">
+                  <span class="app-timeline__step-title">3. Shortlisted</span>
+                  <span class="app-timeline__step-subtitle">${isShortlisted ? 'Yes' : 'Pending'}</span>
+                </div>
+                
+                <div class="app-timeline__connector ${conn3}"></div>
+                
+                <!-- Step 4: Decision -->
+                <div class="app-timeline__step ${step4Class}">
+                  <span class="app-timeline__step-title">${step4Title}</span>
+                  <span class="app-timeline__step-subtitle">${step4Sub}</span>
+                </div>
+              </div>
+            </div>
           </article>
         `;
       }).join("");

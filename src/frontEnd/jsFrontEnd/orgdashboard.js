@@ -1164,43 +1164,65 @@ function showApplicantModal(appId) {
   if (!a) return;
 
   const fullName = `${a.StuName} ${a.StuLastName}`;
+  const initials = ((a.StuName || "").slice(0, 1) + (a.StuLastName || "").slice(0, 1)).toUpperCase() || "SA";
+  const avatarContent = a.ProfilePicUrl
+    ? `<img src="${a.ProfilePicUrl}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid #f1f5f9;box-shadow:0 2px 4px rgba(0,0,0,0.05);" alt="${fullName}">`
+    : `<div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg, #f97316 0%, #ec4899 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;box-shadow:0 2px 4px rgba(0,0,0,0.05);">${initials}</div>`;
 
   content.innerHTML = `
-    <h2 style="margin-bottom:6px;font-size:22px;font-weight:700;color:#111827;">${fullName}</h2>
-    <p style="margin-bottom:20px;color:#4b5563;font-size:14px;">Applied to <strong>${a.OpportunityTitle}</strong></p>
-    
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
-      <div>
-        <label style="display:block;font-size:11px;font-weight:600;text-transform:uppercase;color:#9ca3af;margin-bottom:4px;">Email</label>
-        <div style="font-size:14px;color:#1f2937;">${a.StuEmail}</div>
+    <div style="padding: 24px 28px 24px 28px;">
+      <!-- Modal Header -->
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid #f1f5f9;padding-right:24px;">
+        ${avatarContent}
+        <div>
+          <h2 style="margin:0 0 4px 0;font-size:1.375rem;font-weight:700;color:#0f172a;line-height:1.2;">${fullName}</h2>
+          <p style="margin:0;color:#64748b;font-size:0.875rem;">Applied to <strong style="color:#f97316;">${a.OpportunityTitle}</strong></p>
+        </div>
       </div>
-      <div>
-        <label style="display:block;font-size:11px;font-weight:600;text-transform:uppercase;color:#9ca3af;margin-bottom:4px;">Phone</label>
-        <div style="font-size:14px;color:#1f2937;">${a.StuPhone || "N/A"}</div>
+      
+      <!-- Columns Grid Details -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+        <div style="background:#f8fafc;padding:12px 16px;border-radius:10px;border:1px solid #f1f5f9;box-shadow:inset 0 1px 2px rgba(0,0,0,0.01);">
+          <span style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;letter-spacing:0.5px;">Email Address</span>
+          <span style="font-size:0.875rem;font-weight:600;color:#334155;word-break:break-all;line-height:1.4;">${a.StuEmail}</span>
+        </div>
+        
+        <div style="background:#f8fafc;padding:12px 16px;border-radius:10px;border:1px solid #f1f5f9;box-shadow:inset 0 1px 2px rgba(0,0,0,0.01);">
+          <span style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;letter-spacing:0.5px;">Phone Number</span>
+          <span style="font-size:0.875rem;font-weight:600;color:#334155;line-height:1.4;">${a.StuPhone || "N/A"}</span>
+        </div>
+        
+        <div style="background:#f8fafc;padding:12px 16px;border-radius:10px;border:1px solid #f1f5f9;box-shadow:inset 0 1px 2px rgba(0,0,0,0.01);">
+          <span style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;letter-spacing:0.5px;">Province</span>
+          <span style="font-size:0.875rem;font-weight:600;color:#334155;line-height:1.4;">${a.StuProvince || "Gauteng"}</span>
+        </div>
+        
+        <div style="background:#f8fafc;padding:12px 16px;border-radius:10px;border:1px solid #f1f5f9;box-shadow:inset 0 1px 2px rgba(0,0,0,0.01);">
+          <span style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;letter-spacing:0.5px;">Education Level</span>
+          <span style="font-size:0.875rem;font-weight:600;color:#334155;line-height:1.4;">
+            <span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;display:inline-block;">
+              ${a.StuEducationLevel || "Matric"}
+            </span>
+          </span>
+        </div>
       </div>
-      <div>
-        <label style="display:block;font-size:11px;font-weight:600;text-transform:uppercase;color:#9ca3af;margin-bottom:4px;">Province</label>
-        <div style="font-size:14px;color:#1f2937;">${a.StuProvince || "Gauteng"}</div>
-      </div>
-      <div>
-        <label style="display:block;font-size:11px;font-weight:600;text-transform:uppercase;color:#9ca3af;margin-bottom:4px;">Education</label>
-        <div style="font-size:14px;color:#1f2937;">${a.StuEducationLevel || "Matric"}</div>
-      </div>
-    </div>
 
-    <div style="margin-bottom:24px;">
-      <label style="display:block;font-size:11px;font-weight:600;text-transform:uppercase;color:#9ca3af;margin-bottom:4px;">Student Bio / Motivation</label>
-      <div style="font-size:14px;color:#374151;background:#f3f4f6;padding:12px;border-radius:6px;line-height:1.5;max-height:150px;overflow-y:auto;">
-        ${a.StuBio || "No motivation provided."}
+      <!-- Bio / Motivation Quote Card -->
+      <div style="margin-bottom:24px;">
+        <span style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:8px;letter-spacing:0.5px;">Student Bio / Motivation</span>
+        <div style="font-size:0.9rem;color:#475569;background:#f8fafc;padding:16px;border-radius:12px;border:1px solid #e2e8f0;line-height:1.6;max-height:150px;overflow-y:auto;font-style:italic;">
+          ${a.StuBio || "No motivation provided."}
+        </div>
       </div>
-    </div>
 
-    <div style="display:flex;justify-content:flex-end;gap:10px;">
-      <button class="btn btn--outline" onclick="closeApplicantModal()">Close</button>
-      ${a.ApplicationStatus === 'Pending' || a.ApplicationStatus === 'Reviewed' ? `
-        <button class="btn" style="background:#dc2626;border-color:#dc2626;color:#fff;" onclick="updateAppStatus(${a.AppID}, 'Rejected', this); closeApplicantModal();">Reject</button>
-        <button class="btn" style="background:#059669;border-color:#059669;color:#fff;" onclick="updateAppStatus(${a.AppID}, 'Shortlisted', this); closeApplicantModal();">Shortlist</button>
-      ` : ''}
+      <!-- Action Buttons Footer -->
+      <div style="display:flex;justify-content:flex-end;gap:12px;border-top:1px solid #f1f5f9;padding-top:20px;">
+        <button class="btn btn--outline" style="border-radius:8px;padding:8px 16px;font-weight:600;font-size:0.875rem;" onclick="closeApplicantModal()">Close</button>
+        ${a.ApplicationStatus === 'Pending' || a.ApplicationStatus === 'Reviewed' ? `
+          <button class="btn" style="background:#ef4444;border-color:#ef4444;color:#fff;border-radius:8px;padding:8px 20px;font-weight:600;font-size:0.875rem;transition:all 0.2s;" onclick="updateAppStatus(${a.AppID}, 'Rejected', this); closeApplicantModal();">Reject</button>
+          <button class="btn" style="background:#10b981;border-color:#10b981;color:#fff;border-radius:8px;padding:8px 20px;font-weight:600;font-size:0.875rem;transition:all 0.2s;" onclick="updateAppStatus(${a.AppID}, 'Shortlisted', this); closeApplicantModal();">Shortlist</button>
+        ` : ''}
+      </div>
     </div>
   `;
 
