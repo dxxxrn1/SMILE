@@ -2,8 +2,10 @@ import express from "express";
 import { sendOTP, verifyOTP } from '../controllers/otpController.js';
 import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,
         studentLandingPage,careersPage,orgDashboard,
-        createOpportunity,adminDashBoard, applicantsPage, studentProfilePage, analyticsPage
+        createOpportunity,adminDashBoard, applicantsPage, studentProfilePage, analyticsPage,
+        orgTicketsPage
 } from "../controllers/pageControllers.js";
+
 import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken , requireAdmin} from "../controllers/sessionControllers.js";
@@ -21,6 +23,8 @@ import {
 } from "../controllers/chatbotController.js";
 import {createNewOpportunity,getAllOpportunities, getOrganizationApplicants, getOrgDashboardStats, updateApplicationStatus, getOrgOpportunities, updateOpportunity, deleteOpportunity} from '../controllers/opportunitiesControllers.js';
 import { getSavedOpportunities, getStudentApplications, deleteSavedOpportunity, saveOpportunity, applyForOpportunity, getStudentProfile, updateStudentProfile } from "../controllers/studentController.js";
+import { createTicket, getMyTickets } from "../controllers/ticketController.js";
+
 
 const route = express.Router();
 
@@ -76,6 +80,12 @@ route.delete("/api/opportunities/:oppId", verifyToken, deleteOpportunity);
 // OTP email verification routes
 route.post("/api/send-otp", sendOTP);
 route.post("/api/verify-otp", verifyOTP);
+
+// Support Ticket routes
+route.post("/api/tickets", verifyToken, createTicket);
+route.get("/api/tickets/my", verifyToken, getMyTickets);
+route.get("/org/tickets", verifyToken, orgTicketsPage);
+
 
 export default route;
 

@@ -442,3 +442,33 @@ input.input-valid {
 #toggleLoginPassword:focus {
   outline: none;
 }
+
+/* ---- FORM MESSAGES (Simple text format) ---- */
+.form-global-msg {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 1rem;
+  animation: formMsgFadeIn 0.2s ease-out forwards;
+}
+
+@keyframes formMsgFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-global-msg--success {
+  color: #10B981; /* Premium green */
+}
+
+.form-global-msg--error {
+  color: #EF4444; /* Premium red */
+}
+
