@@ -300,33 +300,92 @@ function handleRegisterSubmit(event) {
     return;
   }
 
-  fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData)
+   fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(formData),
   })
-  .then(response => {
-    if (response.status === 201) {
-      showSuccessMessage(form, 'Account created! Redirecting to login...');
-      setTimeout(() => {
-        window.location.href = '/login-page';
-      }, 3000);
-    } else if (response.status === 403) {
-      showSuccessMessage(form, 'This email is already registered. Please log in.');
+    .then(async (response) => {
+      const data = await response.json().catch(() => ({}));
+ 
+      if (response.status === 201) {
+ 
+        // ── ORGANISATION: pending approval ────────────────────────────────
+        if (accountType === "organization" && data.pending) {
+          showPendingMessage(form, formData.orgName || "your organisation");
+          resetSubmitButton(submitBtn);
+          return;
+        }
+ 
+        // ── STUDENT: go straight to login ─────────────────────────────────
+        showSuccessMessage(form, "Account created! Redirecting to login...");
+        setTimeout(() => {
+          window.location.href = "/login-page";
+        }, 3000);
+ 
+      } else if (response.status === 403) {
+        showSuccessMessage(form, "This email is already registered. Please log in.");
+        resetSubmitButton(submitBtn);
+      } else if (response.status === 400) {
+        showSuccessMessage(form, data.message || "Please fill in all your details.");
+        resetSubmitButton(submitBtn);
+      } else {
+        showSuccessMessage(form, data.message || "Something went wrong. Please try again.");
+        resetSubmitButton(submitBtn);
+      }
+    })
+    .catch((error) => {
+      console.error("Registration error:", error);
+      showSuccessMessage(form, "Network error. Please try again.");
       resetSubmitButton(submitBtn);
-    } else if (response.status === 400) {
-      showSuccessMessage(form, 'Please fill in all your details.');
-      resetSubmitButton(submitBtn);
-    } else {
-      showSuccessMessage(form, 'Something went wrong. Please try again.');
-      resetSubmitButton(submitBtn);
-    }
-  })
-  .catch(error => {
-    console.error('Registration error:', error);
-    showSuccessMessage(form, 'Network error. Please try again.');
-    resetSubmitButton(submitBtn);
+    });
+}
+function showPendingMessage(form, orgName) {
+  // Hide all form fields so there's no confusion
+  Array.from(form.elements).forEach((el) => {
+    if (el.type !== "hidden") el.style.display = "none";
   });
+ 
+  // Remove any existing message
+  const existing = form.querySelector(".pending-approval-msg");
+  if (existing) existing.remove();
+ 
+  const msg = document.createElement("div");
+  msg.className = "pending-approval-msg";
+  msg.innerHTML = `
+    <div style="
+      text-align: center;
+      padding: 2rem 1.5rem;
+      background: #F0FDF4;
+      border: 1.5px solid #86EFAC;
+      border-radius: 12px;
+      margin-top: 1rem;
+    ">
+      <div style="font-size: 2.5rem; margin-bottom: 12px;">⏳</div>
+      <h3 style="color: #15803D; margin: 0 0 8px;">Registration Received!</h3>
+      <p style="color: #166534; margin: 0 0 12px; font-size: 14px; line-height: 1.6;">
+        Thank you, <strong>${orgName}</strong>! Your organisation has been registered
+        and is now <strong>pending approval</strong> by the SMILE admin team.
+      </p>
+      <p style="color: #166534; margin: 0; font-size: 13px;">
+        📧 We've sent a confirmation email to your inbox.<br>
+        You'll receive another email once your account is approved.
+      </p>
+      <a href="/login-page" style="
+        display: inline-block;
+        margin-top: 1.25rem;
+        padding: 10px 22px;
+        background: #16A34A;
+        color: #fff;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+      ">Back to Login</a>
+    </div>
+  `;
+ 
+  form.appendChild(msg);
 }
 
 /**
@@ -586,12 +645,3 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
-
-
-const logoutTag = document.getElementById("logout");
-logoutTag.addEventListener("click" , ()=>{
-    localStorage.removeItem("token");
-    localStorage.removeItem("accountType");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("initials");
-})

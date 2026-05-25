@@ -288,20 +288,33 @@ export const deleteUser = async (req, res) => {
     req_.input("id", sql.Int, parsed.numericId);
 
     if (parsed.table === "student") {
-      // Delete every table that has a FK referencing Student.StuID (deepest first)
-      await req_.query(`DELETE FROM StudentInterests    WHERE StuID = @id`);
-      await req_.query(`DELETE FROM SavedOpportunities  WHERE StuID = @id`);
-      await req_.query(`DELETE FROM Applications        WHERE StuID = @id`);
-      // Add any other FK-dependent tables here if new errors appear
-      await req_.query(`DELETE FROM Student             WHERE StuID = @id`);
+      // ── All FK children of Student.StuID (from SSMS FK query) ────────────────
+      // rows 3–7 in results: Feedback, SavedCareerDocs, SavedOpportunities,
+      // StudentInterests (×2 — same table, two FKs), Applications
+      await req_.query(`DELETE FROM Feedback           WHERE StuID = @id`);
+      await req_.query(`DELETE FROM SavedCareerDocs    WHERE StuID = @id`);
+      await req_.query(`DELETE FROM SavedOpportunities WHERE StuID = @id`);
+      await req_.query(`DELETE FROM StudentInterests   WHERE StuID = @id`);
+      await req_.query(`DELETE FROM Applications       WHERE StuID = @id`);
+      // Parent row — must be last
+      await req_.query(`DELETE FROM Student            WHERE StuID = @id`);
+
     } else {
-      // Delete every table that has a FK referencing Organisation.OrgId (deepest first)
-      await req_.query(`DELETE FROM Applications  WHERE OppID IN (SELECT OppID FROM Opportunities WHERE OrgId = @id)`);
-      await req_.query(`DELETE FROM SavedOpportunities WHERE OppID IN (SELECT OppID FROM Opportunities WHERE OrgId = @id)`);
-      await req_.query(`DELETE FROM Opportunities WHERE OrgId = @id`);
-      await req_.query(`DELETE FROM OrgApprovals  WHERE OrgId = @id`);
-      // Add any other FK-dependent tables here if new errors appear
-      await req_.query(`DELETE FROM Organisation  WHERE OrgId = @id`);
+      // ── All FK children of Organisation.OrgId (row 1 in results: Opportunities)
+      // Opportunities itself has children: Applications, SavedOpportunities
+      // so delete those first, then Opportunities, then Organisation
+      await req_.query(`
+        DELETE FROM Applications
+        WHERE OppID IN (SELECT OppID FROM Opportunities WHERE OrgId = @id)
+      `);
+      await req_.query(`
+        DELETE FROM SavedOpportunities
+        WHERE OppID IN (SELECT OppID FROM Opportunities WHERE OrgId = @id)
+      `);
+      await req_.query(`DELETE FROM Opportunities WHERE OrgId  = @id`);
+      await req_.query(`DELETE FROM OrgApprovals  WHERE OrgId  = @id`);
+      // Parent row — must be last
+      await req_.query(`DELETE FROM Organisation  WHERE OrgId  = @id`);
     }
 
     await transaction.commit();
