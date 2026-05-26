@@ -1142,6 +1142,9 @@
    grid-template-columns: repeat(4, 1fr);
    gap: var(--spacing-lg);
    margin-bottom: var(--spacing-xl);
+   /* Extra top padding so hover lift doesn't get clipped */
+   padding-top: 6px;
+   overflow: visible;
  }
 
  .stat-card {
@@ -1158,7 +1161,8 @@
 
  .stat-card:hover {
    box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08) !important;
-   transform: translateY(-5px) scale(1.02);
+   /* Reduced scale so card stays within its grid cell on smaller screens */
+   transform: translateY(-3px) scale(1.01);
  }
 
  .stat-card--orange {
@@ -1756,38 +1760,54 @@
    }
  }
 
- @media (max-width: 768px) {
-   .dashboard__stats {
-     grid-template-columns: repeat(2, 1fr);
-   }
+  /* Mobile (max 768px) */
+  @media (max-width: 768px) {
+    .dashboard__stats {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-md);
+    }
 
-   .dashboard__grid {
-     grid-template-columns: 1fr;
-   }
+    .dashboard__grid {
+      grid-template-columns: 1fr;
+    }
 
-   .dashboard__section--ebooks,
-   .dashboard__section--map {
-     grid-column: span 1;
-   }
+    .dashboard__section--ebooks,
+    .dashboard__section--map {
+      grid-column: span 1;
+    }
 
-   .ebooks-grid {
-     grid-template-columns: repeat(2, 1fr);
-   }
+    .ebooks-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
 
-   .nav__actions--dashboard {
-     display: none;
-   }
- }
+    .nav__actions--dashboard {
+      display: none;
+    }
 
- @media (max-width: 1024px) {
-   .dashboard__stats {
-     grid-template-columns: repeat(2, 1fr);
-   }
+    .stat-card:hover {
+      transform: translateY(-2px);
+    }
 
-   .ebooks-grid {
-     grid-template-columns: repeat(2, 1fr);
-   }
- }
+    .dashboard__header {
+      flex-direction: column;
+      align-items: flex-start !important;
+    }
+  }
+
+  /* Tablet (max 1024px) */
+  @media (max-width: 1024px) {
+    .dashboard__stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ebooks-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard {
+      padding: var(--spacing-lg) 0 var(--spacing-2xl);
+    }
+  }
 
  /* ==================== PAGE HEADER (shared across new pages) ==================== */
  .page-content {
@@ -3049,6 +3069,39 @@
      flex-direction: column;
      align-items: flex-start;
      gap: var(--spacing-sm);
+   }
+
+   .analytics-metrics {
+     grid-template-columns: 1fr;
+   }
+
+   /* On very small phones keep 2-column grid so cards aren't too tall */
+   .dashboard__stats {
+     grid-template-columns: 1fr 1fr;
+     gap: var(--spacing-sm);
+   }
+
+   /* Reduce card padding on small phones */
+   .stat-card {
+     padding: var(--spacing-md);
+   }
+
+   /* No scale effect on tiny screens */
+   .stat-card:hover {
+     transform: translateY(-2px);
+   }
+
+   .range-tabs {
+     flex-wrap: wrap;
+   }
+
+   /* Dashboard padding on small mobile */
+   .dashboard {
+     padding: var(--spacing-md) 0 var(--spacing-xl);
+   }
+
+   .dashboard__section {
+     padding: var(--spacing-lg);
    }
  }
 
@@ -4832,3 +4885,5 @@
  .app-timeline__connector--active {
    background: var(--primary-pink, #ec4899);
  }
+
+
