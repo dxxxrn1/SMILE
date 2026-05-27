@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV Builder - SMILE</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="studentTools.css">
+  <script src="/student-tools/studentTools.js" defer></script>
+</head>
+<body class="student-tools-page dashboard-page">
+  <header class="header header--dashboard"><nav class="nav container"><a href="/" class="nav__logo"><span class="nav__logo-icon">&#9786;</span><span>SMILE</span></a><ul class="nav__menu nav__menu--dashboard"><li><a href="/student/tools" class="nav__link">Tools</a></li><li><a href="/student/tools/cv-builder" class="nav__link nav__link--active">CV Builder</a></li></ul></nav></header>
+  <main class="tools-shell container">
+    <section class="tool-page-header"><a href="/student/tools" class="back-link">Back to tools</a><h1>AI CV Builder</h1><p>Generate a student-friendly CV draft from your details.</p></section>
+    <div class="tool-grid">
+      <form id="cvForm" class="tool-card form-card">
+        <div class="section-title-row"><h2>CV Details</h2><span class="status-pill status-pill--pink">Draft CV</span></div>
+        <div class="form-grid">
+          <label>Full name<input name="fullName" required placeholder="Your full name"></label>
+          <label>Email<input name="email" type="email" placeholder="you@example.com"></label>
+          <label>Phone<input name="phone" placeholder="Phone number"></label>
+          <label>Province<input name="province" placeholder="Province"></label>
+          <label>Grade<input name="grade" placeholder="Grade 11"></label>
+          <label>Career goal<input name="careerGoal" required placeholder="Software Developer"></label>
+        </div>
+        <label>Key subjects<textarea name="subjects" placeholder="Mathematics, English, Physical Sciences"></textarea></label>
+        <label>Skills<textarea name="skills" placeholder="Communication, teamwork, computer literacy"></textarea></label>
+        <label>Achievements<textarea name="achievements" placeholder="Awards, leadership, certificates"></textarea></label>
+        <label>Experience<textarea name="experience" placeholder="Volunteer work, school projects, part-time work"></textarea></label>
+        <button class="btn-gradient" type="submit">Generate CV</button>
+      </form>
+      <article class="tool-card output-card"><h2>Generated CV</h2><pre id="cvOutput">Your CV draft will appear here.</pre><ul id="cvTips" class="clean-list"></ul></article>
+    </div>
+  </main>
+</body>
+</html>
+

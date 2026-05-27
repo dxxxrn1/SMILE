@@ -459,7 +459,7 @@ async function checkQuizStatus() {
       }
     } else {
       quizStatusCard.style.display = "flex";
-      chatSection.style.display = "none";
+      chatSection.style.display = "flex";
     }
   } catch (e) {
     console.error("Error loading quiz status:", e);

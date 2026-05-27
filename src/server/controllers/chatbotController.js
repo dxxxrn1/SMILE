@@ -19,7 +19,15 @@ export const getCareerAdvice = async (req, res) => {
       return res.status(404).json({ response: "Student profile not found." });
     }
 
-    if (!student.TopInterest) {
+    const { history = [] } = req.body;
+    const hasScannedDocumentContext = history.some(
+      (message) =>
+        message?.role === "user" &&
+        typeof message.content === "string" &&
+        message.content.includes("SCANNED_SCHOOL_DOCUMENT_CONTEXT"),
+    );
+
+    if (!student.TopInterest && !hasScannedDocumentContext) {
       return res.status(400).json({
         response:
           "Please complete the personality quiz first so I can give you personalised career advice!",
@@ -27,8 +35,6 @@ export const getCareerAdvice = async (req, res) => {
     }
 
     // 🟢 Grab the whole history from the frontend!
-    const { history } = req.body;
-
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       max_tokens: 1024,
@@ -37,13 +43,14 @@ export const getCareerAdvice = async (req, res) => {
           role: "system",
           content: `You are the SMILE Career Guide. Your SOLE purpose is to provide career, education, and professional development advice for South African students.
             Student Name: ${student.StuName}. 
-            Quiz Result Top Interest: ${student.TopInterest}.
+            Quiz Result Top Interest: ${student.TopInterest || "Not completed yet; use scanned document context if provided."}.
             
             STRICT RULES:
             1. If the user asks about ANYTHING unrelated to careers, universities, jobs, or studying, politely refuse and steer back to their career path.
             2. STAY IN CONTEXT. If the student says they want to pursue a specific career (e.g., Web Development), ignore their Quiz Result and help them with their chosen path!
             3. When suggesting careers, always provide 3 South African options including Required High School Subjects, Study Duration, and ZAR Salary range.
-            4. Keep your tone encouraging, professional, and focused on their future.`,
+            4. If the user provides SCANNED_SCHOOL_DOCUMENT_CONTEXT, use the scanned subjects, marks, grade, and document type as the main evidence for the career path.
+            5. Keep your tone encouraging, professional, and focused on their future.`,
         },
         // 🟢 Spread the entire chat history right here so the AI remembers everything!
         ...history,

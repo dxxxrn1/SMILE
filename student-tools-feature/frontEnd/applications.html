@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Tracker - SMILE</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="studentTools.css">
+  <script src="/student-tools/studentTools.js" defer></script>
+</head>
+<body class="student-tools-page dashboard-page">
+  <header class="header header--dashboard"><nav class="nav container"><a href="/" class="nav__logo"><span class="nav__logo-icon">&#9786;</span><span>SMILE</span></a><ul class="nav__menu nav__menu--dashboard"><li><a href="/student/tools" class="nav__link">Tools</a></li><li><a href="/student/tools/applications" class="nav__link nav__link--active">Applications</a></li></ul></nav></header>
+  <main class="tools-shell container">
+    <section class="tool-page-header"><a href="/student/tools" class="back-link">Back to tools</a><h1>Application Tracker</h1><p>Keep every opportunity and deadline organized.</p></section>
+    <div class="tool-grid">
+      <form id="applicationForm" class="tool-card form-card">
+        <div class="section-title-row"><h2>New Application</h2><span class="status-pill">Track progress</span></div>
+        <label>Opportunity title<input name="title" required placeholder="Bursary or internship name"></label>
+        <label>Organization<input name="organization" required placeholder="Company, university, NGO"></label>
+        <div class="form-grid"><label>Type<input name="type" placeholder="Bursary"></label><label>Deadline<input name="deadline" type="date"></label></div>
+        <label>Status<select name="status"><option>Not started</option><option>Preparing documents</option><option>Submitted</option><option>Interview</option><option>Accepted</option><option>Rejected</option></select></label>
+        <label>Notes<textarea name="notes" placeholder="Requirements, contact person, next step"></textarea></label>
+        <button class="btn-gradient" type="submit">Save Application</button>
+      </form>
+      <article class="tool-card"><h2>My Applications</h2><div id="applicationsList" class="stack-list"></div></article>
+    </div>
+  </main>
+</body>
+</html>
+
