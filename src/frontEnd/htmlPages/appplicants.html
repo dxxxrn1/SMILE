@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Applicants - SMILE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      min-height: 100vh;
+    }
+
+    /* Layout */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background-color: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ec4899;
+      letter-spacing: -0.5px;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .nav-link:hover {
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .nav-link.active {
+      background-color: #fdf2f8;
+      color: #ec4899;
+    }
+
+    .nav-link.active svg {
+      color: #ec4899;
+    }
+
+    .nav-link svg {
+      width: 20px;
+      height: 20px;
+      color: #94a3b8;
+      flex-shrink: 0;
+    }
+
+    .nav-link.active svg,
+    .nav-link:hover svg {
+      color: inherit;
+    }
+
+    .sidebar-footer {
+      padding: 16px 12px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .nav-link.logout {
+      color: #ef4444;
+    }
+
+    .nav-link.logout:hover {
+      background-color: #fef2f2;
+      color: #dc2626;
+    }
+
+    .nav-link.logout svg {
+      color: #ef4444;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 260px;
+      padding: 32px;
+    }
+
+    /* Page Header */
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      font-size: 15px;
+      color: #64748b;
+    }
+
+    /* Stats Row */
+    .stats-row {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      flex: 1;
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .stat-value.orange {
+      color: #f97316;
+    }
+
+    .stat-value.green {
+      color: #22c55e;
+    }
+
+    /* Filters Row */
+    .filters-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 12px 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      background-color: #ffffff;
+      color: #0f172a;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #ec4899;
+      box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+    }
+
+    .search-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .filter-select {
+      padding: 12px 40px 12px 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      background-color: #ffffff;
+      color: #0f172a;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: #ec4899;
+      box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+    }
+
+    /* Table Card */
+    .table-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      padding: 16px 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background-color: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    td {
+      padding: 16px 20px;
+      font-size: 14px;
+      color: #0f172a;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: #fafafa;
+    }
+
+    .student-name {
+      font-weight: 600;
+    }
+
+    .opportunity-title {
+      color: #64748b;
+    }
+
+    .date-applied {
+      color: #64748b;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-badge.pending {
+      background-color: #fff7ed;
+      color: #c2410c;
+    }
+
+    .status-badge.approved {
+      background-color: #f0fdf4;
+      color: #15803d;
+    }
+
+    .status-badge.declined {
+      background-color: #fef2f2;
+      color: #b91c1c;
+    }
+
+    /* Action Buttons */
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+    }
+
+    .btn-outline:hover {
+      background-color: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .btn-approve {
+      background-color: #22c55e;
+      color: #ffffff;
+    }
+
+    .btn-approve:hover {
+      background-color: #16a34a;
+    }
+
+    .btn-decline {
+      background-color: #ef4444;
+      color: #ffffff;
+    }
+
+    .btn-decline:hover {
+      background-color: #dc2626;
+    }
+
+    /* Empty State */
+    .empty-state {
+      padding: 64px 24px;
+      text-align: center;
+      color: #64748b;
+    }
+
+    .empty-state svg {
+      width: 48px;
+      height: 48px;
+      color: #cbd5e1;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .stats-row {
+        flex-wrap: wrap;
+      }
+
+      .stat-card {
+        flex: 1 1 calc(50% - 12px);
+        min-width: 200px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 24px 16px;
+      }
+
+      .mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+        cursor: pointer;
+      }
+
+      .stat-card {
+        flex: 1 1 100%;
+      }
+
+      .filters-row {
+        flex-direction: column;
+      }
+
+      .search-input,
+      .filter-select {
+        width: 100%;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .mobile-header {
+        display: none;
+      }
+    }
+
+    /* Overlay for mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 99;
+    }
+
+    .sidebar-overlay.open {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">SMILE</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
+          </svg>
+          Dashboard
+        </a>
+        <a href="#" class="nav-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/><path d="M12 5v14"/>
+          </svg>
+          Create Opportunity
+        </a>
+        <a href="#" class="nav-link active">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          Applicants
+        </a>
+        <a href="#" class="nav-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          Settings
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="#" class="nav-link logout">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
+          </svg>
+          Logout
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Mobile Header -->
+      <div class="mobile-header">
+        <div class="logo">SMILE</div>
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">Manage Applicants</h1>
+        <p class="page-subtitle">Review and update student applications</p>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Total Applicants</div>
+          <div class="stat-value" id="totalApplicants">45</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending Review</div>
+          <div class="stat-value orange" id="pendingReview">12</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Approved</div>
+          <div class="stat-value green" id="approvedCount">28</div>
+        </div>
+      </div>
+
+      <!-- Filters Row -->
+      <div class="filters-row">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search by student name..." onkeyup="filterApplicants()">
+        <select class="filter-select" id="opportunityFilter" onchange="filterApplicants()">
+          <option value="">All Opportunities</option>
+          <option value="Software Engineering Intern">Software Engineering Intern</option>
+          <option value="Marketing Assistant">Marketing Assistant</option>
+          <option value="Data Analyst Trainee">Data Analyst Trainee</option>
+          <option value="UX Design Intern">UX Design Intern</option>
+        </select>
+        <select class="filter-select" id="statusFilter" onchange="filterApplicants()">
+          <option value="">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Declined">Declined</option>
+        </select>
+      </div>
+
+      <!-- Applicants Table -->
+      <div class="table-card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Applied For</th>
+                <th>Date Applied</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="applicantsTableBody">
+              <!-- Rows will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="emptyState" style="display: none;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <h3>No applicants found</h3>
+          <p>Try adjusting your search or filter criteria</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Sample applicants data
+    let applicants = [
+      {
+        id: 1,
+        name: "Thabo Molefe",
+        opportunity: "Software Engineering Intern",
+        dateApplied: "2024-01-15",
+        status: "Pending"
+      },
+      {
+        id: 2,
+        name: "Naledi Khumalo",
+        opportunity: "Marketing Assistant",
+        dateApplied: "2024-01-14",
+        status: "Approved"
+      },
+      {
+        id: 3,
+        name: "Sipho Ndlovu",
+        opportunity: "Data Analyst Trainee",
+        dateApplied: "2024-01-13",
+        status: "Declined"
+      },
+      {
+        id: 4,
+        name: "Lerato Dlamini",
+        opportunity: "Software Engineering Intern",
+        dateApplied: "2024-01-12",
+        status: "Pending"
+      },
+      {
+        id: 5,
+        name: "Kabelo Mokoena",
+        opportunity: "UX Design Intern",
+        dateApplied: "2024-01-11",
+        status: "Approved"
+      },
+      {
+        id: 6,
+        name: "Zanele Mthembu",
+        opportunity: "Marketing Assistant",
+        dateApplied: "2024-01-10",
+        status: "Pending"
+      },
+      {
+        id: 7,
+        name: "Bongani Sithole",
+        opportunity: "Data Analyst Trainee",
+        dateApplied: "2024-01-09",
+        status: "Approved"
+      },
+      {
+        id: 8,
+        name: "Nomvula Zulu",
+        opportunity: "Software Engineering Intern",
+        dateApplied: "2024-01-08",
+        status: "Declined"
+      }
+    ];
+
+    // Format date
+    function formatDate(dateString) {
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString('en-ZA', options);
+    }
+
+    // Render table
+    function renderTable(data) {
+      const tbody = document.getElementById('applicantsTableBody');
+      const emptyState = document.getElementById('emptyState');
+      
+      if (data.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      tbody.innerHTML = data.map(applicant => `
+        <tr>
+          <td class="student-name">${applicant.name}</td>
+          <td class="opportunity-title">${applicant.opportunity}</td>
+          <td class="date-applied">${formatDate(applicant.dateApplied)}</td>
+          <td>
+            <span class="status-badge ${applicant.status.toLowerCase()}">${applicant.status}</span>
+          </td>
+          <td>
+            <div class="actions">
+              <button class="btn btn-outline" onclick="viewProfile(${applicant.id})">View Profile</button>
+              ${applicant.status === 'Pending' ? `
+                <button class="btn btn-approve" onclick="approveApplicant(${applicant.id})">Approve</button>
+                <button class="btn btn-decline" onclick="declineApplicant(${applicant.id})">Decline</button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Update stats
+    function updateStats() {
+      const total = applicants.length;
+      const pending = applicants.filter(a => a.status === 'Pending').length;
+      const approved = applicants.filter(a => a.status === 'Approved').length;
+      
+      document.getElementById('totalApplicants').textContent = total;
+      document.getElementById('pendingReview').textContent = pending;
+      document.getElementById('approvedCount').textContent = approved;
+    }
+
+    // Filter applicants
+    function filterApplicants() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const opportunityFilter = document.getElementById('opportunityFilter').value;
+      const statusFilter = document.getElementById('statusFilter').value;
+      
+      const filtered = applicants.filter(applicant => {
+        const matchesSearch = applicant.name.toLowerCase().includes(searchTerm);
+        const matchesOpportunity = !opportunityFilter || applicant.opportunity === opportunityFilter;
+        const matchesStatus = !statusFilter || applicant.status === statusFilter;
+        return matchesSearch && matchesOpportunity && matchesStatus;
+      });
+      
+      renderTable(filtered);
+    }
+
+    // View profile
+    function viewProfile(id) {
+      const applicant = applicants.find(a => a.id === id);
+      alert(`Viewing profile for: ${applicant.name}\n\nThis would open a detailed profile modal or page.`);
+    }
+
+    // Approve applicant
+    function approveApplicant(id) {
+      const applicant = applicants.find(a => a.id === id);
+      if (confirm(`Are you sure you want to approve ${applicant.name}?`)) {
+        applicant.status = 'Approved';
+        updateStats();
+        filterApplicants();
+      }
+    }
+
+    // Decline applicant
+    function declineApplicant(id) {
+      const applicant = applicants.find(a => a.id === id);
+      if (confirm(`Are you sure you want to decline ${applicant.name}?`)) {
+        applicant.status = 'Declined';
+        updateStats();
+        filterApplicants();
+      }
+    }
+
+    // Sidebar toggle (mobile)
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebarOverlay').classList.toggle('open');
+    }
+
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').classList.remove('open');
+    }
+
+    // Initial render
+    renderTable(applicants);
+    updateStats();
+  </script>
+</body>
+</html>

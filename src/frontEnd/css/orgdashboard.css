@@ -684,3 +684,8 @@ body.layout-with-sidebar .dashboard-layout {
     grid-template-columns: 1fr;
   }
 }
+.org-tab--active {
+  background-color: rgba(249, 115, 22, 0.15);
+  color: #F97316;
+  border-radius: 8px;
+}
