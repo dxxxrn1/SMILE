@@ -15,6 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="../css/documentScanner.css" />
   </head>
   <body class="dashboard-page">
     <header class="header header--dashboard">
@@ -79,7 +80,7 @@
       <div class="nav__profile" id="profileDropdown">
         <button class="nav__profile-btn" aria-label="Profile menu">
           <div class="nav__avatar">
-              <span id="initials">TM</span>
+              <span id="initials"></span>
           </div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="6 9 12 15 18 9"></polyline>
@@ -101,7 +102,7 @@
               Settings
             </a>
             <hr class="nav__profile-divider">
-            <a href="/login-page" class="nav__profile-link nav__profile-link--logout">
+            <a href="/logout"  id="logout" class="nav__profile-link nav__profile-link--logout">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                 <polyline points="16 17 21 12 16 7"></polyline>
@@ -180,6 +181,88 @@
                 id="chatSection"
                 style="display: none; flex: 1; flex-direction: column"
               >
+                <div
+                  class="career-scan-card"
+                  style="
+                    background: #fff7ed;
+                    border: 1px solid #fed7aa;
+                    border-radius: 12px;
+                    padding: 16px;
+                    margin-bottom: 16px;
+                  "
+                >
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      gap: 12px;
+                      align-items: center;
+                      flex-wrap: wrap;
+                    "
+                  >
+                    <div>
+                      <h3 style="margin: 0 0 4px; color: #0f172a">
+                        Scan School Report
+                      </h3>
+                      <p style="margin: 0; color: #64748b; font-size: 0.875rem">
+                        Scan a report, transcript, certificate, or qualification
+                        using your phone. SMILE Career AI will recommend a clear
+                        career path from the document.
+                      </p>
+                    </div>
+                    <button
+                      class="btn btn--gradient"
+                      type="button"
+                      onclick="startCareerDocumentScan()"
+                    >
+                      Scan Document
+                    </button>
+                  </div>
+
+                  <div
+                    id="careerScanPanel"
+                    style="
+                      display: none;
+                      grid-template-columns: 180px minmax(0, 1fr);
+                      gap: 16px;
+                      align-items: center;
+                      margin-top: 16px;
+                    "
+                  >
+                    <canvas
+                      id="careerScanQr"
+                      width="160"
+                      height="160"
+                      style="
+                        background: white;
+                        border: 1px solid #e2e8f0;
+                        border-radius: 8px;
+                        padding: 8px;
+                      "
+                    ></canvas>
+                    <div>
+                      <p
+                        id="careerScanStatus"
+                        style="margin: 0 0 8px; font-weight: 700; color: #0f172a"
+                      >
+                        Creating scan link...
+                      </p>
+                      <a
+                        id="careerScanUrl"
+                        href="#"
+                        target="_blank"
+                        rel="noreferrer"
+                        style="
+                          color: #ec4899;
+                          font-size: 0.875rem;
+                          font-weight: 700;
+                          word-break: break-word;
+                        "
+                      ></a>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="chat-header">
                   <div class="chat-header__info">
                     <div class="chat-avatar">🤖</div>
@@ -298,5 +381,6 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="../jsFrontEnd/dashboardJS.js"></script>
+    <script src="../jsFrontEnd/careerDocumentScanner.js"></script>
   </body>
 </html>

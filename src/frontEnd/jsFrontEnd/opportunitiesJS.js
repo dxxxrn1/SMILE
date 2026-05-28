@@ -8,6 +8,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Trigger filter on sort change
     document.getElementById("sortSelect").addEventListener("change", () => loadOpportunities());
+
+    const logoutTag = document.getElementById("logout");
+      logoutTag.addEventListener("click" , ()=>{
+          localStorage.removeItem("token");
+          localStorage.removeItem("accountType");
+          localStorage.removeItem("userName");
+          localStorage.removeItem("initials");
+    })
 });
 
 async function loadOpportunities() {

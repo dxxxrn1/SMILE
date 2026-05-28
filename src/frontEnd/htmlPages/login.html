@@ -174,7 +174,7 @@
             <span class="form__error">Please enter a valid email address</span>
           </div>
 
-          <div class="form__group">
+          <!-- <div class="form__group">
             <label for="password" class="form__label">Password</label>
             <input
               type="password"
@@ -186,7 +186,37 @@
               autocomplete="current-password"
             />
             <span class="form__error">Password is required</span>
-          </div>
+          </div> -->
+          <div class="form__group">
+          <label for="password" class="form__label">Password</label>
+  
+          <div style="position: relative;">
+            <input
+            type="password"
+            id="password"
+            name="password"
+            class="form__input"
+            placeholder="Enter your password"
+            required
+            autocomplete="current-password"
+            style="padding-right: 44px;"
+          />
+
+        <!-- Eye Button -->
+    <button type="button" id="toggleLoginPassword" onclick="toggleLoginPassword()"
+      style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+             background: none; border: none; cursor: pointer;
+             color: #9CA3AF; padding: 4px;">
+      <svg id="loginEyeIcon" width="18" height="18" fill="none"
+           stroke="currentColor" viewBox="0 0 24 24">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-width="2"/>
+        <circle cx="12" cy="12" r="3" stroke-width="2"/>
+      </svg>
+    </button>
+  </div>
+
+  <span class="form__error">Password is required</span>
+</div>
 
           <div class="form__actions">
             <!-- <div class="form__checkbox">

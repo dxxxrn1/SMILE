@@ -20,9 +20,14 @@
 
 /* ── GLOBALS & TYPOGRAPHY ADJUSTMENTS ── */
 body.layout-with-sidebar {
-  background-color: #f8fafc;
+  background: linear-gradient(135deg, #fff5eb 0%, #fff0f6 100%) !important;
+  background-attachment: fixed !important;
   color: #1e293b;
   font-family: 'Inter', sans-serif;
+}
+
+body.layout-with-sidebar .dashboard-layout {
+  background: transparent !important;
 }
 
 /* ── PREMIUM DARK SIDEBAR OVERRIDES ── */
@@ -678,4 +683,9 @@ body.layout-with-sidebar {
   .dashboard__stats {
     grid-template-columns: 1fr;
   }
+}
+.org-tab--active {
+  background-color: rgba(249, 115, 22, 0.15);
+  color: #F97316;
+  border-radius: 8px;
 }

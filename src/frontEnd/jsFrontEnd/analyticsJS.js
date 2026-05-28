@@ -371,3 +371,12 @@ function showToast(msg, type) {
   toast.className = "toast toast--show" + (type ? " toast--" + type : "");
   setTimeout(() => toast.classList.remove("toast--show"), 3200);
 }
+
+
+const logoutTag = document.getElementById("logout");
+logoutTag.addEventListener("click" , ()=>{
+    localStorage.removeItem("token");
+    localStorage.removeItem("accountType");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("initials");
+})

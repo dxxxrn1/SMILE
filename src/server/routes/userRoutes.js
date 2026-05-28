@@ -1,8 +1,11 @@
 import express from "express";
+import { sendOTP, verifyOTP } from '../controllers/otpController.js';
 import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,
         studentLandingPage,careersPage,orgDashboard,
-        createOpportunity,adminDashBoard, applicantsPage, studentProfilePage, analyticsPage
+        createOpportunity,adminDashBoard, applicantsPage, studentProfilePage, analyticsPage,
+        orgTicketsPage
 } from "../controllers/pageControllers.js";
+
 import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken , requireAdmin} from "../controllers/sessionControllers.js";
@@ -10,8 +13,6 @@ import { fectNews } from "../apis/newsAPI.js";
 import { fetchJobs } from "../apis/careers.js";
 import { fetchBooks } from "../apis/booksAPI.js";
 import { forgotPassword, resetPassword } from "../controllers/passwordController.js";
-// import {createOpportunity} from '../controllers/pageControllers.js'
-//createOpportunitiesPage
 import {
   getCareerAdvice,
   generateDocFromChat,
@@ -19,9 +20,12 @@ import {
   saveInterests,
   getSavedDocs,
   getSingleDoc,
+  getProfileBioAdvice,
 } from "../controllers/chatbotController.js";
 import {createNewOpportunity,getAllOpportunities, getOrganizationApplicants, getOrgDashboardStats, updateApplicationStatus, getOrgOpportunities, updateOpportunity, deleteOpportunity} from '../controllers/opportunitiesControllers.js';
-import { getSavedOpportunities, getStudentApplications, deleteSavedOpportunity, saveOpportunity, applyForOpportunity, getStudentProfile, updateStudentProfile } from "../controllers/studentController.js";
+import { getSavedOpportunities, getStudentApplications, deleteSavedOpportunity, saveOpportunity, applyForOpportunity, getStudentProfile, updateStudentProfile, updateStudentBio } from "../controllers/studentController.js";
+import { createTicket, getMyTickets } from "../controllers/ticketController.js";
+
 
 const route = express.Router();
 
@@ -31,8 +35,9 @@ route.get("/register-page" , registerPage);
 route.get("/student/dashboard",verifyToken , studentLandingPage);
 route.get("/api/student/profile", verifyToken, getStudentProfile);
 route.put("/api/student/profile", verifyToken, updateStudentProfile);
+route.patch("/api/student/profile/bio", verifyToken, updateStudentBio);
+route.post("/api/chat/profile-writer", verifyToken, getProfileBioAdvice);
 route.get("/api/student/applications", verifyToken, getStudentApplications);
-
 route.post("/api/student/applications", verifyToken, applyForOpportunity);
 route.get("/api/student/saved-opportunities", verifyToken, getSavedOpportunities);
 route.post("/api/student/saved-opportunities", verifyToken, saveOpportunity);
@@ -52,10 +57,9 @@ route.post("/api/chat", verifyToken, getCareerAdvice);
 route.post("/api/generate-doc-from-chat", verifyToken, generateDocFromChat);
 route.get("/api/saved-docs", verifyToken, getSavedDocs);
 route.get("/api/saved-docs/:id", verifyToken, getSingleDoc);
-route.post("/logout", (req, res) => {
+route.get("/logout", (req, res) => {
     res.clearCookie('token');
-    return res.sendStatus(200);
-    //Lucas Bohani Maluleke
+    return res.redirect("/login-page");
 });
 route.get("/api/jobs", fetchJobs);
 route.get("/org/dashboard", verifyToken ,orgDashboard);
@@ -75,7 +79,16 @@ route.get("/api/opportunities", verifyToken, getAllOpportunities);
 route.get("/api/org/opportunities", verifyToken, getOrgOpportunities);
 route.put("/api/opportunities/:oppId", verifyToken, updateOpportunity);
 route.delete("/api/opportunities/:oppId", verifyToken, deleteOpportunity);
-// route.get("/admin/dashboard",verifyToken,requireAdmin,adminDashBoard )
+
+// OTP email verification routes
+route.post("/api/send-otp", sendOTP);
+route.post("/api/verify-otp", verifyOTP);
+
+// Support Ticket routes
+route.post("/api/tickets", verifyToken, createTicket);
+route.get("/api/tickets/my", verifyToken, getMyTickets);
+route.get("/org/tickets", verifyToken, orgTicketsPage);
+
 
 export default route;
 

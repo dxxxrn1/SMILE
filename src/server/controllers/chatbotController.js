@@ -19,7 +19,15 @@ export const getCareerAdvice = async (req, res) => {
       return res.status(404).json({ response: "Student profile not found." });
     }
 
-    if (!student.TopInterest) {
+    const { history = [] } = req.body;
+    const hasScannedDocumentContext = history.some(
+      (message) =>
+        message?.role === "user" &&
+        typeof message.content === "string" &&
+        message.content.includes("SCANNED_SCHOOL_DOCUMENT_CONTEXT"),
+    );
+
+    if (!student.TopInterest && !hasScannedDocumentContext) {
       return res.status(400).json({
         response:
           "Please complete the personality quiz first so I can give you personalised career advice!",
@@ -27,8 +35,6 @@ export const getCareerAdvice = async (req, res) => {
     }
 
     // 🟢 Grab the whole history from the frontend!
-    const { history } = req.body;
-
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
       max_tokens: 1024,
@@ -37,13 +43,14 @@ export const getCareerAdvice = async (req, res) => {
           role: "system",
           content: `You are the SMILE Career Guide. Your SOLE purpose is to provide career, education, and professional development advice for South African students.
             Student Name: ${student.StuName}. 
-            Quiz Result Top Interest: ${student.TopInterest}.
+            Quiz Result Top Interest: ${student.TopInterest || "Not completed yet; use scanned document context if provided."}.
             
             STRICT RULES:
             1. If the user asks about ANYTHING unrelated to careers, universities, jobs, or studying, politely refuse and steer back to their career path.
             2. STAY IN CONTEXT. If the student says they want to pursue a specific career (e.g., Web Development), ignore their Quiz Result and help them with their chosen path!
             3. When suggesting careers, always provide 3 South African options including Required High School Subjects, Study Duration, and ZAR Salary range.
-            4. Keep your tone encouraging, professional, and focused on their future.`,
+            4. If the user provides SCANNED_SCHOOL_DOCUMENT_CONTEXT, use the scanned subjects, marks, grade, and document type as the main evidence for the career path.
+            5. Keep your tone encouraging, professional, and focused on their future.`,
         },
         // 🟢 Spread the entire chat history right here so the AI remembers everything!
         ...history,
@@ -217,3 +224,49 @@ export const getSingleDoc = async (req, res) => {
     res.status(500).json({ doc: null });
   }
 };
+
+export const getProfileBioAdvice = async (req, res) => {
+  try {
+    const pool = await connectToDB();
+    const result = await pool.request().input("stuID", sql.Int, req.user.id)
+      .query(`SELECT s.StuName, s.StuBio, i.TopInterest 
+              FROM Student s LEFT JOIN StudentInterests i ON s.StuID = i.StuID 
+              WHERE s.StuID = @stuID`);
+
+    const student = result.recordset[0];
+
+    if (!student) {
+      return res.status(404).json({ response: "Student profile not found." });
+    }
+
+    const { history } = req.body;
+
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      max_tokens: 1024,
+      messages: [
+        {
+          role: "system",
+          content: `You are the SMILE AI Profile Assistant. Your sole mission is to help South African student ${student.StuName} write an outstanding, professional, and highly compelling personal bio that will dramatically increase their chances of getting bursaries, scholarships, internships, or job opportunities.
+          
+          Current Top Interest (Quiz Result): ${student.TopInterest || "Not taken quiz yet"}.
+          Current Bio: "${student.StuBio || "None provided yet"}".
+          
+          STRICT RULES:
+          1. Be warm, encouraging, conversational, and professional.
+          2. Ask brief questions to get their top skills, hobbies, education details, and career aspirations, or take their rough notes and refine them.
+          3. Once you have enough context or when they provide a draft, generate a beautifully polished, professional bio tailored for them.
+          4. When you output a polished bio proposal, ALWAYS wrap it inside [PROPOSED_BIO] ... [/PROPOSED_BIO] tags. Explain to them that they can click the "Apply to Profile" button to save it instantly.
+          5. Keep the bio proposal around 3 to 5 sentences. Highlight their potential, ambition, and key competencies.`,
+        },
+        ...history,
+      ],
+    });
+
+    res.json({ response: completion.choices[0].message.content });
+  } catch (err) {
+    console.error("AI Profile Writer Error:", err);
+    res.status(500).json({ response: "AI connection error." });
+  }
+};
+
