@@ -14,16 +14,21 @@ document.addEventListener("DOMContentLoaded", function () {
   bindQuickCreate();
   loadOrgDashboard();
   loadApplicants();
+  if (document.getElementById("oppTableBody")) {
+    loadOrgOpportunities();
+  }
   checkUrlParams();
   bindTabInterceptors();
 
   const logoutTag = document.getElementById("logout");
-  logoutTag.addEventListener("click", () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("accountType");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("initials");
-  })
+  if (logoutTag) {
+    logoutTag.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("accountType");
+      localStorage.removeItem("userName");
+      localStorage.removeItem("initials");
+    });
+  }
 });
 
 /* ================================================================
@@ -1240,12 +1245,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   tabs.forEach(tab => {
     const tabHref = tab.getAttribute("href");
+    const tabHrefBase = tabHref ? tabHref.split('?')[0] : "";
 
     // Remove active from all first
     tab.classList.remove("org-tab--active");
 
-    // Only highlight EXACT match
-    if (tabHref && currentPath === tabHref) {
+    // Highlight exact match OR path match without query params
+    if (tabHref && (currentPath === tabHref || currentPath === tabHrefBase)) {
       tab.classList.add("org-tab--active");
     }
 

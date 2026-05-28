@@ -3,7 +3,7 @@ import { sendOTP, verifyOTP } from '../controllers/otpController.js';
 import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,
         studentLandingPage,careersPage,orgDashboard,
         createOpportunity,adminDashBoard, applicantsPage, studentProfilePage, analyticsPage,
-        orgTicketsPage
+        orgTicketsPage, myOpportunitiesPage
 } from "../controllers/pageControllers.js";
 
 import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageControllers.js";
@@ -64,6 +64,7 @@ route.get("/logout", (req, res) => {
 route.get("/api/jobs", fetchJobs);
 route.get("/org/dashboard", verifyToken ,orgDashboard);
 route.get("/org/dashboard/applicants", verifyToken, applicantsPage);
+route.get("/org/dashboard/myOpportunities", verifyToken, myOpportunitiesPage);
 route.get("/org/dashboard/student-profile", verifyToken, studentProfilePage);
 route.get("/api/org/applicants", verifyToken, getOrganizationApplicants);
 route.get("/api/org/dashboard-stats", verifyToken, getOrgDashboardStats);
