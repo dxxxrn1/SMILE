@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan School Document</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="documentScanner.css">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js" defer></script>
+  <script src="/scanner/documentScannerDesktop.js" defer></script>
+</head>
+<body class="scanner-page dashboard-page">
+  <header class="header header--dashboard">
+    <nav class="nav container">
+      <a href="/" class="nav__logo">
+        <span class="nav__logo-icon">&#9786;</span>
+        <span>SMILE</span>
+      </a>
+
+      <ul class="nav__menu nav__menu--dashboard">
+        <li>
+          <a href="/careers/explore" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M2 12h20"></path>
+              <path d="M12 2a15.3 15.3 0 0 1 0 20"></path>
+            </svg>
+            Careers
+          </a>
+        </li>
+        <li>
+          <a href="/student/dashboard" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+              <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+              <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+              <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+            </svg>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="/scanner/desktop" class="nav__link nav__link--active">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+              <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+              <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+              <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+              <path d="M7 12h10"></path>
+            </svg>
+            Scan
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="scanner-shell container">
+    <section class="scanner-hero">
+      <div class="scanner-hero__text">
+        <span class="scanner-badge">SMILE document scan</span>
+        <h1>Scan a school document with your phone</h1>
+        <p>Use the QR code to open your phone camera, upload the document, and continue career guidance on this screen.</p>
+      </div>
+
+      <div class="qr-stage">
+        <canvas id="qrCode" width="240" height="240" aria-label="Scan QR code"></canvas>
+        <div class="scan-link-wrap">
+          <span>Mobile URL</span>
+          <a id="scanUrl" href="#" target="_blank" rel="noreferrer">Creating secure scan link...</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="scanner-card">
+      <div class="status-row">
+        <span id="statusDot" class="status-dot"></span>
+        <div>
+          <p class="scanner-kicker">Current status</p>
+          <h2 id="statusText">Preparing scanner...</h2>
+        </div>
+      </div>
+
+      <div id="resultBox" class="result-box hidden">
+        <h3 id="resultTitle">Document analysis</h3>
+        <p id="resultMessage"></p>
+
+        <div class="detail-grid">
+          <div>
+            <span>Document type</span>
+            <strong id="documentType">-</strong>
+          </div>
+          <div>
+            <span>Confidence</span>
+            <strong id="confidence">-</strong>
+          </div>
+          <div>
+            <span>Grade</span>
+            <strong id="grade">-</strong>
+          </div>
+        </div>
+
+        <h4>Subjects found</h4>
+        <ul id="subjectsList" class="clean-list"></ul>
+
+        <h4>Career paths to send to chatbot</h4>
+        <ul id="careerList" class="clean-list"></ul>
+
+        <label for="chatbotPrompt">Chatbot prompt draft</label>
+        <textarea id="chatbotPrompt" readonly></textarea>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

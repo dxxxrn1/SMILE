@@ -82,96 +82,191 @@ export const saveStudentDetails = async (req, res) => {
     }
 };
 
-export const saveOrganisationDetails = async(req,res)=>{
-    try{
-        console.log("Saving org details");
-        const strengthOfpassWord = 10;
+// export const saveOrganisationDetails = async(req,res)=>{
+//     try{
+//         console.log("Saving org details");
+//         const strengthOfpassWord = 10;
 
-        const {orgName,orgEmail,orgType,orgProvince,password} = req.body;
+//         const {orgName,orgEmail,orgType,orgProvince,password} = req.body;
 
-        if(!orgName || !orgEmail || !orgType || !orgProvince || !orgProvince || !password){
-            console.log("The organisation did not enter full details");
-            return res.status(400).json({
-                 message:"Please enter all the details"
-            })
+//         if(!orgName || !orgEmail || !orgType || !orgProvince || !orgProvince || !password){
+//             console.log("The organisation did not enter full details");
+//             return res.status(400).json({
+//                  message:"Please enter all the details"
+//             })
 
-        }
+//         }
 
-        // Validate real email before continuing
-        const emailValidation = await validateRealEmail(email);
+//         // Validate real email before continuing
+//         const emailValidation = await validateRealEmail(email);
 
-        if (!emailValidation.success) {
-            return res.status(400).json({
-                message: emailValidation.message
-            });
-        }
+//         if (!emailValidation.success) {
+//             return res.status(400).json({
+//                 message: emailValidation.message
+//             });
+//         }
 
-        const pool = await connectToDB();
+//         const pool = await connectToDB();
 
-        console.log("connected, about to SELECT");
-        const results = await pool
-        .request()
-        .input("email" , sql.VarChar , orgEmail)
-        .query(`
-            SELECT * FROM Organisation WHERE OrgEmail = @email;
-        `)
-        console.log("SELECT done, rows:", results.recordset.length);
+//         console.log("connected, about to SELECT");
+//         const results = await pool
+//         .request()
+//         .input("email" , sql.VarChar , orgEmail)
+//         .query(`
+//             SELECT * FROM Organisation WHERE OrgEmail = @email;
+//         `)
+//         console.log("SELECT done, rows:", results.recordset.length);
 
-        if(results.recordset.length > 0){
-            return res.status(403);
-        }
-        console.log("about to hash password");
+//         if(results.recordset.length > 0){
+//             return res.status(403);
+//         }
+//         console.log("about to hash password");
 
-        const hashedPassword = await bcrypt.hash(password , strengthOfpassWord);
+//         const hashedPassword = await bcrypt.hash(password , strengthOfpassWord);
 
-        await pool
-        .request()
-        .input("orgname" , sql.VarChar , orgName)
-        .input("orgemail" ,  sql.VarChar , orgEmail)
-        .input("orgtype" , sql.VarChar , orgType)
-        .input("orgprovince" , sql.VarChar , orgProvince)
-        .input("orgpassword" , sql.VarChar , hashedPassword)
-        .query(`    
-            INSERT INTO Organisation(OrgName,OrgEmail,Type,Province,Password)
-            VALUES(@orgname,@orgemail,@orgtype,@orgprovince,@orgpassword)
-        `)
+//         await pool
+//         .request()
+//         .input("orgname" , sql.VarChar , orgName)
+//         .input("orgemail" ,  sql.VarChar , orgEmail)
+//         .input("orgtype" , sql.VarChar , orgType)
+//         .input("orgprovince" , sql.VarChar , orgProvince)
+//         .input("orgpassword" , sql.VarChar , hashedPassword)
+//         .query(`    
+//             INSERT INTO Organisation(OrgName,OrgEmail,Type,Province,Password)
+//             VALUES(@orgname,@orgemail,@orgtype,@orgprovince,@orgpassword)
+//         `)
 
-        console.log("INSERT successful"); 
+//         console.log("INSERT successful"); 
 
-        const transport = nodemailer.createTransport({
-            service:"gmail",
-            auth:{
-                user:`${process.env.LUCAS_EMAIL}`,
-                pass:`${process.env.LUCAS_APP_PASS}`
-            }
-        })
+//         const transport = nodemailer.createTransport({
+//             service:"gmail",
+//             auth:{
+//                 user:`${process.env.LUCAS_EMAIL}`,
+//                 pass:`${process.env.LUCAS_APP_PASS}`
+//             }
+//         })
 
-        const mailOptions = {
-            from:`${process.env.LUCAS_EMAIL}`,
-            to:`${orgEmail}`,
-            subject: "Registration Received",  
-            text: "You have successfully registered on SMILE!"
-        }
+//         const mailOptions = {
+//             from:`${process.env.LUCAS_EMAIL}`,
+//             to:`${orgEmail}`,
+//             subject: "Registration Received",  
+//             text: "You have successfully registered on SMILE!"
+//         }
 
 
-        try {
-            await transport.sendMail(mailOptions);
-            console.log("Email sent successfully");
-        } catch (emailError) {
-            console.log("Email failed but user was still registered:", emailError);
-        }
+//         try {
+//             await transport.sendMail(mailOptions);
+//             console.log("Email sent successfully");
+//         } catch (emailError) {
+//             console.log("Email failed but user was still registered:", emailError);
+//         }
         
-        console.log("Successfully registered the organisation!!!");
+//         console.log("Successfully registered the organisation!!!");
 
-        return res.sendStatus(201);
+//         return res.sendStatus(201);
 
-    }catch(err){
-        console.log(err);
-        return res.status(500).json({
-            message: "Opps something went wrong!!!!"
-        });
+//     }catch(err){
+//         console.log(err);
+//         return res.status(500).json({
+//             message: "Opps something went wrong!!!!"
+//         });
+//     }
+// }
+
+export const saveOrganisationDetails = async (req, res) => {
+  try {
+    const { orgName, orgEmail, orgType, orgProvince, password } = req.body;
+ 
+    // ── Validation ────────────────────────────────────────────
+    if (!orgName || !orgEmail || !orgType || !orgProvince || !password) {
+      return res.status(400).json({ message: "Please enter all the details." });
     }
-}
+
+
+     const transport = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.LUCAS_EMAIL,
+                pass: process.env.LUCAS_APP_PASS
+            }
+        });
+
+ 
+    const pool = await connectToDB();
+ 
+    // ── Duplicate email check ─────────────────────────────────
+    const existing = await pool
+      .request()
+      .input("email", sql.VarChar, orgEmail)
+      .query("SELECT OrgId FROM Organisation WHERE OrgEmail = @email");
+ 
+    if (existing.recordset.length > 0) {
+      return res.status(403).json({ message: "This email is already registered." });
+    }
+ 
+    // ── Hash password ─────────────────────────────────────────
+    const hashedPassword = await bcrypt.hash(password, 10);
+ 
+    // ── Insert with Status = 'Pending' ────────────────────────
+    await pool
+      .request()
+      .input("orgName",     sql.VarChar, orgName)
+      .input("orgEmail",    sql.VarChar, orgEmail)
+      .input("orgType",     sql.VarChar, orgType)
+      .input("orgProvince", sql.VarChar, orgProvince)
+      .input("password",    sql.VarChar, hashedPassword)
+      .query(`
+        INSERT INTO Organisation (OrgName, OrgEmail, Type, Province, Password, Status)
+        VALUES (@orgName, @orgEmail, @orgType, @orgProvince, @password, 'Pending')
+      `);
+ 
+    console.log(`✅ Organisation "${orgName}" registered — awaiting approval`);
+ 
+    // ── Send "under review" email ─────────────────────────────
+    try {
+      await transporter.sendMail({
+        from: `"SMILE Platform" <${process.env.LUCAS_EMAIL}>`,
+        to: orgEmail,
+        subject: "Your SMILE Registration is Under Review",
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px;background:#f9fafb;border-radius:8px;">
+            <h2 style="color:#111827;margin-bottom:8px;">Thank you for registering, ${orgName}!</h2>
+            <p style="color:#374151;line-height:1.6;">
+              Your organisation has been successfully registered on the <strong>SMILE platform</strong>.
+              Your account is currently <strong>under review</strong> by our admin team.
+            </p>
+            <div style="background:#FEF3C7;border-left:4px solid #F59E0B;padding:16px;border-radius:4px;margin:24px 0;">
+              <p style="margin:0;color:#92400E;font-weight:600;">⏳ What happens next?</p>
+              <p style="margin:8px 0 0;color:#78350F;font-size:14px;">
+                Our team will review your application within <strong>2–3 business days</strong>.
+                You will receive a confirmation email once your account has been approved.
+              </p>
+            </div>
+            <p style="color:#6B7280;font-size:13px;">
+              If you have any questions, please contact us at
+              <a href="mailto:${process.env.LUCAS_EMAIL}" style="color:#3B82F6;">${process.env.LUCAS_EMAIL}</a>.
+            </p>
+            <hr style="border:none;border-top:1px solid #E5E7EB;margin:24px 0;">
+            <p style="color:#9CA3AF;font-size:12px;text-align:center;">
+              © SMILE Platform — Empowering South African Youth
+            </p>
+          </div>
+        `,
+      });
+      console.log(`📧 "Under review" email sent to ${orgEmail}`);
+    } catch (emailErr) {
+      console.error("Email send failed (non-fatal):", emailErr.message);
+    }
+ 
+    return res.status(201).json({
+      message: "Registration submitted. You will receive an email once your account is approved.",
+    });
+ 
+  } catch (err) {
+    console.error("saveOrganisationDetails:", err);
+    return res.status(500).json({ message: "Something went wrong. Please try again." });
+  }
+};
 
 export const userLogin = async (req, res) => {
 

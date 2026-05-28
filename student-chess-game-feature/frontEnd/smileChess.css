@@ -1,0 +1,272 @@
+:root {
+  --smile-orange: #f97316;
+  --smile-pink: #ec4899;
+  --smile-purple: #a855f7;
+  --smile-gradient: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+  --smile-ink: #0f172a;
+  --smile-muted: #64748b;
+  --smile-line: #e2e8f0;
+  --smile-soft: #f8fafc;
+}
+
+.smile-chess-page {
+  background-color: #e8e7fa;
+  background-image:
+    linear-gradient(to bottom, #e8e7fa 0%, rgba(232, 231, 250, 0) 55%, rgba(254, 215, 170, 0.4) 100%),
+    linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(249, 115, 22, 0.08) 30%, rgba(249, 115, 22, 0.15) 50%, rgba(249, 115, 22, 0.08) 70%, rgba(255, 255, 255, 0) 100%);
+  color: var(--smile-ink);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.smile-chess-page .app {
+  max-width: 1180px;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.smile-chess-page .card,
+.smile-chess-page .modal-box {
+  background: #ffffff;
+  border: 1px solid var(--smile-line);
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.06);
+}
+
+.smile-chess-page #s-home .card {
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 2rem;
+  background:
+    linear-gradient(135deg, rgba(255, 247, 237, 0.96), rgba(253, 242, 248, 0.98)),
+    #ffffff;
+  border-color: #fed7aa;
+}
+
+.smile-chess-page #s-home .card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(249, 115, 22, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(236, 72, 153, 0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.smile-chess-page #s-home .card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.smile-chess-page h1,
+.smile-chess-page h2,
+.smile-chess-page h3 {
+  color: var(--smile-ink);
+  font-weight: 700;
+}
+
+.smile-chess-page h1 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 800;
+}
+
+.smile-chess-page p {
+  color: var(--smile-muted);
+}
+
+.smile-chess-page .btn {
+  border: 1px solid var(--smile-line);
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: #334155;
+  font-weight: 600;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.smile-chess-page .btn:hover {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.12);
+}
+
+.smile-chess-page .btn-primary {
+  background: var(--smile-gradient);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.24);
+}
+
+.smile-chess-page .btn-primary:hover {
+  background: var(--smile-gradient);
+  box-shadow: 0 7px 18px rgba(236, 72, 153, 0.28);
+}
+
+.smile-chess-page .btn-danger {
+  background: #fee2e2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.smile-chess-page .input {
+  border: 1px solid var(--smile-line);
+  border-radius: 0.5rem;
+  background: var(--smile-soft);
+  color: var(--smile-ink);
+  font-family: inherit;
+}
+
+.smile-chess-page .input:focus {
+  border-color: var(--smile-pink);
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.12);
+}
+
+.smile-chess-page .badge {
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.smile-chess-page .badge-purple {
+  background: #f3e8ff;
+  color: #7e22ce;
+}
+
+.smile-chess-page .badge-green {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.smile-chess-page .badge-amber {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.smile-chess-page .badge-red {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.smile-chess-page .status-bar {
+  border-radius: 0.75rem;
+  font-weight: 700;
+}
+
+.smile-chess-page .s-playing {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.smile-chess-page .s-check,
+.smile-chess-page .s-waiting {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.smile-chess-page .s-over {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.smile-chess-page .board-wrap {
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.smile-chess-page .board {
+  border: 4px solid #ffffff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 20px 35px rgba(15, 23, 42, 0.14);
+}
+
+.smile-chess-page .sq.light {
+  background: #fff7ed;
+}
+
+.smile-chess-page .sq.dark {
+  background: #ec4899;
+  color: #ffffff;
+}
+
+.smile-chess-page .sq.selected,
+.smile-chess-page .sq.last-to {
+  background: #f97316 !important;
+}
+
+.smile-chess-page .sq.possible {
+  background: #fbcfe8 !important;
+}
+
+.smile-chess-page .sq.last-from {
+  background: #fed7aa !important;
+}
+
+.smile-chess-page .sq.in-check {
+  background: #ef4444 !important;
+}
+
+.smile-chess-page .side-panel {
+  min-width: 280px;
+}
+
+.smile-chess-page .player-chip,
+.smile-chess-page .lobby-row {
+  border: 1px solid var(--smile-line);
+  border-radius: 0.75rem;
+  background: #ffffff;
+}
+
+.smile-chess-page .player-chip.active-turn {
+  border-color: var(--smile-pink);
+  background: #fdf2f8;
+}
+
+.smile-chess-page .chat-box {
+  background: var(--smile-soft);
+  border: 1px solid var(--smile-line);
+  border-radius: 0.75rem;
+}
+
+.smile-chess-page .chat-msg .sender {
+  color: var(--smile-pink);
+}
+
+.smile-chess-page .modal-overlay {
+  min-height: 420px;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 1rem;
+}
+
+.smile-chess-page .diff-btn,
+.smile-chess-page .promo-btn {
+  border: 1px solid var(--smile-line);
+  border-radius: 0.75rem;
+  background: var(--smile-soft);
+}
+
+.smile-chess-page .diff-btn:hover,
+.smile-chess-page .promo-btn:hover {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.smile-chess-page #toast {
+  background: var(--smile-gradient);
+  color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(236, 72, 153, 0.25);
+}
+
+@media (max-width: 780px) {
+  .smile-chess-page .app {
+    padding: 1rem 0.75rem 3rem;
+  }
+
+  .smile-chess-page .side-panel {
+    min-width: 100%;
+  }
+
+  .smile-chess-header .nav__menu {
+    display: none;
+  }
+}
+
