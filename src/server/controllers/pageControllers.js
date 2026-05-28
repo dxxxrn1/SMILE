@@ -78,7 +78,11 @@ export const userTicket = (req,res)=>{
 }
 
 export const orgTicketsPage = (req,res)=>{
-    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "orgTickets.html"));
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages" , "orgTickets.html"));
+}
+
+export const myOpportunitiesPage = (req,res)=>{
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages" , "myOpportunities.html"));
 }
 
 //Lucas Bohani Maluleke and Darren Foster
