@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Forum - SMILE</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="studentTools.css">
+  <script src="/student-tools/studentTools.js" defer></script>
+</head>
+<body class="student-tools-page dashboard-page">
+  <header class="header header--dashboard"><nav class="nav container"><a href="/" class="nav__logo"><span class="nav__logo-icon">&#9786;</span><span>SMILE</span></a><ul class="nav__menu nav__menu--dashboard"><li><a href="/student/tools" class="nav__link">Tools</a></li><li><a href="/student/tools/community-forum" class="nav__link nav__link--active">Forum</a></li></ul></nav></header>
+  <main class="tools-shell container">
+    <section class="tool-page-header"><a href="/student/tools" class="back-link">Back to tools</a><h1>Community Forum</h1><p>Ask questions, share opportunities, and discuss careers in a moderated student space.</p></section>
+    <div class="tool-grid">
+      <form id="forumForm" class="tool-card form-card">
+        <div class="section-title-row"><h2>New Post</h2><span class="status-pill status-pill--purple">Moderated</span></div>
+        <label>Your name<input name="author" placeholder="Student"></label>
+        <label>Title<input name="title" required placeholder="Ask a question or share an opportunity"></label>
+        <label>Category<select name="category"><option>General</option><option>Bursaries</option><option>Careers</option><option>Study Advice</option><option>Opportunities</option></select></label>
+        <label>Post<textarea name="body" required placeholder="Write your post..."></textarea></label>
+        <button class="btn-gradient" type="submit">Post To Forum</button>
+      </form>
+      <article class="tool-card"><h2>Latest Posts</h2><div id="forumList" class="stack-list"></div></article>
+    </div>
+  </main>
+</body>
+</html>

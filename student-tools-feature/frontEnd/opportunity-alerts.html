@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opportunity Alerts - SMILE</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="studentTools.css">
+  <script src="/student-tools/studentTools.js" defer></script>
+</head>
+<body class="student-tools-page dashboard-page">
+  <header class="header header--dashboard"><nav class="nav container"><a href="/" class="nav__logo"><span class="nav__logo-icon">&#9786;</span><span>SMILE</span></a><ul class="nav__menu nav__menu--dashboard"><li><a href="/student/tools" class="nav__link">Tools</a></li><li><a href="/student/tools/opportunity-alerts" class="nav__link nav__link--active">Alerts</a></li></ul></nav></header>
+  <main class="tools-shell container">
+    <section class="tool-page-header"><a href="/student/tools" class="back-link">Back to tools</a><h1>Opportunity Alerts</h1><p>Find matching opportunities by province, grade, and career path.</p></section>
+    <div class="tool-grid">
+      <form id="alertsForm" class="tool-card form-card">
+        <div class="section-title-row"><h2>Match Criteria</h2><span class="status-pill status-pill--orange">Matched</span></div>
+        <label>Province<input name="province" placeholder="Gauteng"></label>
+        <label>Grade<input name="grade" placeholder="Grade 12"></label>
+        <label>Career path<input name="careerPath" placeholder="Engineering"></label>
+        <button class="btn-gradient" type="submit">Find Matches</button>
+      </form>
+      <article class="tool-card"><h2>Matching Alerts</h2><div id="alertsList" class="stack-list"></div></article>
+    </div>
+  </main>
+</body>
+</html>
+

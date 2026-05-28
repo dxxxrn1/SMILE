@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Vault - SMILE</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="studentTools.css">
+  <script src="/student-tools/studentTools.js" defer></script>
+</head>
+<body class="student-tools-page dashboard-page">
+  <header class="header header--dashboard"><nav class="nav container"><a href="/" class="nav__logo"><span class="nav__logo-icon">&#9786;</span><span>SMILE</span></a><ul class="nav__menu nav__menu--dashboard"><li><a href="/student/tools" class="nav__link">Tools</a></li><li><a href="/student/tools/document-vault" class="nav__link nav__link--active">Vault</a></li></ul></nav></header>
+  <main class="tools-shell container">
+    <section class="tool-page-header"><a href="/student/tools" class="back-link">Back to tools</a><h1>Document Vault</h1><p>Prepare and organize important student documents.</p></section>
+    <div class="tool-grid">
+      <form id="vaultForm" class="tool-card form-card">
+        <div class="section-title-row"><h2>Add Document</h2><span class="status-pill status-pill--green">Secure later</span></div>
+        <label>Document name<input name="name" required placeholder="Grade 11 Report"></label>
+        <label>Category<select name="category" required><option value="">Choose category</option><option>School Report</option><option>ID Document</option><option>CV</option><option>Certificate</option><option>Recommendation Letter</option></select></label>
+        <label>File<input id="vaultFile" type="file" accept="image/*,application/pdf,.doc,.docx"></label>
+        <button class="btn-gradient" type="submit">Add To Vault</button>
+      </form>
+      <article class="tool-card"><h2>Stored Documents</h2><div id="vaultList" class="stack-list"></div></article>
+    </div>
+  </main>
+</body>
+</html>
+
