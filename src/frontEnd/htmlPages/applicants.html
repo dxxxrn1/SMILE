@@ -27,7 +27,7 @@
       </div>
 
       <div class="dashboard-sidebar__nav org-tabs" role="tablist">
-        <a href="/org/dashboard" class="org-tab" style="text-decoration:none;">
+        <a href="/org/dashboard?tab=overview" class="org-tab" data-tab="overview" style="text-decoration:none;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect width="7" height="9" x="3" y="3" rx="1" />
             <rect width="7" height="5" x="14" y="3" rx="1" />
@@ -36,7 +36,7 @@
           </svg>
           Overview
         </a>
-        <a href="/org/analytics" class="org-tab" style="text-decoration:none;">
+        <a href="/org/analytics" class="org-tab" data-tab="analytics" style="text-decoration:none;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="20" x2="18" y2="10" />
             <line x1="12" y1="20" x2="12" y2="4" />
@@ -44,7 +44,14 @@
           </svg>
           Analytics
         </a>
-        <a href="/org/dashboard/applicants" class="org-tab org-tab--active" style="text-decoration:none;">
+        <a href="/org/dashboard?tab=myopps" class="org-tab" data-tab="myopps" style="text-decoration:none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="7" width="20" height="14" rx="2" />
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+          </svg>
+            My Opportunities
+        </a>
+        <a href="/org/dashboard/applicants" class="org-tab org-tab--active" data-tab="applicants" style="text-decoration: none">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
             <circle cx="9" cy="7" r="4" />
@@ -53,7 +60,7 @@
           </svg>
           Applicants
         </a>
-        <a href="/org/dashboard/createOpportunity" class="org-tab" style="text-decoration:none;">
+        <a href="/org/dashboard/createOpportunity" class="org-tab" data-tab="create" style="text-decoration:none;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
@@ -63,8 +70,7 @@
       </div>
 
       <div class="dashboard-sidebar__links" style="padding: 0 1rem 1rem 1rem">
-        <p
-          style="font-size:11px;text-transform:uppercase;color:#9ca3af;letter-spacing:0.05em;padding-left:8px;margin-bottom:12px;margin-top:12px;font-weight:600;">
+        <p style="font-size:11px;text-transform:uppercase;color:#9ca3af;letter-spacing:0.05em;padding-left:8px;margin-bottom:12px;margin-top:12px;font-weight:600;">
           Actions
         </p>
         <a href="/org/dashboard/createOpportunity" class="btn btn--gradient"

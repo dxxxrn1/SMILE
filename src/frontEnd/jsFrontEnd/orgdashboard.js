@@ -1233,3 +1233,27 @@ function closeApplicantModal() {
   const modal = document.getElementById("applicantModal");
   if (modal) modal.classList.remove("modal-overlay--active");
 }
+document.addEventListener("DOMContentLoaded", () => {
+
+  const tabs = document.querySelectorAll(".org-tab");
+  const currentPath = window.location.pathname;
+
+  tabs.forEach(tab => {
+    const tabHref = tab.getAttribute("href");
+
+    // Remove active from all first
+    tab.classList.remove("org-tab--active");
+
+    // Only highlight EXACT match
+    if (tabHref && currentPath === tabHref) {
+      tab.classList.add("org-tab--active");
+    }
+
+    // Highlight on click
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("org-tab--active"));
+      tab.classList.add("org-tab--active");
+    });
+  });
+
+});
