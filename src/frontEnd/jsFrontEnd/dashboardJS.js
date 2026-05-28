@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   loadEbooks();
   loadSavedOpportunities();
   loadApplications();
+  initProfileCompletionWidget();
 
   // Only run on pages that have these elements
   const spanID = document.getElementById("userName");
@@ -55,13 +56,13 @@ function initMobileNavigation() {
       }
     });
 
-      const logoutTag = document.getElementById("logout");
-      logoutTag.addEventListener("click" , ()=>{
-          localStorage.removeItem("token");
-          localStorage.removeItem("accountType");
-          localStorage.removeItem("userName");
-          localStorage.removeItem("initials");
-      })
+    const logoutTag = document.getElementById("logout");
+    logoutTag.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("accountType");
+      localStorage.removeItem("userName");
+      localStorage.removeItem("initials");
+    })
   }
 }
 
@@ -322,20 +323,19 @@ function loadEbooks(query = "career development south africa youth") {
           : "Preview available";
         const stars = book.rating
           ? "★".repeat(Math.round(book.rating)) +
-            "☆".repeat(5 - Math.round(book.rating))
+          "☆".repeat(5 - Math.round(book.rating))
           : "";
 
         const card = document.createElement("article");
         card.className = "ebook-card";
         card.innerHTML = `
           <div class="ebook-card__cover ebook-card__cover--${color}">
-            ${
-              book.thumbnail
-                ? `<img src="${book.thumbnail}" alt="${book.title}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
-                : `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            ${book.thumbnail
+            ? `<img src="${book.thumbnail}" alt="${book.title}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+            : `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
                    </svg>`
-            }
+          }
           </div>
           <div class="ebook-card__content">
             <span class="ebook-card__category">${book.categories[0] || "Reference"}</span>
@@ -652,12 +652,12 @@ window.downloadCareerDoc = async function () {
 
     // 2. The Golden Options that fix bugs
     const opt = {
-      margin:       0.4, 
-      filename:     "My_SMILE_Career_Path.pdf",
-      image:        { type: "jpeg", quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, scrollY: 0 }, // scrollY: 0 fixes the blank page bug!
-      jsPDF:        { unit: "in", format: "a4", orientation: "portrait" },
-      pagebreak:    { mode: ['css', 'avoid-all'] } // Stops boxes from slicing in half across pages!
+      margin: 0.4,
+      filename: "My_SMILE_Career_Path.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, scrollY: 0 }, // scrollY: 0 fixes the blank page bug!
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+      pagebreak: { mode: ['css', 'avoid-all'] } // Stops boxes from slicing in half across pages!
     };
 
     // 3. Generate the PDF straight from the element in memory
@@ -703,7 +703,7 @@ async function loadSavedOpportunities() {
         const deadline = new Date(opp.ApplicationDeadline).toLocaleDateString("en-US", {
           month: "short", day: "numeric", year: "numeric"
         });
-        
+
         return `
           <article class="opportunity-card" data-oppid="${opp.OppID}">
             <div class="opportunity-card__badge opportunity-card__badge--${opp.OppType.toLowerCase()}">
@@ -770,11 +770,11 @@ async function loadApplications() {
         const dateApplied = new Date(app.DateApplied).toLocaleDateString("en-US", {
           month: "short", day: "numeric", year: "numeric"
         });
-        
+
         let statusIcon = '';
         let statusClass = '';
         const status = app.Status || 'Pending';
-        
+
         if (status === 'Pending' || status === 'Pending Review') {
           statusClass = 'application-card__status--pending';
           statusIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>';
@@ -807,7 +807,7 @@ async function loadApplications() {
         const step1Class = "app-timeline__step--active";
         const step2Class = isReviewed ? "app-timeline__step--reviewed" : "";
         const step3Class = isShortlisted ? "app-timeline__step--shortlisted" : "";
-        
+
         let step4Class = "";
         let step4Title = "4. Decision";
         let step4Sub = "Pending";
@@ -822,7 +822,7 @@ async function loadApplications() {
             step4Sub = "Success";
           }
         }
-        
+
         const conn1 = isReviewed ? "app-timeline__connector--active" : "";
         const conn2 = isShortlisted ? "app-timeline__connector--active" : "";
         const conn3 = isFinal ? "app-timeline__connector--active" : "";
@@ -906,7 +906,7 @@ function initDynamicRemoveButtons() {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
           });
           const data = await res.json();
-          
+
           if (data.success) {
             card.style.transition = "opacity 0.3s ease, transform 0.3s ease";
             card.style.opacity = "0";
@@ -935,57 +935,56 @@ function initDynamicRemoveButtons() {
  * Opens the Tickets panel from the profile dropdown
  */
 function openTicketsTab(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    // Hide the main dashboard grid, show tickets panel
-    const dashGrid = document.querySelector(".dashboard__grid");
-    const ticketsPanel = document.getElementById("tickets-panel");
-    const profileMenu = document.getElementById("profileMenu");
 
-    if (dashGrid) dashGrid.style.display = "none";
-    if (ticketsPanel) ticketsPanel.style.display = "block";
-    if (profileMenu) profileMenu.classList.remove("nav__profile-menu--active");
+  const dashGrid = document.querySelector(".dashboard__grid");
+  const ticketsPanel = document.getElementById("tickets-panel");
+  const profileMenu = document.getElementById("profileMenu");
 
-    // Scroll to top smoothly
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  if (dashGrid) dashGrid.style.display = "none";
+  if (ticketsPanel) ticketsPanel.style.display = "block";
+  if (profileMenu) profileMenu.classList.remove("nav__profile-menu--active");
 
-    // Load tickets list
-    loadStudentTickets();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+
+  loadStudentTickets();
 }
 
 /**
  * Fetch and render the student's own tickets
  */
 async function loadStudentTickets() {
-    const tbody = document.getElementById("tkt-table-body");
-    if (!tbody) return;
+  const tbody = document.getElementById("tkt-table-body");
+  if (!tbody) return;
 
-    tbody.innerHTML = `<tr><td colspan="6" class="tkt-empty">Loading...</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="6" class="tkt-empty">Loading...</td></tr>`;
 
-    try {
-        const token = localStorage.getItem("token");
-        const res = await fetch("/api/tickets/my", {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch("/api/tickets/my", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
 
-        if (!data.success || data.tickets.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="tkt-empty">You haven't submitted any tickets yet.</td></tr>`;
-            return;
-        }
+    if (!data.success || data.tickets.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="tkt-empty">You haven't submitted any tickets yet.</td></tr>`;
+      return;
+    }
 
-        tbody.innerHTML = data.tickets.map(t => {
-            const date = new Date(t.DateCreated).toLocaleDateString("en-ZA", {
-                day: "2-digit", month: "short", year: "numeric"
-            });
-            const badge = t.Status === "Resolved"
-                ? `<span class="tkt-badge tkt-badge--resolved">✓ Resolved</span>`
-                : `<span class="tkt-badge tkt-badge--open">● Open</span>`;
-            const feedback = t.AdminFeedback
-                ? `<p class="tkt-feedback">💬 ${t.AdminFeedback}</p>`
-                : `<span style="color:#cbd5e1;font-size:12px;">—</span>`;
+    tbody.innerHTML = data.tickets.map(t => {
+      const date = new Date(t.DateCreated).toLocaleDateString("en-ZA", {
+        day: "2-digit", month: "short", year: "numeric"
+      });
+      const badge = t.Status === "Resolved"
+        ? `<span class="tkt-badge tkt-badge--resolved">✓ Resolved</span>`
+        : `<span class="tkt-badge tkt-badge--open">● Open</span>`;
+      const feedback = t.AdminFeedback
+        ? `<p class="tkt-feedback"> ${t.AdminFeedback}</p>`
+        : `<span style="color:#cbd5e1;font-size:12px;">—</span>`;
 
-            return `
+      return `
                 <tr>
                     <td style="font-weight:600;color:#ec4899;">#${t.TicketID}</td>
                     <td>${t.TicketType}</td>
@@ -994,79 +993,342 @@ async function loadStudentTickets() {
                     <td>${feedback}</td>
                     <td style="white-space:nowrap;color:#94a3b8;">${date}</td>
                 </tr>`;
-        }).join("");
+    }).join("");
 
-    } catch (err) {
-        console.error("Error loading tickets:", err);
-        document.getElementById("tkt-table-body").innerHTML =
-            `<tr><td colspan="6" class="tkt-empty" style="color:#dc2626;">Could not load tickets.</td></tr>`;
-    }
+  } catch (err) {
+    console.error("Error loading tickets:", err);
+    document.getElementById("tkt-table-body").innerHTML =
+      `<tr><td colspan="6" class="tkt-empty" style="color:#dc2626;">Could not load tickets.</td></tr>`;
+  }
 }
 
 /**
  * Submit a new support ticket
  */
 async function submitStudentTicket() {
-    const ticketType  = document.getElementById("tktType").value.trim();
-    const subject     = document.getElementById("tktSubject").value.trim();
-    const description = document.getElementById("tktDesc").value.trim();
+  const ticketType = document.getElementById("tktType").value.trim();
+  const subject = document.getElementById("tktSubject").value.trim();
+  const description = document.getElementById("tktDesc").value.trim();
 
-    if (!ticketType || !subject || !description) {
-        showTktToast("Please fill in all fields before submitting.", "error");
-        return;
+  if (!ticketType || !subject || !description) {
+    showTktToast("Please fill in all fields before submitting.", "error");
+    return;
+  }
+
+  const btn = document.getElementById("tktSubmitBtn");
+  btn.disabled = true;
+  btn.innerHTML = `<svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Submitting...`;
+
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch("/api/tickets", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ ticketType, subject, description })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      showTktToast(`Ticket #${data.ticketId} submitted successfully!`, "success");
+
+      document.getElementById("tktType").value = "";
+      document.getElementById("tktSubject").value = "";
+
+      await loadStudentTickets();
+    } else {
+      showTktToast(data.message || "Failed to submit ticket.", "error");
     }
-
-    const btn = document.getElementById("tktSubmitBtn");
-    btn.disabled = true;
-    btn.innerHTML = `<svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Submitting...`;
-
-    try {
-        const token = localStorage.getItem("token");
-        const res = await fetch("/api/tickets", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify({ ticketType, subject, description })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-            showTktToast(`Ticket #${data.ticketId} submitted successfully!`, "success");
-            // Reset form
-            document.getElementById("tktType").value    = "";
-            document.getElementById("tktSubject").value = "";
-            document.getElementById("tktDesc").value    = "";
-            // Refresh history table
-            await loadStudentTickets();
-        } else {
-            showTktToast(data.message || "Failed to submit ticket.", "error");
-        }
-    } catch (err) {
-        console.error("Error submitting ticket:", err);
-        showTktToast("Server error. Please try again.", "error");
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit Ticket`;
-    }
+  } catch (err) {
+    console.error("Error submitting ticket:", err);
+    showTktToast("Server error. Please try again.", "error");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit Ticket`;
+  }
 }
 
 /**
  * Show a toast notification in the tickets panel
  */
 function showTktToast(message, type = "success") {
-    const toast = document.getElementById("tktToast");
-    if (!toast) return;
+  const toast = document.getElementById("tktToast");
+  if (!toast) return;
 
-    toast.className = `tkt-toast tkt-toast--${type}`;
-    toast.textContent = message;
-    toast.style.display = "block";
+  toast.className = `tkt-toast tkt-toast--${type}`;
+  toast.textContent = message;
+  toast.style.display = "block";
 
-    setTimeout(() => { toast.style.display = "none"; }, 4000);
+  setTimeout(() => { toast.style.display = "none"; }, 4000);
 }
 
-// Expose to HTML onclick attributes
-window.openTicketsTab       = openTicketsTab;
-window.loadStudentTickets   = loadStudentTickets;
-window.submitStudentTicket  = submitStudentTicket;
+// HTML onclick attributes
+window.openTicketsTab = openTicketsTab;
+window.loadStudentTickets = loadStudentTickets;
+window.submitStudentTicket = submitStudentTicket;
+
+/**
+ * Profile Completion Widget Initialization
+ */
+async function initProfileCompletionWidget() {
+  const widget = document.getElementById("profileCompletionWidget");
+  const statCard = document.getElementById("profileStrengthCard");
+  const statIcon = document.getElementById("profileStrengthIcon");
+  const statNumber = document.getElementById("profileStrengthNumber");
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch("/api/student/profile", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (data.success && data.profile) {
+      const p = data.profile;
+
+      let score = 0;
+      let total = 5;
+
+      if (p.StuName && p.StuName.trim().length > 0) score++;
+      if (p.StuLastName && p.StuLastName.trim().length > 0) score++;
+      if (p.StuEducationLevel && p.StuEducationLevel.trim().length > 0) score++;
+      if (p.StuBio && p.StuBio.trim().length > 0 && p.StuBio !== "None provided yet") score++;
+      if (p.ProfilePicUrl && p.ProfilePicUrl.trim().length > 0) score++;
+
+      const percent = Math.round((score / total) * 100);
+
+      if (widget) {
+        widget.style.display = "flex";
+
+        const percentText = document.getElementById("widgetProgressPercent");
+        if (percentText) percentText.textContent = `${percent}%`;
+
+        const progressRing = document.getElementById("widgetProgressRing");
+        if (progressRing) {
+          progressRing.style.strokeDasharray = `${percent}, 100`;
+        }
+      }
+      if (statCard && statIcon && statNumber) {
+        statNumber.textContent = `${percent}%`;
+
+        statCard.classList.remove("stat-card--red", "stat-card--orange", "stat-card--green", "stat-card--purple");
+        statIcon.classList.remove("stat-card__icon--red", "stat-card__icon--orange", "stat-card__icon--green", "stat-card__icon--purple");
+
+        // Assign color theme 
+        if (percent < 40) {
+          statCard.classList.add("stat-card--red");
+          statIcon.classList.add("stat-card__icon--red");
+          statIcon.innerHTML = `
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          `;
+        } else if (percent < 80) {
+          statCard.classList.add("stat-card--orange");
+          statIcon.classList.add("stat-card__icon--orange");
+          statIcon.innerHTML = `
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          `;
+        } else {
+          statCard.classList.add("stat-card--green");
+          statIcon.classList.add("stat-card__icon--green");
+          statIcon.innerHTML = `
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          `;
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Error loading profile completion widget:", err);
+  }
+}
+
+// AI Profile Assistant 
+let aiProfileChatHistory = [];
+
+function openAIProfileModal() {
+  const modal = document.getElementById("aiProfileModal");
+  if (!modal) return;
+
+  modal.style.display = "flex";
+  setTimeout(() => {
+    modal.style.opacity = "1";
+    modal.style.pointerEvents = "auto";
+    const container = document.getElementById("aiProfileModalContainer");
+    if (container) container.style.transform = "scale(1)";
+  }, 50);
+
+  const win = document.getElementById("aiProfileChatWindow");
+  win.innerHTML = `
+    <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; border-radius: 0 20px 20px 20px;">
+      <p style="margin: 0 0 8px 0;"><strong>Hello! I'm your AI Profile Assistant.</strong></p>
+      <p style="margin: 0;">I'll help you craft a professional, compelling bio to attract the best opportunities. To get started, you can share your key skills, career interests, hobbies, or paste a rough draft you'd like me to polish!</p>
+    </div>
+  `;
+  aiProfileChatHistory = [];
+}
+
+function closeAIProfileModal() {
+  const modal = document.getElementById("aiProfileModal");
+  const container = document.getElementById("aiProfileModalContainer");
+  if (container) container.style.transform = "scale(0.95)";
+  if (modal) {
+    modal.style.opacity = "0";
+    modal.style.pointerEvents = "none";
+    setTimeout(() => {
+      modal.style.display = "none";
+    }, 300);
+  }
+}
+
+async function sendAIProfileChat() {
+  const input = document.getElementById("aiProfileInput");
+  const win = document.getElementById("aiProfileChatWindow");
+  if (!input || !win) return;
+
+  const userText = input.value.trim();
+  if (!userText) return;
+
+  //  user bubble
+  win.innerHTML += `
+    <div class="ai-chat-bubble ai-chat-bubble--user" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; border-radius: 20px 20px 0px 20px; margin-left: auto;">
+      ${userText}
+    </div>
+  `;
+  input.value = "";
+  win.scrollTop = win.scrollHeight;
+
+  aiProfileChatHistory.push({ role: "user", content: userText });
+
+  //  thinking indicator
+  const typingId = "ai-typing-" + Date.now();
+  win.innerHTML += `
+    <div id="${typingId}" style="display: flex; justify-content: flex-start; gap: 12px; align-self: flex-start;">
+      <div style="font-size: 1.5rem;">🤖</div>
+      <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; font-style: italic; color: #64748b; border-radius: 0 20px 20px 20px;">
+        Polishing bio options...
+      </div>
+    </div>
+  `;
+  win.scrollTop = win.scrollHeight;
+
+  try {
+    const res = await fetch("/api/chat/profile-writer", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+      body: JSON.stringify({ history: aiProfileChatHistory })
+    });
+    const data = await res.json();
+    aiProfileChatHistory.push({ role: "assistant", content: data.response });
+
+    document.getElementById(typingId)?.remove();
+
+    // Check for bio tags
+    const bioRegex = /\[PROPOSED_BIO\]([\s\S]*?)\[\/PROPOSED_BIO\]/i;
+    const match = data.response.match(bioRegex);
+
+    let displayHtml = data.response;
+    let proposedCardHtml = "";
+
+    if (match) {
+      const proposedBio = match[1].trim();
+      // Remove tags and proposal from the assistant's standard text response...... it doesn't duplicate
+      displayHtml = data.response.replace(bioRegex, "").trim();
+
+      const escapedBio = proposedBio.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, " ");
+
+      proposedCardHtml = `
+        <div style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.05), rgba(236, 72, 153, 0.05)); border: 1.5px dashed rgba(236, 72, 153, 0.3); padding: 16px; border-radius: 16px; margin-top: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.01);">
+          <p style="margin: 0 0 10px 0; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #ec4899; letter-spacing: 0.5px;">✨ Proposed Bio</p>
+          <p style="margin: 0 0 14px 0; font-size: 13.5px; font-style: italic; color: #1e293b; line-height: 1.6;">"${proposedBio}"</p>
+          <button class="btn-ai-apply" onclick="applyAIProposedBio(this, '${escapedBio}')">
+             Apply to Profile
+          </button>
+        </div>
+      `;
+    }
+
+    // Format markdown response
+    let formattedText = displayHtml
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\n\n/g, "</p><p>")
+      .replace(/\n/g, "<br>");
+
+    win.innerHTML += `
+      <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; border-radius: 0 20px 20px 20px;">
+        <p style="margin: 0;">${formattedText}</p>
+        ${proposedCardHtml}
+      </div>
+    `;
+
+    win.scrollTop = win.scrollHeight;
+  } catch (err) {
+    console.error("AI chat error:", err);
+    document.getElementById(typingId)?.remove();
+  }
+}
+
+async function applyAIProposedBio(button, bioText) {
+  button.disabled = true;
+  button.innerHTML = `
+    <svg class="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="margin-right: 6px;">
+      <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+    </svg> Applying...
+  `;
+  try {
+    const res = await fetch("/api/student/profile/bio", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+      body: JSON.stringify({ bio: bioText })
+    });
+    const data = await res.json();
+    if (data.success) {
+      button.innerHTML = "Saved!";
+      button.style.background = "#10b981";
+      button.style.boxShadow = "0 4px 12px rgba(16,185,129,0.25)";
+
+      // Update completion widget!
+      await initProfileCompletionWidget();
+
+      // Close modal after delay
+      setTimeout(() => {
+        closeAIProfileModal();
+        alert("Your profile bio was successfully updated and saved!");
+      }, 1200);
+    } else {
+      alert("Failed to update profile bio.");
+      button.disabled = false;
+      button.innerHTML = " Apply to Profile";
+    }
+  } catch (err) {
+    console.error("Error applying bio:", err);
+    alert("Server error. Please try again.");
+    button.disabled = false;
+    button.innerHTML = " Apply to Profile";
+  }
+}
+
+// Expose functions to window
+window.openAIProfileModal = openAIProfileModal;
+window.closeAIProfileModal = closeAIProfileModal;
+window.sendAIProfileChat = sendAIProfileChat;
+window.applyAIProposedBio = applyAIProposedBio;
+window.initProfileCompletionWidget = initProfileCompletionWidget;

@@ -224,3 +224,49 @@ export const getSingleDoc = async (req, res) => {
     res.status(500).json({ doc: null });
   }
 };
+
+export const getProfileBioAdvice = async (req, res) => {
+  try {
+    const pool = await connectToDB();
+    const result = await pool.request().input("stuID", sql.Int, req.user.id)
+      .query(`SELECT s.StuName, s.StuBio, i.TopInterest 
+              FROM Student s LEFT JOIN StudentInterests i ON s.StuID = i.StuID 
+              WHERE s.StuID = @stuID`);
+
+    const student = result.recordset[0];
+
+    if (!student) {
+      return res.status(404).json({ response: "Student profile not found." });
+    }
+
+    const { history } = req.body;
+
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      max_tokens: 1024,
+      messages: [
+        {
+          role: "system",
+          content: `You are the SMILE AI Profile Assistant. Your sole mission is to help South African student ${student.StuName} write an outstanding, professional, and highly compelling personal bio that will dramatically increase their chances of getting bursaries, scholarships, internships, or job opportunities.
+          
+          Current Top Interest (Quiz Result): ${student.TopInterest || "Not taken quiz yet"}.
+          Current Bio: "${student.StuBio || "None provided yet"}".
+          
+          STRICT RULES:
+          1. Be warm, encouraging, conversational, and professional.
+          2. Ask brief questions to get their top skills, hobbies, education details, and career aspirations, or take their rough notes and refine them.
+          3. Once you have enough context or when they provide a draft, generate a beautifully polished, professional bio tailored for them.
+          4. When you output a polished bio proposal, ALWAYS wrap it inside [PROPOSED_BIO] ... [/PROPOSED_BIO] tags. Explain to them that they can click the "Apply to Profile" button to save it instantly.
+          5. Keep the bio proposal around 3 to 5 sentences. Highlight their potential, ambition, and key competencies.`,
+        },
+        ...history,
+      ],
+    });
+
+    res.json({ response: completion.choices[0].message.content });
+  } catch (err) {
+    console.error("AI Profile Writer Error:", err);
+    res.status(500).json({ response: "AI connection error." });
+  }
+};
+
