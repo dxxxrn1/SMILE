@@ -364,8 +364,9 @@ function renderCards(opps) {
             }
           </div>
           
-          <div class="nearme-card__actions" style="margin-top: 12px;">
+          <div class="nearme-card__actions" style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
             <button class="btn btn--gradient btn--sm" onclick="event.stopPropagation();applyClicked('${opp.Title}', ${opp.OppID})">Apply Now</button>
+            <button class="btn btn--outline btn--sm" onclick="event.stopPropagation();aboutUsClicked(${opp.OppID})">About Us</button>
             <button class="btn btn--outline btn--sm" onclick="event.stopPropagation();saveClicked('${opp.Title}', ${opp.OppID})">Save</button>
           </div>
         </div>`;
@@ -510,6 +511,58 @@ async function saveClicked(title, oppId) {
     console.error("Error saving:", err);
     alert("Network error occurred while saving.");
   }
+}
+
+function aboutUsClicked(oppId) {
+  const opp = ALL_OPPORTUNITIES.find(o => o.OppID === oppId);
+  if (!opp) return;
+
+  // Create overlay element
+  const overlay = document.createElement("div");
+  overlay.className = "about-us-overlay";
+  
+  const logoContent = opp.OrgProfilePic 
+    ? `<img src="${opp.OrgProfilePic}" alt="${opp.OrgName}">`
+    : opp.OrgName ? opp.OrgName.substring(0, 2).toUpperCase() : "ORG";
+
+  const bioText = opp.OrgBio ? opp.OrgBio : "This organisation has not updated their bio yet.";
+
+  overlay.innerHTML = `
+    <div class="about-us-card">
+      <button class="about-us-close" id="closeAboutUs">&times;</button>
+      <div class="about-us-header">
+        <div class="about-us-logo">${logoContent}</div>
+        <div class="about-us-org-details">
+          <h3>${opp.OrgName || 'Organisation'}</h3>
+          <span class="about-us-badge">Verified Partner</span>
+        </div>
+      </div>
+      <div class="about-us-bio">${bioText}</div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  // Trigger animation
+  setTimeout(() => overlay.classList.add("active"), 10);
+
+  const closeBtn = overlay.querySelector("#closeAboutUs");
+  
+  const closePopup = () => {
+    overlay.classList.remove("active");
+    setTimeout(() => overlay.remove(), 300);
+  };
+
+  closeBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    closePopup();
+  });
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      closePopup();
+    }
+  });
 }
 
 /* ================================================================

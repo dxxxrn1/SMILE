@@ -2,6 +2,49 @@ import { sql } from "../dbConnection/dbconnection.js";
 import fs from "fs";
 import path from "path";
 
+async function ensureStudentNotificationsTable() {
+  const request = new sql.Request();
+  await request.query(`
+    IF OBJECT_ID('dbo.StudentNotifications', 'U') IS NULL
+    BEGIN
+      CREATE TABLE dbo.StudentNotifications (
+        NotificationID INT IDENTITY(1,1) PRIMARY KEY,
+        StuID INT NOT NULL,
+        AppID INT NULL,
+        Title NVARCHAR(150) NOT NULL,
+        Message NVARCHAR(1000) NOT NULL,
+        NotificationType VARCHAR(40) NOT NULL,
+        IsRead BIT NOT NULL CONSTRAINT DF_StudentNotifications_IsRead DEFAULT 0,
+        DateCreated DATETIME NOT NULL CONSTRAINT DF_StudentNotifications_DateCreated DEFAULT GETDATE(),
+        CONSTRAINT FK_StudentNotifications_Student FOREIGN KEY (StuID) REFERENCES dbo.Student(StuID) ON DELETE CASCADE
+      );
+    END
+  `);
+}
+
+async function ensureStudentProfileColumns() {
+  const request = new sql.Request();
+  await request.query(`
+    IF COL_LENGTH('dbo.Student', 'StuBio') IS NULL
+      ALTER TABLE dbo.Student ADD StuBio NVARCHAR(MAX) NULL;
+
+    IF COL_LENGTH('dbo.Student', 'ProfilePicUrl') IS NULL
+      ALTER TABLE dbo.Student ADD ProfilePicUrl NVARCHAR(255) NULL;
+  `);
+}
+
+function getProfileImageExtension(mimeType) {
+  const allowed = {
+    "image/jpeg": "jpg",
+    "image/jpg": "jpg",
+    "image/png": "png",
+    "image/gif": "gif",
+    "image/webp": "webp"
+  };
+
+  return allowed[mimeType] || null;
+}
+
 
 // Fetch Student's Saved Opportunities
 export const getSavedOpportunities = async (req, res) => {
@@ -35,6 +78,65 @@ export const getSavedOpportunities = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching saved opportunities:", error);
+    return res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+
+export const getStudentNotifications = async (req, res) => {
+  try {
+    const stuId = req.user.id;
+    await ensureStudentNotificationsTable();
+
+    const request = new sql.Request();
+    request.input("StuID", stuId);
+
+    const result = await request.query(`
+      SELECT TOP 20
+        NotificationID,
+        AppID,
+        Title,
+        Message,
+        NotificationType,
+        IsRead,
+        DateCreated
+      FROM StudentNotifications
+      WHERE StuID = @StuID
+      ORDER BY DateCreated DESC
+    `);
+
+    const unreadResult = await request.query(`
+      SELECT COUNT(*) AS UnreadCount
+      FROM StudentNotifications
+      WHERE StuID = @StuID AND IsRead = 0
+    `);
+
+    return res.status(200).json({
+      success: true,
+      notifications: result.recordset,
+      unreadCount: unreadResult.recordset[0]?.UnreadCount || 0
+    });
+  } catch (error) {
+    console.error("Error fetching student notifications:", error);
+    return res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+
+export const markStudentNotificationsRead = async (req, res) => {
+  try {
+    const stuId = req.user.id;
+    await ensureStudentNotificationsTable();
+
+    const request = new sql.Request();
+    request.input("StuID", stuId);
+    await request.query(`
+      UPDATE StudentNotifications
+      SET IsRead = 1
+      WHERE StuID = @StuID AND IsRead = 0
+    `);
+
+    return res.status(200).json({ success: true, message: "Notifications marked as read." });
+  } catch (error) {
+    console.error("Error marking notifications as read:", error);
     return res.status(500).json({ success: false, message: "Internal server error." });
   }
 };
@@ -161,6 +263,7 @@ export const applyForOpportunity = async (req, res) => {
 export const getStudentProfile = async (req, res) => {
   try {
     const stuId = req.user.id;
+    await ensureStudentProfileColumns();
     const request = new sql.Request();
     request.input("StuID", stuId);
     
@@ -189,25 +292,40 @@ export const updateStudentProfile = async (req, res) => {
   try {
     const stuId = req.user.id;
     const { firstName, lastName, educationLevel, bio, profilePic } = req.body;
+    await ensureStudentProfileColumns();
 
     if (!firstName || !lastName || !bio) {
       return res.status(400).json({ success: false, message: "Please fill in all required fields." });
     }
 
-    let profilePicUrl = null;
-    if (profilePic) {
+    const existing = await new sql.Request()
+      .input("StuID", stuId)
+      .query(`
+        SELECT ProfilePicUrl
+        FROM Student
+        WHERE StuID = @StuID
+      `);
+
+    if (existing.recordset.length === 0) {
+      return res.status(404).json({ success: false, message: "Student profile not found." });
+    }
+
+    let profilePicUrl = existing.recordset[0].ProfilePicUrl || null;
+    if (typeof profilePic === "string" && profilePic.trim()) {
       if (profilePic.startsWith("data:image/")) {
         const matches = profilePic.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
         if (matches && matches.length === 3) {
           const mimeType = matches[1];
           const base64Data = matches[2];
+          const extension = getProfileImageExtension(mimeType);
+          if (!extension) {
+            return res.status(400).json({ success: false, message: "Only JPG, PNG, GIF, or WEBP profile pictures are allowed." });
+          }
+
           const buffer = Buffer.from(base64Data, 'base64');
-          
-          let extension = "png";
-          if (mimeType.includes("jpeg") || mimeType.includes("jpg")) {
-            extension = "jpg";
-          } else if (mimeType.includes("gif")) {
-            extension = "gif";
+
+          if (buffer.length > 2 * 1024 * 1024) {
+            return res.status(400).json({ success: false, message: "Profile picture must be smaller than 2MB." });
           }
 
           const fileName = `student_${stuId}_${Date.now()}.${extension}`;
@@ -223,6 +341,8 @@ export const updateStudentProfile = async (req, res) => {
         }
       } else if (profilePic.startsWith("/Assets/")) {
         profilePicUrl = profilePic;
+      } else {
+        return res.status(400).json({ success: false, message: "Invalid profile picture format." });
       }
     }
 

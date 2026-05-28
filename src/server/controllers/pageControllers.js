@@ -49,6 +49,10 @@ export const studentProfilePage = (req,res)=>{
     res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "studentProfile.html"));
 }
 
+export const orgProfilePage = (req,res)=>{
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "orgProfile.html"));
+}
+
 export const forgotPasswordPage = (req,res)=>{
     res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" ,"htmlPages" , "forget-password.html"));
 }
