@@ -255,4 +255,34 @@ export const updateStudentProfile = async (req, res) => {
   }
 };
 
+export const updateStudentBio = async (req, res) => {
+  try {
+    const stuId = req.user.id;
+    const { bio } = req.body;
+
+    if (!bio) {
+      return res.status(400).json({ success: false, message: "Bio content is required." });
+    }
+
+    const request = new sql.Request();
+    request.input("StuID", stuId);
+    request.input("bio", bio);
+
+    await request.query(`
+      UPDATE Student
+      SET StuBio = @bio
+      WHERE StuID = @StuID
+    `);
+
+    return res.status(200).json({
+      success: true,
+      message: "Bio updated successfully."
+    });
+  } catch (error) {
+    console.error("Error updating bio:", error);
+    return res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+
+
 
