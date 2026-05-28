@@ -53,6 +53,55 @@
 
  html {
    scroll-behavior: smooth;
+   background-color: #E8E7FA;
+   overscroll-behavior-y: none; /* Deactivate rubber-band scroll bouncing past bounds */
+ }
+
+ /* Sleek dark global scrollbars */
+ ::-webkit-scrollbar {
+   width: 8px;
+   height: 8px;
+ }
+ ::-webkit-scrollbar-track {
+   background: rgba(0, 0, 0, 0.03);
+   border-radius: var(--radius-full);
+ }
+ ::-webkit-scrollbar-thumb {
+   background: rgba(15, 23, 42, 0.35); /* Translucent dark slate thumb */
+   border-radius: var(--radius-full);
+   border: 2px solid transparent;
+   background-clip: padding-box;
+ }
+ ::-webkit-scrollbar-thumb:hover {
+   background: rgba(15, 23, 42, 0.55);
+   border: 2px solid transparent;
+   background-clip: padding-box;
+ }
+
+ /* Seamless rubber-band scroll backgrounds for pages with dark footers */
+ html:has(footer.footer) {
+   background: linear-gradient(to bottom, var(--white) 0%, var(--white) 50%, var(--white) 50%, var(--gray-900) 100%) !important;
+   background-repeat: no-repeat !important;
+   background-color: var(--gray-900) !important;
+ }
+
+ /* Smooth page entry transitions */
+ body.dashboard-page main,
+ body.dashboard-page .profile-container,
+ body.dashboard-page .app {
+   animation: fadeIn 0.4s ease-out;
+ }
+
+ @keyframes fadeIn {
+   from {
+     opacity: 0;
+     transform: translateY(8px);
+   }
+
+   to {
+     opacity: 1;
+     transform: translateY(0);
+   }
  }
 
  body {
@@ -91,7 +140,7 @@
    background: var(--white);
    position: sticky;
    top: 0;
-   z-index: 100;
+   z-index: 9999;
    box-shadow: var(--shadow-sm);
  }
 
@@ -746,7 +795,7 @@
    max-width: 160px;
  }
 
- 
+
 
  .account-type-card:hover {
    border-color: var(--gray-300);
@@ -959,15 +1008,15 @@
    }
  }
 
- .dashboard-page {
-   background-color: #E8E7FA;
-   background-image: 
+ body.dashboard-page {
+   background-color: #E8E7FA !important;
+   background-image:
      linear-gradient(to bottom, #E8E7FA 0%, rgba(232, 231, 250, 0) 55%, rgba(254, 215, 170, 0.4) 100%),
-     linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(249, 115, 22, 0.08) 30%, rgba(249, 115, 22, 0.15) 50%, rgba(249, 115, 22, 0.08) 70%, rgba(255, 255, 255, 0) 100%);
+     linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(249, 115, 22, 0.08) 30%, rgba(249, 115, 22, 0.15) 50%, rgba(249, 115, 22, 0.08) 70%, rgba(255, 255, 255, 0) 100%) !important;
    background-position: top center, bottom center;
    background-size: 100% 100%, 100% 550px;
    background-repeat: no-repeat;
-   background-attachment: scroll;
+   background-attachment: scroll !important;
  }
 
  /* ==================== DASHBOARD STYLES ==================== */
@@ -1390,19 +1439,19 @@
    gap: var(--spacing-md);
  }
 
-   .opportunity-card {
-    padding: var(--spacing-lg);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-md);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+ .opportunity-card {
+   padding: var(--spacing-lg);
+   border: 1px solid var(--gray-200);
+   border-radius: var(--radius-md);
+   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+ }
 
-  .opportunity-card:hover {
-    background-color: rgba(249, 115, 22, 0.04) !important;
-    border-color: rgba(249, 115, 22, 0.45) !important;
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.08), 0 1px 3px rgba(249, 115, 22, 0.04) !important;
-    transform: translateY(-2px);
-  }
+ .opportunity-card:hover {
+   background-color: rgba(249, 115, 22, 0.04) !important;
+   border-color: rgba(249, 115, 22, 0.45) !important;
+   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.08), 0 1px 3px rgba(249, 115, 22, 0.04) !important;
+   transform: translateY(-2px);
+ }
 
  .opportunity-card__badge {
    display: inline-block;
@@ -1491,19 +1540,19 @@
    border-radius: var(--radius-full);
  }
 
-   .application-card {
-    padding: var(--spacing-md);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-md);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+ .application-card {
+   padding: var(--spacing-md);
+   border: 1px solid var(--gray-200);
+   border-radius: var(--radius-md);
+   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+ }
 
-  .application-card:hover {
-    background-color: rgba(249, 115, 22, 0.04) !important;
-    border-color: rgba(249, 115, 22, 0.45) !important;
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.08), 0 1px 3px rgba(249, 115, 22, 0.04) !important;
-    transform: translateY(-2px);
-  }
+ .application-card:hover {
+   background-color: rgba(249, 115, 22, 0.04) !important;
+   border-color: rgba(249, 115, 22, 0.45) !important;
+   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.08), 0 1px 3px rgba(249, 115, 22, 0.04) !important;
+   transform: translateY(-2px);
+ }
 
  .application-card__status {
    display: inline-flex;
@@ -1760,54 +1809,54 @@
    }
  }
 
-  /* Mobile (max 768px) */
-  @media (max-width: 768px) {
-    .dashboard__stats {
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--spacing-md);
-    }
+ /* Mobile (max 768px) */
+ @media (max-width: 768px) {
+   .dashboard__stats {
+     grid-template-columns: repeat(2, 1fr);
+     gap: var(--spacing-md);
+   }
 
-    .dashboard__grid {
-      grid-template-columns: 1fr;
-    }
+   .dashboard__grid {
+     grid-template-columns: 1fr;
+   }
 
-    .dashboard__section--ebooks,
-    .dashboard__section--map {
-      grid-column: span 1;
-    }
+   .dashboard__section--ebooks,
+   .dashboard__section--map {
+     grid-column: span 1;
+   }
 
-    .ebooks-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+   .ebooks-grid {
+     grid-template-columns: repeat(2, 1fr);
+   }
 
-    .nav__actions--dashboard {
-      display: none;
-    }
+   .nav__actions--dashboard {
+     display: none;
+   }
 
-    .stat-card:hover {
-      transform: translateY(-2px);
-    }
+   .stat-card:hover {
+     transform: translateY(-2px);
+   }
 
-    .dashboard__header {
-      flex-direction: column;
-      align-items: flex-start !important;
-    }
-  }
+   .dashboard__header {
+     flex-direction: column;
+     align-items: flex-start !important;
+   }
+ }
 
-  /* Tablet (max 1024px) */
-  @media (max-width: 1024px) {
-    .dashboard__stats {
-      grid-template-columns: repeat(2, 1fr);
-    }
+ /* Tablet (max 1024px) */
+ @media (max-width: 1024px) {
+   .dashboard__stats {
+     grid-template-columns: repeat(2, 1fr);
+   }
 
-    .ebooks-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+   .ebooks-grid {
+     grid-template-columns: repeat(2, 1fr);
+   }
 
-    .dashboard {
-      padding: var(--spacing-lg) 0 var(--spacing-2xl);
-    }
-  }
+   .dashboard {
+     padding: var(--spacing-lg) 0 var(--spacing-2xl);
+   }
+ }
 
  /* ==================== PAGE HEADER (shared across new pages) ==================== */
  .page-content {
@@ -3107,7 +3156,7 @@
 
  /* ── Page layout near me map ── */
  .nearme-page {
-   background: var(--gray-50);
+   background: transparent !important;
    min-height: 100vh;
  }
 
@@ -4885,5 +4934,3 @@
  .app-timeline__connector--active {
    background: var(--primary-pink, #ec4899);
  }
-
-

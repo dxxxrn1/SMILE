@@ -13,6 +13,17 @@ document.addEventListener("DOMContentLoaded", function () {
   loadApplications();
   initProfileCompletionWidget();
 
+  // Hide support ticket dropdown button and its divider if the tickets tab/panel is not present
+  const ticketsPanel = document.getElementById("tickets-panel");
+  const myTicketsBtn = document.getElementById("myTicketsDropdownBtn");
+  if (myTicketsBtn && !ticketsPanel) {
+    myTicketsBtn.style.display = "none";
+    const prevDivider = myTicketsBtn.previousElementSibling;
+    if (prevDivider && prevDivider.classList.contains("nav__profile-divider")) {
+      prevDivider.style.display = "none";
+    }
+  }
+
   // Only run on pages that have these elements
   const spanID = document.getElementById("userName");
   const spanInitials = document.getElementById("initials");
