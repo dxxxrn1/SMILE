@@ -41,6 +41,14 @@ export const orgDashboard = (req,res)=>{
     res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "orgdashboard.html"));
 }
 
+export const applicantsPage = (req,res)=>{
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "applicants.html"));
+}
+
+export const studentProfilePage = (req,res)=>{
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "studentProfile.html"));
+}
+
 export const forgotPasswordPage = (req,res)=>{
     res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" ,"htmlPages" , "forget-password.html"));
 }
@@ -55,6 +63,22 @@ export const createOpportunity = (req,res)=>{
 
 export const adminDashBoard = (req,res)=>{
     res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "admin.html"));
+}
+
+export const analyticsPage = (req,res)=>{
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "analytics.html"));
+}
+
+export const userModeration = (req,res)=>{
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "userModeration.html"));
+}
+
+export const userTicket = (req,res)=>{
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "userTicket.html"));
+}
+
+export const orgTicketsPage = (req,res)=>{
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "orgTickets.html"));
 }
 
 //Lucas Bohani Maluleke and Darren Foster

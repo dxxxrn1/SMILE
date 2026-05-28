@@ -24,7 +24,8 @@
     "msnodesqlv8": "^5.1.5",
     "mssql": "^12.2.1",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^8.0.4",
+    "node-fetcher": "^0.0.10",
+    "nodemailer": "^8.0.7",
     "nodemon": "^3.1.14",
     "path": "^0.12.7"
   }

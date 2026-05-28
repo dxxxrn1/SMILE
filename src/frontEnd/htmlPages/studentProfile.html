@@ -313,7 +313,10 @@
               p.StuEducationLevel || "";
             document.getElementById("bio").value = p.StuBio || "";
 
-            if (p.StuName && p.StuLastName) {
+            if (p.ProfilePicUrl) {
+              document.getElementById("pfpPreview").innerHTML =
+                `<img src="${p.ProfilePicUrl}" alt="Profile Picture">`;
+            } else if (p.StuName && p.StuLastName) {
               document.getElementById("pfpPreview").textContent =
                 p.StuName[0] + p.StuLastName[0];
             }
@@ -324,11 +327,15 @@
       });
 
       async function saveProfile() {
+        const imgEl = document.querySelector("#pfpPreview img");
+        const profilePic = imgEl ? imgEl.getAttribute("src") : null;
+
         const payload = {
           firstName: document.getElementById("firstName").value.trim(),
           lastName: document.getElementById("lastName").value.trim(),
           educationLevel: document.getElementById("educationLevel").value,
           bio: document.getElementById("bio").value.trim(),
+          profilePic: profilePic
         };
 
         if (!payload.firstName || !payload.lastName || !payload.bio) {

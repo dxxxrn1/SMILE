@@ -5,6 +5,7 @@ import nodemailer from  "nodemailer";
 import { error } from "node:console";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import { validateRealEmail } from "../utils/validateEmail.js";
 
 dotenv.config();
  
@@ -15,6 +16,16 @@ export const saveStudentDetails = async (req, res) => {
         if (!firstName || !lastName || !email || !province || !educationLevel || !password) {
             return res.sendStatus(400);
         }
+
+        // Validate real email before continuing
+        const emailValidation = await validateRealEmail(email);
+
+        if (!emailValidation.success) {
+            return res.status(400).json({
+                message: emailValidation.message
+            });
+        }
+
         const pool = await connectToDB();
         console.log("the database is connected!!")
         // Check if email already exists
@@ -85,7 +96,18 @@ export const saveOrganisationDetails = async(req,res)=>{
             })
 
         }
+
+        // Validate real email before continuing
+        const emailValidation = await validateRealEmail(email);
+
+        if (!emailValidation.success) {
+            return res.status(400).json({
+                message: emailValidation.message
+            });
+        }
+
         const pool = await connectToDB();
+
         console.log("connected, about to SELECT");
         const results = await pool
         .request()

@@ -6,78 +6,110 @@
   <meta name="description" content="Create your free SMILE account to access opportunities for South African youth.">
   <title>Create Account - SMILE</title>
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/auth-redesign.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="auth-page">
+<body class="auth-v2-page auth-v2-light">
 
-  <header class="header">
-    <nav class="nav container">
-      <a href="/" class="nav__logo">
-        <span class="nav__logo-icon">&#9786;</span>
-        <span>SMILE</span>
+  <!-- LEFT PANEL -->
+  <div class="auth-v2-left">
+    <div class="auth-v2-left__circles">
+      <span></span><span></span><span></span>
+    </div>
+
+    <!-- Logo -->
+    <a href="/" class="auth-v2-logo">
+      <div class="auth-v2-logo__icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+          <line x1="9" y1="9" x2="9.01" y2="9"/>
+          <line x1="15" y1="9" x2="15.01" y2="9"/>
+        </svg>
+      </div>
+      SMILE
+    </a>
+
+    <!-- Headline -->
+    <div class="auth-v2-headline">
+      <h2>Join us<br>today.</h2>
+      <p>Your future starts here. Create an account to unlock opportunities across South Africa.</p>
+    </div>
+
+    <!-- Benefits -->
+    <div class="auth-v2-benefits">
+      <div class="auth-v2-benefit">
+        <div class="auth-v2-benefit__check">✓</div>
+        500+ active opportunities
+      </div>
+      <div class="auth-v2-benefit">
+        <div class="auth-v2-benefit__check">✓</div>
+        Connect with NGOs and Companies
+      </div>
+      <div class="auth-v2-benefit">
+        <div class="auth-v2-benefit__check">✓</div>
+        Free forever for students
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="auth-v2-right">
+    <div class="auth-v2-form-wrap">
+
+      <!-- Mobile-only logo -->
+      <a href="/" class="auth-v2-mobile-logo">
+        <div class="auth-v2-mobile-logo__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+        </div>
+        SMILE
       </a>
-      <ul class="nav__menu" id="navMenu">
-        <li><a href="/" class="nav__link">
-          <span class="nav__link-icon">&#127968;</span> Home
-        </a></li>
-      </ul>
-      <div class="nav__actions">
-        <a href="/login-page" class="btn btn--outline">Log In</a>
-        <a href="/register-page" class="btn btn--primary">Sign Up</a>
-      </div>
-      <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
-        &#9776;
-      </button>
-    </nav>
-  </header>
 
-  <main class="auth-container">
-    <div class="auth-card auth-card--wide">
-
-      <div class="auth-card__header">
-        <h1 class="auth-card__title">Create Account</h1>
-        <p class="auth-card__subtitle">Choose your account type to get started</p>
+      <div class="auth-v2-heading">
+        <h1>Create Account</h1>
+        <p>Choose your account type to get started</p>
       </div>
 
-      <!-- Account Type Selector -->
-      <div class="account-type-selector account-type-selector--detailed">
-        <button type="button" class="account-type-card account-type-card--detailed account-type-card--active" data-type="student">
-          <div class="account-type-card__icon account-type-card__icon--student">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Account type pills -->
+      <div class="auth-v2-type-pills">
+        <button type="button" class="auth-v2-pill auth-v2-pill--active" data-type="student" id="pillStudent">
+          <div class="auth-v2-pill__icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
               <path d="M6 12v5c3 3 9 3 12 0v-5"/>
             </svg>
           </div>
-          <span class="account-type-card__label">Student</span>
-          <span class="account-type-card__description">Find opportunities</span>
-          <span class="account-type-card__badge account-type-card__badge--green">Free Forever</span>
+          <div>
+            Student
+            <span class="auth-v2-pill__sub">Find opportunities</span>
+          </div>
         </button>
-
-        <button type="button" class="account-type-card account-type-card--detailed" data-type="organization">
-          <div class="account-type-card__icon account-type-card__icon--organization">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 21h18"/>
-              <path d="M5 21V7l8-4v18"/>
+        <button type="button" class="auth-v2-pill" data-type="organization" id="pillOrg">
+          <div class="auth-v2-pill__icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 21h18"/><path d="M5 21V7l8-4v18"/>
               <path d="M19 21V11l-6-4"/>
-              <path d="M9 9v.01"/>
-              <path d="M9 12v.01"/>
-              <path d="M9 15v.01"/>
-              <path d="M9 18v.01"/>
             </svg>
           </div>
-          <span class="account-type-card__label">Organization</span>
-          <span class="account-type-card__description">Post opportunities</span>
-          <span class="account-type-card__badge account-type-card__badge--blue">NGOs & Companies</span>
+          <div>
+            Organisation
+            <span class="auth-v2-pill__sub">Post opportunities</span>
+          </div>
         </button>
       </div>
 
       <!-- STUDENT FORM -->
-      <form id="studentForm" class="form"  novalidate>
+      <form id="studentForm" class="form auth-v2-form" novalidate>
         <input type="hidden" name="accountType" value="student">
 
-        <div class="form__row">
+        <!-- <div class="form__row">
           <div class="form__group">
             <label for="firstName" class="form__label">First Name</label>
             <input type="text" id="firstName" name="firstName" class="form__input" placeholder="Enter first name" required autocomplete="given-name">
@@ -88,73 +120,137 @@
             <input type="text" id="lastName" name="lastName" class="form__input" placeholder="Enter last name" required autocomplete="family-name">
             <span class="form__error">Last name is required</span>
           </div>
+        </div> -->
+        <div class="form__group">
+          <label for="firstName" class="form__label">First Name</label>
+          <input type="text" id="firstName" name="firstName" class="form__input"placeholder="Enter first name" required autocomplete="given-name"
+          oninput="blockNumbers(this)" />
+          <span class="form__error" id="firstName-error">First name is required</span>
+        </div>
+        <div class="form__group">
+          <label for="lastName" class="form__label">Last Name</label>
+          <input type="text" id="lastName" name="lastName" class="form__input"placeholder="Enter last name" required autocomplete="family-name"
+          oninput="blockNumbers(this)" />
+          <span class="form__error" id="lastName-error">Last name is required</span>
         </div>
 
+        <!-- STUDENT EMAIL + OTP -->
         <div class="form__group">
           <label for="email" class="form__label">Email Address</label>
           <input type="email" id="email" name="email" class="form__input" placeholder="Enter your email" required autocomplete="email">
-          <span class="form__error">Please enter a valid email address</span>
+          <div id="email-status" style="min-height:18px; margin-top:4px; font-size:12px;"></div>
+          <span class="form__error" id="email-error" style="display:none;"></span>
+          <span id="email-hint" style="display:none; color:green; font-size:12px;">✓ Email verified!</span>
         </div>
 
-        <div class="form__group">
-          <label for="province" class="form__label">Province</label>
-          <select id="province" name="province" class="form__input form__select" required>
-            <option value="" disabled selected>Select your province</option>
-            <option value="eastern-cape">Eastern Cape</option>
-            <option value="free-state">Free State</option>
-            <option value="gauteng">Gauteng</option>
-            <option value="kwazulu-natal">KwaZulu-Natal</option>
-            <option value="limpopo">Limpopo</option>
-            <option value="mpumalanga">Mpumalanga</option>
-            <option value="northern-cape">Northern Cape</option>
-            <option value="north-west">North West</option>
-            <option value="western-cape">Western Cape</option>
-          </select>
-          <span class="form__error">Please select your province</span>
+        <div id="otp-section" style="display:none; margin-bottom:1rem; padding:1rem; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;">
+          <p style="font-size:13px; margin-bottom:8px;">We sent a 6-digit code to <strong id="otp-email-display"></strong></p>
+          <div style="display:flex; gap:8px; margin-bottom:10px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+          </div>
+          <button type="button" onclick="verifyOTP()" style="padding:8px 16px;background:#4CAF50;color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;">Verify Code</button>
+          <a href="#" onclick="resendCode(event)" style="font-size:12px; margin-left:12px; color:#555;">Resend code</a>
+          <div id="otp-error" style="display:none; color:red; font-size:12px; margin-top:6px;">❌ Incorrect code. Please try again.</div>
         </div>
 
-        <div class="form__group">
-          <label for="educationLevel" class="form__label">Education Level</label>
-          <select id="educationLevel" name="educationLevel" class="form__input form__select" required>
-            <option value="" disabled selected>Select education level</option>
-            <option value="grade-8">Grade 8</option>
-            <option value="grade-9">Grade 9</option>
-            <option value="grade-10">Grade 10</option>
-            <option value="grade-11">Grade 11</option>
-            <option value="grade-12">Grade 12 (Matric)</option>
-            <option value="certificate">Certificate</option>
-            <option value="diploma">Diploma</option>
-            <option value="undergraduate">Undergraduate Degree</option>
-            <option value="postgraduate">Postgraduate Degree</option>
-            <option value="other">Other</option>
-          </select>
-          <span class="form__error">Please select your education level</span>
-        </div>
+        <div class="form__row">
+          <div class="form__group">
+            <label for="province" class="form__label">Province</label>
+            <select id="province" name="province" class="form__input form__select" required>
+              <option value="" disabled selected>Select province</option>
+              <option value="eastern-cape">Eastern Cape</option>
+              <option value="free-state">Free State</option>
+              <option value="gauteng">Gauteng</option>
+              <option value="kwazulu-natal">KwaZulu-Natal</option>
+              <option value="limpopo">Limpopo</option>
+              <option value="mpumalanga">Mpumalanga</option>
+              <option value="northern-cape">Northern Cape</option>
+              <option value="north-west">North West</option>
+              <option value="western-cape">Western Cape</option>
+            </select>
+            <span class="form__error">Please select your province</span>
+          </div>
 
-        <div class="form__group">
-          <label for="studentPassword" class="form__label">Password</label>
-          <input type="password" id="studentPassword" name="password" class="form__input" placeholder="Create a password" required autocomplete="new-password" minlength="8">
-          <span class="form__error">Password must be at least 8 characters</span>
+          <div class="form__group">
+            <label for="educationLevel" class="form__label">Education Level</label>
+            <select id="educationLevel" name="educationLevel" class="form__input form__select" required>
+              <option value="" disabled selected>Select level</option>
+              <option value="grade-8">Grade 8</option>
+              <option value="grade-9">Grade 9</option>
+              <option value="grade-10">Grade 10</option>
+              <option value="grade-11">Grade 11</option>
+              <option value="grade-12">Grade 12 (Matric)</option>
+              <option value="certificate">Certificate</option>
+              <option value="diploma">Diploma</option>
+              <option value="undergraduate">Undergraduate Degree</option>
+              <option value="postgraduate">Postgraduate Degree</option>
+              <option value="other">Other</option>
+            </select>
+            <span class="form__error">Please select education level</span>
+          </div>
         </div>
-
         <div class="form__group">
+          <label for="password" class="form__label">Password</label>
+          <input 
+          type="password" 
+          id="password" 
+          name="password"
+          class="form__input"
+          placeholder="Create a password"
+          required
+          autocomplete="new-password"
+        />
+    <span class="form__error" id="password-error"></span>
+      </div>
+        
+  <div class="form__group">
+  <label class="form__label">CONFIRM PASSWORD</label>
+
+  <div style="position: relative;">
+    <input type="password" id="confirmPassword" name="confirmPassword"
+           class="form__input" placeholder="Confirm your password"
+           style="padding-right: 44px;" required />
+
+    
+  <!-- Match message -->
+  <div id="confirmMessage" style="display:none; margin-top: 6px;
+       font-size: 12px; font-weight: 500; align-items: center; gap: 5px;">
+    <span id="confirmIcon"></span>
+    <span id="confirmText"></span>
+  </div>
+
+  <span class="form__error" id="confirmPassword-error"></span>
+</div>
+
+  <span class="form__error" id="password-error"></span>
+</div>
+        
+        <div class="form__actions">
           <div class="form__checkbox">
             <input type="checkbox" id="studentTerms" name="terms" required>
-            <label for="studentTerms">I agree to the
-              <a href="#" class="form__link">Terms of Service</a> and
-              <a href="#" class="form__link">Privacy Policy</a>
-            </label>
+            <label for="studentTerms">I agree to the <a href="#" class="form__link">Terms</a> and <a href="#" class="form__link">Privacy Policy</a></label>
           </div>
-          <span class="form__error">You must agree to the Terms and Conditions</span>
+        </div>
+        <div class="form__group" style="margin-top: -15px;">
+          <span class="form__error" id="studentTermsError">You must agree to the Terms and Conditions</span>
         </div>
 
-        <button type="submit" class="btn btn--gradient form__submit">
-          Create Student Account
+
+        <button type="submit" class="btn--auth-submit">
+          Create Account
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
         </button>
       </form>
 
       <!-- ORGANIZATION FORM -->
-      <form id="organizationForm" class="form" novalidate style="display: none;">
+      <form id="organizationForm" class="form auth-v2-form" novalidate style="display: none;">
         <input type="hidden" name="accountType" value="organization">
 
         <div class="form__group">
@@ -163,41 +259,61 @@
           <span class="form__error">Organization name is required</span>
         </div>
 
+        <!-- ORG EMAIL + OTP -->
         <div class="form__group">
           <label for="orgEmail" class="form__label">Organization Email</label>
           <input type="email" id="orgEmail" name="orgEmail" class="form__input" placeholder="Enter organization email" required autocomplete="email">
-          <span class="form__error">Please enter a valid email address</span>
+          <div id="org-email-status" style="min-height:18px; margin-top:4px; font-size:12px;"></div>
+          <span class="form__error" id="org-email-error" style="display:none;"></span>
+          <span id="org-email-hint" style="display:none; color:green; font-size:12px;">✓ Email verified!</span>
         </div>
 
-        <div class="form__group">
-          <label for="orgType" class="form__label">Organization Type</label>
-          <select id="orgType" name="orgType" class="form__input form__select" required>
-            <option value="" disabled selected>Select organization type</option>
-            <option value="ngo">NGO / Non-Profit</option>
-            <option value="company">Company / Business</option>
-            <option value="government">Government</option>
-            <option value="educational">Educational Institution</option>
-            <option value="other">Other</option>
-          </select>
-          <span class="form__error">Please select organization type</span>
+        <div id="org-otp-section" style="display:none; margin-bottom:1rem; padding:1rem; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;">
+          <p style="font-size:13px; margin-bottom:8px;">We sent a 6-digit code to <strong id="org-otp-email-display"></strong></p>
+          <div style="display:flex; gap:8px; margin-bottom:10px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+          </div>
+          <button type="button" onclick="verifyOrgOTP()" style="padding:8px 16px;background:#4CAF50;color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;">Verify Code</button>
+          <a href="#" onclick="resendOrgCode(event)" style="font-size:12px; margin-left:12px; color:#555;">Resend code</a>
+          <div id="org-otp-error" style="display:none; color:red; font-size:12px; margin-top:6px;">❌ Incorrect code. Please try again.</div>
         </div>
 
-        <div class="form__group">
-          <label for="orgProvince" class="form__label">Province</label>
-          <select id="orgProvince" name="orgProvince" class="form__input form__select" required>
-            <option value="" disabled selected>Select province</option>
-            <option value="eastern-cape">Eastern Cape</option>
-            <option value="free-state">Free State</option>
-            <option value="gauteng">Gauteng</option>
-            <option value="kwazulu-natal">KwaZulu-Natal</option>
-            <option value="limpopo">Limpopo</option>
-            <option value="mpumalanga">Mpumalanga</option>
-            <option value="northern-cape">Northern Cape</option>
-            <option value="north-west">North West</option>
-            <option value="western-cape">Western Cape</option>
-            <option value="national">National / Multiple Provinces</option>
-          </select>
-          <span class="form__error">Please select province</span>
+        <div class="form__row">
+          <div class="form__group">
+            <label for="orgType" class="form__label">Organization Type</label>
+            <select id="orgType" name="orgType" class="form__input form__select" required>
+              <option value="" disabled selected>Select type</option>
+              <option value="ngo">NGO / Non-Profit</option>
+              <option value="company">Company / Business</option>
+              <option value="government">Government</option>
+              <option value="educational">Educational Institution</option>
+              <option value="other">Other</option>
+            </select>
+            <span class="form__error">Please select type</span>
+          </div>
+
+          <div class="form__group">
+            <label for="orgProvince" class="form__label">Province</label>
+            <select id="orgProvince" name="orgProvince" class="form__input form__select" required>
+              <option value="" disabled selected>Select province</option>
+              <option value="eastern-cape">Eastern Cape</option>
+              <option value="free-state">Free State</option>
+              <option value="gauteng">Gauteng</option>
+              <option value="kwazulu-natal">KwaZulu-Natal</option>
+              <option value="limpopo">Limpopo</option>
+              <option value="mpumalanga">Mpumalanga</option>
+              <option value="northern-cape">Northern Cape</option>
+              <option value="north-west">North West</option>
+              <option value="western-cape">Western Cape</option>
+              <option value="national">National / Multiple</option>
+            </select>
+            <span class="form__error">Please select province</span>
+          </div>
         </div>
 
         <div class="form__group">
@@ -206,58 +322,42 @@
           <span class="form__error">Password must be at least 8 characters</span>
         </div>
 
-        <div class="form__group">
+        <div class="form__actions">
           <div class="form__checkbox">
             <input type="checkbox" id="orgTerms" name="terms" required>
-            <label for="orgTerms">I agree to the
-              <a href="#" class="form__link">Terms of Service</a> and
-              <a href="#" class="form__link">Privacy Policy</a>
-            </label>
+            <label for="orgTerms">I agree to the <a href="#" class="form__link">Terms</a> and <a href="#" class="form__link">Privacy Policy</a></label>
           </div>
-          <span class="form__error">You must agree to the Terms and Conditions</span>
+        </div>
+        <div class="form__group" style="margin-top: -15px;">
+          <span class="form__error" id="orgTermsError">You must agree to the Terms and Conditions</span>
         </div>
 
-        <button type="submit" class="btn btn--gradient form__submit">
-          Create Organization Account
+        <button type="submit" class="btn--auth-submit">
+          Create Account
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
         </button>
       </form>
 
-      <p class="auth-card__footer">
+      <p class="auth-v2-footer">
         Already have an account? <a href="/login-page">Log in</a>
       </p>
     </div>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__content">
-        <a href="/login-page" class="footer__logo">
-          <span class="nav__logo-icon">&#9786;</span>
-          <span>SMILE</span>
-        </a>
-        <nav class="footer__links">
-          <a href="#" class="footer__link">About Us</a>
-          <a href="#" class="footer__link">Contact</a>
-          <a href="#" class="footer__link">Privacy Policy</a>
-          <a href="#" class="footer__link">Terms of Service</a>
-        </nav>
-        <p class="footer__copy">&copy; 2026 SMILE. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+  </div>
 
   <script src="../jsFrontEnd/auth.js"></script>
 
-  <script>
-    const cards = document.querySelectorAll('.account-type-card');
+  <!-- <script>
+    // --- Tab switching ---
+    const pills = document.querySelectorAll('.auth-v2-pill');
     const studentForm = document.getElementById('studentForm');
     const organizationForm = document.getElementById('organizationForm');
 
-    cards.forEach(card => {
-      card.addEventListener('click', function () {
-        cards.forEach(c => c.classList.remove('account-type-card--active'));
-        this.classList.add('account-type-card--active');
-
+    pills.forEach(pill => {
+      pill.addEventListener('click', function() {
+        pills.forEach(p => p.classList.remove('auth-v2-pill--active'));
+        this.classList.add('auth-v2-pill--active');
         if (this.dataset.type === 'student') {
           studentForm.style.display = 'block';
           organizationForm.style.display = 'none';
@@ -267,7 +367,624 @@
         }
       });
     });
-  </script>
 
+    // --- Email verification config ---
+    ; // ← paste your full Abstract API key
+
+    let studentVerified = false, orgVerified = false;
+    let studentDebounce, orgDebounce;
+    let lastStudentEmail = '', lastOrgEmail = '';
+
+    function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e); }
+
+    // ─── STUDENT EMAIL ───────────────────────────────────────────
+    document.getElementById('email').addEventListener('input', function () {
+      const val = this.value.trim();
+      studentVerified = false;
+      document.getElementById('otp-section').style.display = 'none';
+      document.getElementById('email-hint').style.display = 'none';
+      document.getElementById('email-error').style.display = 'none';
+      document.getElementById('email-status').textContent = '';
+      clearTimeout(studentDebounce);
+      if (!val || !isValidEmail(val)) return;
+      studentDebounce = setTimeout(() => checkStudentEmail(val), 800);
+    });
+
+    async function checkStudentEmail(email) {
+      if (email === lastStudentEmail) return;
+      lastStudentEmail = email;
+      document.getElementById('email-status').innerHTML = '⏳ Checking email...';
+      try {
+        // Step 1: Check email exists in the real world via Abstract API
+        const absRes = await fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=${ABSTRACT_KEY}&email=${encodeURIComponent(email)}`);
+        const absData = await absRes.json();
+        document.getElementById('email-status').textContent = '';
+        if (absData.deliverability === 'UNDELIVERABLE') { 
+          document.getElementById('email-error').textContent = '❌ This email does not exist or cannot receive mail.';
+          document.getElementById('email-error').style.display = 'block';
+          return;
+        }
+
+        // Step 2: Check email not already registered + send OTP via backend
+        const otpRes = await fetch('/api/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const otpData = await otpRes.json();
+
+        if (!otpData.success) {
+          document.getElementById('email-error').textContent = '❌ ' + otpData.message;
+          document.getElementById('email-error').style.display = 'block';
+          return;
+        }
+
+        document.getElementById('otp-email-display').textContent = email;
+        document.getElementById('otp-section').style.display = 'block';
+
+      } catch (e) {
+        document.getElementById('email-status').textContent = '';
+      }
+    }
+
+    function verifyOTP() {
+      const entered = Array.from(document.querySelectorAll('.otp-digit')).map(d => d.value).join('');
+      if (entered.length < 6) return;
+
+      fetch('/api/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: document.getElementById('email').value.trim(), otp: entered })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          studentVerified = true;
+          document.getElementById('otp-section').style.display = 'none';
+          document.getElementById('email-hint').style.display = 'block';
+          document.getElementById('otp-error').style.display = 'none';
+        } else {
+          document.getElementById('otp-error').style.display = 'block';
+          document.getElementById('otp-error').textContent = '❌ ' + data.message;
+          document.querySelectorAll('.otp-digit').forEach(d => d.value = '');
+          document.querySelectorAll('.otp-digit')[0].focus();
+        }
+      });
+    }
+
+    function resendCode(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      lastStudentEmail = '';
+      checkStudentEmail(email);
+      document.querySelectorAll('.otp-digit').forEach(d => d.value = '');
+      document.getElementById('otp-error').style.display = 'none';
+    }
+
+    // ─── ORGANISATION EMAIL ───────────────────────────────────────
+    document.getElementById('orgEmail').addEventListener('input', function () {
+      const val = this.value.trim();
+      orgVerified = false;
+      document.getElementById('org-otp-section').style.display = 'none';
+      document.getElementById('org-email-hint').style.display = 'none';
+      document.getElementById('org-email-error').style.display = 'none';
+      document.getElementById('org-email-status').textContent = '';
+      clearTimeout(orgDebounce);
+      if (!val || !isValidEmail(val)) return;
+      orgDebounce = setTimeout(() => checkOrgEmail(val), 800);
+    });
+
+    async function checkOrgEmail(email) {
+      if (email === lastOrgEmail) return;
+      lastOrgEmail = email;
+      document.getElementById('org-email-status').innerHTML = '⏳ Checking email...';
+      try {
+        // Step 1: Check email exists in the real world via Abstract API
+        const absRes = await fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=${ABSTRACT_KEY}&email=${encodeURIComponent(email)}`);
+        const absData = await absRes.json();
+        document.getElementById('org-email-status').textContent = '';
+
+        if (absData.deliverability === 'UNDELIVERABLE') { 
+          document.getElementById('org-email-error').textContent = '❌ This email does not exist or cannot receive mail.';
+          document.getElementById('org-email-error').style.display = 'block';
+          return;
+        }
+
+        // Step 2: Check email not already registered + send OTP via backend
+        const otpRes = await fetch('/api/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const otpData = await otpRes.json();
+
+        if (!otpData.success) {
+          document.getElementById('org-email-error').textContent = '❌ ' + otpData.message;
+          document.getElementById('org-email-error').style.display = 'block';
+          return;
+        }
+
+        document.getElementById('org-otp-email-display').textContent = email;
+        document.getElementById('org-otp-section').style.display = 'block';
+
+      } catch (e) {
+        document.getElementById('org-email-status').textContent = '';
+      }
+    }
+
+    function verifyOrgOTP() {
+      const entered = Array.from(document.querySelectorAll('.org-otp-digit')).map(d => d.value).join('');
+      if (entered.length < 6) return;
+
+      fetch('/api/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: document.getElementById('orgEmail').value.trim(), otp: entered })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          orgVerified = true;
+          document.getElementById('org-otp-section').style.display = 'none';
+          document.getElementById('org-email-hint').style.display = 'block';
+          document.getElementById('org-otp-error').style.display = 'none';
+        } else {
+          document.getElementById('org-otp-error').style.display = 'block';
+          document.getElementById('org-otp-error').textContent = '❌ ' + data.message;
+          document.querySelectorAll('.org-otp-digit').forEach(d => d.value = '');
+          document.querySelectorAll('.org-otp-digit')[0].focus();
+        }
+      });
+    }
+
+    function resendOrgCode(e) {
+      e.preventDefault();
+      const email = document.getElementById('orgEmail').value.trim();
+      lastOrgEmail = '';
+      checkOrgEmail(email);
+      document.querySelectorAll('.org-otp-digit').forEach(d => d.value = '');
+      document.getElementById('org-otp-error').style.display = 'none';
+    }
+
+    // ─── OTP keyboard navigation (both forms) ────────────────────
+    document.addEventListener('input', function (e) {
+      if (e.target.classList.contains('otp-digit') || e.target.classList.contains('org-otp-digit')) {
+        const val = e.target.value.replace(/\D/g, '');
+        e.target.value = val;
+        if (val) {
+          const next = e.target.nextElementSibling;
+          if (next && (next.classList.contains('otp-digit') || next.classList.contains('org-otp-digit'))) next.focus();
+        }
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if ((e.target.classList.contains('otp-digit') || e.target.classList.contains('org-otp-digit')) && e.key === 'Backspace' && !e.target.value) {
+        const prev = e.target.previousElementSibling;
+        if (prev) prev.focus();
+      }
+    });
+
+    // ─── Block submit if email not verified ──────────────────────
+    document.getElementById('studentForm').addEventListener('submit', function (e) {
+      if (!studentVerified) {
+        e.preventDefault();
+        document.getElementById('email-error').textContent = '⚠️ Please verify your email before submitting.';
+        document.getElementById('email-error').style.display = 'block';
+      }
+    });
+
+    document.getElementById('organizationForm').addEventListener('submit', function (e) {
+      if (!orgVerified) {
+        e.preventDefault();
+        document.getElementById('org-email-error').textContent = '⚠️ Please verify your email before submitting.';
+        document.getElementById('org-email-error').style.display = 'block';
+      }
+    });
+  </script> -->
+
+  <script>
+
+  // ─── TAB SWITCHING ─────────────────────────────────────────────
+  const pills = document.querySelectorAll('.auth-v2-pill');
+
+  const studentForm = document.getElementById('studentForm');
+  const organizationForm = document.getElementById('organizationForm');
+
+  pills.forEach(pill => {
+
+    pill.addEventListener('click', function () {
+
+      pills.forEach(p =>
+        p.classList.remove('auth-v2-pill--active')
+      );
+
+      this.classList.add('auth-v2-pill--active');
+
+      if (this.dataset.type === 'student') {
+
+        studentForm.style.display = 'block';
+        organizationForm.style.display = 'none';
+
+      } else {
+
+        studentForm.style.display = 'none';
+        organizationForm.style.display = 'block';
+      }
+    });
+  });
+
+  // ─── EMAIL VERIFIED FLAGS ─────────────────────────────────────
+  let studentVerified = false;
+  let orgVerified = false;
+
+  // ───────────────────────────────────────────────────────────────
+  // STUDENT SUBMIT
+  // ───────────────────────────────────────────────────────────────
+  studentForm.addEventListener('submit', async function (e) {
+
+    // If already verified → allow actual form submission
+    if (studentVerified) {
+      return;
+    }
+
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+
+    document.getElementById('email-error').style.display = 'none';
+
+    document.getElementById('email-status').textContent =
+      'Validating email...';
+
+    try {
+
+      const response = await fetch('/api/send-otp', {
+
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({ email })
+
+      });
+
+      const data = await response.json();
+
+      document.getElementById('email-status').textContent = '';
+
+      if (!data.success) {
+
+        document.getElementById('email-error').textContent =
+          '' + data.message;
+
+        document.getElementById('email-error').style.display = 'block';
+
+        return;
+      }
+
+      // Show OTP section
+      document.getElementById('otp-email-display').textContent = email;
+
+      document.getElementById('otp-section').style.display = 'block';
+
+    } catch (err) {
+
+      console.log(err);
+
+      document.getElementById('email-status').textContent = '';
+
+      document.getElementById('email-error').textContent =
+        '❌ Something went wrong';
+
+      document.getElementById('email-error').style.display = 'block';
+    }
+  });
+
+  // ───────────────────────────────────────────────────────────────
+  // VERIFY STUDENT OTP
+  // ───────────────────────────────────────────────────────────────
+  async function verifyOTP() {
+
+    const entered = Array.from(
+      document.querySelectorAll('.otp-digit')
+    ).map(d => d.value).join('');
+
+    if (entered.length < 6) return;
+
+    try {
+
+      const response = await fetch('/api/verify-otp', {
+
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({
+          email: document.getElementById('email').value.trim(),
+          otp: entered
+        })
+
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+
+        studentVerified = true;
+
+        document.getElementById('otp-section').style.display = 'none';
+
+        document.getElementById('email-hint').style.display = 'block';
+
+        document.getElementById('otp-error').style.display = 'none';
+
+        // Submit form for REAL registration
+        studentForm.submit();
+
+      } else {
+
+        document.getElementById('otp-error').style.display = 'block';
+
+        document.getElementById('otp-error').textContent =
+          '' + data.message;
+
+        document.querySelectorAll('.otp-digit')
+          .forEach(d => d.value = '');
+
+        document.querySelectorAll('.otp-digit')[0].focus();
+      }
+
+    } catch (err) {
+
+      console.log(err);
+    }
+  }
+
+  // ───────────────────────────────────────────────────────────────
+  // RESEND STUDENT OTP
+  // ───────────────────────────────────────────────────────────────
+  async function resendCode(e) {
+
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+
+    try {
+
+      await fetch('/api/send-otp', {
+
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({ email })
+
+      });
+
+      document.querySelectorAll('.otp-digit')
+        .forEach(d => d.value = '');
+
+      document.getElementById('otp-error').style.display = 'none';
+
+    } catch (err) {
+
+      console.log(err);
+    }
+  }
+
+  // ───────────────────────────────────────────────────────────────
+  // ORGANISATION SUBMIT
+  // ───────────────────────────────────────────────────────────────
+  organizationForm.addEventListener('submit', async function (e) {
+
+    if (orgVerified) {
+      return;
+    }
+
+    e.preventDefault();
+
+    const email = document.getElementById('orgEmail').value.trim();
+
+    document.getElementById('org-email-error').style.display = 'none';
+
+    document.getElementById('org-email-status').textContent =
+      ' Validating email...';
+
+    try {
+
+      const response = await fetch('/api/send-otp', {
+
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({ email })
+
+      });
+
+      const data = await response.json();
+
+      document.getElementById('org-email-status').textContent = '';
+
+      if (!data.success) {
+
+        document.getElementById('org-email-error').textContent =
+          ' ' + data.message;
+
+        document.getElementById('org-email-error').style.display = 'block';
+
+        return;
+      }
+
+      document.getElementById('org-otp-email-display').textContent = email;
+
+      document.getElementById('org-otp-section').style.display = 'block';
+
+    } catch (err) {
+
+      console.log(err);
+
+      document.getElementById('org-email-status').textContent = '';
+
+      document.getElementById('org-email-error').textContent =
+        '❌ Something went wrong';
+
+      document.getElementById('org-email-error').style.display = 'block';
+    }
+  });
+
+  // ───────────────────────────────────────────────────────────────
+  // VERIFY ORGANISATION OTP
+  // ───────────────────────────────────────────────────────────────
+  async function verifyOrgOTP() {
+
+    const entered = Array.from(
+      document.querySelectorAll('.org-otp-digit')
+    ).map(d => d.value).join('');
+
+    if (entered.length < 6) return;
+
+    try {
+
+      const response = await fetch('/api/verify-otp', {
+
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({
+          email: document.getElementById('orgEmail').value.trim(),
+          otp: entered
+        })
+
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+
+        orgVerified = true;
+
+        document.getElementById('org-otp-section').style.display = 'none';
+
+        document.getElementById('org-email-hint').style.display = 'block';
+
+        document.getElementById('org-otp-error').style.display = 'none';
+
+        // REAL submit
+        organizationForm.submit();
+
+      } else {
+
+        document.getElementById('org-otp-error').style.display = 'block';
+
+        document.getElementById('org-otp-error').textContent =
+          '❌ ' + data.message;
+
+        document.querySelectorAll('.org-otp-digit')
+          .forEach(d => d.value = '');
+
+        document.querySelectorAll('.org-otp-digit')[0].focus();
+      }
+
+    } catch (err) {
+
+      console.log(err);
+    }
+  }
+
+  // ───────────────────────────────────────────────────────────────
+  // RESEND ORGANISATION OTP
+  // ───────────────────────────────────────────────────────────────
+  async function resendOrgCode(e) {
+
+    e.preventDefault();
+
+    const email = document.getElementById('orgEmail').value.trim();
+
+    try {
+
+      await fetch('/api/send-otp', {
+
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({ email })
+
+      });
+
+      document.querySelectorAll('.org-otp-digit')
+        .forEach(d => d.value = '');
+
+      document.getElementById('org-otp-error').style.display = 'none';
+
+    } catch (err) {
+
+      console.log(err);
+    }
+  }
+
+  // ───────────────────────────────────────────────────────────────
+  // OTP INPUT NAVIGATION
+  // ───────────────────────────────────────────────────────────────
+  document.addEventListener('input', function (e) {
+
+    if (
+      e.target.classList.contains('otp-digit') ||
+      e.target.classList.contains('org-otp-digit')
+    ) {
+
+      const val = e.target.value.replace(/\D/g, '');
+
+      e.target.value = val;
+
+      if (val) {
+
+        const next = e.target.nextElementSibling;
+
+        if (
+          next &&
+          (
+            next.classList.contains('otp-digit') ||
+            next.classList.contains('org-otp-digit')
+          )
+        ) {
+          next.focus();
+        }
+      }
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+
+    if (
+      (
+        e.target.classList.contains('otp-digit') ||
+        e.target.classList.contains('org-otp-digit')
+      ) &&
+      e.key === 'Backspace' &&
+      !e.target.value
+    ) {
+
+      const prev = e.target.previousElementSibling;
+
+      if (prev) prev.focus();
+    }
+  });
+</script>
 </body>
 </html>

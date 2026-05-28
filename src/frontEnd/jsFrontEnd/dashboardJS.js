@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
   initLocationButton();
   initOpportunityActions();
   loadEbooks();
+  loadSavedOpportunities();
+  loadApplications();
 
   // Only run on pages that have these elements
   const spanID = document.getElementById("userName");
@@ -52,6 +54,14 @@ function initMobileNavigation() {
         mobileToggle.setAttribute("aria-expanded", "false");
       }
     });
+
+      const logoutTag = document.getElementById("logout");
+      logoutTag.addEventListener("click" , ()=>{
+          localStorage.removeItem("token");
+          localStorage.removeItem("accountType");
+          localStorage.removeItem("userName");
+          localStorage.removeItem("initials");
+      })
   }
 }
 
@@ -671,3 +681,392 @@ window.downloadCareerDoc = async function () {
 document.addEventListener("DOMContentLoaded", () => {
   checkQuizStatus();
 });
+
+// ─── DYNAMIC DATA FETCHING ───────────────────────────────────────────────────
+
+async function loadSavedOpportunities() {
+  const container = document.querySelector(".dashboard__section--opportunities .opportunities-list");
+  if (!container) return;
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch("/api/student/saved-opportunities", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (data.success && data.savedOpportunities.length > 0) {
+      container.innerHTML = data.savedOpportunities.map(opp => {
+        // Format the date
+        const deadline = new Date(opp.ApplicationDeadline).toLocaleDateString("en-US", {
+          month: "short", day: "numeric", year: "numeric"
+        });
+        
+        return `
+          <article class="opportunity-card" data-oppid="${opp.OppID}">
+            <div class="opportunity-card__badge opportunity-card__badge--${opp.OppType.toLowerCase()}">
+              ${opp.OppType}
+            </div>
+            <h3 class="opportunity-card__title">${opp.Title}</h3>
+            <p class="opportunity-card__org">${opp.OrgName}</p>
+            <div class="opportunity-card__meta">
+              <span class="opportunity-card__location">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                ${opp.Province}
+              </span>
+              <span class="opportunity-card__deadline">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                Closes: ${deadline}
+              </span>
+            </div>
+            <div class="opportunity-card__actions">
+              <a href="${opp.ApplicationLink || '#'}" class="btn btn--primary btn--sm" target="_blank">Apply Now</a>
+              <button class="btn btn--outline btn--sm btn--icon btn-remove-saved" aria-label="Remove from saved">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6h18"></path>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                </svg>
+              </button>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      // Re-initialize remove buttons for the dynamic content
+      initDynamicRemoveButtons();
+    } else {
+      container.innerHTML = "<p style='color:#888;padding:1rem;'>No saved opportunities yet.</p>";
+    }
+  } catch (err) {
+    console.error("Error loading saved opportunities:", err);
+    container.innerHTML = "<p style='color:#dc2626;padding:1rem;'>Failed to load saved opportunities.</p>";
+  }
+}
+
+async function loadApplications() {
+  const container = document.querySelector(".dashboard__section--applications .applications-list");
+  if (!container) return;
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch("/api/student/applications", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (data.success && data.applications.length > 0) {
+      container.innerHTML = data.applications.map(app => {
+        const dateApplied = new Date(app.DateApplied).toLocaleDateString("en-US", {
+          month: "short", day: "numeric", year: "numeric"
+        });
+        
+        let statusIcon = '';
+        let statusClass = '';
+        const status = app.Status || 'Pending';
+        
+        if (status === 'Pending' || status === 'Pending Review') {
+          statusClass = 'application-card__status--pending';
+          statusIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>';
+        } else if (status === 'Reviewed') {
+          statusClass = 'application-card__status--interview';
+          statusIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>';
+        } else if (status === 'Shortlisted') {
+          statusClass = 'application-card__status--accepted';
+          statusIcon = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>';
+        } else if (status === 'Interview') {
+          statusClass = 'application-card__status--interview';
+          statusIcon = '<rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line>';
+        } else if (status === 'Accepted') {
+          statusClass = 'application-card__status--accepted';
+          statusIcon = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>';
+        } else if (status === 'Rejected') {
+          statusClass = 'application-card__status--rejected';
+          statusIcon = '<circle cx="12" cy="12" r="10"></circle><line x1="15" x2="9" y1="9" y2="15"></line><line x1="9" x2="15" y1="9" y2="15"></line>';
+        } else {
+          statusClass = 'application-card__status--pending';
+          statusIcon = '<circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>';
+        }
+
+        // Horizontal Timeline logic mapping
+        const isReviewed = ['Reviewed', 'Shortlisted', 'Interview', 'Accepted', 'Rejected'].includes(status);
+        const isShortlisted = ['Shortlisted', 'Interview', 'Accepted', 'Rejected'].includes(status);
+        const isFinal = ['Accepted', 'Rejected'].includes(status);
+        const isRejected = status === 'Rejected';
+
+        const step1Class = "app-timeline__step--active";
+        const step2Class = isReviewed ? "app-timeline__step--reviewed" : "";
+        const step3Class = isShortlisted ? "app-timeline__step--shortlisted" : "";
+        
+        let step4Class = "";
+        let step4Title = "4. Decision";
+        let step4Sub = "Pending";
+        if (isFinal) {
+          if (isRejected) {
+            step4Class = "app-timeline__step--rejected";
+            step4Title = "4. Rejected";
+            step4Sub = "Ended";
+          } else {
+            step4Class = "app-timeline__step--accepted";
+            step4Title = "4. Accepted";
+            step4Sub = "Success";
+          }
+        }
+        
+        const conn1 = isReviewed ? "app-timeline__connector--active" : "";
+        const conn2 = isShortlisted ? "app-timeline__connector--active" : "";
+        const conn3 = isFinal ? "app-timeline__connector--active" : "";
+
+        return `
+          <article class="application-card" onclick="window.location.href='/careers/explore'" style="cursor: pointer;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+              <div>
+                <h3 class="application-card__title" style="margin: 0; font-size: 0.9375rem;">${app.Title}</h3>
+                <p class="application-card__org" style="margin: 2px 0 0; font-size: 0.8125rem;">${app.OrgName}</p>
+              </div>
+              <div class="application-card__status ${statusClass}" style="margin: 0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  ${statusIcon}
+                </svg>
+                ${app.Status}
+              </div>
+            </div>
+            
+            <!-- Horizontal Scrollable Timeline Pipeline -->
+            <div class="app-timeline-container" onclick="event.stopPropagation();">
+              <div class="app-timeline">
+                <!-- Step 1: Applied -->
+                <div class="app-timeline__step ${step1Class}">
+                  <span class="app-timeline__step-title">1. Applied</span>
+                  <span class="app-timeline__step-subtitle">${dateApplied}</span>
+                </div>
+                
+                <div class="app-timeline__connector ${conn1}"></div>
+                
+                <!-- Step 2: Under Review -->
+                <div class="app-timeline__step ${step2Class}">
+                  <span class="app-timeline__step-title">2. Reviewed</span>
+                  <span class="app-timeline__step-subtitle">${isReviewed ? 'Completed' : 'Pending'}</span>
+                </div>
+                
+                <div class="app-timeline__connector ${conn2}"></div>
+                
+                <!-- Step 3: Shortlisted -->
+                <div class="app-timeline__step ${step3Class}">
+                  <span class="app-timeline__step-title">3. Shortlisted</span>
+                  <span class="app-timeline__step-subtitle">${isShortlisted ? 'Yes' : 'Pending'}</span>
+                </div>
+                
+                <div class="app-timeline__connector ${conn3}"></div>
+                
+                <!-- Step 4: Decision -->
+                <div class="app-timeline__step ${step4Class}">
+                  <span class="app-timeline__step-title">${step4Title}</span>
+                  <span class="app-timeline__step-subtitle">${step4Sub}</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    } else {
+      container.innerHTML = "<p style='color:#888;padding:1rem;'>No applications sent yet.</p>";
+    }
+  } catch (err) {
+    console.error("Error loading applications:", err);
+    container.innerHTML = "<p style='color:#dc2626;padding:1rem;'>Failed to load applications.</p>";
+  }
+}
+
+function initDynamicRemoveButtons() {
+  const removeButtons = document.querySelectorAll(".btn-remove-saved");
+
+  removeButtons.forEach(function (btn) {
+    btn.addEventListener("click", async function (event) {
+      event.preventDefault();
+
+      const card = btn.closest(".opportunity-card");
+      const title = card.querySelector(".opportunity-card__title").textContent;
+      const oppId = card.getAttribute("data-oppid");
+
+      if (confirm(`Remove "${title}" from saved opportunities?`)) {
+        try {
+          const res = await fetch(`/api/student/saved-opportunities/${oppId}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+          });
+          const data = await res.json();
+          
+          if (data.success) {
+            card.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+            card.style.opacity = "0";
+            card.style.transform = "translateX(-20px)";
+
+            setTimeout(function () {
+              card.remove();
+              updateSavedCount(-1);
+            }, 300);
+          } else {
+            alert(data.message || "Failed to remove opportunity.");
+          }
+        } catch (err) {
+          console.error("Error deleting opportunity:", err);
+          alert("Network error while trying to remove opportunity.");
+        }
+      }
+    });
+  });
+}
+
+
+// ─── SUPPORT TICKETS ────────────────────────────────────────────────────────
+
+/**
+ * Opens the Tickets panel from the profile dropdown
+ */
+function openTicketsTab(event) {
+    event.preventDefault();
+
+    // Hide the main dashboard grid, show tickets panel
+    const dashGrid = document.querySelector(".dashboard__grid");
+    const ticketsPanel = document.getElementById("tickets-panel");
+    const profileMenu = document.getElementById("profileMenu");
+
+    if (dashGrid) dashGrid.style.display = "none";
+    if (ticketsPanel) ticketsPanel.style.display = "block";
+    if (profileMenu) profileMenu.classList.remove("nav__profile-menu--active");
+
+    // Scroll to top smoothly
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Load tickets list
+    loadStudentTickets();
+}
+
+/**
+ * Fetch and render the student's own tickets
+ */
+async function loadStudentTickets() {
+    const tbody = document.getElementById("tkt-table-body");
+    if (!tbody) return;
+
+    tbody.innerHTML = `<tr><td colspan="6" class="tkt-empty">Loading...</td></tr>`;
+
+    try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("/api/tickets/my", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (!data.success || data.tickets.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="tkt-empty">You haven't submitted any tickets yet.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = data.tickets.map(t => {
+            const date = new Date(t.DateCreated).toLocaleDateString("en-ZA", {
+                day: "2-digit", month: "short", year: "numeric"
+            });
+            const badge = t.Status === "Resolved"
+                ? `<span class="tkt-badge tkt-badge--resolved">✓ Resolved</span>`
+                : `<span class="tkt-badge tkt-badge--open">● Open</span>`;
+            const feedback = t.AdminFeedback
+                ? `<p class="tkt-feedback">💬 ${t.AdminFeedback}</p>`
+                : `<span style="color:#cbd5e1;font-size:12px;">—</span>`;
+
+            return `
+                <tr>
+                    <td style="font-weight:600;color:#ec4899;">#${t.TicketID}</td>
+                    <td>${t.TicketType}</td>
+                    <td style="max-width:200px;">${t.Subject}</td>
+                    <td>${badge}</td>
+                    <td>${feedback}</td>
+                    <td style="white-space:nowrap;color:#94a3b8;">${date}</td>
+                </tr>`;
+        }).join("");
+
+    } catch (err) {
+        console.error("Error loading tickets:", err);
+        document.getElementById("tkt-table-body").innerHTML =
+            `<tr><td colspan="6" class="tkt-empty" style="color:#dc2626;">Could not load tickets.</td></tr>`;
+    }
+}
+
+/**
+ * Submit a new support ticket
+ */
+async function submitStudentTicket() {
+    const ticketType  = document.getElementById("tktType").value.trim();
+    const subject     = document.getElementById("tktSubject").value.trim();
+    const description = document.getElementById("tktDesc").value.trim();
+
+    if (!ticketType || !subject || !description) {
+        showTktToast("Please fill in all fields before submitting.", "error");
+        return;
+    }
+
+    const btn = document.getElementById("tktSubmitBtn");
+    btn.disabled = true;
+    btn.innerHTML = `<svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Submitting...`;
+
+    try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("/api/tickets", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ ticketType, subject, description })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            showTktToast(`Ticket #${data.ticketId} submitted successfully!`, "success");
+            // Reset form
+            document.getElementById("tktType").value    = "";
+            document.getElementById("tktSubject").value = "";
+            document.getElementById("tktDesc").value    = "";
+            // Refresh history table
+            await loadStudentTickets();
+        } else {
+            showTktToast(data.message || "Failed to submit ticket.", "error");
+        }
+    } catch (err) {
+        console.error("Error submitting ticket:", err);
+        showTktToast("Server error. Please try again.", "error");
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit Ticket`;
+    }
+}
+
+/**
+ * Show a toast notification in the tickets panel
+ */
+function showTktToast(message, type = "success") {
+    const toast = document.getElementById("tktToast");
+    if (!toast) return;
+
+    toast.className = `tkt-toast tkt-toast--${type}`;
+    toast.textContent = message;
+    toast.style.display = "block";
+
+    setTimeout(() => { toast.style.display = "none"; }, 4000);
+}
+
+// Expose to HTML onclick attributes
+window.openTicketsTab       = openTicketsTab;
+window.loadStudentTickets   = loadStudentTickets;
+window.submitStudentTicket  = submitStudentTicket;

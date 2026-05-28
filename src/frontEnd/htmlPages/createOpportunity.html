@@ -14,34 +14,104 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/orgdashboard.css" />
     <link rel="stylesheet" href="/css/createOpportunity.css" />
-    <!-- <link rel="stylesheet" href="../css/style.css" /> -->
   </head>
-  <body>
-    <!-- TOP BAR -->
-    <nav class="topbar">
-      <a href="home.html" class="topbar__logo">
-        <div class="topbar__logo-icon">&#9786;</div>
-        SMILE Org
-      </a>
-      <span class="topbar__sep">/</span>
-      <span class="topbar__crumb">Post Opportunity</span>
-      <a href="orgdashboard.html" class="topbar__back">
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-        Back to Dashboard
-      </a>
-    </nav>
+  <body class="dashboard-page layout-with-sidebar">
+    <div class="dashboard-layout">
+      <!-- ── Sidebar (matches orgdashboard + analytics) ─────────────── -->
+      <aside class="dashboard-sidebar">
+        <div class="dashboard-sidebar__header">
+          <a href="/" class="nav__logo">
+            <span class="nav__logo-icon">&#9786;</span>
+            <span>SMILE Org</span>
+          </a>
+        </div>
 
-    <div class="page">
+        <div class="dashboard-sidebar__nav org-tabs" role="tablist">
+          <a href="/org/dashboard?tab=overview" class="org-tab" data-tab="overview" style="text-decoration: none">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="7" height="9" x="3" y="3" rx="1" />
+              <rect width="7" height="5" x="14" y="3" rx="1" />
+              <rect width="7" height="9" x="14" y="12" rx="1" />
+              <rect width="7" height="5" x="3" y="16" rx="1" />
+            </svg>
+            Overview
+          </a>
+          <a href="/org/analytics" class="org-tab" data-tab="analytics" style="text-decoration: none">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg>
+            Analytics
+          </a>
+          <a href="/org/dashboard?tab=myopps" class="org-tab" data-tab="myopps" style="text-decoration: none">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+            </svg>
+            My Opportunities
+          </a>
+          <a href="/org/dashboard/applicants" class="org-tab" data-tab="applicants" style="text-decoration: none">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Applicants
+          </a>
+          <a href="/org/dashboard/createOpportunity" class="org-tab org-tab--active" data-tab="create" style="text-decoration: none">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Create New
+          </a>
+        </div>
+
+        <div class="dashboard-sidebar__links" style="padding: 0 1rem 1rem 1rem">
+          <p style="font-size:11px;text-transform:uppercase;color:#9ca3af;letter-spacing:0.05em;padding-left:8px;margin-bottom:12px;margin-top:12px;font-weight:600;">
+            Actions
+          </p>
+          <a
+            href="/org/dashboard/createOpportunity"
+            class="btn btn--gradient"
+            style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:8px;color:white;border:none;font-weight:500;text-decoration:none;"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5"  y1="12" x2="19" y2="12"/>
+            </svg>
+            Post Opportunity
+          </a>
+        </div>
+
+        <div class="dashboard-sidebar__footer">
+          <div class="org-profile-info" style="padding: 0 0 1rem 0">
+            <div class="org-profile-avatar" id="sidebarInitials">SA</div>
+            <div>
+              <div class="org-profile-name" id="sidebarOrgName">My Organisation</div>
+              <div class="org-profile-type">Organisation</div>
+            </div>
+          </div>
+          <a href="/login-page"  id="logout" class="nav__profile-link nav__profile-link--logout" style="padding:0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" x2="9" y1="12" y2="12"/>
+            </svg>
+            Log Out
+          </a>
+        </div>
+      </aside>
+
+      <!-- ── Main Content ────────────────────────────────────────────── -->
+      <main class="dashboard-main">
+        <div class="dashboard-container">
+          <div class="page">
       <!-- PAGE HEADER -->
       <div class="page__header">
         <h1 class="page__title">Post a New Opportunity</h1>
@@ -434,6 +504,9 @@
           </button>
         </div>
       </form>
+    </div>
+        </div>
+      </main>
     </div>
 
     <!-- TOAST -->
