@@ -3,7 +3,7 @@ dotenv.config();
 import sql from "mssql/msnodesqlv8.js";
 
 const config = {
-    connectionString: `Driver={ODBC Driver 18 for SQL Server};Server=${process.env.LUCAS_SERVER_NAME};Database=${process.env.DATABASE_NAME};Trusted_Connection=yes;Encrypt=no;TrustServerCertificate=yes`
+    connectionString: `Driver={ODBC Driver 18 for SQL Server};Server=${process.env.BRANDON_SERVER_NAME};Database=${process.env.DATABASE_NAME};Trusted_Connection=yes;Encrypt=no;TrustServerCertificate=yes`
 };
 
 export const connectToDB = async () => {

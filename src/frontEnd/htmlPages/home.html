@@ -1,4 +1,4 @@
-<!doctype html>
+<!-- <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -353,6 +353,638 @@
             navActions.style.boxShadow = "0 10px 15px -3px rgba(0,0,0,0.1)";
           }
         });
+    </script>
+  </body>
+</html> -->
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SMILE empowers Black South African youth by connecting them with opportunities that support personal growth, educational advancement, and career development." />
+    <title>SMILE - No Child is Left Behind</title>
+ 
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/home-redesign.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+ 
+    <style>
+      /* ── HOW IT WORKS ─────────────────────────────── */
+      .how-it-works {
+        padding: 80px 0;
+        background: #fff;
+      }
+      .how-it-works .section-header {
+        text-align: center;
+        margin-bottom: 56px;
+      }
+      .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+        position: relative;
+      }
+      .steps-grid::before {
+        content: '';
+        position: absolute;
+        top: 37px;
+        left: calc(16.66% + 20px);
+        right: calc(16.66% + 20px);
+        height: 3px;
+        background: linear-gradient(90deg, #f97316, #a855f7, #3b82f6);
+        border-radius: 4px;
+        z-index: 0;
+      }
+      .step-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0 24px;
+        position: relative;
+        z-index: 1;
+      }
+      .step-item__bubble {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        border: 3px solid #fff;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+      }
+      .step-item__bubble--1 { background: linear-gradient(135deg, #f97316, #fb923c); }
+      .step-item__bubble--2 { background: linear-gradient(135deg, #a855f7, #ec4899); }
+      .step-item__bubble--3 { background: linear-gradient(135deg, #3b82f6, #06b6d4); }
+      .step-item__title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: #1a1a2e;
+        margin-bottom: 10px;
+      }
+      .step-item__text {
+        font-size: 0.9rem;
+        color: #6b7280;
+        line-height: 1.7;
+      }
+ 
+      /* ── TESTIMONIALS ─────────────────────────────── */
+      .testimonials {
+        padding: 80px 0;
+        background: linear-gradient(135deg, #f8faff 0%, #fdf2f8 100%);
+      }
+      .testimonials .section-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+      .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .testi-card {
+        background: #fff;
+        border: 1.5px solid #f0f0f0;
+        border-radius: 22px;
+        padding: 28px 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      }
+      .testi-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 32px rgba(0,0,0,0.09);
+      }
+      .testi-card__stars {
+        display: flex;
+        gap: 3px;
+      }
+      .testi-card__quote {
+        font-size: 0.9rem;
+        color: #4b5563;
+        line-height: 1.75;
+        font-style: italic;
+        flex: 1;
+      }
+      .testi-card__author {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding-top: 12px;
+        border-top: 1.5px solid #f3f4f6;
+      }
+      .testi-card__avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 13px;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .testi-card__name {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 0.9rem;
+        color: #1a1a2e;
+      }
+      .testi-card__role {
+        font-size: 0.78rem;
+        color: #9ca3af;
+        margin-top: 1px;
+      }
+ 
+      /* ── IMPACT STATS ─────────────────────────────── */
+      .impact-stats {
+        padding: 72px 0;
+        background: linear-gradient(135deg, #0f0f1e 0%, #1e1040 50%, #0f1e2e 100%);
+        overflow: hidden;
+        position: relative;
+      }
+      .impact-stats::before {
+        content: '';
+        position: absolute;
+        width: 500px; height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, transparent 70%);
+        top: -200px; right: -100px;
+        pointer-events: none;
+      }
+      .impact-stats .section-header { text-align: center; margin-bottom: 48px; }
+      .impact-stats .section-label { color: #f97316; }
+      .impact-stats .section-title { color: #fff; }
+      .impact-stats .section-sub { color: rgba(255,255,255,0.45); }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+      .stat-card {
+        border-radius: 20px;
+        padding: 30px 16px;
+        text-align: center;
+        border: 1.5px solid rgba(255,255,255,0.08);
+        transition: background 0.2s;
+      }
+      .stat-card--1 { background: linear-gradient(145deg, rgba(249,115,22,0.15), rgba(249,115,22,0.05)); }
+      .stat-card--2 { background: linear-gradient(145deg, rgba(236,72,153,0.15), rgba(236,72,153,0.05)); }
+      .stat-card--3 { background: linear-gradient(145deg, rgba(168,85,247,0.15), rgba(168,85,247,0.05)); }
+      .stat-card--4 { background: linear-gradient(145deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)); }
+      .stat-card__icon-wrap {
+        width: 48px; height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 14px;
+      }
+      .stat-card__icon-wrap--1 { background: linear-gradient(135deg, #f97316, #fb923c); }
+      .stat-card__icon-wrap--2 { background: linear-gradient(135deg, #ec4899, #a855f7); }
+      .stat-card__icon-wrap--3 { background: linear-gradient(135deg, #a855f7, #3b82f6); }
+      .stat-card__icon-wrap--4 { background: linear-gradient(135deg, #3b82f6, #06b6d4); }
+      .stat-card__num {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.2rem;
+        font-weight: 900;
+        display: block;
+        margin-bottom: 6px;
+        line-height: 1;
+      }
+      .stat-card__num--1 { color: #f97316; }
+      .stat-card__num--2 { color: #ec4899; }
+      .stat-card__num--3 { color: #a855f7; }
+      .stat-card__num--4 { color: #3b82f6; }
+      .stat-card__label {
+        font-size: 0.8rem;
+        color: rgba(255,255,255,0.45);
+        line-height: 1.4;
+      }
+ 
+      /* ── RESPONSIVE ───────────────────────────────── */
+      @media (max-width: 768px) {
+        .steps-grid { grid-template-columns: 1fr; gap: 40px; }
+        .steps-grid::before { display: none; }
+        .testimonials-grid { grid-template-columns: 1fr; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      }
+
+    </style>
+  </head>
+ 
+  <body class="home-body">
+    <header class="header header--home">
+      <nav class="nav container">
+        <a href="/" class="nav__logo">
+          <div class="nav__logo-mark">&#9786;</div>
+          <span class="nav__logo-text">SMILE</span>
+        </a>
+        <div class="nav__actions">
+          <a href="/login-page" class="btn--ghost-white">Log In</a>
+          <a href="/register-page" class="btn--neon">Get Started</a>
+        </div>
+        <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </header>
+ 
+    <main>
+ 
+      <!-- ── EXISTING: HERO ── -->
+      <section class="hero-v2">
+        <div class="hero-v2__bg">
+          <div class="hero-v2__grid"></div>
+          <div class="hero-v2__orb hero-v2__orb--1"></div>
+          <div class="hero-v2__orb hero-v2__orb--2"></div>
+          <div class="hero-v2__orb hero-v2__orb--3"></div>
+        </div>
+        <div class="container">
+          <div class="hero-v2__content">
+            <div class="hero-v2__text">
+              <div class="hero-v2__badge">
+                <span class="hero-v2__badge-dot"></span>
+                Empowering South African Youth
+              </div>
+              <h1 class="hero-v2__title">
+                No Child is <br />
+                <span class="hero-v2__title-gradient">Left Behind.</span>
+              </h1>
+              <p class="hero-v2__description">
+                SMILE connects Black South African youth with opportunities that
+                support personal growth, educational advancement, and career development.
+              </p>
+              <div class="hero-v2__actions">
+                <a href="/register-page" class="btn--neon btn--lg">Join for Free</a>
+                <a href="/opportunities/browse" class="btn--ghost-outline btn--lg">Explore Opportunities</a>
+              </div>
+              <div class="hero-v2__stats">
+                <div class="stat-pill">
+                  <span class="stat-pill__num">500+</span>
+                  <span class="stat-pill__label">Active Opportunities</span>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-pill__num">50+</span>
+                  <span class="stat-pill__label">Partner Organizations</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-v2__visual">
+              <div class="hero-v2__image-wrap">
+                <img
+                  src="../Assets/istockphoto-1351018006-612x612.webp"
+                  alt="Smiling Student"
+                  width="480"
+                  height="480"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+ 
+      <!-- ── EXISTING: TRUST BAR ── -->
+      <div class="trust-bar">
+        <div class="trust-bar__inner">
+          BURSARIES <span class="trust-bar__dot">•</span> INTERNSHIPS
+          <span class="trust-bar__dot">•</span> SCHOLARSHIPS
+          <span class="trust-bar__dot">•</span> WORKSHOPS
+          <span class="trust-bar__dot">•</span> MENTORSHIP
+          <span class="trust-bar__dot">•</span> CAREER GUIDANCE
+          <span class="trust-bar__dot">•</span> BURSARIES
+          <span class="trust-bar__dot">•</span> INTERNSHIPS
+          <span class="trust-bar__dot">•</span> SCHOLARSHIPS
+          <span class="trust-bar__dot">•</span> WORKSHOPS
+          <span class="trust-bar__dot">•</span> MENTORSHIP
+          <span class="trust-bar__dot">•</span> CAREER GUIDANCE
+          <span class="trust-bar__dot">•</span> BURSARIES
+          <span class="trust-bar__dot">•</span> INTERNSHIPS
+        </div>
+      </div>
+ 
+      <!-- ── NEW: HOW IT WORKS ── -->
+      <section class="how-it-works">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-label">How It Works</div>
+            <h2 class="section-title">Three steps to your future</h2>
+            <p class="section-sub">From sign-up to opportunity in minutes.</p>
+          </div>
+          <div class="steps-grid">
+            <div class="step-item">
+              <div class="step-item__bubble step-item__bubble--1">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <h3 class="step-item__title">Create your profile</h3>
+              <p class="step-item__text">Sign up free in 2 minutes. Tell us your interests, location, and goals so we can find the right opportunities for you.</p>
+            </div>
+            <div class="step-item">
+              <div class="step-item__bubble step-item__bubble--2">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <h3 class="step-item__title">Discover &amp; explore</h3>
+              <p class="step-item__text">Browse bursaries, learnerships, mentorships, and career paths filtered by location, field, and deadline.</p>
+            </div>
+            <div class="step-item">
+              <div class="step-item__bubble step-item__bubble--3">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <h3 class="step-item__title">Apply &amp; grow</h3>
+              <p class="step-item__text">Apply directly through SMILE, track your applications, and use our AI career tools to keep building your future.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+ 
+      <!-- ── EXISTING: MISSION ── -->
+      <section class="mission-v2">
+        <div class="container">
+          <span class="mission-v2__label">Our Mission</span>
+          <h2 class="mission-v2__title">
+            Education remains the <span class="gradient-text">first choice.</span>
+          </h2>
+          <p class="mission-v2__text">
+            With more learners dropping out of schools to become streamers or forex traders,
+            we want to ensure that education is prioritized. You can pursue modern careers
+            while staying educated. As they say, "The boy child is left behind"—we ensure
+            that <strong>no kid is left behind</strong>, and that education is still part of
+            every child's dream.
+          </p>
+          <div class="mission-v2__pillars">
+            <div class="mission-pillar">
+              <div class="mission-pillar__icon" style="background:#fff7ed; color:#f97316">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              </div>
+              <h3 class="mission-pillar__title">Education First</h3>
+              <p class="mission-pillar__text">Providing access to tools and funding that keep students in classrooms and learning.</p>
+            </div>
+            <div class="mission-pillar">
+              <div class="mission-pillar__icon" style="background:#fdf2f8; color:#ec4899">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <h3 class="mission-pillar__title">Bridging the Gap</h3>
+              <p class="mission-pillar__text">Connecting rural and urban youth directly with top NGOs and corporate sponsors.</p>
+            </div>
+            <div class="mission-pillar">
+              <div class="mission-pillar__icon" style="background:#f5f3ff; color:#a855f7">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+              </div>
+              <h3 class="mission-pillar__title">Unlocking Potential</h3>
+              <p class="mission-pillar__text">Showing students that traditional education and modern digital careers can coexist.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+ 
+      <!-- ── EXISTING: FEATURES ── -->
+      <section class="features-v2">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-label">Platform Features</div>
+            <h2 class="section-title">How SMILE Helps You</h2>
+            <p class="section-sub">Everything you need to launch your future in one place.</p>
+          </div>
+          <div class="features-v2__grid">
+            <article class="feature-v2-card feature-v2-card--orange">
+              <div class="feature-v2-card__glow"></div>
+              <div class="feature-v2-card__icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <h3 class="feature-v2-card__title">Discover Opportunities</h3>
+              <p class="feature-v2-card__text">Access workshops, internships, scholarships, and youth programs from trusted organizations.</p>
+              <div class="feature-v2-card__arrow">&rarr;</div>
+            </article>
+            <article class="feature-v2-card feature-v2-card--pink">
+              <div class="feature-v2-card__glow"></div>
+              <div class="feature-v2-card__icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              </div>
+              <h3 class="feature-v2-card__title">Explore Career Paths</h3>
+              <p class="feature-v2-card__text">Learn about different careers, required skills, and which school subjects lead to your dream.</p>
+              <div class="feature-v2-card__arrow">&rarr;</div>
+            </article>
+            <article class="feature-v2-card feature-v2-card--purple">
+              <div class="feature-v2-card__glow"></div>
+              <div class="feature-v2-card__icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <h3 class="feature-v2-card__title">Find Local Programs</h3>
+              <p class="feature-v2-card__text">Discover events and programs available right in your area with our location-based finder.</p>
+              <div class="feature-v2-card__arrow">&rarr;</div>
+            </article>
+          </div>
+        </div>
+      </section>
+ 
+      <!-- ── NEW: TESTIMONIALS ── -->
+      <section class="testimonials">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-label">Real Stories</div>
+            <h2 class="section-title">Youth making it happen</h2>
+            <p class="section-sub">Hear from students who found their path through SMILE.</p>
+          </div>
+          <div class="testimonials-grid">
+            <div class="testi-card">
+              <div class="testi-card__stars">
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <p class="testi-card__quote">"I found a bursary I never would have discovered on my own. SMILE showed me that staying in school was absolutely the right move."</p>
+              <div class="testi-card__author">
+                <div class="testi-card__avatar" style="background:linear-gradient(135deg,#f97316,#ec4899)">TM</div>
+                <div>
+                  <div class="testi-card__name">Thabo M.</div>
+                  <div class="testi-card__role">Grade 12, Soweto</div>
+                </div>
+              </div>
+            </div>
+            <div class="testi-card">
+              <div class="testi-card__stars">
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <p class="testi-card__quote">"The career quiz helped me realise I want to study law. The AI gave me a whole roadmap — I had no idea where to start before."</p>
+              <div class="testi-card__author">
+                <div class="testi-card__avatar" style="background:linear-gradient(135deg,#ec4899,#a855f7)">LN</div>
+                <div>
+                  <div class="testi-card__name">Lerato N.</div>
+                  <div class="testi-card__role">First-year student, Pretoria</div>
+                </div>
+              </div>
+            </div>
+            <div class="testi-card">
+              <div class="testi-card__stars">
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="14" height="14" fill="#f59e0b" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <p class="testi-card__quote">"The 'Near Me' feature showed me a learnership centre 2km from my house. I'm now 6 months into a coding programme."</p>
+              <div class="testi-card__author">
+                <div class="testi-card__avatar" style="background:linear-gradient(135deg,#a855f7,#3b82f6)">KD</div>
+                <div>
+                  <div class="testi-card__name">Khanya D.</div>
+                  <div class="testi-card__role">Learnership trainee, Cape Town</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+ 
+      <!-- ── NEW: IMPACT STATS ── -->
+      <section class="impact-stats">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-label">Our Impact</div>
+            <h2 class="section-title">Growing every day</h2>
+            <p class="section-sub">Real numbers from real youth across South Africa.</p>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card stat-card--1">
+              <div class="stat-card__icon-wrap stat-card__icon-wrap--1">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              </div>
+              <span class="stat-card__num stat-card__num--1" data-target="12000">0</span>
+              <span class="stat-card__label">Youth registered on the platform</span>
+            </div>
+            <div class="stat-card stat-card--2">
+              <div class="stat-card__icon-wrap stat-card__icon-wrap--2">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </div>
+              <span class="stat-card__num stat-card__num--2" data-target="500">0</span>
+              <span class="stat-card__label">Active opportunities listed</span>
+            </div>
+            <div class="stat-card stat-card--3">
+              <div class="stat-card__icon-wrap stat-card__icon-wrap--3">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <span class="stat-card__num stat-card__num--3" data-target="50">0</span>
+              <span class="stat-card__label">Partner NGOs &amp; organisations</span>
+            </div>
+            <div class="stat-card stat-card--4">
+              <div class="stat-card__icon-wrap stat-card__icon-wrap--4">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              </div>
+              <span class="stat-card__num stat-card__num--4" data-target="300">0</span>
+              <span class="stat-card__label">Free eBooks available</span>
+            </div>
+          </div>
+        </div>
+      </section>
+ 
+      <!-- ── EXISTING: CTA ── -->
+      <section class="cta-v2">
+        <div class="cta-v2__bg">
+          <div class="cta-v2__orb cta-v2__orb--1"></div>
+          <div class="cta-v2__orb cta-v2__orb--2"></div>
+        </div>
+        <div class="container">
+          <div class="cta-v2__content">
+            <h2 class="cta-v2__title">Ready to Shape Your Future?</h2>
+            <p class="cta-v2__text">Join thousands of South African youth taking control of their education and career path today.</p>
+            <div class="cta-v2__actions">
+              <a href="/register-page" class="btn--white-solid btn--lg">Create Free Account</a>
+              <a href="/login-page" class="btn--ghost-outline btn--lg" style="border-color:rgba(255,255,255,0.4);color:white">Log In</a>
+            </div>
+          </div>
+        </div>
+      </section>
+ 
+    </main>
+ 
+    <footer class="footer-v2">
+      <div class="container">
+        <div class="footer-v2__top">
+          <div class="footer-v2__brand">
+            <a href="/" class="nav__logo">
+              <div class="nav__logo-mark" style="width:32px;height:32px;font-size:1rem">&#9786;</div>
+              <span class="nav__logo-text" style="color:white">SMILE</span>
+            </a>
+            <p class="footer-v2__tagline">Empowering South African youth for a brighter tomorrow.</p>
+          </div>
+          <div class="footer-v2__links">
+            <a href="#" class="footer-v2__link">About Us</a>
+            <a href="#" class="footer-v2__link">Contact</a>
+            <a href="#" class="footer-v2__link">Privacy Policy</a>
+            <a href="#" class="footer-v2__link">Terms of Service</a>
+          </div>
+        </div>
+        <div class="footer-v2__bottom">&copy; 2026 SMILE. All rights reserved.</div>
+      </div>
+    </footer>
+ 
+    <script src="../jsFrontEnd/homeJS.js"></script>
+    <script>
+      // Mobile Menu Toggle
+      document.getElementById("mobileToggle").addEventListener("click", function () {
+        const navActions = document.querySelector(".nav__actions");
+        if (navActions.style.display === "flex") {
+          navActions.style.display = "none";
+        } else {
+          navActions.style.display = "flex";
+          navActions.style.flexDirection = "column";
+          navActions.style.position = "absolute";
+          navActions.style.top = "70px";
+          navActions.style.left = "0";
+          navActions.style.width = "100%";
+          navActions.style.background = "#fff";
+          navActions.style.padding = "1rem";
+          navActions.style.boxShadow = "0 10px 15px -3px rgba(0,0,0,0.1)";
+        }
+      });
+ 
+      // Animated counter for impact stats
+      function animateCounter(el) {
+        const target = parseInt(el.dataset.target);
+        const isLarge = target >= 1000;
+        const displayTarget = isLarge ? target / 1000 : target;
+        const suffix = isLarge ? "K+" : "+";
+        const duration = 1800;
+        const steps = 60;
+        const increment = displayTarget / steps;
+        let current = 0;
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= displayTarget) {
+            el.textContent = displayTarget + suffix;
+            clearInterval(timer);
+          } else {
+            el.textContent = Math.floor(current) + suffix;
+          }
+        }, duration / steps);
+      }
+ 
+      // Trigger counters when section scrolls into view
+      const statsSection = document.querySelector(".impact-stats");
+      let counted = false;
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !counted) {
+          counted = true;
+          document.querySelectorAll(".stat-card__num[data-target]").forEach(animateCounter);
+        }
+      }, { threshold: 0.3 });
+      if (statsSection) observer.observe(statsSection);
     </script>
   </body>
 </html>
