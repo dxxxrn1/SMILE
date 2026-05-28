@@ -14,16 +14,21 @@ document.addEventListener("DOMContentLoaded", function () {
   bindQuickCreate();
   loadOrgDashboard();
   loadApplicants();
+  if (document.getElementById("oppTableBody")) {
+    loadOrgOpportunities();
+  }
   checkUrlParams();
   bindTabInterceptors();
 
   const logoutTag = document.getElementById("logout");
-  logoutTag.addEventListener("click", () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("accountType");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("initials");
-  })
+  if (logoutTag) {
+    logoutTag.addEventListener("click", () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("accountType");
+      localStorage.removeItem("userName");
+      localStorage.removeItem("initials");
+    });
+  }
 });
 
 /* ================================================================
@@ -595,6 +600,8 @@ function changeApplicantStatus(btn, newStatus) {
     Pending: "app-status--pending",
     Reviewed: "app-status--reviewed",
     Shortlisted: "app-status--shortlisted",
+    Interview: "app-status--shortlisted",
+    Approved: "app-status--shortlisted",
     Rejected: "app-status--rejected",
   };
 
@@ -812,6 +819,8 @@ async function loadOrgDashboard() {
             Pending: "app-status--pending",
             Reviewed: "app-status--reviewed",
             Shortlisted: "app-status--shortlisted",
+            Interview: "app-status--shortlisted",
+            Approved: "app-status--shortlisted",
             Rejected: "app-status--rejected"
           };
           const badgeClass = classMap[a.ApplicationStatus] || "app-status--pending";
@@ -911,15 +920,24 @@ async function updateAppStatus(appId, newStatus, btn) {
       body: JSON.stringify({ status: newStatus })
     });
 
-    if (!res.ok) throw new Error("Failed to update status");
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || "Failed to update status");
+    const statusToastType = data.notificationCreated && !data.emailSent ? "danger" : "success";
+    const statusToastText = data.notificationCreated
+      ? (data.emailSent
+        ? `Status updated to ${newStatus}. Email sent to student.`
+        : `Status updated to ${newStatus}. Notification saved, but email was not sent.`)
+      : `Status updated to ${newStatus}.`;
 
-    showToast(`✅ Status updated to ${newStatus}`, "success");
+    showToast(statusToastText, statusToastType);
 
     // ── Instant local DOM update so UI reflects change immediately ──
     const classMap = {
       Pending: "app-status--pending",
       Reviewed: "app-status--reviewed",
       Shortlisted: "app-status--shortlisted",
+      Interview: "app-status--shortlisted",
+      Approved: "app-status--shortlisted",
       Rejected: "app-status--rejected"
     };
 
@@ -937,15 +955,17 @@ async function updateAppStatus(appId, newStatus, btn) {
         row.setAttribute("data-status", newStatus);
         const actionsCell = row.querySelector(".table-actions");
         if (actionsCell) {
-          if (newStatus === "Shortlisted" || newStatus === "Rejected") {
+          if (["Interview", "Approved", "Shortlisted", "Rejected"].includes(newStatus)) {
             actionsCell.innerHTML = `
               <button class="tbl-btn tbl-btn--view" onclick="showApplicantModal(${appId})">Details</button>
-              <button class="tbl-btn" onclick="showToast('Notification sent!', 'success')">Notify</button>
+              <span class="tbl-btn" style="cursor:default;opacity:.75;">Student notified</span>
             `;
           } else {
             actionsCell.innerHTML = `
               <button class="tbl-btn tbl-btn--view" onclick="showApplicantModal(${appId})">Details</button>
-              <button class="tbl-btn" onclick="updateAppStatus(${appId}, 'Shortlisted', this)">Shortlist</button>
+              <button class="tbl-btn" onclick="updateAppStatus(${appId}, 'Reviewed', this)">Review</button>
+              <button class="tbl-btn" onclick="updateAppStatus(${appId}, 'Interview', this)">Interview</button>
+              <button class="tbl-btn" onclick="updateAppStatus(${appId}, 'Approved', this)">Approve</button>
               <button class="tbl-btn tbl-btn--danger" onclick="updateAppStatus(${appId}, 'Rejected', this)">Reject</button>
             `;
           }
@@ -1068,6 +1088,8 @@ function renderApplicantRows(list) {
       Pending: "app-status--pending",
       Reviewed: "app-status--reviewed",
       Shortlisted: "app-status--shortlisted",
+      Interview: "app-status--shortlisted",
+      Approved: "app-status--shortlisted",
       Rejected: "app-status--rejected"
     };
     const badgeClass = classMap[a.ApplicationStatus] || "app-status--pending";
@@ -1076,12 +1098,14 @@ function renderApplicantRows(list) {
     let actionButtons = "";
     if (a.ApplicationStatus === "Pending" || a.ApplicationStatus === "Reviewed") {
       actionButtons = `
-        <button class="tbl-btn" onclick="updateAppStatus(${a.AppID}, 'Shortlisted', this)">Shortlist</button>
+        <button class="tbl-btn" onclick="updateAppStatus(${a.AppID}, 'Reviewed', this)">Review</button>
+        <button class="tbl-btn" onclick="updateAppStatus(${a.AppID}, 'Interview', this)">Interview</button>
+        <button class="tbl-btn" onclick="updateAppStatus(${a.AppID}, 'Approved', this)">Approve</button>
         <button class="tbl-btn tbl-btn--danger" onclick="updateAppStatus(${a.AppID}, 'Rejected', this)">Reject</button>
       `;
     } else {
       actionButtons = `
-        <button class="tbl-btn" onclick="showToast('Notification sent!', 'success')">Notify</button>
+        <span class="tbl-btn" style="cursor:default;opacity:.75;">Student notified</span>
       `;
     }
 
@@ -1220,7 +1244,8 @@ function showApplicantModal(appId) {
         <button class="btn btn--outline" style="border-radius:8px;padding:8px 16px;font-weight:600;font-size:0.875rem;" onclick="closeApplicantModal()">Close</button>
         ${a.ApplicationStatus === 'Pending' || a.ApplicationStatus === 'Reviewed' ? `
           <button class="btn" style="background:#ef4444;border-color:#ef4444;color:#fff;border-radius:8px;padding:8px 20px;font-weight:600;font-size:0.875rem;transition:all 0.2s;" onclick="updateAppStatus(${a.AppID}, 'Rejected', this); closeApplicantModal();">Reject</button>
-          <button class="btn" style="background:#10b981;border-color:#10b981;color:#fff;border-radius:8px;padding:8px 20px;font-weight:600;font-size:0.875rem;transition:all 0.2s;" onclick="updateAppStatus(${a.AppID}, 'Shortlisted', this); closeApplicantModal();">Shortlist</button>
+          <button class="btn" style="background:#0ea5e9;border-color:#0ea5e9;color:#fff;border-radius:8px;padding:8px 20px;font-weight:600;font-size:0.875rem;transition:all 0.2s;" onclick="updateAppStatus(${a.AppID}, 'Interview', this); closeApplicantModal();">Interview</button>
+          <button class="btn" style="background:#10b981;border-color:#10b981;color:#fff;border-radius:8px;padding:8px 20px;font-weight:600;font-size:0.875rem;transition:all 0.2s;" onclick="updateAppStatus(${a.AppID}, 'Approved', this); closeApplicantModal();">Approve</button>
         ` : ''}
       </div>
     </div>
@@ -1240,12 +1265,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   tabs.forEach(tab => {
     const tabHref = tab.getAttribute("href");
+    const tabHrefBase = tabHref ? tabHref.split('?')[0] : "";
 
     // Remove active from all first
     tab.classList.remove("org-tab--active");
 
-    // Only highlight EXACT match
-    if (tabHref && currentPath === tabHref) {
+    // Highlight exact match OR path match without query params
+    if (tabHref && (currentPath === tabHref || currentPath === tabHrefBase)) {
       tab.classList.add("org-tab--active");
     }
 

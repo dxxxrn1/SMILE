@@ -36,8 +36,8 @@ async function loadOrganisations() {
         allOrganisations = data.organisations;
 
         // Update stat cards
-        document.getElementById("pending-count").textContent  = data.stats.pending;
-        document.getElementById("active-count").textContent   = data.stats.active;
+        document.getElementById("pending-count").textContent = data.stats.pending;
+        document.getElementById("active-count").textContent = data.stats.active;
         document.getElementById("rejected-count").textContent = data.stats.rejected;
 
         renderTable(allOrganisations);
@@ -191,13 +191,29 @@ async function openDetailsModal(orgId) {
         });
 
         const data = await res.json();
-        const org  = data.organisation;
+        const org = data.organisation;
 
         document.getElementById("modal-org-name").textContent = org.OrgName;
-        document.getElementById("detail-name").textContent    = org.OrgName;
-        document.getElementById("detail-reg").textContent     = org.OrgId;
-        document.getElementById("detail-email").textContent   = org.OrgEmail;
-        document.getElementById("detail-date").textContent    = formatDate(org.DateCreated);
+        document.getElementById("detail-name").textContent = org.OrgName;
+        document.getElementById("detail-reg").textContent = org.OrgId;
+        document.getElementById("detail-email").textContent = org.OrgEmail;
+        document.getElementById("detail-date").textContent = formatDate(org.DateCreated);
+
+        // Document section handling
+        const docSection = document.getElementById("detail-document-section");
+        const docLink = document.getElementById("detail-document-link");
+        if (docSection && docLink) {
+            if (org.OrgDocument) {
+                docSection.style.display = "block";
+                docLink.onclick = () => {
+                    window.open(org.OrgDocument, "_blank");
+                };
+                const ext = org.OrgDocument.split('.').pop().toUpperCase();
+                docLink.innerHTML = `📄 View Uploaded Document (${ext})`;
+            } else {
+                docSection.style.display = "none";
+            }
+        }
 
         // Action buttons inside modal
         const modalActions = document.getElementById("modal-actions");
@@ -267,14 +283,14 @@ function showToast(message, type = "success") {
 function formatDate(dateStr) {
     if (!dateStr) return "-";
     return new Date(dateStr).toLocaleDateString("en-ZA", {
-        year:  "numeric",
+        year: "numeric",
         month: "short",
-        day:   "numeric"
+        day: "numeric"
     });
 }
 
 const logoutTag = document.getElementById("logout");
-logoutTag.addEventListener("click" , ()=>{
+logoutTag.addEventListener("click", () => {
     localStorage.removeItem("token");
     localStorage.removeItem("accountType");
     localStorage.removeItem("userName");
@@ -298,11 +314,11 @@ function initTicketsPage() {
 
     // Wire search + filters
     const searchEl = document.querySelector(".search-input");
-    const typeEl   = document.querySelectorAll(".status-select")[0];
+    const typeEl = document.querySelectorAll(".status-select")[0];
     const statusEl = document.querySelectorAll(".status-select")[1];
 
-    if (searchEl) searchEl.addEventListener("input",  filterAdminTickets);
-    if (typeEl)   typeEl.addEventListener("change",   filterAdminTickets);
+    if (searchEl) searchEl.addEventListener("input", filterAdminTickets);
+    if (typeEl) typeEl.addEventListener("change", filterAdminTickets);
     if (statusEl) statusEl.addEventListener("change", filterAdminTickets);
 }
 
@@ -332,15 +348,15 @@ async function loadAdminTickets() {
         allAdminTickets = data.tickets || [];
 
         // Update stat counts
-        const openEl     = document.getElementById("open-tickets-count");
+        const openEl = document.getElementById("open-tickets-count");
         const resolvedEl = document.getElementById("resolved-tickets-count");
-        if (openEl)     openEl.textContent     = data.openCount     ?? 0;
+        if (openEl) openEl.textContent = data.openCount ?? 0;
         if (resolvedEl) resolvedEl.textContent = data.resolvedCount ?? 0;
 
         renderAdminTickets(allAdminTickets);
 
     } catch (err) {
-        console.error("❌ loadAdminTickets error:", err);
+        console.error("loadAdminTickets error:", err);
         document.getElementById("tickets-table-body").innerHTML =
             `<tr><td colspan="6" style="text-align:center;padding:2rem;color:#ef4444;">Failed to load tickets.</td></tr>`;
     }
@@ -384,18 +400,18 @@ function renderAdminTickets(tickets) {
 // ─────────────────────────────────────────────
 function filterAdminTickets() {
     const searchEl = document.querySelector(".search-input");
-    const typeEls  = document.querySelectorAll(".status-select");
-    const search   = searchEl ? searchEl.value.toLowerCase() : "";
-    const typeVal  = typeEls[0] ? typeEls[0].value : "all";
-    const statusVal= typeEls[1] ? typeEls[1].value : "all";
+    const typeEls = document.querySelectorAll(".status-select");
+    const search = searchEl ? searchEl.value.toLowerCase() : "";
+    const typeVal = typeEls[0] ? typeEls[0].value : "all";
+    const statusVal = typeEls[1] ? typeEls[1].value : "all";
 
     const filtered = allAdminTickets.filter(t => {
         const matchSearch = String(t.TicketID).includes(search) || t.Subject.toLowerCase().includes(search);
-        const matchType   = typeVal === "all"
+        const matchType = typeVal === "all"
             || (typeVal === "report" && t.TicketType === "Report")
-            || (typeVal === "bug"    && t.TicketType === "Bug / Issue");
+            || (typeVal === "bug" && t.TicketType === "Bug / Issue");
         const matchStatus = statusVal === "all"
-            || (statusVal === "open"     && t.Status === "Open")
+            || (statusVal === "open" && t.Status === "Open")
             || (statusVal === "resolved" && t.Status === "Resolved");
         return matchSearch && matchType && matchStatus;
     });
@@ -434,7 +450,7 @@ function openResolveModal(ticketId, subject) {
                 </button>
                 <button onclick="resolveTicket(${ticketId})"
                     style="padding:10px 20px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;">
-                    ✓ Mark as Resolved
+                     Mark as Resolved
                 </button>
             </div>
         </div>`;
@@ -469,14 +485,14 @@ async function resolveTicket(ticketId) {
 
         if (data.success) {
             closeResolveModal();
-            showToast("✅ Ticket resolved and feedback sent!");
+            showToast("Ticket resolved and feedback sent!");
             await loadAdminTickets();
         } else {
-            showToast("❌ " + (data.message || "Failed to resolve ticket."), "error");
+            showToast("" + (data.message || "Failed to resolve ticket."), "error");
         }
     } catch (err) {
-        console.error("❌ resolveTicket error:", err);
-        showToast("❌ Network error.", "error");
+        console.error("resolveTicket error:", err);
+        showToast("Network error.", "error");
     }
 }
 
@@ -490,4 +506,4 @@ function escapeHtml(str) {
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
-}
+}

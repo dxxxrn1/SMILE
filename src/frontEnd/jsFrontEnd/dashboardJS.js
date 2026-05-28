@@ -11,7 +11,19 @@ document.addEventListener("DOMContentLoaded", function () {
   loadEbooks();
   loadSavedOpportunities();
   loadApplications();
+  initNotifications();
   initProfileCompletionWidget();
+
+  // Hide support ticket dropdown button and its divider if the tickets tab/panel is not present
+  const ticketsPanel = document.getElementById("tickets-panel");
+  const myTicketsBtn = document.getElementById("myTicketsDropdownBtn");
+  if (myTicketsBtn && !ticketsPanel) {
+    myTicketsBtn.style.display = "none";
+    const prevDivider = myTicketsBtn.previousElementSibling;
+    if (prevDivider && prevDivider.classList.contains("nav__profile-divider")) {
+      prevDivider.style.display = "none";
+    }
+  }
 
   // Only run on pages that have these elements
   const spanID = document.getElementById("userName");
@@ -94,6 +106,135 @@ function initProfileDropdown() {
       }
     });
   }
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function formatNotificationDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toLocaleString("en-ZA", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
+function renderStudentAvatar(profile) {
+  const avatar = document.querySelector(".nav__avatar");
+  const initials = document.getElementById("initials");
+  if (!avatar) return;
+
+  if (profile?.ProfilePicUrl) {
+    avatar.innerHTML = `<img src="${escapeHtml(profile.ProfilePicUrl)}" alt="Profile picture" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    return;
+  }
+
+  if (initials) {
+    initials.textContent = localStorage.getItem("initials") || "?";
+  }
+}
+
+async function loadNotifications() {
+  const list = document.getElementById("notificationList");
+  const badge = document.getElementById("notificationBadge");
+  if (!list || !badge) return;
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch("/api/student/notifications", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (!data.success || data.notifications.length === 0) {
+      list.innerHTML = `<p class="notification-panel__empty">No application updates yet.</p>`;
+      badge.hidden = true;
+      badge.textContent = "0";
+      return;
+    }
+
+    const unreadCount = Number(data.unreadCount) || 0;
+    badge.textContent = unreadCount > 9 ? "9+" : String(unreadCount);
+    badge.hidden = unreadCount === 0;
+
+    list.innerHTML = data.notifications.map((item) => `
+      <article class="notification-item ${item.IsRead ? "" : "notification-item--unread"}">
+        <span class="notification-item__dot"></span>
+        <div>
+          <h3 class="notification-item__title">${escapeHtml(item.Title)}</h3>
+          <p class="notification-item__message">${escapeHtml(item.Message)}</p>
+          <time class="notification-item__date">${formatNotificationDate(item.DateCreated)}</time>
+        </div>
+      </article>
+    `).join("");
+  } catch (err) {
+    console.error("Error loading notifications:", err);
+    list.innerHTML = `<p class="notification-panel__empty" style="color:#dc2626;">Could not load notifications.</p>`;
+  }
+}
+
+async function markNotificationsRead() {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    await fetch("/api/student/notifications/read", {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    await loadNotifications();
+  } catch (err) {
+    console.error("Error marking notifications as read:", err);
+  }
+}
+
+function initNotifications() {
+  const btn = document.getElementById("notificationBtn");
+  const panel = document.getElementById("notificationPanel");
+  const markReadBtn = document.getElementById("notificationMarkRead");
+  if (!btn || !panel) return;
+
+  loadNotifications();
+
+  btn.addEventListener("click", async (event) => {
+    event.stopPropagation();
+    const isOpen = panel.classList.toggle("notification-panel--active");
+    btn.setAttribute("aria-expanded", String(isOpen));
+    if (isOpen) await loadNotifications();
+  });
+
+  panel.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+
+  if (markReadBtn) {
+    markReadBtn.addEventListener("click", markNotificationsRead);
+  }
+
+  document.addEventListener("click", () => {
+    panel.classList.remove("notification-panel--active");
+    btn.setAttribute("aria-expanded", "false");
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      panel.classList.remove("notification-panel--active");
+      btn.setAttribute("aria-expanded", "false");
+    }
+  });
 }
 
 /**
@@ -257,6 +398,16 @@ function updateSavedCount(change) {
         const currentCount = parseInt(numberEl.textContent) || 0;
         numberEl.textContent = Math.max(0, currentCount + change);
       }
+    }
+  });
+}
+
+function setDashboardStat(labelText, value) {
+  document.querySelectorAll(".stat-card").forEach((card) => {
+    const label = card.querySelector(".stat-card__label");
+    const numberEl = card.querySelector(".stat-card__number");
+    if (label && numberEl && label.textContent.includes(labelText)) {
+      numberEl.textContent = value;
     }
   });
 }
@@ -696,6 +847,7 @@ async function loadSavedOpportunities() {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
+    setDashboardStat("Saved Opportunities", data.success ? data.savedOpportunities.length : 0);
 
     if (data.success && data.savedOpportunities.length > 0) {
       container.innerHTML = data.savedOpportunities.map(opp => {
@@ -764,6 +916,11 @@ async function loadApplications() {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
+    setDashboardStat("Applications Sent", data.success ? data.applications.length : 0);
+    setDashboardStat(
+      "Interviews Scheduled",
+      data.success ? data.applications.filter(app => ['Interview', 'Shortlisted'].includes(app.Status)).length : 0
+    );
 
     if (data.success && data.applications.length > 0) {
       container.innerHTML = data.applications.map(app => {
@@ -787,7 +944,7 @@ async function loadApplications() {
         } else if (status === 'Interview') {
           statusClass = 'application-card__status--interview';
           statusIcon = '<rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line>';
-        } else if (status === 'Accepted') {
+        } else if (status === 'Accepted' || status === 'Approved') {
           statusClass = 'application-card__status--accepted';
           statusIcon = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>';
         } else if (status === 'Rejected') {
@@ -799,9 +956,9 @@ async function loadApplications() {
         }
 
         // Horizontal Timeline logic mapping
-        const isReviewed = ['Reviewed', 'Shortlisted', 'Interview', 'Accepted', 'Rejected'].includes(status);
-        const isShortlisted = ['Shortlisted', 'Interview', 'Accepted', 'Rejected'].includes(status);
-        const isFinal = ['Accepted', 'Rejected'].includes(status);
+        const isReviewed = ['Reviewed', 'Shortlisted', 'Interview', 'Accepted', 'Approved', 'Rejected'].includes(status);
+        const isShortlisted = ['Shortlisted', 'Interview', 'Accepted', 'Approved', 'Rejected'].includes(status);
+        const isFinal = ['Accepted', 'Approved', 'Rejected'].includes(status);
         const isRejected = status === 'Rejected';
 
         const step1Class = "app-timeline__step--active";
@@ -818,7 +975,7 @@ async function loadApplications() {
             step4Sub = "Ended";
           } else {
             step4Class = "app-timeline__step--accepted";
-            step4Title = "4. Accepted";
+            step4Title = status === 'Approved' ? "4. Approved" : "4. Accepted";
             step4Sub = "Success";
           }
         }
@@ -1089,6 +1246,7 @@ async function initProfileCompletionWidget() {
 
     if (data.success && data.profile) {
       const p = data.profile;
+      renderStudentAvatar(p);
 
       let score = 0;
       let total = 5;

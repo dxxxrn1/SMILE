@@ -19,101 +19,224 @@
   </head>
   <body class="dashboard-page">
     <header class="header header--dashboard">
-      <header class="header header--dashboard">
-    <nav class="nav container">
-    <a href="/" class="nav__logo">
-      <span class="nav__logo-icon">&#9786;</span>
-      <span>SMILE</span>
-    </a>
-
-    <ul class="nav__menu nav__menu--dashboard" id="navMenu">
-      
-      <!-- <li><a href="/opportunities/browse" class="nav__link">
-        <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-        </svg>
-        Opportunities
-      </a></li> -->
-      <li><a href="/careers/explore" class="nav__link nav__link--active">
-        <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="2" y1="12" x2="22" y2="12"></line>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-        </svg>
-        Careers
-      </a></li>
-      <li><a href="/near/me" class="nav__link">
-        <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-          <circle cx="12" cy="10" r="3"></circle>
-        </svg>
-        Near Me
-      </a></li>
-      <li><a href="/news/daily" class="nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
-            <path d="M18 14h-8"></path>
-            <path d="M15 18h-5"></path>
-            <path d="M10 6h8v4h-8V6Z"></path>
+      <nav class="nav container">
+        <a href="/" class="nav__logo">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            style="margin-right: 6px; flex-shrink: 0; color: var(--primary-pink, #ec4899);"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
           </svg>
-        News
-      </a></li>
-      <li><a href="/student/dashboard" class="nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect width="7" height="9" x="3" y="3" rx="1"></rect>
-            <rect width="7" height="5" x="14" y="3" rx="1"></rect>
-            <rect width="7" height="9" x="14" y="12" rx="1"></rect>
-            <rect width="7" height="5" x="3" y="16" rx="1"></rect>
-          </svg>
-        Dashboard
-      </a></li>
-    </ul>
+          <span>SMILE</span>
+        </a>
 
-    <div class="nav__actions nav__actions--dashboard">
-      <button class="nav__icon-btn" aria-label="Notifications">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-        </svg>
-        <span class="nav__notification-badge">3</span>
-      </button>
-      <div class="nav__profile" id="profileDropdown">
-        <button class="nav__profile-btn" aria-label="Profile menu">
-          <div class="nav__avatar">
-              <span id="initials"></span>
+        <ul class="nav__menu nav__menu--dashboard" id="navMenu">
+          <li><a href="/careers/explore" class="nav__link nav__link--active">
+          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+            <path d="M2 12h20"></path>
+          </svg>
+          Careers
+        </a></li>
+          <li>
+            <a href="/near/me" class="nav__link">
+              <svg
+                class="nav__link-svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              Near Me
+            </a>
+          </li>
+          <li>
+            <a href="/news/daily" class="nav__link">
+              <svg
+                class="nav__link-svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"
+                ></path>
+                <path d="M18 14h-8"></path>
+                <path d="M15 18h-5"></path>
+                <path d="M10 6h8v4h-8V6Z"></path>
+              </svg>
+              News
+            </a>
+          </li>
+          <li>
+            <a href="/student/chess" class="nav__link">
+              <svg
+                class="nav__link-svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M8 16h8"></path>
+                <path d="M9 12h6"></path>
+                <path d="M12 4v4"></path>
+                <path d="M10 8h4"></path>
+                <path d="M8 20h8"></path>
+                <path d="M9 16l-1 4"></path>
+                <path d="M15 16l1 4"></path>
+              </svg>
+              Chess
+            </a>
+          </li>
+          <li>
+            <a href="/student/dashboard" class="nav__link">
+              <svg
+                class="nav__link-svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+                <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+                <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+                <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+              </svg>
+              Dashboard
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav__actions nav__actions--dashboard">
+          <button class="nav__icon-btn" aria-label="Notifications">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+            </svg>
+            <span class="nav__notification-badge">3</span>
+          </button>
+          <div class="nav__profile" id="profileDropdown">
+            <button class="nav__profile-btn" aria-label="Profile menu">
+              <div class="nav__avatar">
+                <span id="initials"></span>
+              </div>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="nav__profile-menu" id="profileMenu">
+              <a href="/org/dashboard/student-profile" class="nav__profile-link">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                My Profile
+              </a>
+              <a href="#" class="nav__profile-link">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+                  ></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Settings
+              </a>
+              <hr class="nav__profile-divider" />
+              <a href="#" id="myTicketsDropdownBtn" class="nav__profile-link" onclick="openTicketsTab(event)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                My Tickets
+              </a>
+              <hr class="nav__profile-divider" />
+              <a href="/logout"  id="logout" class="nav__profile-link nav__profile-link--logout">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" x2="9" y1="12" y2="12"></line>
+                </svg>
+                Log Out
+              </a>
+            </div>
           </div>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </button>
-        <div class="nav__profile-menu" id="profileMenu">
-            <a href="#" class="nav__profile-link">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-              My Profile
-            </a>
-            <a href="#" class="nav__profile-link">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-              Settings
-            </a>
-            <hr class="nav__profile-divider">
-            <a href="/logout"  id="logout" class="nav__profile-link nav__profile-link--logout">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                <polyline points="16 17 21 12 16 7"></polyline>
-                <line x1="21" x2="9" y1="12" y2="12"></line>
-              </svg>
-              Log Out
-            </a>
-      </div>
-    </div>
-  </nav>
-</header>
+        </div>
+      </nav>
+    </header>
 
     <main class="page-content">
       <div class="container">

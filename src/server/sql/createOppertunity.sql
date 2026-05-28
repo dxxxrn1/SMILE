@@ -31,7 +31,7 @@ CREATE TABLE [dbo].[Applications](
 	[AppID] [int] IDENTITY(1,1) PRIMARY KEY,
 	[OppID] [int] NOT NULL,
 	[StuID] [int] NOT NULL, 
-	[Status] [varchar](20) DEFAULT 'Pending', -- Pending, Reviewed, Shortlisted, Rejected
+	[Status] [varchar](20) DEFAULT 'Pending', -- Pending, Reviewed, Shortlisted, Interview, Approved, Rejected
 	[DateApplied] [datetime] DEFAULT GETDATE(),
 
 	CONSTRAINT FK_App_Opp FOREIGN KEY ([OppID]) 

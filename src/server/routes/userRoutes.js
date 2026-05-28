@@ -2,13 +2,15 @@ import express from "express";
 import { sendOTP, verifyOTP } from '../controllers/otpController.js';
 import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,
         studentLandingPage,careersPage,orgDashboard,
-        createOpportunity,adminDashBoard, applicantsPage, studentProfilePage, analyticsPage,
-        orgTicketsPage
+        createOpportunity,adminDashBoard, applicantsPage, studentProfilePage, orgProfilePage, analyticsPage,
+        orgTicketsPage, myOpportunitiesPage
 } from "../controllers/pageControllers.js";
 
 import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken , requireAdmin} from "../controllers/sessionControllers.js";
+import { getOrgProfile, updateOrgProfile, getOrgPublicProfile } from "../controllers/orgController.js";
+import { subscribeToNewsletter } from "../controllers/newsletterController.js";
 import { fectNews } from "../apis/newsAPI.js";
 import { fetchJobs } from "../apis/careers.js";
 import { fetchBooks } from "../apis/booksAPI.js";
@@ -63,8 +65,13 @@ route.get("/logout", (req, res) => {
 });
 route.get("/api/jobs", fetchJobs);
 route.get("/org/dashboard", verifyToken ,orgDashboard);
+route.get("/org/profile", verifyToken, orgProfilePage);
 route.get("/org/dashboard/applicants", verifyToken, applicantsPage);
+route.get("/org/dashboard/myOpportunities", verifyToken, myOpportunitiesPage);
 route.get("/org/dashboard/student-profile", verifyToken, studentProfilePage);
+route.get("/api/org/profile", verifyToken, getOrgProfile);
+route.put("/api/org/profile", verifyToken, updateOrgProfile);
+route.get("/api/org/public-profile/:orgId", verifyToken, getOrgPublicProfile);
 route.get("/api/org/applicants", verifyToken, getOrganizationApplicants);
 route.get("/api/org/dashboard-stats", verifyToken, getOrgDashboardStats);
 route.patch("/api/org/applicants/:appId/status", verifyToken, updateApplicationStatus);
@@ -83,6 +90,9 @@ route.delete("/api/opportunities/:oppId", verifyToken, deleteOpportunity);
 // OTP email verification routes
 route.post("/api/send-otp", sendOTP);
 route.post("/api/verify-otp", verifyOTP);
+
+// Newsletter subscription
+route.post("/api/newsletter/subscribe", subscribeToNewsletter);
 
 // Support Ticket routes
 route.post("/api/tickets", verifyToken, createTicket);

@@ -1,5 +1,9 @@
+// Verification flags
+window.studentVerified = false;
+window.orgVerified = false;
+
 document.addEventListener('DOMContentLoaded', function() {
-  console.log("✅ auth.js loaded");
+  console.log("âœ… auth.js loaded");
   // Mobile Navigation Toggle
   const mobileToggle = document.getElementById('mobileToggle');
   const navMenu = document.getElementById('navMenu');
@@ -27,12 +31,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (studentForm) {
     studentForm.addEventListener('submit', handleRegisterSubmit);
-    console.log("✅ submit listener attached to studentForm");
+    console.log("âœ… submit listener attached to studentForm");
   }
 
   if (organizationForm) {
     organizationForm.addEventListener('submit', handleRegisterSubmit);
   }
+  const studentEmailInput = document.getElementById('email');
+  const orgEmailInput = document.getElementById('orgEmail');
+
+  studentEmailInput?.addEventListener('input', () => {
+    window.studentVerified = false;
+    const hint = document.getElementById('email-hint');
+    if (hint) hint.style.display = 'none';
+  });
+
+  orgEmailInput?.addEventListener('input', () => {
+    window.orgVerified = false;
+    const hint = document.getElementById('org-email-hint');
+    if (hint) hint.style.display = 'none';
+  });
 
   // Real-time validation on input blur
   document.querySelectorAll('.form__input').forEach(input => {
@@ -49,6 +67,27 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  // OTP keyboard navigation
+  document.addEventListener('input', function (e) {
+    if (e.target.classList.contains('otp-digit') || e.target.classList.contains('org-otp-digit')) {
+      const val = e.target.value.replace(/\D/g, '');
+      e.target.value = val;
+      if (val) {
+        const next = e.target.nextElementSibling;
+        if (next && (next.classList.contains('otp-digit') || next.classList.contains('org-otp-digit'))) {
+          next.focus();
+        }
+      }
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if ((e.target.classList.contains('otp-digit') || e.target.classList.contains('org-otp-digit')) && e.key === 'Backspace' && !e.target.value) {
+      const prev = e.target.previousElementSibling;
+      if (prev) prev.focus();
+    }
+  });
+
 });
 
 /**
@@ -56,29 +95,39 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function initAccountTypeSelector() {
   const accountTypeCards = document.querySelectorAll('.account-type-card');
+  const pills = document.querySelectorAll('.auth-v2-pill');
   const studentForm = document.getElementById('studentForm');
   const organizationForm = document.getElementById('organizationForm');
 
   accountTypeCards.forEach(card => {
     card.addEventListener('click', function() {
       const selectedType = this.dataset.type;
-
-      // Update active state
       accountTypeCards.forEach(c => c.classList.remove('account-type-card--active'));
       this.classList.add('account-type-card--active');
-
-      // Toggle forms based on account type
-      if (studentForm && organizationForm) {
-        if (selectedType === 'student') {
-          studentForm.style.display = 'block';
-          organizationForm.style.display = 'none';
-        } else {
-          studentForm.style.display = 'none';
-          organizationForm.style.display = 'block';
-        }
-      }
+      toggleForms(selectedType);
     });
   });
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', function() {
+      const selectedType = this.dataset.type;
+      pills.forEach(p => p.classList.remove('auth-v2-pill--active'));
+      this.classList.add('auth-v2-pill--active');
+      toggleForms(selectedType);
+    });
+  });
+
+  function toggleForms(selectedType) {
+    if (studentForm && organizationForm) {
+      if (selectedType === 'student') {
+        studentForm.style.display = 'block';
+        organizationForm.style.display = 'none';
+      } else {
+        studentForm.style.display = 'none';
+        organizationForm.style.display = 'block';
+      }
+    }
+  }
 }
 
 function handleLoginSubmit(event) {
@@ -96,7 +145,7 @@ function handleLoginSubmit(event) {
   const password = form.querySelector('#password');
   const accountTypeSelect = document.getElementById('accountType');
 
-  // ✅ Read accountType from the card that is currently active
+  // âœ… Read accountType from the card that is currently active
   const activeCard = document.querySelector('.account-type-card--active');
   const accountType = activeCard ? activeCard.dataset.type : accountTypeSelect?.value || 'student';
 
@@ -122,7 +171,7 @@ function handleLoginSubmit(event) {
   const formData = {
     email: email.value.trim().toLowerCase(),
     password: password.value,
-    accountType // ✅ Now correctly reflects which card was clicked
+    accountType // âœ… Now correctly reflects which card was clicked
   };
 
   fetch('/login', {
@@ -155,7 +204,7 @@ function handleLoginSubmit(event) {
 
     showFormMessage(form, 'Login successful! Redirecting...', 'success');
 
-    // ✅ Redirect based on accountType — admin checked before organization
+    // âœ… Redirect based on accountType â€” admin checked before organization
     // since admins log in via the Organization card but receive accountType: "admin"
     setTimeout(() => {
       if (data.accountType === 'student') {
@@ -190,7 +239,7 @@ function handleRegisterSubmit(event) {
   const accountType = form.querySelector('[name="accountType"]')?.value || 'student';
 
   const password = accountType === 'student'
-    ? form.querySelector('#studentPassword')
+    ? form.querySelector('#password')
     : form.querySelector('#orgPassword');
 
   const terms = accountType === 'student'
@@ -270,105 +319,316 @@ function handleRegisterSubmit(event) {
     return;
   }
 
-  let url;
-  let formData;
-
-  if (accountType === 'student') {
-    url = '/register/student';
-    formData = {
-      firstName: form.querySelector('#firstName').value.trim(),
-      lastName: form.querySelector('#lastName').value.trim(),
-      email: form.querySelector('#email').value.trim().toLowerCase(),
-      province: form.querySelector('#province').value,
-      educationLevel: form.querySelector('#educationLevel').value,
-      password: password.value
-    };
-  } else if (accountType === 'organization') {
-    url = '/register/organization';
-    formData = {
-      orgName: form.querySelector('#orgName').value.trim(),
-      orgEmail: form.querySelector('#orgEmail').value.trim().toLowerCase(),
-      orgType: form.querySelector('#orgType').value,
-      orgProvince: form.querySelector('#orgProvince').value,
-      password: password.value
-    };
+  // Check email verification before registering
+  if (accountType === 'student' && !window.studentVerified) {
+    triggerOTP('student', form, submitBtn);
+    return;
   }
 
-  if (!url || !formData) {
-    showFormMessage(form, 'Could not determine account type. Please try again.', 'error');
+  if (accountType === 'organization' && !window.orgVerified) {
+    triggerOTP('organization', form, submitBtn);
+    return;
+  }
+
+  const performRegisterSubmit = (orgDocBase64 = null, orgDocName = null) => {
+    let url;
+    let formData;
+
+    if (accountType === 'student') {
+      url = '/register/student';
+      formData = {
+        firstName: form.querySelector('#firstName').value.trim(),
+        lastName: form.querySelector('#lastName').value.trim(),
+        email: form.querySelector('#email').value.trim().toLowerCase(),
+        province: form.querySelector('#province').value,
+        educationLevel: form.querySelector('#educationLevel').value,
+        password: password.value
+      };
+    } else if (accountType === 'organization') {
+      url = '/register/organization';
+      formData = {
+        orgName: form.querySelector('#orgName').value.trim(),
+        orgEmail: form.querySelector('#orgEmail').value.trim().toLowerCase(),
+        orgType: form.querySelector('#orgType').value,
+        orgProvince: form.querySelector('#orgProvince').value,
+        password: password.value,
+        orgDocumentBase64: orgDocBase64,
+        orgDocumentName: orgDocName
+      };
+    }
+
+    if (!url || !formData) {
+      showFormMessage(form, 'Could not determine account type. Please try again.', 'error');
+      resetSubmitButton(submitBtn);
+      return;
+    }
+
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    })
+    .then(response => {
+      if (response.status === 201 || response.status === 200) {
+        if (accountType === 'student') {
+          showFormMessage(form, 'Account created! Redirecting to login...', 'success');
+          setTimeout(() => {
+            window.location.href = '/login-page';
+          }, 3000);
+        } else {
+          const orgNameVal = form.querySelector('#orgName')?.value || 'Organisation';
+          const orgEmailVal = form.querySelector('#orgEmail')?.value || '';
+          form.innerHTML = `
+            <div style="
+              text-align: center;
+              padding: 2.5rem 1.5rem;
+              background: #F0FDF4;
+              border: 1.5px solid #86EFAC;
+              border-radius: 12px;
+              margin: 1.5rem 0;
+              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            ">
+              <div style="font-size: 14px; margin-bottom: 16px; font-weight: 800; color: #15803D; text-transform: uppercase; letter-spacing: 0;">Application received</div>
+              <h3 style="color: #15803D; margin: 0 0 10px; font-size: 20px; font-weight: 700;">Application Received!</h3>
+              <p style="color: #166534; margin: 0 0 16px; font-size: 14.5px; line-height: 1.6;">
+                Thank you, <strong>${orgNameVal}</strong>! Your application has been received and is now waiting for SMILE Admin review.
+              </p>
+              <p style="color: #166534; margin: 0 0 20px; font-size: 13.5px; line-height: 1.6; background: rgba(134, 239, 172, 0.2); padding: 10px; border-radius: 8px;">
+                We have sent a confirmation email to <strong>${orgEmailVal}</strong>.<br>
+                Your organisation account will only be created after admin approval.
+              </p>
+              <p style="color:#14532D;margin:0;font-size:13px;font-weight:600;">
+                Please wait for admin approval before trying to log in.
+              </p>
+            </div>
+          `;
+          alert('Application received. Your organisation will be reviewed by an admin before the account is created.');
+        }
+      } else if (response.status === 403) {
+        showFormMessage(form, 'This email is already registered. Please log in.', 'error');
+        resetSubmitButton(submitBtn);
+      } else if (response.status === 400) {
+        showFormMessage(form, 'Please fill in all your details.', 'error');
+        resetSubmitButton(submitBtn);
+      } else {
+        showFormMessage(form, 'Something went wrong. Please try again.', 'error');
+        resetSubmitButton(submitBtn);
+      }
+    })
+    .catch(error => {
+      console.error('Registration error:', error);
+      showFormMessage(form, 'Network error. Please try again.', 'error');
+      resetSubmitButton(submitBtn);
+    });
+  };
+
+  if (accountType === 'organization') {
+    const orgDocument = form.querySelector('#orgDocument');
+    if (!orgDocument || !orgDocument.files[0]) {
+      showError(orgDocument, 'Registration document is required');
+      resetSubmitButton(submitBtn);
+      return;
+    }
+
+    const file = orgDocument.files[0];
+    if (file.size > 5 * 1024 * 1024) {
+      showError(orgDocument, 'Document must be smaller than 5MB');
+      resetSubmitButton(submitBtn);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      performRegisterSubmit(e.target.result, file.name);
+    };
+    reader.onerror = function() {
+      showFormMessage(form, 'Error reading file. Please try again.', 'error');
+      resetSubmitButton(submitBtn);
+    };
+    reader.readAsDataURL(file);
+  } else {
+    performRegisterSubmit();
+  }
+}
+
+async function triggerOTP(type, form, submitBtn) {
+  const emailInput = type === 'student' ? form.querySelector('#email') : form.querySelector('#orgEmail');
+  const errorEl = type === 'student' ? document.getElementById('email-error') : document.getElementById('org-email-error');
+  const statusEl = type === 'student' ? document.getElementById('email-status') : document.getElementById('org-email-status');
+  const otpSection = type === 'student' ? document.getElementById('otp-section') : document.getElementById('org-otp-section');
+  const otpEmailDisplay = type === 'student' ? document.getElementById('otp-email-display') : document.getElementById('org-otp-email-display');
+
+  const email = emailInput.value.trim();
+  if (!email || !validateEmail(email)) {
+    showError(emailInput, 'Please enter a valid email address');
     resetSubmitButton(submitBtn);
     return;
   }
 
-   fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(formData),
-  })
-  .then(response => {
-    if (response.status === 201) {
-      showFormMessage(form, 'Account created! Redirecting to login...', 'success');
-      setTimeout(() => {
-        window.location.href = '/login-page';
-      }, 3000);
-    } else if (response.status === 403) {
-      showFormMessage(form, 'This email is already registered. Please log in.', 'error');
+  if (errorEl) errorEl.style.display = 'none';
+  if (statusEl) statusEl.textContent = 'Validating email and sending OTP...';
+
+  try {
+    const response = await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await response.json();
+    if (statusEl) statusEl.textContent = '';
+
+    if (!data.success) {
+      if (errorEl) {
+        errorEl.textContent = 'âŒ ' + data.message;
+        errorEl.style.display = 'block';
+      }
       resetSubmitButton(submitBtn);
-    } else if (response.status === 400) {
-      showFormMessage(form, 'Please fill in all your details.', 'error');
-      resetSubmitButton(submitBtn);
-    } else {
-      showFormMessage(form, 'Something went wrong. Please try again.', 'error');
-      resetSubmitButton(submitBtn);
+      return;
     }
-  })
-  .catch(error => {
-    console.error('Registration error:', error);
-    showFormMessage(form, 'Network error. Please try again.', 'error');
-    resetSubmitButton(submitBtn);
-  });
- 
-  // Remove any existing message
-  const existing = form.querySelector(".pending-approval-msg");
-  if (existing) existing.remove();
- 
-  const msg = document.createElement("div");
-  msg.className = "pending-approval-msg";
-  msg.innerHTML = `
-    <div style="
-      text-align: center;
-      padding: 2rem 1.5rem;
-      background: #F0FDF4;
-      border: 1.5px solid #86EFAC;
-      border-radius: 12px;
-      margin-top: 1rem;
-    ">
-      <div style="font-size: 2.5rem; margin-bottom: 12px;">⏳</div>
-      <h3 style="color: #15803D; margin: 0 0 8px;">Registration Received!</h3>
-      <p style="color: #166534; margin: 0 0 12px; font-size: 14px; line-height: 1.6;">
-        Thank you, <strong>${orgName}</strong>! Your organisation has been registered
-        and is now <strong>pending approval</strong> by the SMILE admin team.
-      </p>
-      <p style="color: #166534; margin: 0; font-size: 13px;">
-        📧 We've sent a confirmation email to your inbox.<br>
-        You'll receive another email once your account is approved.
-      </p>
-      <a href="/login-page" style="
-        display: inline-block;
-        margin-top: 1.25rem;
-        padding: 10px 22px;
-        background: #16A34A;
-        color: #fff;
-        border-radius: 8px;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 600;
-      ">Back to Login</a>
-    </div>
-  `;
- 
-  form.appendChild(msg);
+
+    if (otpEmailDisplay) otpEmailDisplay.textContent = email;
+    if (otpSection) otpSection.style.display = 'block';
+
+    // Focus first input
+    const inputs = type === 'student' ? document.querySelectorAll('.otp-digit') : document.querySelectorAll('.org-otp-digit');
+    if (inputs.length > 0) inputs[0].focus();
+
+  } catch (err) {
+    console.error(err);
+    if (statusEl) statusEl.textContent = '';
+    if (errorEl) {
+      errorEl.textContent = 'âŒ Something went wrong while sending verification code.';
+      errorEl.style.display = 'block';
+    }
+  }
+  resetSubmitButton(submitBtn);
 }
+
+async function verifyOTP() {
+  const entered = Array.from(document.querySelectorAll('.otp-digit')).map(d => d.value).join('');
+  if (entered.length < 6) return;
+
+  const emailInput = document.getElementById('email');
+  const errorEl = document.getElementById('otp-error');
+  const hintEl = document.getElementById('email-hint');
+  const otpSection = document.getElementById('otp-section');
+  const studentForm = document.getElementById('studentForm');
+
+  try {
+    const response = await fetch('/api/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: emailInput.value.trim(), otp: entered })
+    });
+    const data = await response.json();
+
+    if (data.success) {
+      window.studentVerified = true;
+      if (otpSection) otpSection.style.display = 'none';
+      if (hintEl) hintEl.style.display = 'block';
+      if (errorEl) errorEl.style.display = 'none';
+
+      // Auto-trigger registration submit now that verification is complete!
+      const event = new Event('submit', { cancelable: true });
+      studentForm.dispatchEvent(event);
+    } else {
+      if (errorEl) {
+        errorEl.style.display = 'block';
+        errorEl.textContent = 'âŒ ' + data.message;
+      }
+      document.querySelectorAll('.otp-digit').forEach(d => d.value = '');
+      const inputs = document.querySelectorAll('.otp-digit');
+      if (inputs.length > 0) inputs[0].focus();
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function verifyOrgOTP() {
+  const entered = Array.from(document.querySelectorAll('.org-otp-digit')).map(d => d.value).join('');
+  if (entered.length < 6) return;
+
+  const emailInput = document.getElementById('orgEmail');
+  const errorEl = document.getElementById('org-otp-error');
+  const hintEl = document.getElementById('org-email-hint');
+  const otpSection = document.getElementById('org-otp-section');
+  const organizationForm = document.getElementById('organizationForm');
+
+  try {
+    const response = await fetch('/api/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: emailInput.value.trim(), otp: entered })
+    });
+    const data = await response.json();
+
+    if (data.success) {
+      window.orgVerified = true;
+      if (otpSection) otpSection.style.display = 'none';
+      if (hintEl) hintEl.style.display = 'block';
+      if (errorEl) errorEl.style.display = 'none';
+
+      // Auto-trigger registration submit now that verification is complete!
+      const event = new Event('submit', { cancelable: true });
+      organizationForm.dispatchEvent(event);
+    } else {
+      if (errorEl) {
+        errorEl.style.display = 'block';
+        errorEl.textContent = 'âŒ ' + data.message;
+      }
+      document.querySelectorAll('.org-otp-digit').forEach(d => d.value = '');
+      const inputs = document.querySelectorAll('.org-otp-digit');
+      if (inputs.length > 0) inputs[0].focus();
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function resendCode(e) {
+  if (e) e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  try {
+    await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    document.querySelectorAll('.otp-digit').forEach(d => d.value = '');
+    const errorEl = document.getElementById('otp-error');
+    if (errorEl) errorEl.style.display = 'none';
+    const inputs = document.querySelectorAll('.otp-digit');
+    if (inputs.length > 0) inputs[0].focus();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function resendOrgCode(e) {
+  if (e) e.preventDefault();
+  const email = document.getElementById('orgEmail').value.trim();
+  try {
+    await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    document.querySelectorAll('.org-otp-digit').forEach(d => d.value = '');
+    const errorEl = document.getElementById('org-otp-error');
+    if (errorEl) errorEl.style.display = 'none';
+    const inputs = document.querySelectorAll('.org-otp-digit');
+    if (inputs.length > 0) inputs[0].focus();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// Expose verification functions to window scope for HTML onclick attributes
+window.verifyOTP = verifyOTP;
+window.verifyOrgOTP = verifyOrgOTP;
+window.resendCode = resendCode;
+window.resendOrgCode = resendOrgCode;
 
 /**
  * Re-enable submit button after error so user can try again
@@ -469,13 +729,13 @@ function handleLogout() {
     localStorage.removeItem('token');
     localStorage.removeItem('accountType');
 
-    // ✅ Call logout endpoint to clear cookie on server
+    // âœ… Call logout endpoint to clear cookie on server
     fetch('/logout', { method: 'POST' })
     .then(() => {
         window.location.href = '/login-page';
     });
 }
-// ── NAME VALIDATION — NO NUMBERS ALLOWED ─────────────────────
+// â”€â”€ NAME VALIDATION â€” NO NUMBERS ALLOWED â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function blockNumbers(input) {
   const errorEl = document.getElementById(`${input.id}-error`);
@@ -499,7 +759,7 @@ function blockNumbers(input) {
       errorEl.textContent = "";
     }
   } else {
-    // Empty — reset
+    // Empty â€” reset
     input.classList.remove("input-error", "input-valid");
     if (errorEl) errorEl.textContent = "";
   }
@@ -546,7 +806,7 @@ document.querySelector("form")?.addEventListener("submit", (e) => {
 
   if (hasError) e.preventDefault();
 });
-// ── CONFIRM PASSWORD ──────────────────────────────────────────
+// â”€â”€ CONFIRM PASSWORD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const confirmInput   = document.getElementById("confirmPassword");
 const confirmMessage = document.getElementById("confirmMessage");
@@ -576,20 +836,20 @@ function checkPasswordMatch() {
 
   if (password === confirm) {
     confirmMessage.className     = "match";
-    confirmIcon.textContent      = "✓";
+    confirmIcon.textContent      = "âœ“";
     confirmText.textContent      = "Passwords match";
     confirmInput.style.borderColor = "#10B981";
     confirmInput.classList.remove("form__input--error");
   } else {
     confirmMessage.className     = "no-match";
-    confirmIcon.textContent      = "✕";
+    confirmIcon.textContent      = "âœ•";
     confirmText.textContent      = "Passwords do not match";
     confirmInput.style.borderColor = "#EF4444";
   }
 }
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ── LOGIN EYE TOGGLE ────────────────────────────────────────
+  // â”€â”€ LOGIN EYE TOGGLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const loginPasswordInput = document.getElementById("password");
   const loginToggleBtn     = document.getElementById("toggleLoginPassword");
 
@@ -603,7 +863,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Swap icon
       loginToggleBtn.innerHTML = isHidden
-        ? // Eye CLOSED — password now visible
+        ? // Eye CLOSED â€” password now visible
           `<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8
                      a18.45 18.45 0 015.06-5.94" stroke-width="2" stroke-linecap="round"/>
@@ -611,7 +871,7 @@ document.addEventListener("DOMContentLoaded", () => {
                      a18.5 18.5 0 01-2.16 3.19" stroke-width="2" stroke-linecap="round"/>
             <line x1="1" y1="1" x2="23" y2="23" stroke-width="2" stroke-linecap="round"/>
            </svg>`
-        : // Eye OPEN — password now hidden
+        : // Eye OPEN â€” password now hidden
           `<svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-width="2"/>
             <circle cx="12" cy="12" r="3" stroke-width="2"/>
