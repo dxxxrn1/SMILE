@@ -191,10 +191,11 @@ async function markNotificationsRead() {
   if (!token) return;
 
   try {
-    await fetch("/api/student/notifications/read", {
+    const res = await fetch("/api/student/notifications/read", {
       method: "PATCH",
       headers: { Authorization: `Bearer ${token}` }
     });
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
     await loadNotifications();
   } catch (err) {
     console.error("Error marking notifications as read:", err);

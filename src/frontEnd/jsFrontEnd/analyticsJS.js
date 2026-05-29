@@ -12,10 +12,49 @@ let _currentRange = 7;
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", function () {
+    loadOrgSidebarProfile();
     loadAnalyticsData();
   });
 } else {
+  loadOrgSidebarProfile();
   loadAnalyticsData();
+}
+
+async function loadOrgSidebarProfile() {
+  const token = localStorage.getItem("token");
+  const nameEl = document.getElementById("sidebarOrgName");
+  const initEl = document.getElementById("sidebarInitials");
+  if (!nameEl && !initEl) return;
+
+  const cachedName = localStorage.getItem("orgName") || localStorage.getItem("userName") || "My Organisation";
+  const cachedInitials = localStorage.getItem("orgInitials") || localStorage.getItem("initials") || cachedName.slice(0, 2).toUpperCase();
+  if (nameEl) nameEl.textContent = cachedName;
+  if (initEl) initEl.textContent = cachedInitials;
+  if (!token) return;
+
+  try {
+    const res = await fetch("/api/org/profile", { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.success || !data.profile) return;
+
+    const orgName = data.profile.OrgName || cachedName;
+    const initials = orgName.slice(0, 2).toUpperCase();
+    localStorage.setItem("orgName", orgName);
+    localStorage.setItem("orgInitials", initials);
+    if (data.profile.OrgProfilePic) localStorage.setItem("orgProfilePic", data.profile.OrgProfilePic);
+
+    if (nameEl) nameEl.textContent = orgName;
+    if (initEl) {
+      if (data.profile.OrgProfilePic) {
+        initEl.innerHTML = `<img src="${data.profile.OrgProfilePic}" alt="${orgName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      } else {
+        initEl.textContent = initials;
+      }
+    }
+  } catch (err) {
+    console.error("[SMILE Analytics] Could not load organisation sidebar profile:", err);
+  }
 }
 
 /* ================================================================
@@ -53,17 +92,6 @@ async function loadAnalyticsData() {
     }
 
     _applicantsCache = Array.isArray(data.applicants) ? data.applicants : [];
-
-    // Org name in sidebar - Defensive parse
-    let orgName = localStorage.getItem("orgName") || localStorage.getItem("userName") || "My Organisation";
-    if (!orgName || orgName === "undefined" || orgName === "null") {
-      orgName = "My Organisation";
-    }
-    const initials = ((orgName || "").slice(0, 2) || "SA").toUpperCase();
-    const nameEl = document.getElementById("sidebarOrgName");
-    const initEl = document.getElementById("sidebarInitials");
-    if (nameEl) nameEl.textContent = orgName;
-    if (initEl) initEl.textContent = initials;
 
     try { renderKPIs(_applicantsCache); }       catch (e) { console.error("[SMILE Analytics] renderKPIs failed:", e); }
     try { renderProvinces(_applicantsCache); }   catch (e) { console.error("[SMILE Analytics] renderProvinces failed:", e); }

@@ -93,13 +93,25 @@
       </ul>
       
       <div class="nav__actions nav__actions--dashboard">
-        <button class="nav__icon-btn" aria-label="Notifications">
+        <button class="nav__icon-btn" id="notificationBtn" aria-label="Notifications" aria-expanded="false" aria-controls="notificationPanel">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
             <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
           </svg>
-          <span class="nav__notification-badge">3</span>
+          <span class="nav__notification-badge" id="notificationBadge" hidden>0</span>
         </button>
+        <div class="notification-panel" id="notificationPanel" aria-live="polite">
+          <div class="notification-panel__header">
+            <div>
+              <h2>Notifications</h2>
+              <p>Application updates from organisations</p>
+            </div>
+            <button type="button" class="notification-panel__mark" id="notificationMarkRead">Mark read</button>
+          </div>
+          <div class="notification-panel__list" id="notificationList">
+            <p class="notification-panel__empty">Loading notifications...</p>
+          </div>
+        </div>
         <div class="nav__profile" id="profileDropdown">
           <button class="nav__profile-btn" aria-label="Profile menu">
             <div class="nav__avatar">
@@ -333,12 +345,6 @@
           </svg>
           <span>SMILE</span>
         </a>
-        <ul class="footer__links">
-          <li><a href="#" class="footer__link">About</a></li>
-          <li><a href="#" class="footer__link">Contact</a></li>
-          <li><a href="#" class="footer__link">Privacy Policy</a></li>
-          <li><a href="#" class="footer__link">Terms of Service</a></li>
-        </ul>
         <p class="footer__copy">&copy; 2026 SMILE. All rights reserved.</p>
       </div>
     </div>

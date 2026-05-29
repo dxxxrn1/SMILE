@@ -294,12 +294,44 @@
         window.location.href = '/login-page';
       }
 
-      // Populate org name in sidebar
-      const orgName = localStorage.getItem('orgName') || 'Organisation';
-      const el = document.getElementById('sidebarOrgName');
-      if (el) el.textContent = orgName;
-      const initEl = document.getElementById('sidebarInitials');
-      if (initEl) initEl.textContent = orgName.substring(0,2).toUpperCase();
+      // Populate org name in sidebar from the logged-in organisation profile.
+      async function loadSidebarOrgProfile() {
+        const el = document.getElementById('sidebarOrgName');
+        const initEl = document.getElementById('sidebarInitials');
+        let orgName = localStorage.getItem('orgName') || localStorage.getItem('userName') || 'My Organisation';
+        let initials = localStorage.getItem('orgInitials') || orgName.substring(0, 2).toUpperCase();
+
+        if (el) el.textContent = orgName;
+        if (initEl) initEl.textContent = initials;
+
+        try {
+          const res = await fetch('/api/org/profile', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (!res.ok) return;
+          const data = await res.json();
+          if (!data.success || !data.profile) return;
+
+          orgName = data.profile.OrgName || orgName;
+          initials = orgName.substring(0, 2).toUpperCase();
+          localStorage.setItem('orgName', orgName);
+          localStorage.setItem('orgInitials', initials);
+          if (data.profile.OrgProfilePic) localStorage.setItem('orgProfilePic', data.profile.OrgProfilePic);
+
+          if (el) el.textContent = orgName;
+          if (initEl) {
+            if (data.profile.OrgProfilePic) {
+              initEl.innerHTML = `<img src="${data.profile.OrgProfilePic}" alt="${orgName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+            } else {
+              initEl.textContent = initials;
+            }
+          }
+        } catch (err) {
+          console.error('Could not load organisation sidebar profile:', err);
+        }
+      }
+
+      loadSidebarOrgProfile();
 
       // Logout cleanup
       document.getElementById('logout').addEventListener('click', () => {

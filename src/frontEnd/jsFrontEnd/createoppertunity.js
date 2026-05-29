@@ -1,12 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Populate sidebar initials and organization name
-    const orgName = localStorage.getItem("orgName") || localStorage.getItem("userName") || "SMILE Africa NGO";
-    const initials = localStorage.getItem("orgInitials") || localStorage.getItem("initials") || orgName.slice(0, 2).toUpperCase();
-    const avatarEl = document.getElementById("sidebarInitials");
-    const nameEl = document.getElementById("sidebarOrgName");
-    if (avatarEl) avatarEl.textContent = initials;
-    if (nameEl) nameEl.textContent = orgName;
+    loadOrgSidebarProfile();
 
     // Character counter
     window.updateCharCount = function (el, countId, max) {
@@ -161,3 +155,44 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.removeItem("initials");
     })
 });
+
+async function loadOrgSidebarProfile() {
+    const avatarEl = document.getElementById("sidebarInitials");
+    const nameEl = document.getElementById("sidebarOrgName");
+    if (!avatarEl && !nameEl) return;
+
+    const cachedName = localStorage.getItem("orgName") || localStorage.getItem("userName") || "My Organisation";
+    const cachedInitials = localStorage.getItem("orgInitials") || localStorage.getItem("initials") || cachedName.slice(0, 2).toUpperCase();
+    if (avatarEl) avatarEl.textContent = cachedInitials;
+    if (nameEl) nameEl.textContent = cachedName;
+
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+        const res = await fetch("/api/org/profile", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (!data.success || !data.profile) return;
+
+        const orgName = data.profile.OrgName || cachedName;
+        const initials = orgName.slice(0, 2).toUpperCase();
+        localStorage.setItem("orgName", orgName);
+        localStorage.setItem("orgInitials", initials);
+        if (data.profile.OrgProfilePic) localStorage.setItem("orgProfilePic", data.profile.OrgProfilePic);
+
+        if (nameEl) nameEl.textContent = orgName;
+        if (avatarEl) {
+            if (data.profile.OrgProfilePic) {
+                avatarEl.innerHTML = `<img src="${data.profile.OrgProfilePic}" alt="${orgName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+            } else {
+                avatarEl.textContent = initials;
+            }
+        }
+    } catch (err) {
+        console.error("[SMILE] Could not load organisation sidebar profile:", err);
+    }
+}
