@@ -25,7 +25,7 @@ import {
   getProfileBioAdvice,
 } from "../controllers/chatbotController.js";
 import {createNewOpportunity,getAllOpportunities, getOrganizationApplicants, getOrgDashboardStats, updateApplicationStatus, getOrgOpportunities, updateOpportunity, deleteOpportunity} from '../controllers/opportunitiesControllers.js';
-import { getSavedOpportunities, getStudentApplications, deleteSavedOpportunity, saveOpportunity, applyForOpportunity, getStudentProfile, updateStudentProfile, updateStudentBio } from "../controllers/studentController.js";
+import { getSavedOpportunities, getStudentApplications, deleteSavedOpportunity, saveOpportunity, applyForOpportunity, getStudentProfile, updateStudentProfile, updateStudentBio, getStudentNotifications, markStudentNotificationsRead } from "../controllers/studentController.js";
 import { createTicket, getMyTickets } from "../controllers/ticketController.js";
 
 
@@ -40,6 +40,9 @@ route.put("/api/student/profile", verifyToken, updateStudentProfile);
 route.patch("/api/student/profile/bio", verifyToken, updateStudentBio);
 route.post("/api/chat/profile-writer", verifyToken, getProfileBioAdvice);
 route.get("/api/student/applications", verifyToken, getStudentApplications);
+route.get("/api/student/notifications", verifyToken, getStudentNotifications);
+route.patch("/api/student/notifications/read", verifyToken, markStudentNotificationsRead);
+route.post("/api/student/notifications/read", verifyToken, markStudentNotificationsRead);
 route.post("/api/student/applications", verifyToken, applyForOpportunity);
 route.get("/api/student/saved-opportunities", verifyToken, getSavedOpportunities);
 route.post("/api/student/saved-opportunities", verifyToken, saveOpportunity);

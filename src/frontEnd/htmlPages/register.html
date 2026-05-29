@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="auth-v2-page auth-v2-light">
+<body class="auth-v2-page">
 
   <!-- LEFT PANEL -->
   <div class="auth-v2-left">
@@ -143,19 +143,19 @@
           <span id="email-hint" style="display:none; color:green; font-size:12px;">✓ Email verified!</span>
         </div>
 
-        <div id="otp-section" style="display:none; margin-bottom:1rem; padding:1rem; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;">
-          <p style="font-size:13px; margin-bottom:8px;">We sent a 6-digit code to <strong id="otp-email-display"></strong></p>
+        <div id="otp-section" style="display:none; margin-bottom:1rem; padding:1rem; border:1px solid var(--dark-border); border-radius:8px; background:var(--dark-surface);">
+          <p style="font-size:13px; margin-bottom:8px; color:var(--text-primary);">We sent a 6-digit code to <strong id="otp-email-display"></strong></p>
           <div style="display:flex; gap:8px; margin-bottom:10px;">
-            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
-            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
-            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
-            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
-            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
-            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1.5px solid var(--dark-border);border-radius:6px;background:var(--dark-bg);color:var(--text-primary);">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1.5px solid var(--dark-border);border-radius:6px;background:var(--dark-bg);color:var(--text-primary);">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1.5px solid var(--dark-border);border-radius:6px;background:var(--dark-bg);color:var(--text-primary);">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1.5px solid var(--dark-border);border-radius:6px;background:var(--dark-bg);color:var(--text-primary);">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1.5px solid var(--dark-border);border-radius:6px;background:var(--dark-bg);color:var(--text-primary);">
+            <input class="otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1.5px solid var(--dark-border);border-radius:6px;background:var(--dark-bg);color:var(--text-primary);">
           </div>
           <button type="button" onclick="verifyOTP()" style="padding:8px 16px;background:#4CAF50;color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;">Verify Code</button>
-          <a href="#" onclick="resendCode(event)" style="font-size:12px; margin-left:12px; color:#555;">Resend code</a>
-          <div id="otp-error" style="display:none; color:red; font-size:12px; margin-top:6px;">❌ Incorrect code. Please try again.</div>
+          <a href="#" onclick="resendCode(event)" style="font-size:12px; margin-left:12px; color:var(--text-muted);">Resend code</a>
+          <div id="otp-error" style="display:none; color:#f87171; font-size:12px; margin-top:6px;">❌ Incorrect code. Please try again.</div>
         </div>
 
         <div class="form__row">
@@ -268,19 +268,19 @@
           <span id="org-email-hint" style="display:none; color:green; font-size:12px;">✓ Email verified!</span>
         </div>
 
-        <div id="org-otp-section" style="display:none; margin-bottom:1rem; padding:1rem; border:1px solid #ddd; border-radius:8px; background:#f9f9f9;">
-          <p style="font-size:13px; margin-bottom:8px;">We sent a 6-digit code to <strong id="org-otp-email-display"></strong></p>
+        <div id="org-otp-section" style="display:none; margin-bottom:1rem; padding:1rem; border:1px solid var(--dark-border); border-radius:8px; background:var(--dark-surface);">
+          <p style="font-size:13px; margin-bottom:8px; color:var(--text-primary);">We sent a 6-digit code to <strong id="org-otp-email-display"></strong></p>
           <div style="display:flex; gap:8px; margin-bottom:10px;">
-            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
-            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
-            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
-            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
-            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
-            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1px solid #ccc;border-radius:6px;">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1.5px solid var(--dark-border);border-radius:6px;background:var(--dark-bg);color:var(--text-primary);">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1.5px solid var(--dark-border);border-radius:6px;background:var(--dark-bg);color:var(--text-primary);">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1.5px solid var(--dark-border);border-radius:6px;background:var(--dark-bg);color:var(--text-primary);">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1.5px solid var(--dark-border);border-radius:6px;background:var(--dark-bg);color:var(--text-primary);">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1.5px solid var(--dark-border);border-radius:6px;background:var(--dark-bg);color:var(--text-primary);">
+            <input class="org-otp-digit" maxlength="1" type="text" inputmode="numeric" style="width:40px;height:44px;text-align:center;font-size:18px;border:1.5px solid var(--dark-border);border-radius:6px;background:var(--dark-bg);color:var(--text-primary);">
           </div>
           <button type="button" onclick="verifyOrgOTP()" style="padding:8px 16px;background:#4CAF50;color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;">Verify Code</button>
-          <a href="#" onclick="resendOrgCode(event)" style="font-size:12px; margin-left:12px; color:#555;">Resend code</a>
-          <div id="org-otp-error" style="display:none; color:red; font-size:12px; margin-top:6px;">❌ Incorrect code. Please try again.</div>
+          <a href="#" onclick="resendOrgCode(event)" style="font-size:12px; margin-left:12px; color:var(--text-muted);">Resend code</a>
+          <div id="org-otp-error" style="display:none; color:#f87171; font-size:12px; margin-top:6px;">❌ Incorrect code. Please try again.</div>
         </div>
 
         <div class="form__row">

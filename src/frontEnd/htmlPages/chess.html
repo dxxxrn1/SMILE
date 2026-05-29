@@ -176,7 +176,7 @@
     }
     .captured { display: flex; flex-wrap: wrap; gap: 1px; min-height: 22px; font-size: 17px; padding: 2px 0; }
     .move-list {
-      height: 150px; overflow-y: auto;
+      height: 80px; overflow-y: auto;
       font-size: 12px; font-family: monospace;
       color: var(--text2); line-height: 1.9;
     }
@@ -391,7 +391,7 @@
     </ul>
 
     <div class="nav__actions nav__actions--dashboard">
-      <button class="nav__icon-btn" aria-label="Notifications">
+      <button class="nav__icon-btn" id="notificationBtn" aria-label="Notifications" aria-expanded="false" aria-controls="notificationPanel">
         <svg
           width="22"
           height="22"
@@ -405,8 +405,20 @@
           <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
           <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
         </svg>
-        <span class="nav__notification-badge">3</span>
+        <span class="nav__notification-badge" id="notificationBadge" hidden>0</span>
       </button>
+      <div class="notification-panel" id="notificationPanel" aria-live="polite">
+        <div class="notification-panel__header">
+          <div>
+            <h2>Notifications</h2>
+            <p>Application updates from organisations</p>
+          </div>
+          <button type="button" class="notification-panel__mark" id="notificationMarkRead">Mark read</button>
+        </div>
+        <div class="notification-panel__list" id="notificationList">
+          <p class="notification-panel__empty">Loading notifications...</p>
+        </div>
+      </div>
       <div class="nav__profile" id="profileDropdown">
         <button class="nav__profile-btn" aria-label="Profile menu">
           <div class="nav__avatar">
@@ -531,7 +543,7 @@
       <span class="badge badge-purple" id="game-badge">vs Bot</span>
     </div>
 
-    <div class="status-bar s-playing" id="status-bar">Your turn — White</div>
+    <div class="status-bar s-playing" id="status-bar">Your turn — Indigo</div>
 
     <div class="board-wrap">
       <!-- Board -->
@@ -549,7 +561,7 @@
       <div class="side-panel">
         <!-- Black player -->
         <div class="player-chip" id="chip-black" style="margin-bottom:6px;">
-          <div class="avatar" style="background:#2C2C2A; color:#F1EFE8;" id="avatar-black">B</div>
+          <div class="avatar" style="background:#000000; color:#ffffff;" id="avatar-black">B</div>
           <div>
             <div style="font-size:13px; font-weight:500;" id="name-black">Bot</div>
             <div style="font-size:11px; color:var(--text3);">Black</div>
@@ -568,10 +580,10 @@
 
         <!-- White player -->
         <div class="player-chip" id="chip-white">
-          <div class="avatar" style="background:#F1EFE8; color:#2C2C2A; border:0.5px solid var(--border);" id="avatar-white">W</div>
+          <div class="avatar" style="background:#1A237E; color:#ffffff;" id="avatar-white">I</div>
           <div>
             <div style="font-size:13px; font-weight:500;" id="name-white">You</div>
-            <div style="font-size:11px; color:var(--text3);">White</div>
+            <div style="font-size:11px; color:var(--text3);">Indigo</div>
           </div>
           <span class="material-score" id="score-white"></span>
         </div>
@@ -675,7 +687,7 @@ const INIT_BOARD = [
   ['P','P','P','P','P','P','P','P'],
   ['R','N','B','Q','K','B','N','R']
 ];
-const GLYPHS = {K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
+const GLYPHS = {K:'♚',Q:'♛',R:'♜',B:'♝',N:'♞',P:'♟',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
 const PIECE_VALUES = {p:1,n:3,b:3,r:5,q:9,k:0};
 
 // ── State ──
@@ -955,7 +967,10 @@ function renderBoard() {
       sq.dataset.r = r; sq.dataset.c = c;
 
       const p = board[r][c];
-      if (p) sq.textContent = GLYPHS[p];
+      if (p) {
+        sq.textContent = GLYPHS[p];
+        sq.classList.add(isWhite(p) ? 'white-piece' : 'black-piece');
+      }
 
       if (selected && selected[0]===r && selected[1]===c) sq.classList.add('selected');
       if (lastFrom && lastFrom[0]===r && lastFrom[1]===c) sq.classList.add('last-from');
@@ -970,8 +985,8 @@ function renderBoard() {
 }
 
 function renderSide() {
-  document.getElementById('cap-white').textContent = capW.map(p => GLYPHS[p]).join('');
-  document.getElementById('cap-black').textContent = capB.map(p => GLYPHS[p]).join('');
+  document.getElementById('cap-white').innerHTML = capW.map(p => `<span class="${isWhite(p) ? 'white-piece' : 'black-piece'}">${GLYPHS[p]}</span>`).join('');
+  document.getElementById('cap-black').innerHTML = capB.map(p => `<span class="${isWhite(p) ? 'white-piece' : 'black-piece'}">${GLYPHS[p]}</span>`).join('');
 
   const ml = document.getElementById('move-list');
   ml.innerHTML = moveLog.join('  ');
@@ -1083,7 +1098,7 @@ function askPromotion(color, callback) {
   grid.innerHTML = '';
   pieces.forEach(piece => {
     const btn = document.createElement('button');
-    btn.className = 'promo-btn';
+    btn.className = `promo-btn ${color === 'w' ? 'white-piece' : 'black-piece'}`;
     btn.textContent = GLYPHS[piece];
     btn.onclick = () => { showScreen('s-game'); promoCallback(piece); promoCallback = null; };
     grid.appendChild(btn);
@@ -1161,7 +1176,8 @@ function startBot(diff) {
   document.getElementById('name-black').textContent = `Bot (${labels[diff-1]})`;
   document.getElementById('avatar-white').textContent = playerName[0].toUpperCase();
   document.getElementById('avatar-black').textContent = 'B';
-  document.getElementById('avatar-black').style.background = '#2C2C2A';
+  document.getElementById('avatar-black').style.background = '#000000';
+  document.getElementById('avatar-black').style.color = '#ffffff';
   document.getElementById('undo-btn').style.display = 'inline-flex';
   document.getElementById('chat-section').style.display = 'none';
   showScreen('s-game');
@@ -1262,7 +1278,8 @@ socket.on('game_start', ({ roomId: rid, white, black }) => {
   document.getElementById('name-black').textContent = black.name;
   document.getElementById('avatar-white').textContent = white.name[0].toUpperCase();
   document.getElementById('avatar-black').textContent = black.name[0].toUpperCase();
-  document.getElementById('avatar-black').style.background = '#2C2C2A';
+  document.getElementById('avatar-black').style.background = '#000000';
+  document.getElementById('avatar-black').style.color = '#ffffff';
   document.getElementById('undo-btn').style.display = 'none';
   document.getElementById('chat-section').style.display = 'block';
   document.getElementById('chat-box').innerHTML = '';
@@ -1270,7 +1287,7 @@ socket.on('game_start', ({ roomId: rid, white, black }) => {
 
   showScreen('s-game');
   renderBoard(); renderSide(); updateStatus();
-  showToast(`Game started! You are ${myColor==='w'?'White':'Black'}.`);
+  showToast(`Game started! You are ${myColor==='w'?'Indigo':'Black'}.`);
 });
 
 socket.on('opponent_move', ({ from, to, promotion }) => {

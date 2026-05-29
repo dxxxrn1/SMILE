@@ -1,10 +1,9 @@
-import { sql } from "../dbConnection/dbconnection.js";
+import { connectToDB, sql } from "../dbConnection/dbconnection.js";
 import fs from "fs";
 import path from "path";
 
-async function ensureStudentNotificationsTable() {
-  const request = new sql.Request();
-  await request.query(`
+async function ensureStudentNotificationsTable(pool) {
+  await pool.request().query(`
     IF OBJECT_ID('dbo.StudentNotifications', 'U') IS NULL
     BEGIN
       CREATE TABLE dbo.StudentNotifications (
@@ -30,6 +29,9 @@ async function ensureStudentProfileColumns() {
 
     IF COL_LENGTH('dbo.Student', 'ProfilePicUrl') IS NULL
       ALTER TABLE dbo.Student ADD ProfilePicUrl NVARCHAR(255) NULL;
+
+    IF COL_LENGTH('dbo.Student', 'StuAcademicSubjects') IS NULL
+      ALTER TABLE dbo.Student ADD StuAcademicSubjects NVARCHAR(MAX) NULL;
   `);
 }
 
@@ -52,7 +54,7 @@ export const getSavedOpportunities = async (req, res) => {
     const stuId = req.user.id;
 
     const query = `
-      SELECT 
+      SELECT
         so.SaveID,
         o.OppID,
         o.Title,
@@ -69,7 +71,7 @@ export const getSavedOpportunities = async (req, res) => {
 
     const request = new sql.Request();
     request.input("StuID", stuId);
-    
+
     const result = await request.query(query);
 
     return res.status(200).json({
@@ -85,9 +87,10 @@ export const getSavedOpportunities = async (req, res) => {
 export const getStudentNotifications = async (req, res) => {
   try {
     const stuId = req.user.id;
-    await ensureStudentNotificationsTable();
+    const pool = await connectToDB();
+    await ensureStudentNotificationsTable(pool);
 
-    const request = new sql.Request();
+    const request = pool.request();
     request.input("StuID", stuId);
 
     const result = await request.query(`
@@ -124,9 +127,10 @@ export const getStudentNotifications = async (req, res) => {
 export const markStudentNotificationsRead = async (req, res) => {
   try {
     const stuId = req.user.id;
-    await ensureStudentNotificationsTable();
+    const pool = await connectToDB();
+    await ensureStudentNotificationsTable(pool);
 
-    const request = new sql.Request();
+    const request = pool.request();
     request.input("StuID", stuId);
     await request.query(`
       UPDATE StudentNotifications
@@ -147,7 +151,7 @@ export const getStudentApplications = async (req, res) => {
     const stuId = req.user.id;
 
     const query = `
-      SELECT 
+      SELECT
         a.AppID,
         a.Status,
         a.DateApplied,
@@ -163,7 +167,7 @@ export const getStudentApplications = async (req, res) => {
 
     const request = new sql.Request();
     request.input("StuID", stuId);
-    
+
     const result = await request.query(query);
 
     return res.status(200).json({
@@ -190,7 +194,7 @@ export const deleteSavedOpportunity = async (req, res) => {
     const request = new sql.Request();
     request.input("StuID", stuId);
     request.input("OppID", oppId);
-    
+
     await request.query(query);
 
     return res.status(200).json({
@@ -221,7 +225,7 @@ export const saveOpportunity = async (req, res) => {
     const request = new sql.Request();
     request.input("StuID", stuId);
     request.input("OppID", oppId);
-    
+
     await request.query(query);
 
     return res.status(200).json({ success: true, message: "Opportunity saved successfully." });
@@ -249,7 +253,7 @@ export const applyForOpportunity = async (req, res) => {
     const request = new sql.Request();
     request.input("StuID", stuId);
     request.input("OppID", oppId);
-    
+
     await request.query(query);
 
     return res.status(200).json({ success: true, message: "Application submitted successfully." });
@@ -266,9 +270,9 @@ export const getStudentProfile = async (req, res) => {
     await ensureStudentProfileColumns();
     const request = new sql.Request();
     request.input("StuID", stuId);
-    
+
     const result = await request.query(`
-      SELECT StuID, StuName, StuLastName, StuEmail, StuProvince, StuEducationLevel, StuBio, ProfilePicUrl
+      SELECT StuID, StuName, StuLastName, StuEmail, StuProvince, StuEducationLevel, StuBio, ProfilePicUrl, StuAcademicSubjects
       FROM Student
       WHERE StuID = @StuID
     `);
@@ -378,7 +382,7 @@ export const updateStudentProfile = async (req, res) => {
 export const updateStudentBio = async (req, res) => {
   try {
     const stuId = req.user.id;
-    const { bio } = req.body;
+    const { bio, academicSubjects } = req.body;
 
     if (!bio) {
       return res.status(400).json({ success: false, message: "Bio content is required." });
@@ -387,10 +391,12 @@ export const updateStudentBio = async (req, res) => {
     const request = new sql.Request();
     request.input("StuID", stuId);
     request.input("bio", bio);
+    request.input("academicSubjects", academicSubjects || null);
 
     await request.query(`
       UPDATE Student
-      SET StuBio = @bio
+      SET StuBio = @bio,
+          StuAcademicSubjects = ISNULL(@academicSubjects, StuAcademicSubjects)
       WHERE StuID = @StuID
     `);
 
@@ -403,6 +409,3 @@ export const updateStudentBio = async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal server error." });
   }
 };
-
-
-

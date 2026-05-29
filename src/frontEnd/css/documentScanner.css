@@ -321,7 +321,7 @@ input[type="file"] {
   width: 100%;
 }
 
-button {
+.scanner-shell button, .scanner-card button, .upload-form button, .mobile-shell button {
   min-height: 48px;
   border: 0;
   border-radius: 0.5rem;
