@@ -27,7 +27,7 @@ app.use("/" , router)
 app.use("/" , chessRoutes)
 app.use("/" , documentScannerRoutes)
 registerChessSockets(io);
-const port = 3004;
+const port = 3000;
 httpServer.listen(port , ()=>{
     console.log(`This web is running on http://localhost:${port}`);
 })
