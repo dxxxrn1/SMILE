@@ -32,7 +32,7 @@ export const saveStudentDetails = async (req, res) => {
         const pool = await connectToDB();
         console.log("the database is connected!!")
         // Check if email already exists
-        console.log("3ï¸âƒ£ connected, about to SELECT");
+        console.log("connected, about to SELECT");
         const results = await pool
             .request()
             .input("email", sql.VarChar, email)
@@ -446,7 +446,7 @@ export const userLogin = async (req, res) => {
 }
 
     } catch (err) {
-        console.error("âŒ Login error:", err);
+        console.error("Login error:", err);
         return res.sendStatus(500);
     }
 };

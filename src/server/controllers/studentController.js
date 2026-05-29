@@ -21,9 +21,10 @@ async function ensureStudentNotificationsTable(pool) {
   `);
 }
 
+// ✅ FIXED: Now uses connectToDB pool
 async function ensureStudentProfileColumns() {
-  const request = new sql.Request();
-  await request.query(`
+  const pool = await connectToDB();
+  await pool.request().query(`
     IF COL_LENGTH('dbo.Student', 'StuBio') IS NULL
       ALTER TABLE dbo.Student ADD StuBio NVARCHAR(MAX) NULL;
 
@@ -43,17 +44,18 @@ function getProfileImageExtension(mimeType) {
     "image/gif": "gif",
     "image/webp": "webp"
   };
-
   return allowed[mimeType] || null;
 }
 
-
-// Fetch Student's Saved Opportunities
+// ✅ FIXED
 export const getSavedOpportunities = async (req, res) => {
   try {
     const stuId = req.user.id;
+    const pool = await connectToDB();
+    const request = pool.request();
+    request.input("StuID", stuId);
 
-    const query = `
+    const result = await request.query(`
       SELECT
         so.SaveID,
         o.OppID,
@@ -67,12 +69,7 @@ export const getSavedOpportunities = async (req, res) => {
       JOIN Organisation org ON o.OrgId = org.OrgId
       WHERE so.StuID = @StuID
       ORDER BY so.DateSaved DESC
-    `;
-
-    const request = new sql.Request();
-    request.input("StuID", stuId);
-
-    const result = await request.query(query);
+    `);
 
     return res.status(200).json({
       success: true,
@@ -107,11 +104,13 @@ export const getStudentNotifications = async (req, res) => {
       ORDER BY DateCreated DESC
     `);
 
-    const unreadResult = await request.query(`
-      SELECT COUNT(*) AS UnreadCount
-      FROM StudentNotifications
-      WHERE StuID = @StuID AND IsRead = 0
-    `);
+    const unreadResult = await pool.request()
+      .input("StuID", stuId)
+      .query(`
+        SELECT COUNT(*) AS UnreadCount
+        FROM StudentNotifications
+        WHERE StuID = @StuID AND IsRead = 0
+      `);
 
     return res.status(200).json({
       success: true,
@@ -145,12 +144,15 @@ export const markStudentNotificationsRead = async (req, res) => {
   }
 };
 
-// Fetch Student's Applications
+// ✅ FIXED
 export const getStudentApplications = async (req, res) => {
   try {
     const stuId = req.user.id;
+    const pool = await connectToDB();
+    const request = pool.request();
+    request.input("StuID", stuId);
 
-    const query = `
+    const result = await request.query(`
       SELECT
         a.AppID,
         a.Status,
@@ -163,12 +165,7 @@ export const getStudentApplications = async (req, res) => {
       JOIN Organisation org ON o.OrgId = org.OrgId
       WHERE a.StuID = @StuID
       ORDER BY a.DateApplied DESC
-    `;
-
-    const request = new sql.Request();
-    request.input("StuID", stuId);
-
-    const result = await request.query(query);
+    `);
 
     return res.status(200).json({
       success: true,
@@ -180,22 +177,20 @@ export const getStudentApplications = async (req, res) => {
   }
 };
 
-// Delete a saved opportunity
+// ✅ FIXED
 export const deleteSavedOpportunity = async (req, res) => {
   try {
     const stuId = req.user.id;
     const oppId = req.params.oppId;
-
-    const query = `
-      DELETE FROM SavedOpportunities
-      WHERE StuID = @StuID AND OppID = @OppID
-    `;
-
-    const request = new sql.Request();
+    const pool = await connectToDB();
+    const request = pool.request();
     request.input("StuID", stuId);
     request.input("OppID", oppId);
 
-    await request.query(query);
+    await request.query(`
+      DELETE FROM SavedOpportunities
+      WHERE StuID = @StuID AND OppID = @OppID
+    `);
 
     return res.status(200).json({
       success: true,
@@ -207,7 +202,7 @@ export const deleteSavedOpportunity = async (req, res) => {
   }
 };
 
-// Save an opportunity
+// ✅ FIXED
 export const saveOpportunity = async (req, res) => {
   try {
     const stuId = req.user.id;
@@ -215,18 +210,17 @@ export const saveOpportunity = async (req, res) => {
 
     if (!oppId) return res.status(400).json({ success: false, message: "Opportunity ID is required" });
 
-    const query = `
+    const pool = await connectToDB();
+    const request = pool.request();
+    request.input("StuID", stuId);
+    request.input("OppID", oppId);
+
+    await request.query(`
       IF NOT EXISTS (SELECT 1 FROM SavedOpportunities WHERE StuID = @StuID AND OppID = @OppID)
       BEGIN
         INSERT INTO SavedOpportunities (StuID, OppID) VALUES (@StuID, @OppID)
       END
-    `;
-
-    const request = new sql.Request();
-    request.input("StuID", stuId);
-    request.input("OppID", oppId);
-
-    await request.query(query);
+    `);
 
     return res.status(200).json({ success: true, message: "Opportunity saved successfully." });
   } catch (error) {
@@ -235,7 +229,7 @@ export const saveOpportunity = async (req, res) => {
   }
 };
 
-// Apply for an opportunity
+// ✅ FIXED
 export const applyForOpportunity = async (req, res) => {
   try {
     const stuId = req.user.id;
@@ -243,18 +237,17 @@ export const applyForOpportunity = async (req, res) => {
 
     if (!oppId) return res.status(400).json({ success: false, message: "Opportunity ID is required" });
 
-    const query = `
+    const pool = await connectToDB();
+    const request = pool.request();
+    request.input("StuID", stuId);
+    request.input("OppID", oppId);
+
+    await request.query(`
       IF NOT EXISTS (SELECT 1 FROM Applications WHERE StuID = @StuID AND OppID = @OppID)
       BEGIN
         INSERT INTO Applications (StuID, OppID, Status, DateApplied) VALUES (@StuID, @OppID, 'Pending', GETDATE())
       END
-    `;
-
-    const request = new sql.Request();
-    request.input("StuID", stuId);
-    request.input("OppID", oppId);
-
-    await request.query(query);
+    `);
 
     return res.status(200).json({ success: true, message: "Application submitted successfully." });
   } catch (error) {
@@ -263,12 +256,14 @@ export const applyForOpportunity = async (req, res) => {
   }
 };
 
-// Fetch Student's Profile Details
+// ✅ FIXED
 export const getStudentProfile = async (req, res) => {
   try {
     const stuId = req.user.id;
     await ensureStudentProfileColumns();
-    const request = new sql.Request();
+
+    const pool = await connectToDB();
+    const request = pool.request();
     request.input("StuID", stuId);
 
     const result = await request.query(`
@@ -291,7 +286,7 @@ export const getStudentProfile = async (req, res) => {
   }
 };
 
-// Update Student's Profile Details
+// ✅ FIXED
 export const updateStudentProfile = async (req, res) => {
   try {
     const stuId = req.user.id;
@@ -302,13 +297,11 @@ export const updateStudentProfile = async (req, res) => {
       return res.status(400).json({ success: false, message: "Please fill in all required fields." });
     }
 
-    const existing = await new sql.Request()
+    const pool = await connectToDB();
+
+    const existing = await pool.request()
       .input("StuID", stuId)
-      .query(`
-        SELECT ProfilePicUrl
-        FROM Student
-        WHERE StuID = @StuID
-      `);
+      .query(`SELECT ProfilePicUrl FROM Student WHERE StuID = @StuID`);
 
     if (existing.recordset.length === 0) {
       return res.status(404).json({ success: false, message: "Student profile not found." });
@@ -327,7 +320,6 @@ export const updateStudentProfile = async (req, res) => {
           }
 
           const buffer = Buffer.from(base64Data, 'base64');
-
           if (buffer.length > 2 * 1024 * 1024) {
             return res.status(400).json({ success: false, message: "Profile picture must be smaller than 2MB." });
           }
@@ -340,7 +332,6 @@ export const updateStudentProfile = async (req, res) => {
 
           const filePath = path.join(uploadDir, fileName);
           fs.writeFileSync(filePath, buffer);
-
           profilePicUrl = `/Assets/uploads/${fileName}`;
         }
       } else if (profilePic.startsWith("/Assets/")) {
@@ -350,7 +341,7 @@ export const updateStudentProfile = async (req, res) => {
       }
     }
 
-    const request = new sql.Request();
+    const request = pool.request();
     request.input("StuID", stuId);
     request.input("firstName", firstName);
     request.input("lastName", lastName);
@@ -379,6 +370,7 @@ export const updateStudentProfile = async (req, res) => {
   }
 };
 
+// ✅ FIXED
 export const updateStudentBio = async (req, res) => {
   try {
     const stuId = req.user.id;
@@ -388,7 +380,8 @@ export const updateStudentBio = async (req, res) => {
       return res.status(400).json({ success: false, message: "Bio content is required." });
     }
 
-    const request = new sql.Request();
+    const pool = await connectToDB();
+    const request = pool.request();
     request.input("StuID", stuId);
     request.input("bio", bio);
     request.input("academicSubjects", academicSubjects || null);

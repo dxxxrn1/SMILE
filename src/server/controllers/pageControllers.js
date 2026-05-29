@@ -89,4 +89,9 @@ export const myOpportunitiesPage = (req,res)=>{
     res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages" , "myOpportunities.html"));
 }
 
+export const studentProfile = (req,res)=>{
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages" , "studentProfile.html"));
+}
+
+
 //Lucas Bohani Maluleke and Darren Foster
