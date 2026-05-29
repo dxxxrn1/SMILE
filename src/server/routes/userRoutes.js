@@ -27,6 +27,7 @@ import {
 import {createNewOpportunity,getAllOpportunities, getOrganizationApplicants, getOrgDashboardStats, updateApplicationStatus, getOrgOpportunities, updateOpportunity, deleteOpportunity} from '../controllers/opportunitiesControllers.js';
 import { getSavedOpportunities, getStudentApplications, deleteSavedOpportunity, saveOpportunity, applyForOpportunity, getStudentProfile, updateStudentProfile, updateStudentBio, getStudentNotifications, markStudentNotificationsRead } from "../controllers/studentController.js";
 import { createTicket, getMyTickets } from "../controllers/ticketController.js";
+import { getOrganizationAnalytics } from "../controllers/analyticsController.js";
 
 
 const route = express.Router();
@@ -77,6 +78,7 @@ route.put("/api/org/profile", verifyToken, updateOrgProfile);
 route.get("/api/org/public-profile/:orgId", verifyToken, getOrgPublicProfile);
 route.get("/api/org/applicants", verifyToken, getOrganizationApplicants);
 route.get("/api/org/dashboard-stats", verifyToken, getOrgDashboardStats);
+route.get("/api/org/analytics-overview", verifyToken, getOrganizationAnalytics);
 route.patch("/api/org/applicants/:appId/status", verifyToken, updateApplicationStatus);
 route.get("/org/analytics", verifyToken, analyticsPage);
 route.get("/forgot-password" , forgotPasswordPage)

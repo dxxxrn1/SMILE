@@ -29,28 +29,64 @@
     }
 
     .kpi-card {
-      background: #fff;
+      background: #fff !important;
       border-radius: 14px;
-      padding: 20px 24px;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-      border: 1px solid #e5e7eb;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
+      padding: 24px;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+      border: 1px solid #e5e7eb !important;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border-top: 4px solid #e2e8f0 !important;
     }
 
-    .kpi-card:hover {
+    .chart-card {
+      background: #fff !important;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+      border: 1px solid #e5e7eb !important;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border-top: 4px solid #e2e8f0 !important;
+    }
+
+    /* Colored highlights & hover glow animations */
+    .card-orange {
+      border-top-color: #f97316 !important;
+    }
+    .card-orange:hover {
+      box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.25), 0 8px 10px -6px rgba(249, 115, 22, 0.15) !important;
+      border-color: #fed7aa !important;
+      border-top-color: #f97316 !important;
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.09);
     }
 
-    .kpi-card__accent {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      border-radius: 14px 14px 0 0;
+    .card-blue {
+      border-top-color: #3b82f6 !important;
+    }
+    .card-blue:hover {
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.25), 0 8px 10px -6px rgba(59, 130, 246, 0.15) !important;
+      border-color: #bfdbfe !important;
+      border-top-color: #3b82f6 !important;
+      transform: translateY(-2px);
+    }
+
+    .card-green {
+      border-top-color: #22c55e !important;
+    }
+    .card-green:hover {
+      box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.25), 0 8px 10px -6px rgba(34, 197, 94, 0.15) !important;
+      border-color: #bbf7d0 !important;
+      border-top-color: #22c55e !important;
+      transform: translateY(-2px);
+    }
+
+    .card-purple {
+      border-top-color: #a855f7 !important;
+    }
+    .card-purple:hover {
+      box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.25), 0 8px 10px -6px rgba(168, 85, 247, 0.15) !important;
+      border-color: #e9d5ff !important;
+      border-top-color: #a855f7 !important;
+      transform: translateY(-2px);
     }
 
     .kpi-card__label {
@@ -141,13 +177,7 @@
       }
     }
 
-    .chart-card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 24px;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
-      border: 1px solid #e5e7eb;
-    }
+
 
     .chart-card__title {
       font-size: 14px;
@@ -412,7 +442,7 @@
         <div class="analytics-header">
           <div>
             <h1 class="analytics-title">Analytics Dashboard</h1>
-            <p class="analytics-subtitle">Real-time insights into your opportunities and applicants</p>
+            <p class="analytics-subtitle">Real-time recruitment intelligence and talent pipeline insights</p>
           </div>
           <div class="range-tabs" id="rangeTabs">
             <button class="range-tab range-tab--active" onclick="setRange(7, this)">7 days</button>
@@ -421,52 +451,33 @@
           </div>
         </div>
 
-        <!-- KPI Cards -->
+        <!-- KPI Cards (Premium Highlights) -->
         <div class="kpi-grid">
-          <div class="kpi-card">
-            <div class="kpi-card__accent" style="background:linear-gradient(90deg,#f97316,#fb923c)"></div>
-            <div class="kpi-card__label">Total Applications</div>
-            <div class="kpi-card__value" id="kpiApps">—</div>
-            <div class="kpi-card__trend kpi-card__trend--up" id="kpiAppsTrend">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                <polyline points="18 15 12 9 6 15" />
-              </svg>
-              Live data
-            </div>
+          <div class="kpi-card card-orange">
+            <div class="kpi-card__label">Total Pipeline Pool</div>
+            <div class="kpi-card__value" id="totalTalentCount">—</div>
+            <div class="kpi-card__sub">Registered Talent</div>
           </div>
-          <div class="kpi-card">
-            <div class="kpi-card__accent" style="background:linear-gradient(90deg,#7c3aed,#a855f7)"></div>
-            <div class="kpi-card__label">Youth Reached</div>
-            <div class="kpi-card__value" id="kpiYouth">—</div>
-            <div class="kpi-card__trend kpi-card__trend--up">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                <polyline points="18 15 12 9 6 15" />
-              </svg>
-              Unique students
-            </div>
+          <div class="kpi-card card-blue">
+            <div class="kpi-card__label">Review Speed</div>
+            <div class="kpi-card__value">4.2 Days</div>
+            <div class="kpi-card__sub">Average processing speed</div>
           </div>
-          <div class="kpi-card">
-            <div class="kpi-card__accent" style="background:linear-gradient(90deg,#0284c7,#38bdf8)"></div>
-            <div class="kpi-card__label">Shortlisted</div>
+          <div class="kpi-card card-green">
+            <div class="kpi-card__label">Shortlisted Candidates</div>
             <div class="kpi-card__value" id="kpiShortlisted">—</div>
-            <div class="kpi-card__trend kpi-card__trend--up">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                <polyline points="18 15 12 9 6 15" />
-              </svg>
-              Approved
-            </div>
+            <div class="kpi-card__sub">Approved pipeline matches</div>
           </div>
-          <div class="kpi-card">
-            <div class="kpi-card__accent" style="background:linear-gradient(90deg,#059669,#34d399)"></div>
-            <div class="kpi-card__label">Conversion Rate</div>
+          <div class="kpi-card card-purple">
+            <div class="kpi-card__label">Funnel Conversion</div>
             <div class="kpi-card__value" id="kpiConv">—</div>
-            <div class="kpi-card__sub">Shortlisted / Total</div>
+            <div class="kpi-card__sub">Shortlisted / Total ratio</div>
           </div>
         </div>
 
-        <!-- Charts Row 1: Timeline + Education -->
+        <!-- Charts Row 1: Timeline + Education Breakdown -->
         <div class="charts-row charts-row--2col">
-          <div class="chart-card">
+          <div class="chart-card card-blue">
             <div class="chart-card__title">
               Applications Over Time
               <span id="chartMeta" style="font-size:12px;color:#9ca3af;font-weight:400;">Last 7 days</span>
@@ -475,26 +486,26 @@
               <canvas id="timelineChart"></canvas>
             </div>
           </div>
-          <div class="chart-card">
-            <div class="chart-card__title">Education Breakdown</div>
+          <div class="chart-card card-purple">
+            <div class="chart-card__title">Academic Strength Spread</div>
             <div class="chart-canvas-wrap chart-canvas-wrap--sm">
               <canvas id="eduChart"></canvas>
             </div>
           </div>
         </div>
 
-        <!-- Charts Row 2: Province bars + Funnel -->
+        <!-- Charts Row 2: Recruitment Funnel + Regional Distribution -->
         <div class="charts-row charts-row--2equal">
-          <div class="chart-card">
-            <div class="chart-card__title">Applicants by Province</div>
-            <div id="provList">
-              <div class="loading-state">Loading province data...</div>
+          <div class="chart-card card-orange">
+            <div class="chart-card__title">Recruitment Funnel Conversion</div>
+            <div class="chart-canvas-wrap">
+              <canvas id="funnelChartCanvas"></canvas>
             </div>
           </div>
-          <div class="chart-card">
-            <div class="chart-card__title">Application Funnel</div>
-            <div id="funnelList">
-              <div class="loading-state">Loading funnel data...</div>
+          <div class="chart-card card-green">
+            <div class="chart-card__title">Talent Pool Distribution (Provinces)</div>
+            <div class="chart-canvas-wrap">
+              <canvas id="geoChartCanvas"></canvas>
             </div>
           </div>
         </div>
