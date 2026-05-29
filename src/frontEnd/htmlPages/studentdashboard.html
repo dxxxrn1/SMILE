@@ -1,46 +1,36 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="SMILE Student Dashboard - View your saved opportunities, track applications, and access free eBooks."
-    />
-    <title>Dashboard - SMILE</title>
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body class="dashboard-page">
-    <!-- Dashboard Header / Navigation -->
-    <header class="header header--dashboard">
-      <nav class="nav container">
-        <a href="/" class="nav__logo">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            style="margin-right: 6px; flex-shrink: 0; color: var(--primary-pink, #ec4899);"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-            <line x1="9" y1="9" x2="9.01" y2="9" />
-            <line x1="15" y1="9" x2="15.01" y2="9" />
-          </svg>
-          <span>SMILE</span>
-        </a>
 
-        <ul class="nav__menu nav__menu--dashboard" id="navMenu">
-          <li>
-            <!-- <a href="/opportunities/browse" class="nav__link">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="SMILE Student Dashboard - View your saved opportunities, track applications, and access free eBooks." />
+  <title>Dashboard - SMILE</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body class="dashboard-page">
+  <!-- Dashboard Header / Navigation -->
+  <header class="header header--dashboard">
+    <nav class="nav container">
+      <a href="/" class="nav__logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          style="margin-right: 6px; flex-shrink: 0; color: var(--primary-pink, #ec4899);">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+          <line x1="9" y1="9" x2="9.01" y2="9" />
+          <line x1="15" y1="9" x2="15.01" y2="9" />
+        </svg>
+        <span>SMILE</span>
+      </a>
+
+      <ul class="nav__menu nav__menu--dashboard" id="navMenu">
+        <li>
+          <!-- <a href="/opportunities/browse" class="nav__link">
               <svg
                 class="nav__link-svg"
                 width="20"
@@ -58,924 +48,893 @@
               </svg>
               Opportunities
             </a> -->
-          </li>
-          <li><a href="/careers/explore" class="nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
-            <path d="M2 12h20"></path>
-          </svg>
-          Careers
-        </a></li>
-          <li>
-            <a href="/near/me" class="nav__link">
-              <svg
-                class="nav__link-svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-              Near Me
-            </a>
-          </li>
-          <li>
-            <a href="/news/daily" class="nav__link">
-              <svg
-                class="nav__link-svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path
-                  d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"
-                ></path>
-                <path d="M18 14h-8"></path>
-                <path d="M15 18h-5"></path>
-                <path d="M10 6h8v4h-8V6Z"></path>
-              </svg>
-              News
-            </a>
-          </li>
-          <li>
-            <a href="/student/chess" class="nav__link">
-              <svg
-                class="nav__link-svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M8 16h8"></path>
-                <path d="M9 12h6"></path>
-                <path d="M12 4v4"></path>
-                <path d="M10 8h4"></path>
-                <path d="M8 20h8"></path>
-                <path d="M9 16l-1 4"></path>
-                <path d="M15 16l1 4"></path>
-              </svg>
-              Chess
-            </a>
-          </li>
-          <li>
-            <a href="/student/dashboard" class="nav__link nav__link--active">
-              <svg
-                class="nav__link-svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect width="7" height="9" x="3" y="3" rx="1"></rect>
-                <rect width="7" height="5" x="14" y="3" rx="1"></rect>
-                <rect width="7" height="9" x="14" y="12" rx="1"></rect>
-                <rect width="7" height="5" x="3" y="16" rx="1"></rect>
-              </svg>
-              Dashboard
-            </a>
-          </li>
-        </ul>
-
-        <div class="nav__actions nav__actions--dashboard">
-          <button class="nav__icon-btn" id="notificationBtn" aria-label="Notifications" aria-expanded="false" aria-controls="notificationPanel">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+        </li>
+        <li><a href="/careers/explore" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+              <path d="M2 12h20"></path>
             </svg>
-            <span class="nav__notification-badge" id="notificationBadge" hidden>0</span>
-          </button>
-          <div class="notification-panel" id="notificationPanel" aria-live="polite">
-            <div class="notification-panel__header">
-              <div>
-                <h2>Notifications</h2>
-                <p>Application updates from organisations</p>
-              </div>
-              <button type="button" class="notification-panel__mark" id="notificationMarkRead">Mark read</button>
-            </div>
-            <div class="notification-panel__list" id="notificationList">
-              <p class="notification-panel__empty">Loading notifications...</p>
-            </div>
-          </div>
-          <div class="nav__profile" id="profileDropdown">
-            <button class="nav__profile-btn" aria-label="Profile menu">
-              <div class="nav__avatar">
-                <span id="initials">TM</span>
-              </div>
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </button>
-            <div class="nav__profile-menu" id="profileMenu">
-              <a href="/student/profile" class="nav__profile-link">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-                My Profile
-              </a>
-              <a href="#" class="nav__profile-link">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path
-                    d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
-                  ></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-                Settings
-              </a>
-              <hr class="nav__profile-divider" />
-              <a href="#" id="myTicketsDropdownBtn" class="nav__profile-link" onclick="openTicketsTab(event)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                  <polyline points="22,6 12,13 2,6"></polyline>
-                </svg>
-                My Tickets
-              </a>
-              <hr class="nav__profile-divider" />
-              <a href="/logout"  id="logout" class="nav__profile-link nav__profile-link--logout">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                  <polyline points="16 17 21 12 16 7"></polyline>
-                  <line x1="21" x2="9" y1="12" y2="12"></line>
-                </svg>
-                Log Out
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <button
-          class="nav__mobile-toggle"
-          id="mobileToggle"
-          aria-label="Toggle navigation menu"
-        >
-          &#9776;
-        </button>
-      </nav>
-    </header>
-
-    <main class="dashboard">
-      <div class="container">
-        <!-- Dashboard Welcome Header -->
-        <div class="dashboard__header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-xl); flex-wrap: wrap; gap: var(--spacing-md);">
-          <div class="dashboard__welcome">
-            <h1 class="dashboard__title" style="font-size: 1.75rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">Welcome back, <span id="userName" style="color: var(--primary-pink, #ec4899);">Thabo!</span></h1>
-            <p class="dashboard__subtitle" style="font-size: 0.9375rem; color: var(--gray-600);">
-              Here&apos;s what&apos;s happening with your opportunities today.
-            </p>
-          </div>
-
-          <a href="/opportunities/browse" class="btn btn--primary" style="display: inline-flex; align-items: center; gap: 8px;">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.3-4.3"></path>
+            Careers
+          </a></li>
+        <li>
+          <a href="/near/me" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
             </svg>
-            Find Opportunities
+            Near Me
           </a>
-        </div>
+        </li>
+        <li>
+          <a href="/news/daily" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2">
+              </path>
+              <path d="M18 14h-8"></path>
+              <path d="M15 18h-5"></path>
+              <path d="M10 6h8v4h-8V6Z"></path>
+            </svg>
+            News
+          </a>
+        </li>
+        <li>
+          <a href="/student/chess" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 16h8"></path>
+              <path d="M9 12h6"></path>
+              <path d="M12 4v4"></path>
+              <path d="M10 8h4"></path>
+              <path d="M8 20h8"></path>
+              <path d="M9 16l-1 4"></path>
+              <path d="M15 16l1 4"></path>
+            </svg>
+            Chess
+          </a>
+        </li>
+        <li>
+          <a href="/student/dashboard" class="nav__link nav__link--active">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+              <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+              <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+              <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+            </svg>
+            Dashboard
+          </a>
+        </li>
+      </ul>
 
-        <!-- Quick Stats Cards -->
-        <div class="dashboard__stats">
-          <div class="stat-card stat-card--orange">
-            <div class="stat-card__icon stat-card__icon--orange">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
+      <div class="nav__actions nav__actions--dashboard">
+        <button class="nav__icon-btn" id="notificationBtn" aria-label="Notifications" aria-expanded="false"
+          aria-controls="notificationPanel">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+          </svg>
+          <span class="nav__notification-badge" id="notificationBadge" hidden>0</span>
+        </button>
+        <div class="notification-panel" id="notificationPanel" aria-live="polite">
+          <div class="notification-panel__header">
+            <div>
+              <h2>Notifications</h2>
+              <p>Application updates from organisations</p>
+            </div>
+            <button type="button" class="notification-panel__mark" id="notificationMarkRead">Mark read</button>
+          </div>
+          <div class="notification-panel__list" id="notificationList">
+            <p class="notification-panel__empty">Loading notifications...</p>
+          </div>
+        </div>
+        <div class="nav__profile" id="profileDropdown">
+          <button class="nav__profile-btn" aria-label="Profile menu">
+            <div class="nav__avatar">
+              <span id="initials">TM</span>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="nav__profile-menu" id="profileMenu">
+            <a href="/student/profile" class="nav__profile-link">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              My Profile
+            </a>
+            <a href="#" class="nav__profile-link">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <path
-                  d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"
-                ></path>
+                  d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+                </path>
+                <circle cx="12" cy="12" r="3"></circle>
               </svg>
-            </div>
-            <div class="stat-card__content">
-              <span class="stat-card__number">12</span>
-              <span class="stat-card__label">Saved Opportunities</span>
-            </div>
-          </div>
-          <div class="stat-card stat-card--blue">
-            <div class="stat-card__icon stat-card__icon--blue">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-            </div>
-            <div class="stat-card__content">
-              <span class="stat-card__number">5</span>
-              <span class="stat-card__label">Applications Sent</span>
-            </div>
-          </div>
-          <div class="stat-card stat-card--purple">
-            <div class="stat-card__icon stat-card__icon--purple">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
-            </div>
-            <div class="stat-card__content">
-              <span class="stat-card__number">2</span>
-              <span class="stat-card__label">Interviews Scheduled</span>
-            </div>
-          </div>
-          <div class="stat-card stat-card--red" id="profileStrengthCard" onclick="openAIProfileModal()" style="cursor: pointer;" title="Click to write with AI Profile Assistant Bot">
-            <div class="stat-card__icon stat-card__icon--red" id="profileStrengthIcon" style="font-size: 24px; display: flex; align-items: center; justify-content: center;">
-              🤖
-            </div>
-            <div class="stat-card__content">
-              <span class="stat-card__number" id="profileStrengthNumber">0%</span>
-              <span class="stat-card__label" style="display: flex; align-items: center; gap: 6px;">
-                Profile Strength
-                <span style="font-size: 9px; background: rgba(0,0,0,0.06); padding: 2px 5px; border-radius: 4px; font-weight: 700; color: inherit;">🤖 AI WRITER</span>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Main Dashboard Grid -->
-        <div class="dashboard__grid">
-          <!-- Saved Opportunities Section -->
-          <section class="dashboard__section dashboard__section--opportunities">
-            <div class="section__header">
-              <h2 class="section__title">
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path
-                    d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"
-                  ></path>
-                </svg>
-                Saved Opportunities
-              </h2>
-              <a href="#" class="section__link">View All</a>
-            </div>
-            <div class="opportunities-list">
-              <p style="color:#888;padding:1rem;">Loading saved opportunities...</p>
-            </div>
-          </section>
-
-          <!-- Application Status Section -->
-          <section class="dashboard__section dashboard__section--applications">
-            <div class="section__header">
-              <h2 class="section__title">
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path
-                    d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
-                  ></path>
-                  <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
-                </svg>
-                Application Status
-              </h2>
-              <a href="#" class="section__link">View All</a>
-            </div>
-            <div class="applications-list">
-              <p style="color:#888;padding:1rem;">Loading applications...</p>
-            </div>
-          </section>
-
-          <!-- eBook Library Section -->
-          <section class="dashboard__section dashboard__section--ebooks">
-            <div class="section__header">
-              <h2 class="section__title">
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path
-                    d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
-                  ></path>
-                </svg>
-                Free eBook Library
-              </h2>
-              <a href="#" class="section__link">Browse All</a>
-            </div>
-            <div class="ebooks-grid">
-              <article class="ebook-card">
-                <div class="ebook-card__cover ebook-card__cover--orange">
-                  <svg
-                    width="40"
-                    height="40"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path
-                      d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
-                    ></path>
-                  </svg>
-                </div>
-                <div class="ebook-card__content">
-                  <span class="ebook-card__category">Career Guide</span>
-                  <h3 class="ebook-card__title">How to Write a Winning CV</h3>
-                  <p class="ebook-card__pages">45 pages</p>
-                  <button class="btn btn--outline btn--sm">
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
-                      ></path>
-                      <polyline points="7 10 12 15 17 10"></polyline>
-                      <line x1="12" x2="12" y1="15" y2="3"></line>
-                    </svg>
-                    Download
-                  </button>
-                </div>
-              </article>
-              <article class="ebook-card">
-                <div class="ebook-card__cover ebook-card__cover--blue">
-                  <svg
-                    width="40"
-                    height="40"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path
-                      d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
-                    ></path>
-                  </svg>
-                </div>
-                <div class="ebook-card__content">
-                  <span class="ebook-card__category">Study Tips</span>
-                  <h3 class="ebook-card__title">
-                    Mastering Matric Mathematics
-                  </h3>
-                  <p class="ebook-card__pages">120 pages</p>
-                  <button class="btn btn--outline btn--sm">
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
-                      ></path>
-                      <polyline points="7 10 12 15 17 10"></polyline>
-                      <line x1="12" x2="12" y1="15" y2="3"></line>
-                    </svg>
-                    Download
-                  </button>
-                </div>
-              </article>
-              <article class="ebook-card">
-                <div class="ebook-card__cover ebook-card__cover--green">
-                  <svg
-                    width="40"
-                    height="40"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path
-                      d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
-                    ></path>
-                  </svg>
-                </div>
-                <div class="ebook-card__content">
-                  <span class="ebook-card__category">Financial Literacy</span>
-                  <h3 class="ebook-card__title">Managing Your Bursary Funds</h3>
-                  <p class="ebook-card__pages">32 pages</p>
-                  <button class="btn btn--outline btn--sm">
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
-                      ></path>
-                      <polyline points="7 10 12 15 17 10"></polyline>
-                      <line x1="12" x2="12" y1="15" y2="3"></line>
-                    </svg>
-                    Download
-                  </button>
-                </div>
-              </article>
-              <article class="ebook-card">
-                <div class="ebook-card__cover ebook-card__cover--purple">
-                  <svg
-                    width="40"
-                    height="40"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path
-                      d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
-                    ></path>
-                  </svg>
-                </div>
-                <div class="ebook-card__content">
-                  <span class="ebook-card__category">Interview Prep</span>
-                  <h3 class="ebook-card__title">
-                    Ace Your Scholarship Interview
-                  </h3>
-                  <p class="ebook-card__pages">58 pages</p>
-                  <button class="btn btn--outline btn--sm">
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path
-                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
-                      ></path>
-                      <polyline points="7 10 12 15 17 10"></polyline>
-                      <line x1="12" x2="12" y1="15" y2="3"></line>
-                    </svg>
-                    Download
-                  </button>
-                </div>
-              </article>
-            </div>
-          </section>
-
-          <!-- Near Me Map Section commented out -->
-        </div>
-
-        <!-- ─── My Tickets Tab ─── -->
-        <div id="tickets-panel" style="display:none; margin-top: 2rem;">
-
-          <style>
-            /* Tickets tab inline styles */
-            .tickets-layout { display: grid; grid-template-columns: 1fr 1.6fr; gap: 24px; align-items: start; }
-            @media (max-width: 900px) { .tickets-layout { grid-template-columns: 1fr; } }
-
-            .ticket-form-card {
-              background: #fff;
-              border-radius: 14px;
-              border: 1px solid #e2e8f0;
-              box-shadow: 0 2px 8px rgba(0,0,0,.06);
-              overflow: hidden;
-            }
-            .ticket-form-card__header {
-              padding: 20px 24px 16px;
-              border-bottom: 1px solid #e2e8f0;
-            }
-            .ticket-form-card__header h3 {
-              font-size: 16px; font-weight: 600; color: #0f172a;
-              display: flex; align-items: center; gap: 8px;
-            }
-            .ticket-form-card__body { padding: 20px 24px 24px; }
-            .tkt-form-group { margin-bottom: 16px; }
-            .tkt-form-group label {
-              display: block; font-size: 11px; font-weight: 600;
-              color: #94a3b8; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px;
-            }
-            .tkt-input {
-              width: 100%; padding: 10px 12px;
-              border: 1px solid #e2e8f0; border-radius: 8px;
-              font-size: 14px; font-family: inherit; background: #f8fafc;
-              transition: border-color .2s, box-shadow .2s;
-            }
-            .tkt-input:focus { outline: none; border-color: #ec4899; box-shadow: 0 0 0 3px rgba(236,72,153,.12); background:#fff; }
-            textarea.tkt-input { resize: vertical; min-height: 100px; }
-            .tkt-submit-btn {
-              width: 100%; padding: 12px;
-              background: linear-gradient(135deg, #f97316, #ec4899);
-              color: #fff; border: none; border-radius: 8px;
-              font-size: 14px; font-weight: 600; cursor: pointer;
-              transition: opacity .2s, transform .2s;
-              display: flex; align-items: center; justify-content: center; gap: 8px;
-            }
-            .tkt-submit-btn:hover { opacity: .9; transform: translateY(-1px); }
-            .tkt-submit-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
-
-            /* Tickets table card */
-            .tickets-table-card {
-              background: #fff; border-radius: 14px;
-              border: 1px solid #e2e8f0;
-              box-shadow: 0 2px 8px rgba(0,0,0,.06);
-              overflow: hidden;
-            }
-            .tickets-table-card__header {
-              padding: 20px 24px 16px; border-bottom: 1px solid #e2e8f0;
-              display: flex; align-items: center; justify-content: space-between;
-            }
-            .tickets-table-card__header h3 {
-              font-size: 16px; font-weight: 600; color: #0f172a;
-              display: flex; align-items: center; gap: 8px;
-            }
-            .tkt-table { width: 100%; border-collapse: collapse; }
-            .tkt-table th {
-              padding: 10px 16px; font-size: 11px; font-weight: 600;
-              color: #94a3b8; text-transform: uppercase; letter-spacing: .5px;
-              text-align: left; border-bottom: 1px solid #e2e8f0; background: #f8fafc;
-            }
-            .tkt-table td { padding: 12px 16px; font-size: 13px; color: #374151; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
-            .tkt-table tr:last-child td { border-bottom: none; }
-            .tkt-table tr:hover td { background: #fafafa; }
-            .tkt-badge {
-              display: inline-flex; align-items: center; gap: 4px;
-              padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
-            }
-            .tkt-badge--open    { background: #fef3c7; color: #92400e; }
-            .tkt-badge--resolved { background: #d1fae5; color: #065f46; }
-            .tkt-feedback { font-size: 12px; color: #64748b; margin-top: 4px; font-style: italic; }
-            .tkt-empty { text-align: center; padding: 2.5rem; color: #9ca3af; font-size: 14px; }
-            .tkt-toast {
-              position: fixed; bottom: 24px; right: 24px; z-index: 9999;
-              padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 500;
-              color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.15);
-              animation: slideUp .3s ease; display: none;
-            }
-            .tkt-toast--success { background: linear-gradient(135deg,#059669,#10b981); }
-            .tkt-toast--error   { background: linear-gradient(135deg,#dc2626,#ef4444); }
-            @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-          </style>
-
-          <div class="section__header" style="margin-bottom: 20px;">
-            <h2 class="section__title">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              Settings
+            </a>
+            <hr class="nav__profile-divider" />
+            <a href="#" id="myTicketsDropdownBtn" class="nav__profile-link" onclick="openTicketsTab(event)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                 <polyline points="22,6 12,13 2,6"></polyline>
               </svg>
-              My Support Tickets
-            </h2>
+              My Tickets
+            </a>
+            <hr class="nav__profile-divider" />
+            <a href="/logout" id="logout" class="nav__profile-link nav__profile-link--logout">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" x2="9" y1="12" y2="12"></line>
+              </svg>
+              Log Out
+            </a>
           </div>
+        </div>
+      </div>
 
-          <div class="tickets-layout">
+      <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
+        &#9776;
+      </button>
+    </nav>
+  </header>
 
-            <!-- Create Ticket Form -->
-            <div class="ticket-form-card">
-              <div class="ticket-form-card__header">
-                <h3>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                  </svg>
-                  Report an Issue
-                </h3>
+  <main class="dashboard">
+    <div class="container">
+      <!-- Dashboard Welcome Header -->
+      <div class="dashboard__header"
+        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-xl); flex-wrap: wrap; gap: var(--spacing-md);">
+        <div class="dashboard__welcome">
+          <h1 class="dashboard__title"
+            style="font-size: 1.75rem; font-weight: 700; color: var(--gray-900); margin-bottom: var(--spacing-xs);">
+            Welcome back, <span id="userName" style="color: var(--primary-pink, #ec4899);">Thabo!</span></h1>
+          <p class="dashboard__subtitle" style="font-size: 0.9375rem; color: var(--gray-600);">
+            Here&apos;s what&apos;s happening with your opportunities today.
+          </p>
+        </div>
+
+        <a href="/opportunities/browse" class="btn btn--primary"
+          style="display: inline-flex; align-items: center; gap: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          Find Opportunities
+        </a>
+      </div>
+
+      <!-- Quick Stats Cards -->
+      <div class="dashboard__stats">
+        <div class="stat-card stat-card--orange">
+          <div class="stat-card__icon stat-card__icon--orange">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </div>
+          <div class="stat-card__content">
+            <span class="stat-card__number">12</span>
+            <span class="stat-card__label">Saved Opportunities</span>
+          </div>
+        </div>
+        <div class="stat-card stat-card--blue">
+          <div class="stat-card__icon stat-card__icon--blue">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div class="stat-card__content">
+            <span class="stat-card__number">5</span>
+            <span class="stat-card__label">Applications Sent</span>
+          </div>
+        </div>
+        <div class="stat-card stat-card--purple">
+          <div class="stat-card__icon stat-card__icon--purple">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="stat-card__content">
+            <span class="stat-card__number">2</span>
+            <span class="stat-card__label">Interviews Scheduled</span>
+          </div>
+        </div>
+        <div class="stat-card stat-card--red" id="profileStrengthCard" onclick="openAIProfileModal()"
+          style="cursor: pointer;" title="Click to write with AI Profile Assistant Bot">
+          <div class="stat-card__icon stat-card__icon--red" id="profileStrengthIcon"
+            style="font-size: 24px; display: flex; align-items: center; justify-content: center;">
+            🤖
+          </div>
+          <div class="stat-card__content">
+            <span class="stat-card__number" id="profileStrengthNumber">0%</span>
+            <span class="stat-card__label" style="display: flex; align-items: center; gap: 6px;">
+              Profile Strength
+              <span
+                style="font-size: 9px; background: rgba(0,0,0,0.06); padding: 2px 5px; border-radius: 4px; font-weight: 700; color: inherit;">🤖
+                AI WRITER</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Dashboard Grid -->
+      <div class="dashboard__grid">
+        <!-- Saved Opportunities Section -->
+        <section class="dashboard__section dashboard__section--opportunities">
+          <div class="section__header">
+            <h2 class="section__title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+              </svg>
+              Saved Opportunities
+            </h2>
+            <a href="#" class="section__link">View All</a>
+          </div>
+          <div class="opportunities-list">
+            <p style="color:#888;padding:1rem;">Loading saved opportunities...</p>
+          </div>
+        </section>
+
+        <!-- Application Status Section -->
+        <section class="dashboard__section dashboard__section--applications">
+          <div class="section__header">
+            <h2 class="section__title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+              </svg>
+              Application Status
+            </h2>
+            <a href="#" class="section__link">View All</a>
+          </div>
+          <div class="applications-list">
+            <p style="color:#888;padding:1rem;">Loading applications...</p>
+          </div>
+        </section>
+
+        <!-- eBook Library Section -->
+        <section class="dashboard__section dashboard__section--ebooks">
+          <div class="section__header">
+            <h2 class="section__title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+              </svg>
+              Free eBook Library
+            </h2>
+            <a href="#" class="section__link">Browse All</a>
+          </div>
+          <div class="ebooks-grid">
+            <article class="ebook-card">
+              <div class="ebook-card__cover ebook-card__cover--orange">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                </svg>
               </div>
-              <div class="ticket-form-card__body">
-                <div class="tkt-form-group">
-                  <label for="tktType">Issue Type</label>
-                  <select id="tktType" class="tkt-input">
-                    <option value="">Select type...</option>
-                    <option value="Bug / Issue">🐛 App Bug / Issue</option>
-                    <option value="Report">🚩 Report Content</option>
-                  </select>
-                </div>
-                <div class="tkt-form-group">
-                  <label for="tktSubject">Subject</label>
-                  <input type="text" id="tktSubject" class="tkt-input" placeholder="Brief description of the issue..." maxlength="255" />
-                </div>
-                <div class="tkt-form-group">
-                  <label for="tktDesc">Full Description</label>
-                  <textarea id="tktDesc" class="tkt-input" placeholder="Please describe the issue in detail — include any steps to reproduce, screenshots or context..."></textarea>
-                </div>
-                <button class="tkt-submit-btn" id="tktSubmitBtn" onclick="submitStudentTicket()">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                  Submit Ticket
+              <div class="ebook-card__content">
+                <span class="ebook-card__category">Career Guide</span>
+                <h3 class="ebook-card__title">How to Write a Winning CV</h3>
+                <p class="ebook-card__pages">45 pages</p>
+                <button class="btn btn--outline btn--sm">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" x2="12" y1="15" y2="3"></line>
+                  </svg>
+                  Download
                 </button>
               </div>
-            </div>
-
-            <!-- Tickets History -->
-            <div class="tickets-table-card">
-              <div class="tickets-table-card__header">
-                <h3>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                  </svg>
-                  My Past Tickets
+            </article>
+            <article class="ebook-card">
+              <div class="ebook-card__cover ebook-card__cover--blue">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                </svg>
+              </div>
+              <div class="ebook-card__content">
+                <span class="ebook-card__category">Study Tips</span>
+                <h3 class="ebook-card__title">
+                  Mastering Matric Mathematics
                 </h3>
-                <button onclick="loadStudentTickets()" style="font-size:12px;color:#ec4899;background:none;border:none;cursor:pointer;font-weight:600;">↻ Refresh</button>
+                <p class="ebook-card__pages">120 pages</p>
+                <button class="btn btn--outline btn--sm">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" x2="12" y1="15" y2="3"></line>
+                  </svg>
+                  Download
+                </button>
               </div>
-              <div style="overflow-x:auto;">
-                <table class="tkt-table">
-                  <thead>
-                    <tr>
-                      <th>#ID</th>
-                      <th>Type</th>
-                      <th>Subject</th>
-                      <th>Status</th>
-                      <th>Admin Feedback</th>
-                      <th>Date</th>
-                    </tr>
-                  </thead>
-                  <tbody id="tkt-table-body">
-                    <tr><td colspan="6" class="tkt-empty">Loading tickets...</td></tr>
-                  </tbody>
-                </table>
+            </article>
+            <article class="ebook-card">
+              <div class="ebook-card__cover ebook-card__cover--green">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                </svg>
               </div>
-            </div>
-          </div><!-- /tickets-layout -->
+              <div class="ebook-card__content">
+                <span class="ebook-card__category">Financial Literacy</span>
+                <h3 class="ebook-card__title">Managing Your Bursary Funds</h3>
+                <p class="ebook-card__pages">32 pages</p>
+                <button class="btn btn--outline btn--sm">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" x2="12" y1="15" y2="3"></line>
+                  </svg>
+                  Download
+                </button>
+              </div>
+            </article>
+            <article class="ebook-card">
+              <div class="ebook-card__cover ebook-card__cover--purple">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                </svg>
+              </div>
+              <div class="ebook-card__content">
+                <span class="ebook-card__category">Interview Prep</span>
+                <h3 class="ebook-card__title">
+                  Ace Your Scholarship Interview
+                </h3>
+                <p class="ebook-card__pages">58 pages</p>
+                <button class="btn btn--outline btn--sm">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" x2="12" y1="15" y2="3"></line>
+                  </svg>
+                  Download
+                </button>
+              </div>
+            </article>
+          </div>
+        </section>
 
-          <!-- Toast notification -->
-          <div class="tkt-toast" id="tktToast"></div>
-        </div><!-- /tickets-panel -->
-
+        <!-- Near Me Map Section commented out -->
       </div>
-    </div>
-    </main>
 
+      <!-- ─── My Tickets Tab ─── -->
+      <div id="tickets-panel" style="display:none; margin-top: 2rem;">
 
+        <style>
+          /* Tickets tab inline styles */
+          .tickets-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.6fr;
+            gap: 24px;
+            align-items: start;
+          }
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="container">
-        <div class="footer__content">
-          <a href="home.html" class="footer__logo">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.5"
-              style="margin-right: 6px; flex-shrink: 0; color: var(--primary-pink, #ec4899);"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-              <line x1="9" y1="9" x2="9.01" y2="9" />
-              <line x1="15" y1="9" x2="15.01" y2="9" />
+          @media (max-width: 900px) {
+            .tickets-layout {
+              grid-template-columns: 1fr;
+            }
+          }
+
+          .ticket-form-card {
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+            overflow: hidden;
+          }
+
+          .ticket-form-card__header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #e2e8f0;
+          }
+
+          .ticket-form-card__header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+
+          .ticket-form-card__body {
+            padding: 20px 24px 24px;
+          }
+
+          .tkt-form-group {
+            margin-bottom: 16px;
+          }
+
+          .tkt-form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 6px;
+          }
+
+          .tkt-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #f8fafc;
+            transition: border-color .2s, box-shadow .2s;
+          }
+
+          .tkt-input:focus {
+            outline: none;
+            border-color: #ec4899;
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, .12);
+            background: #fff;
+          }
+
+          textarea.tkt-input {
+            resize: vertical;
+            min-height: 100px;
+          }
+
+          .tkt-submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #f97316, #ec4899);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity .2s, transform .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+          }
+
+          .tkt-submit-btn:hover {
+            opacity: .9;
+            transform: translateY(-1px);
+          }
+
+          .tkt-submit-btn:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none;
+          }
+
+          /* Tickets table card */
+          .tickets-table-card {
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+            overflow: hidden;
+          }
+
+          .tickets-table-card__header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          }
+
+          .tickets-table-card__header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+
+          .tkt-table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+
+          .tkt-table th {
+            padding: 10px 16px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+          }
+
+          .tkt-table td {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #374151;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+          }
+
+          .tkt-table tr:last-child td {
+            border-bottom: none;
+          }
+
+          .tkt-table tr:hover td {
+            background: #fafafa;
+          }
+
+          .tkt-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+          }
+
+          .tkt-badge--open {
+            background: #fef3c7;
+            color: #92400e;
+          }
+
+          .tkt-badge--resolved {
+            background: #d1fae5;
+            color: #065f46;
+          }
+
+          .tkt-feedback {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+            font-style: italic;
+          }
+
+          .tkt-empty {
+            text-align: center;
+            padding: 2.5rem;
+            color: #9ca3af;
+            font-size: 14px;
+          }
+
+          .tkt-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
+            animation: slideUp .3s ease;
+            display: none;
+          }
+
+          .tkt-toast--success {
+            background: linear-gradient(135deg, #059669, #10b981);
+          }
+
+          .tkt-toast--error {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+          }
+
+          @keyframes slideUp {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        </style>
+
+        <div class="section__header" style="margin-bottom: 20px;">
+          <h2 class="section__title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
             </svg>
-            <span>SMILE</span>
-          </a>
-          <p class="footer__copy">&copy; 2026 SMILE. All rights reserved.</p>
+            My Support Tickets
+          </h2>
         </div>
-      </div>
-    </footer>
 
-    <!-- AI Profile Assistant Modal -->
-    <div id="aiProfileModal" class="ai-modal" style="display: none; position: fixed; inset: 0; z-index: 10000; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); transition: all 0.3s ease; opacity: 0; pointer-events: none;">
-      <div id="aiProfileModalContainer" class="ai-modal__container" style="background: #ffffff; width: 90%; max-width: 550px; border-radius: 24px; box-shadow: 0 24px 64px rgba(15, 23, 42, 0.15); border: 1px solid rgba(226, 232, 240, 0.8); overflow: hidden; display: flex; flex-direction: column; height: 80vh; max-height: 600px; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
-        
-        <!-- Header -->
-        <div class="ai-modal__header" style="background: linear-gradient(135deg, #f97316, #ec4899); padding: 20px 24px; color: white; display: flex; align-items: center; justify-content: space-between; position: relative;">
-          <div style="display: flex; align-items: center; gap: 14px;">
-            <div style="font-size: 28px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15)); flex-shrink: 0; line-height: 1;">
-              🤖
+        <div class="tickets-layout">
+
+          <!-- Create Ticket Form -->
+          <div class="ticket-form-card">
+            <div class="ticket-form-card__header">
+              <h3>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Report an Issue
+              </h3>
             </div>
-            <div>
-              <h3 style="margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 0.3px;">AI Profile Assistant</h3>
-              <p style="margin: 0; font-size: 12px; opacity: 0.95; font-weight: 400; color: rgba(255,255,255,0.9);">We'll polish your bio to stand out to employers!</p>
+            <div class="ticket-form-card__body">
+              <div class="tkt-form-group">
+                <label for="tktType">Issue Type</label>
+                <select id="tktType" class="tkt-input">
+                  <option value="">Select type...</option>
+                  <option value="Bug / Issue">🐛 App Bug / Issue</option>
+                  <option value="Report">🚩 Report Content</option>
+                </select>
+              </div>
+              <div class="tkt-form-group">
+                <label for="tktSubject">Subject</label>
+                <input type="text" id="tktSubject" class="tkt-input" placeholder="Brief description of the issue..."
+                  maxlength="255" />
+              </div>
+              <div class="tkt-form-group">
+                <label for="tktDesc">Full Description</label>
+                <textarea id="tktDesc" class="tkt-input"
+                  placeholder="Please describe the issue in detail — include any steps to reproduce, screenshots or context..."></textarea>
+              </div>
+              <button class="tkt-submit-btn" id="tktSubmitBtn" onclick="submitStudentTicket()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+                Submit Ticket
+              </button>
             </div>
           </div>
-          <button onclick="closeAIProfileModal()" style="background: rgba(255,255,255,0.15); border: none; color: white; font-size: 20px; cursor: pointer; opacity: 0.9; transition: all 0.2s; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 300;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">&times;</button>
-        </div>
 
-        <!-- Chat History -->
-        <div id="aiProfileChatWindow" style="flex: 1; padding: 24px; overflow-y: auto; background: #f8fafc; display: flex; flex-direction: column; gap: 20px;">
-          <!-- Messages will be dynamically rendered here -->
-        </div>
+          <!-- Tickets History -->
+          <div class="tickets-table-card">
+            <div class="tickets-table-card__header">
+              <h3>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                My Past Tickets
+              </h3>
+              <button onclick="loadStudentTickets()"
+                style="font-size:12px;color:#ec4899;background:none;border:none;cursor:pointer;font-weight:600;">↻
+                Refresh</button>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="tkt-table">
+                <thead>
+                  <tr>
+                    <th>#ID</th>
+                    <th>Type</th>
+                    <th>Subject</th>
+                    <th>Status</th>
+                    <th>Admin Feedback</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody id="tkt-table-body">
+                  <tr>
+                    <td colspan="6" class="tkt-empty">Loading tickets...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div><!-- /tickets-layout -->
 
-        <!-- Input Area -->
-        <div style="padding: 16px 24px; border-top: 1px solid #e2e8f0; background: #ffffff; display: flex; gap: 12px; align-items: center;">
-          <input type="text" id="aiProfileInput" placeholder="Write your skills, interests, or paste a rough draft..." style="flex: 1; padding: 14px 20px; border: 1.5px solid #e2e8f0; border-radius: 16px; font-size: 14px; outline: none; transition: all 0.2s; font-family: inherit;" onfocus="this.style.borderColor='#ec4899'; this.style.boxShadow='0 0 0 3px rgba(236,72,153,0.1)';" onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';" onkeydown="if(event.key==='Enter') sendAIProfileChat()" />
-          <button onclick="sendAIProfileChat()" id="aiProfileSendBtn" style="padding: 14px 24px; border: none; border-radius: 16px; background: linear-gradient(135deg, #f97316, #ec4899); color: white; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 14px; box-shadow: 0 4px 12px rgba(236,72,153,0.2);" onmouseover="this.style.opacity='0.95'; this.style.transform='translateY(-1px)'" onmouseout="this.style.opacity='1'; this.style.transform='none'">
-            Send
-          </button>
-        </div>
+        <!-- Toast notification -->
+        <div class="tkt-toast" id="tktToast"></div>
+      </div><!-- /tickets-panel -->
+
+    </div>
+    </div>
+  </main>
+
+
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__content">
+        <a href="home.html" class="footer__logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            style="margin-right: 6px; flex-shrink: 0; color: var(--primary-pink, #ec4899);">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
+          </svg>
+          <span>SMILE</span>
+        </a>
+        <p class="footer__copy">&copy; 2026 SMILE. All rights reserved.</p>
       </div>
     </div>
+  </footer>
 
-    <!-- Styles for AI modal and widget -->
-    <style>
-      .btn-widget-ai:hover {
-        transform: scale(1.03);
-        opacity: 0.95;
-      }
-      .ai-chat-bubble {
-        animation: bubbleSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        max-width: 80%;
-      }
-      .ai-chat-bubble--assistant {
-        align-self: flex-start;
-        background: #ffffff;
-        color: #1e293b;
-        border-radius: 0px 20px 20px 20px;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
-        border: 1px solid rgba(226, 232, 240, 0.8);
-      }
-      .ai-chat-bubble--user {
-        align-self: flex-end;
-        background: linear-gradient(135deg, #f97316, #ec4899);
-        color: #ffffff;
-        border-radius: 20px 20px 0px 20px;
-        box-shadow: 0 4px 12px rgba(236, 72, 153, 0.15);
-      }
-      @keyframes bubbleSlideIn {
-        from {
-          opacity: 0;
-          transform: translateY(12px) scale(0.97);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-      }
-      
-      .btn-ai-apply {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-top: 14px;
-        padding: 10px 18px;
-        border-radius: 12px;
-        border: none;
-        background: linear-gradient(135deg, #f97316, #ec4899);
-        color: white;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        box-shadow: 0 4px 12px rgba(236,72,153,0.25);
-      }
-      .btn-ai-apply:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(236,72,153,0.35);
-      }
-      .btn-ai-apply:active {
-        transform: translateY(1px);
-      }
-      
-      /* Red Stat Card theme for low completeness */
-      .stat-card--red {
-        background: #fee2e2 !important;
-        border-color: #fecaca !important;
-      }
-      .stat-card--red .stat-card__number {
-        color: #dc2626 !important;
-      }
-      .stat-card--red .stat-card__label {
-        color: #991b1b !important;
-      }
-      .stat-card--red .stat-card__icon {
-        background: #fca5a5 !important;
-        color: #ef4444 !important;
-      }
-      .stat-card__icon--red {
-        background: #fca5a5 !important;
-        color: #ef4444 !important;
-      }
-    </style>
+  <!-- AI Profile Assistant Modal -->
+  <div id="aiProfileModal" class="ai-modal"
+    style="display: none; position: fixed; inset: 0; z-index: 10000; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); transition: all 0.3s ease; opacity: 0; pointer-events: none;">
+    <div id="aiProfileModalContainer" class="ai-modal__container"
+      style="background: #ffffff; width: 90%; max-width: 550px; border-radius: 24px; box-shadow: 0 24px 64px rgba(15, 23, 42, 0.15); border: 1px solid rgba(226, 232, 240, 0.8); overflow: hidden; display: flex; flex-direction: column; height: 80vh; max-height: 600px; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);">
 
-    <script src="../jsFrontEnd/dashboardJS.js"></script>
+      <!-- Header -->
+      <div class="ai-modal__header"
+        style="background: linear-gradient(135deg, #f97316, #ec4899); padding: 20px 24px; color: white; display: flex; align-items: center; justify-content: space-between; position: relative;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div
+            style="font-size: 28px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15)); flex-shrink: 0; line-height: 1;">
+            🤖
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 0.3px;">AI Profile Assistant</h3>
+            <p style="margin: 0; font-size: 12px; opacity: 0.95; font-weight: 400; color: rgba(255,255,255,0.9);">We'll
+              polish your bio to stand out to employers!</p>
+          </div>
+        </div>
+        <button onclick="closeAIProfileModal()"
+          style="background: rgba(255,255,255,0.15); border: none; color: white; font-size: 20px; cursor: pointer; opacity: 0.9; transition: all 0.2s; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 300;"
+          onmouseover="this.style.background='rgba(255,255,255,0.25)'"
+          onmouseout="this.style.background='rgba(255,255,255,0.15)'">&times;</button>
+      </div>
 
-    <script>
-      const token = localStorage.getItem('token');
-      const accountType = localStorage.getItem('accountType');
+      <!-- Chat History -->
+      <div id="aiProfileChatWindow"
+        style="flex: 1; padding: 24px; overflow-y: auto; background: #f8fafc; display: flex; flex-direction: column; gap: 20px;">
+        <!-- Messages will be dynamically rendered here -->
+      </div>
 
-      // If no token or wrong account type, redirect to login
-      if (!token || accountType !== 'student') {
-          window.location.href = '/login-page';
+      <!-- Input Area -->
+      <div
+        style="padding: 16px 24px; border-top: 1px solid #e2e8f0; background: #ffffff; display: flex; gap: 12px; align-items: center;">
+        <input type="text" id="aiProfileInput" placeholder="Write your skills, interests, or paste a rough draft..."
+          style="flex: 1; padding: 14px 20px; border: 1.5px solid #e2e8f0; border-radius: 16px; font-size: 14px; outline: none; transition: all 0.2s; font-family: inherit;"
+          onfocus="this.style.borderColor='#ec4899'; this.style.boxShadow='0 0 0 3px rgba(236,72,153,0.1)';"
+          onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"
+          onkeydown="if(event.key==='Enter') sendAIProfileChat()" />
+        <button onclick="sendAIProfileChat()" id="aiProfileSendBtn"
+          style="padding: 14px 24px; border: none; border-radius: 16px; background: linear-gradient(135deg, #f97316, #ec4899); color: white; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 14px; box-shadow: 0 4px 12px rgba(236,72,153,0.2);"
+          onmouseover="this.style.opacity='0.95'; this.style.transform='translateY(-1px)'"
+          onmouseout="this.style.opacity='1'; this.style.transform='none'">
+          Send
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Styles for AI modal and widget -->
+  <style>
+    .btn-widget-ai:hover {
+      transform: scale(1.03);
+      opacity: 0.95;
+    }
+
+    .ai-chat-bubble {
+      animation: bubbleSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      max-width: 80%;
+    }
+
+    .ai-chat-bubble--assistant {
+      align-self: flex-start;
+      background: #ffffff;
+      color: #1e293b;
+      border-radius: 0px 20px 20px 20px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    .ai-chat-bubble--user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      color: #ffffff;
+      border-radius: 20px 20px 0px 20px;
+      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.15);
+    }
+
+    @keyframes bubbleSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.97);
       }
-</script>
-  </body>
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .btn-ai-apply {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.25);
+    }
+
+    .btn-ai-apply:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(236, 72, 153, 0.35);
+    }
+
+    .btn-ai-apply:active {
+      transform: translateY(1px);
+    }
+
+    /* Red Stat Card theme for low completeness */
+    .stat-card--red {
+      background: #fee2e2 !important;
+      border-color: #fecaca !important;
+    }
+
+    .stat-card--red .stat-card__number {
+      color: #dc2626 !important;
+    }
+
+    .stat-card--red .stat-card__label {
+      color: #991b1b !important;
+    }
+
+    .stat-card--red .stat-card__icon {
+      background: #fca5a5 !important;
+      color: #ef4444 !important;
+    }
+
+    .stat-card__icon--red {
+      background: #fca5a5 !important;
+      color: #ef4444 !important;
+    }
+  </style>
+
+  <script src="../jsFrontEnd/dashboardJS.js"></script>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const accountType = localStorage.getItem('accountType');
+
+    // If no token or wrong account type, redirect to login
+    if (!token || accountType !== 'student') {
+      window.location.href = '/login-page';
+    }
+  </script>
+</body>
+
 </html>

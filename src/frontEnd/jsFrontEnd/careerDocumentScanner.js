@@ -107,6 +107,16 @@ async function checkCareerScanStatus() {
 
     if (session.status === "school_document_ready") {
       status.textContent = "Document accepted. Asking SMILE Career AI for your career path...";
+      
+      // Save scanned marks into a temporary global variable and localStorage for durability!
+      if (session.analysis && session.analysis.subjects) {
+        const marksStr = session.analysis.subjects.map(s => `${s.name}: ${s.mark}%`).join(", ");
+        window.latestScannedMarks = marksStr;
+        window.latestScannedSchool = session.analysis.schoolName || "";
+        localStorage.setItem("latestScannedMarks", marksStr);
+        localStorage.setItem("latestScannedSchool", session.analysis.schoolName || "");
+      }
+
       await sendScannedDocumentToCareerBot(session.analysis);
     }
   } catch (error) {

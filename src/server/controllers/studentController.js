@@ -29,6 +29,9 @@ async function ensureStudentProfileColumns() {
 
     IF COL_LENGTH('dbo.Student', 'ProfilePicUrl') IS NULL
       ALTER TABLE dbo.Student ADD ProfilePicUrl NVARCHAR(255) NULL;
+
+    IF COL_LENGTH('dbo.Student', 'StuAcademicSubjects') IS NULL
+      ALTER TABLE dbo.Student ADD StuAcademicSubjects NVARCHAR(MAX) NULL;
   `);
 }
 
@@ -269,7 +272,7 @@ export const getStudentProfile = async (req, res) => {
     request.input("StuID", stuId);
 
     const result = await request.query(`
-      SELECT StuID, StuName, StuLastName, StuEmail, StuProvince, StuEducationLevel, StuBio, ProfilePicUrl
+      SELECT StuID, StuName, StuLastName, StuEmail, StuProvince, StuEducationLevel, StuBio, ProfilePicUrl, StuAcademicSubjects
       FROM Student
       WHERE StuID = @StuID
     `);
@@ -379,7 +382,7 @@ export const updateStudentProfile = async (req, res) => {
 export const updateStudentBio = async (req, res) => {
   try {
     const stuId = req.user.id;
-    const { bio } = req.body;
+    const { bio, academicSubjects } = req.body;
 
     if (!bio) {
       return res.status(400).json({ success: false, message: "Bio content is required." });
@@ -388,10 +391,12 @@ export const updateStudentBio = async (req, res) => {
     const request = new sql.Request();
     request.input("StuID", stuId);
     request.input("bio", bio);
+    request.input("academicSubjects", academicSubjects || null);
 
     await request.query(`
       UPDATE Student
-      SET StuBio = @bio
+      SET StuBio = @bio,
+          StuAcademicSubjects = ISNULL(@academicSubjects, StuAcademicSubjects)
       WHERE StuID = @StuID
     `);
 

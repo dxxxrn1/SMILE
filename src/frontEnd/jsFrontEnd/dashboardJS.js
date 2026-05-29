@@ -605,6 +605,9 @@ async function checkQuizStatus() {
               <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6;">
                 <p style="margin-bottom: 8px;">Welcome back! I see your top career interest is <strong style="color: var(--primary-pink);">${data.interest}</strong>.</p>
                 <p>What would you like to explore today? Ask me for career suggestions, university requirements, or salary info!</p>
+                <p style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--gray-200); font-size: 0.8125rem; color: var(--gray-500); display: flex; align-items: center; gap: 6px;">
+                  💡 <em>Tip: You can upload your report card/marks (optional) at any time to unlock highly realistic, grade-matched recommendations!</em>
+                </p>
               </div>
             </div>`;
         }
@@ -1384,13 +1387,27 @@ async function sendAIProfileChat() {
   win.scrollTop = win.scrollHeight;
 
   try {
+    const scannedMarks = window.latestScannedMarks || localStorage.getItem("latestScannedMarks");
+    const schoolName = window.latestScannedSchool || localStorage.getItem("latestScannedSchool") || "";
+    const hasUploaded = !!scannedMarks;
+
+    const scannedData = {
+      hasUploaded,
+      schoolName,
+      topSubjects: scannedMarks || ""
+    };
+
     const res = await fetch("/api/chat/profile-writer", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`
       },
-      body: JSON.stringify({ history: aiProfileChatHistory })
+      body: JSON.stringify({
+        message: userText,
+        chatHistory: aiProfileChatHistory.slice(0, -1),
+        scannedData
+      })
     });
     const data = await res.json();
     aiProfileChatHistory.push({ role: "assistant", content: data.response });
@@ -1450,13 +1467,14 @@ async function applyAIProposedBio(button, bioText) {
     </svg> Applying...
   `;
   try {
+    const scannedMarks = window.latestScannedMarks || localStorage.getItem("latestScannedMarks") || null;
     const res = await fetch("/api/student/profile/bio", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`
       },
-      body: JSON.stringify({ bio: bioText })
+      body: JSON.stringify({ bio: bioText, academicSubjects: scannedMarks })
     });
     const data = await res.json();
     if (data.success) {
