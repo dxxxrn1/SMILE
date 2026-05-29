@@ -176,6 +176,22 @@
   border-radius: 0.75rem;
   overflow: hidden;
   box-shadow: 0 20px 35px rgba(15, 23, 42, 0.14);
+  grid-template-columns: repeat(8, 70px) !important;
+  grid-template-rows: repeat(8, 70px) !important;
+}
+
+.smile-chess-page .sq {
+  width: 70px !important;
+  height: 70px !important;
+  font-size: 40px !important;
+}
+
+.smile-chess-page .rank-labels {
+  height: 560px !important;
+}
+
+.smile-chess-page .file-labels {
+  width: 560px !important;
 }
 
 .smile-chess-page .sq.light {
@@ -273,4 +289,17 @@
   .smile-chess-header .nav__menu {
     display: none;
   }
+}
+
+/* Premium Player-Specific Chess Piece Styling */
+.smile-chess-page .sq.white-piece,
+.smile-chess-page .white-piece,
+.white-piece {
+  color: #1A237E !important;
+}
+
+.smile-chess-page .sq.black-piece,
+.smile-chess-page .black-piece,
+.black-piece {
+  color: #000000 !important;
 }

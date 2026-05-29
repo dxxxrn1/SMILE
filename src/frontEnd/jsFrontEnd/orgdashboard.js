@@ -7,6 +7,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   initNavigation();
   initProfileDropdown();
+  loadOrgSidebarProfile();
   initCharts();
   renderFunnel("all");
   renderProvinces();
@@ -30,6 +31,48 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+async function loadOrgSidebarProfile() {
+  const avatarEl = document.getElementById("sidebarInitials");
+  const nameEl = document.getElementById("sidebarOrgName");
+  if (!avatarEl && !nameEl) return;
+
+  const cachedName = localStorage.getItem("orgName") || localStorage.getItem("userName") || "My Organisation";
+  const cachedInitials = localStorage.getItem("orgInitials") || localStorage.getItem("initials") || cachedName.slice(0, 2).toUpperCase();
+  if (nameEl) nameEl.textContent = cachedName;
+  if (avatarEl) avatarEl.textContent = cachedInitials;
+
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch("/api/org/profile", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) return;
+
+    const data = await res.json();
+    if (!data.success || !data.profile) return;
+
+    const org = data.profile;
+    const orgName = org.OrgName || cachedName;
+    const initials = orgName.slice(0, 2).toUpperCase();
+    localStorage.setItem("orgName", orgName);
+    localStorage.setItem("orgInitials", initials);
+    if (org.OrgProfilePic) localStorage.setItem("orgProfilePic", org.OrgProfilePic);
+
+    if (nameEl) nameEl.textContent = orgName;
+    if (avatarEl) {
+      if (org.OrgProfilePic) {
+        avatarEl.innerHTML = `<img src="${org.OrgProfilePic}" alt="${orgName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      } else {
+        avatarEl.textContent = initials;
+      }
+    }
+  } catch (err) {
+    console.error("[SMILE] Could not load organisation sidebar profile:", err);
+  }
+}
 
 /* ================================================================
    NAVIGATION
@@ -1014,14 +1057,6 @@ let _allApplicantRows = []; // To store rows for client-side filtering
 
 async function loadApplicants() {
   const token = localStorage.getItem("token");
-
-  // Let's also check and populate sidebar initials/name
-  const orgName = localStorage.getItem("orgName") || localStorage.getItem("userName") || "SMILE Africa NGO";
-  const initials = localStorage.getItem("orgInitials") || localStorage.getItem("initials") || orgName.slice(0, 2).toUpperCase();
-  const avatarEl = document.getElementById("sidebarInitials");
-  const nameEl = document.getElementById("sidebarOrgName");
-  if (avatarEl) avatarEl.textContent = initials;
-  if (nameEl) nameEl.textContent = orgName;
 
   const tbody = document.getElementById("applicantTableBody");
   if (!tbody) return;

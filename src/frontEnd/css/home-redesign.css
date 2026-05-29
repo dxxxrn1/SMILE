@@ -819,7 +819,7 @@
 .footer-v2 {
   background: #0b0f19;
   border-top: 1px solid #1e293b;
-  padding: 4rem 0 2rem;
+  padding: 1.5rem 0;
 }
 
 .footer-v2__top {
@@ -828,7 +828,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 2rem;
-  margin-bottom: 3rem;
+  margin-bottom: 0;
 }
 
 .footer-v2__brand .nav__logo-text { color: #f8fafc; }

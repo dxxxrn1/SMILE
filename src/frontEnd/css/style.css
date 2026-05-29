@@ -525,7 +525,7 @@
  .footer {
    background: var(--gray-900);
    color: var(--white);
-   padding: var(--spacing-2xl) 0;
+   padding: var(--spacing-md) 0;
  }
 
  .footer__content {
@@ -1558,6 +1558,18 @@
    display: flex;
    flex-direction: column;
    gap: var(--spacing-md);
+   max-height: 400px;
+   overflow-y: auto;
+   padding-right: var(--spacing-sm);
+ }
+
+ .opportunities-list::-webkit-scrollbar {
+   width: 6px;
+ }
+
+ .opportunities-list::-webkit-scrollbar-thumb {
+   background: var(--gray-300);
+   border-radius: var(--radius-full);
  }
 
  .opportunity-card {
@@ -1662,7 +1674,7 @@
  }
 
  .application-card {
-   padding: var(--spacing-md);
+   padding: var(--spacing-lg);
    border: 1px solid var(--gray-200);
    border-radius: var(--radius-md);
    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
