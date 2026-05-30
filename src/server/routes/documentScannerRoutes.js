@@ -6,6 +6,18 @@ import { fileURLToPath } from "url";
 import QRCode from "qrcode";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
+
+// Global polyfills to prevent pdf-parse canvas/napi-rs load crash on Azure/Free plans
+if (typeof global.DOMMatrix === "undefined") {
+  global.DOMMatrix = class DOMMatrix {};
+}
+if (typeof global.ImageData === "undefined") {
+  global.ImageData = class ImageData {};
+}
+if (typeof global.Path2D === "undefined") {
+  global.Path2D = class Path2D {};
+}
+
 const pdfParse = require("pdf-parse");
 import Groq from "groq-sdk";
 
