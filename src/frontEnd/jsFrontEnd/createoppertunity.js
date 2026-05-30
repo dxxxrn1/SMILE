@@ -47,6 +47,43 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+
+    // Add this inside your DOMContentLoaded
+const oppImageInput = document.getElementById("oppImageInput");
+if (oppImageInput) {
+    oppImageInput.addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            showToast("Image must be smaller than 5MB.", "error");
+            this.value = "";
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            window._oppImageBase64 = e.target.result; // store base64
+
+            const preview = document.getElementById("oppImagePreview");
+            if (preview) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// Clear image on form reset
+document.getElementById("clearBtn").addEventListener("click", function () {
+    window._oppImageBase64 = null;
+    const preview = document.getElementById("oppImagePreview");
+    if (preview) { preview.src = ""; preview.style.display = "none"; }
+    // ... rest of your existing clear logic
+});
+
+
     // Submit — Publish
     document.getElementById("createOppForm").addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -67,17 +104,19 @@ document.addEventListener("DOMContentLoaded", function () {
             setFormMsg("Please fill in all required fields before publishing.", "error");
             return;
         }
+        // Add to your existing payload object
         const payload = {
             title:           document.getElementById("newTitle").value.trim(),
             type:            selectedType.value,
-            address:         document.getElementById("newAddress").value.trim(), // <--- Added this
+            address:         document.getElementById("newAddress").value.trim(),
             province:        document.getElementById("newProvince").value,
             maxApplicants:   document.getElementById("newMax").value || null,
             description:     document.getElementById("newDesc").value.trim(),
             requirements:    document.getElementById("newReq").value.trim(),
             deadline:        document.getElementById("newDeadline").value,
             startDate:       document.getElementById("newStart").value || null,
-            applicationLink: document.getElementById("newLink").value.trim()
+            applicationLink: document.getElementById("newLink").value.trim(),
+            oppImage:        window._oppImageBase64 || null  // ✅ Add this
         };
 
         // const payload = {
