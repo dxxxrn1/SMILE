@@ -4,9 +4,6 @@ import os from "os";
 import path from "path";
 import { fileURLToPath } from "url";
 import QRCode from "qrcode";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const pdfParse = require("pdf-parse");
 import Groq from "groq-sdk";
 
 const route = express.Router();
@@ -81,6 +78,10 @@ function getActiveSession(id) {
 }
 
 async function parseAcademicDocumentWithGroq(file) {
+  const { createRequire } = await import("module");
+  const require = createRequire(import.meta.url);
+  const pdfParse = require("pdf-parse");
+
   try {
     const base64Data = file.dataUrl.split(";base64,").pop();
     const buffer = Buffer.from(base64Data, "base64");
