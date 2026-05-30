@@ -4,8 +4,8 @@ import nodemailer from 'nodemailer';
 import { connectToDB, sql } from '../dbConnection/dbconnection.js';
 
 dotenv.config()
-console.log('EMAIL_USER:', process.env.EMAIL_USER || process.env.LUCAS_EMAIL);
-console.log('EMAIL_PASS:', (process.env.EMAIL_PASS || process.env.LUCAS_APP_PASS) ? 'loaded' : 'MISSING âŒ');
+console.log('EMAIL_USER:', process.env.LUCAS_EMAIL);
+console.log('EMAIL_PASS:',process.env.LUCAS_APP_PASS) ? 'loaded' : 'MISSING';
 
 
 const otpStore = {};
@@ -77,13 +77,13 @@ export const sendOTP = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER || process.env.LUCAS_EMAIL,
-        pass: process.env.EMAIL_PASS || process.env.LUCAS_APP_PASS
+        user: process.env.LUCAS_EMAIL,
+        pass: process.env.LUCAS_APP_PASS
       }
     });
 
     await transporter.sendMail({
-      from: `"SMILE" <${process.env.EMAIL_USER || process.env.LUCAS_EMAIL}>`,
+      from: `"SMILE" <${process.env.LUCAS_EMAIL}>`,
       to: email,
       subject: 'Your SMILE verification code',
       html: `

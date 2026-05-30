@@ -56,6 +56,8 @@ export const saveStudentDetails = async (req, res) => {
             VALUES(@firstname, @lastname, @email, @province, @educationlevel, @password)
         `);
 
+        
+
         const transport = nodemailer.createTransport({
             service: "gmail",
             auth: {
