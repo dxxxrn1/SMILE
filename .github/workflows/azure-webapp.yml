@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Clean node_modules before deploy
+        run: rm -rf node_modules
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
