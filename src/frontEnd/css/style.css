@@ -1996,8 +1996,8 @@
  /* Mobile (max 768px) */
  @media (max-width: 768px) {
    .dashboard__stats {
-     grid-template-columns: repeat(2, 1fr);
-     gap: var(--spacing-md);
+     grid-template-columns: 1fr !important;
+     gap: var(--spacing-md) !important;
    }
 
    .dashboard__grid {
@@ -2009,12 +2009,39 @@
      grid-column: span 1;
    }
 
+   /* Convert eBooks library grid into a premium horizontal scrolling carousel on mobile */
    .ebooks-grid {
-     grid-template-columns: repeat(2, 1fr);
+     display: flex !important;
+     overflow-x: auto !important;
+     gap: var(--spacing-md) !important;
+     padding-bottom: var(--spacing-sm) !important;
+     -webkit-overflow-scrolling: touch !important;
+     scroll-snap-type: x mandatory !important;
+     grid-template-columns: none !important;
    }
 
+   .ebooks-grid::-webkit-scrollbar {
+     height: 6px !important;
+     display: block !important;
+   }
+
+   .ebooks-grid::-webkit-scrollbar-thumb {
+     background: var(--gray-300) !important;
+     border-radius: var(--radius-full) !important;
+   }
+
+   .ebook-card {
+     flex: 0 0 200px !important;
+     scroll-snap-align: start !important;
+   }
+
+   /* Enable profile avatar, notifications, and tickets dropdown button inside mobile headers */
    .nav__actions--dashboard {
-     display: none;
+     display: flex !important;
+     align-items: center !important;
+     gap: var(--spacing-xs) !important;
+     margin-left: auto !important;
+     margin-right: 0.5rem !important;
    }
 
    .stat-card:hover {
@@ -3360,7 +3387,7 @@
 
    /* On very small phones keep 2-column grid so cards aren't too tall */
    .dashboard__stats {
-     grid-template-columns: 1fr 1fr;
+     grid-template-columns: 1fr !important;
      gap: var(--spacing-sm);
    }
 
@@ -4956,7 +4983,7 @@
    }
 
    .dashboard__stats {
-     grid-template-columns: 1fr 1fr;
+     grid-template-columns: 1fr !important;
    }
 
    .range-tabs {
