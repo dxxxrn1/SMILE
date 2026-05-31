@@ -2009,6 +2009,17 @@
      grid-column: span 1;
    }
 
+   /* Compact card heights on mobile so sections don't stretch */
+   .opportunities-list,
+   .applications-list {
+     max-height: 340px !important;
+   }
+
+   /* Compact section padding on mobile */
+   .dashboard__section {
+     padding: var(--spacing-lg) !important;
+   }
+
    /* Convert eBooks library grid into a premium horizontal scrolling carousel on mobile */
    .ebooks-grid {
      display: flex !important;
