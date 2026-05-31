@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node security.test.js",
     "dev": "nodemon ./src/server/main.js",
     "start": "node  ./src/server/main.js"
   },
@@ -20,8 +20,10 @@
     "crypto": "^1.0.1",
     "dotenv": "^17.4.0",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
     "express-session": "^1.19.0",
     "groq-sdk": "^1.1.2",
+    "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.3",
     "msnodesqlv8": "^5.1.5",
     "mssql": "^12.2.1",

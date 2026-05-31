@@ -4,6 +4,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import helmet from "helmet";
+import { rateLimit } from "express-rate-limit";
 import route from "./routes/userRoutes.js"
 import cookieParser from "cookie-parser";
 import router from "./routes/adminRoute.js";
@@ -11,6 +13,34 @@ import chessRoutes from "./routes/chessRoutes.js";
 import { registerChessSockets } from "./controllers/chessSocketController.js";
 import documentScannerRoutes from "./routes/documentScannerRoutes.js";
 const app = express();
+
+// Configure Helmet to protect headers (XSS, Clickjacking, MIME sniffing)
+// CSP is disabled to preserve inline scripts/styles and CDNs in frontend HTML files
+app.use(helmet({
+  contentSecurityPolicy: false
+}));
+
+// Configure Rate Limiting to prevent brute-force attacks on auth and OTP endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 50, // Limit each IP to 50 attempts per 15 minutes
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many requests. Please try again after 15 minutes."
+  }
+});
+
+// Apply rate limiter to authentication, registration and password-reset endpoints
+app.use("/login", authLimiter);
+app.use("/register/student", authLimiter);
+app.use("/register/organization", authLimiter);
+app.use("/api/send-otp", authLimiter);
+app.use("/api/verify-otp", authLimiter);
+app.use("/forgot-password", authLimiter);
+app.use("/reset-password", authLimiter);
+
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 const __filepath = fileURLToPath(import.meta.url);
