@@ -487,7 +487,7 @@ async function triggerOTP(type, form, submitBtn) {
 
     if (!data.success) {
       if (errorEl) {
-        errorEl.textContent = 'âŒ ' + data.message;
+        errorEl.textContent = data.message;
         errorEl.style.display = 'block';
       }
       resetSubmitButton(submitBtn);
@@ -505,7 +505,7 @@ async function triggerOTP(type, form, submitBtn) {
     console.error(err);
     if (statusEl) statusEl.textContent = '';
     if (errorEl) {
-      errorEl.textContent = 'âŒ Something went wrong while sending verification code.';
+      errorEl.textContent = 'Something went wrong while sending verification code.';
       errorEl.style.display = 'block';
     }
   }
@@ -542,7 +542,7 @@ async function verifyOTP() {
     } else {
       if (errorEl) {
         errorEl.style.display = 'block';
-        errorEl.textContent = 'âŒ ' + data.message;
+        errorEl.textContent = data.message;
       }
       document.querySelectorAll('.otp-digit').forEach(d => d.value = '');
       const inputs = document.querySelectorAll('.otp-digit');
