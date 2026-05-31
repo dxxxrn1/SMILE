@@ -52,7 +52,7 @@
   pointer-events: none;
 }
 
-.smile-chess-page #s-home .card > * {
+.smile-chess-page #s-home .card>* {
   position: relative;
   z-index: 1;
 }
