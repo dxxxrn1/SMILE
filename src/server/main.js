@@ -1,5 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
 import express from "express";
 import session from "express-session";
 import path from "path";
@@ -27,8 +25,9 @@ app.use("/" , router)
 app.use("/" , chessRoutes)
 app.use("/" , documentScannerRoutes)
 registerChessSockets(io);
-const port = 3000;
-httpServer.listen(port , ()=>{
-    console.log(`This web is running on http://localhost:${port}`);
-})
+const PORT = process.env.PORT || 3000;
+
+httpServer.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+});
 //Lucas Bohani Maluleke and Darren Foster

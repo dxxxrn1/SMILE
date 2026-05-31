@@ -3,7 +3,7 @@ import { sendOTP, verifyOTP } from '../controllers/otpController.js';
 import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,
         studentLandingPage,careersPage,orgDashboard,
         createOpportunity,adminDashBoard, applicantsPage, studentProfilePage, orgProfilePage, analyticsPage,
-        orgTicketsPage, myOpportunitiesPage
+        orgTicketsPage, myOpportunitiesPage ,studentProfile
 } from "../controllers/pageControllers.js";
 
 import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageControllers.js";
@@ -67,6 +67,7 @@ route.get("/logout", (req, res) => {
     res.clearCookie('token');
     return res.redirect("/login-page");
 });
+//resetPasswordPage
 route.get("/api/jobs", fetchJobs);
 route.get("/org/dashboard", verifyToken ,orgDashboard);
 route.get("/org/profile", verifyToken, orgProfilePage);
@@ -91,6 +92,10 @@ route.get("/api/opportunities", verifyToken, getAllOpportunities);
 route.get("/api/org/opportunities", verifyToken, getOrgOpportunities);
 route.put("/api/opportunities/:oppId", verifyToken, updateOpportunity);
 route.delete("/api/opportunities/:oppId", verifyToken, deleteOpportunity);
+route.get("/student/profile" , verifyToken , studentProfile);
+route.get("/api/student/profile" , verifyToken , getStudentProfile);
+
+// /api/student/profile
 
 // OTP email verification routes
 route.post("/api/send-otp", sendOTP);

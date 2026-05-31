@@ -2,7 +2,7 @@ import { rmSync } from "node:fs";
 import fs from "fs";
 import path from "path";
 import {sql , connectToDB} from "../dbConnection/dbconnection.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import nodemailer from  "nodemailer";
 import { error } from "node:console";
 import dotenv from "dotenv";
@@ -32,7 +32,7 @@ export const saveStudentDetails = async (req, res) => {
         const pool = await connectToDB();
         console.log("the database is connected!!")
         // Check if email already exists
-        console.log("3ï¸âƒ£ connected, about to SELECT");
+        console.log("connected, about to SELECT");
         const results = await pool
             .request()
             .input("email", sql.VarChar, email)
@@ -55,6 +55,8 @@ export const saveStudentDetails = async (req, res) => {
             INSERT INTO Student(StuName, StuLastName, StuEmail, StuProvince, StuEducationLevel, StuPassword)
             VALUES(@firstname, @lastname, @email, @province, @educationlevel, @password)
         `);
+
+        
 
         const transport = nodemailer.createTransport({
             service: "gmail",
@@ -446,7 +448,7 @@ export const userLogin = async (req, res) => {
 }
 
     } catch (err) {
-        console.error("âŒ Login error:", err);
+        console.error("Login error:", err);
         return res.sendStatus(500);
     }
 };

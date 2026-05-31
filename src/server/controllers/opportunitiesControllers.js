@@ -2,6 +2,7 @@ import { connectToDB, sql } from "../dbConnection/dbconnection.js";
 import { getCoordinates } from '../apis/geoHelper.js';
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
+import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config();
 
@@ -11,6 +12,12 @@ const mailTransport = nodemailer.createTransport({
         user: process.env.LUCAS_EMAIL,
         pass: process.env.LUCAS_APP_PASS
     }
+});
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 async function ensureStudentNotificationsTable(pool) {
@@ -75,7 +82,7 @@ function buildApplicationStatusNotification({ status, studentName, opportunityTi
 
 export const createNewOpportunity = async (req, res) => {
     try {
-        const { title, type, address, province, maxApplicants, description, requirements, deadline, startDate, applicationLink } = req.body;
+        const { title, type, address, province, maxApplicants, description, requirements, deadline, startDate, applicationLink, oppImage } = req.body;
 
         const orgId = req.user?.id;
         if (!orgId || req.user?.accountType !== "organization") {
@@ -88,8 +95,37 @@ export const createNewOpportunity = async (req, res) => {
 
         const coords = await getCoordinates(address, province);
 
-        const pool = await connectToDB();
+        // ✅ Upload opportunity image to Cloudinary if provided
+        let oppImageUrl = null;
+        if (typeof oppImage === "string" && oppImage.startsWith("data:image/")) {
+            const matches = oppImage.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+            if (matches && matches.length === 3) {
+                const buffer = Buffer.from(matches[2], "base64");
 
+                if (buffer.length > 5 * 1024 * 1024) {
+                    return res.status(400).json({ success: false, message: "Image must be smaller than 5MB." });
+                }
+
+                const uploadResult = await new Promise((resolve, reject) => {
+                    cloudinary.uploader.upload_stream(
+                        {
+                            folder: "smile/opportunities",
+                            public_id: `opp_${orgId}_${Date.now()}`,
+                            overwrite: true,
+                            resource_type: "image"
+                        },
+                        (error, result) => {
+                            if (error) reject(error);
+                            else resolve(result);
+                        }
+                    ).end(buffer);
+                });
+
+                oppImageUrl = uploadResult.secure_url;
+            }
+        }
+
+        const pool = await connectToDB();
 
         await pool.request()
             .input("OrgId",               sql.Int,           orgId)
@@ -97,30 +133,30 @@ export const createNewOpportunity = async (req, res) => {
             .input("OppType",             sql.VarChar(50),   type)
             .input("Province",            sql.VarChar(50),   province)
             .input("Description",         sql.VarChar,       description)
-            .input("Requirements",        sql.VarChar,       requirements   || null)
+            .input("Requirements",        sql.VarChar,       requirements    || null)
             .input("ApplicationLink",     sql.VarChar(255),  applicationLink || null)
-            .input("MaxApplicants",       sql.Int,           maxApplicants  || null)
+            .input("MaxApplicants",       sql.Int,           maxApplicants   || null)
             .input("ApplicationDeadline", sql.Date,          deadline)
-            .input("StartDate",           sql.Date,          startDate      || null)
+            .input("StartDate",           sql.Date,          startDate       || null)
             .input("Lat",                 sql.Decimal(9,6),  coords.lat)
             .input("Lng",                 sql.Decimal(9,6),  coords.lng)
+            .input("OppImageUrl",         sql.NVarChar(500), oppImageUrl)
             .query(`
                 INSERT INTO [dbo].[Opportunities]
                     (OrgId, Title, OppType, Province, Description, Requirements,
-                     ApplicationLink, MaxApplicants, ApplicationDeadline, StartDate, Lat, Lng)
+                     ApplicationLink, MaxApplicants, ApplicationDeadline, StartDate, Lat, Lng, OppImageUrl)
                 VALUES
                     (@OrgId, @Title, @OppType, @Province, @Description, @Requirements,
-                     @ApplicationLink, @MaxApplicants, @ApplicationDeadline, @StartDate, @Lat, @Lng)
+                     @ApplicationLink, @MaxApplicants, @ApplicationDeadline, @StartDate, @Lat, @Lng, @OppImageUrl)
             `);
 
         return res.status(201).json({ success: true, message: "Opportunity published successfully!" });
 
     } catch (err) {
-        console.log(err);
+        console.error(err);
         return res.status(500).json({ success: false, message: "Something went wrong. Please try again." });
     }
 };
-
 export const getAllOpportunities = async (req, res) => {
     try {
         const { type, province, search, sort } = req.query;
@@ -135,6 +171,7 @@ export const getAllOpportunities = async (req, res) => {
                 o.MaxApplicants, o.Status, o.DateCreated,
                 o.Lat, o.Lng,
                 o.OrgId,
+                o.OppImageUrl,
                 org.OrgName, org.OrgBio, org.OrgProfilePic
             FROM [dbo].[Opportunities] o
             JOIN [dbo].[Organisation] org ON o.OrgId = org.OrgId
@@ -175,7 +212,6 @@ export const getAllOpportunities = async (req, res) => {
         return res.status(500).json({ success: false, message: "Failed to fetch opportunities." });
     }
 };
-
 export const getOrganizationApplicants = async (req, res) => {
     try {
         const orgId = req.user?.id;
