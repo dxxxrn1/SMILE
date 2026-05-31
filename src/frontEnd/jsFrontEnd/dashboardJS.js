@@ -590,14 +590,14 @@ async function checkQuizStatus() {
         if (win) {
           win.innerHTML = `
             <div style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px;">
-              <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; border: 1px solid #fbcfe8; box-shadow: var(--shadow-sm);">
-                🤖
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; color: var(--primary-pink); flex-shrink: 0; border: 1px solid #fbcfe8; box-shadow: var(--shadow-sm);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>
               </div>
               <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6;">
                 <p style="margin-bottom: 8px;">Welcome back! I see your top career interest is <strong style="color: var(--primary-pink);">${data.interest}</strong>.</p>
                 <p>What would you like to explore today? Ask me for career suggestions, university requirements, or salary info!</p>
                 <p style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--gray-200); font-size: 0.8125rem; color: var(--gray-500); display: flex; align-items: center; gap: 6px;">
-                  💡 <em>Tip: You can upload your report card/marks (optional) at any time to unlock highly realistic, grade-matched recommendations!</em>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; color: #f97316;"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1 .3 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> <em>Tip: You can upload your report card/marks (optional) at any time to unlock highly realistic, grade-matched recommendations!</em>
                 </p>
               </div>
             </div>`;
@@ -693,7 +693,9 @@ window.sendChat = async function () {
   const typingId = "typing-" + Date.now();
   win.innerHTML += `
     <div id="${typingId}" style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px;">
-      <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; border: 1px solid #fbcfe8;">🤖</div>
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; color: var(--primary-pink); flex-shrink: 0; border: 1px solid #fbcfe8;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>
+      </div>
       <div style="background: #ffffff; color: var(--gray-500); padding: 16px; border-radius: 0px 16px 16px 16px; border: 1px solid var(--gray-200); font-size: 0.9375rem; font-style: italic;">
         Thinking...
       </div>
@@ -719,8 +721,8 @@ window.sendChat = async function () {
 
     win.innerHTML += `
       <div style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px;">
-        <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; border: 1px solid #fbcfe8; box-shadow: var(--shadow-sm);">
-          🤖
+        <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; color: var(--primary-pink); flex-shrink: 0; border: 1px solid #fbcfe8; box-shadow: var(--shadow-sm);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>
         </div>
         <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6;">
           ${formattedResponse}
@@ -1368,8 +1370,10 @@ async function sendAIProfileChat() {
   //  thinking indicator
   const typingId = "ai-typing-" + Date.now();
   win.innerHTML += `
-    <div id="${typingId}" style="display: flex; justify-content: flex-start; gap: 12px; align-self: flex-start;">
-      <div style="font-size: 1.5rem;">🤖</div>
+    <div id="${typingId}" style="display: flex; justify-content: flex-start; gap: 12px; align-self: flex-start; align-items: center;">
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(249, 115, 22, 0.1); color: #f97316; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(249, 115, 22, 0.2); flex-shrink: 0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>
+      </div>
       <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; font-style: italic; color: #64748b; border-radius: 0 20px 20px 20px;">
         Polishing bio options...
       </div>
