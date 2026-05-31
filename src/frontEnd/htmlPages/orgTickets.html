@@ -288,8 +288,71 @@
 
     <script src="../jsFrontEnd/orgTickets.js"></script>
     <script>
-      const token = localStorage.getItem('token');
-      const accountType = localStorage.getItem('accountType');
+      function getAccountTypeFromToken(token) {
+        if (!token) return null;
+        try {
+          const base64Url = token.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+          return JSON.parse(jsonPayload).accountType;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function isTokenExpired(token) {
+        try {
+          const base64Url = token.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+          const payload = JSON.parse(jsonPayload);
+          return payload.exp * 1000 < Date.now();
+        } catch (e) {
+          return true;
+        }
+      }
+
+      function getToken() {
+        const token = localStorage.getItem('token');
+        if (!token || isTokenExpired(token)) {
+          logout();
+          return null;
+        }
+        return token;
+      }
+
+      function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('accountType');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('initials');
+        localStorage.removeItem('profilePicUrl');
+        localStorage.removeItem('profileComplete');
+        localStorage.removeItem("latestScannedMarks");
+        localStorage.removeItem("latestScannedSchool");
+        localStorage.removeItem("orgName");
+        localStorage.removeItem("orgInitials");
+        localStorage.removeItem("orgProfilePic");
+        window.__currentUser = null;
+        
+        fetch('/logout', { method: 'POST' })
+          .catch(() => {})
+          .finally(() => {
+            window.location.href = '/login-page';
+          });
+      }
+
+      // Expose globally
+      window.isTokenExpired = isTokenExpired;
+      window.getToken = getToken;
+      window.logout = logout;
+
+      const token = getToken();
+      const accountType = getAccountTypeFromToken(token);
       if (!token || accountType !== 'organization') {
         window.location.href = '/login-page';
       }
@@ -298,8 +361,8 @@
       async function loadSidebarOrgProfile() {
         const el = document.getElementById('sidebarOrgName');
         const initEl = document.getElementById('sidebarInitials');
-        let orgName = localStorage.getItem('orgName') || localStorage.getItem('userName') || 'My Organisation';
-        let initials = localStorage.getItem('orgInitials') || orgName.substring(0, 2).toUpperCase();
+        let orgName = 'My Organisation';
+        let initials = 'MO';
 
         if (el) el.textContent = orgName;
         if (initEl) initEl.textContent = initials;
@@ -314,9 +377,6 @@
 
           orgName = data.profile.OrgName || orgName;
           initials = orgName.substring(0, 2).toUpperCase();
-          localStorage.setItem('orgName', orgName);
-          localStorage.setItem('orgInitials', initials);
-          if (data.profile.OrgProfilePic) localStorage.setItem('orgProfilePic', data.profile.OrgProfilePic);
 
           if (el) el.textContent = orgName;
           if (initEl) {

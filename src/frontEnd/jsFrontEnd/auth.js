@@ -198,9 +198,17 @@ function handleLoginSubmit(event) {
     if (!data) return;
 
     localStorage.setItem("token", data.token);
-    localStorage.setItem("accountType", data.accountType);
-    localStorage.setItem("userName", data.name);
-    localStorage.setItem("initials", data.userinitials);
+    // Explicitly clean up legacy/sensitive localStorage keys
+    localStorage.removeItem("accountType");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("initials");
+    localStorage.removeItem("profilePicUrl");
+    localStorage.removeItem("profileComplete");
+    localStorage.removeItem("latestScannedMarks");
+    localStorage.removeItem("latestScannedSchool");
+    localStorage.removeItem("orgName");
+    localStorage.removeItem("orgInitials");
+    localStorage.removeItem("orgProfilePic");
 
     showFormMessage(form, 'Login successful! Redirecting...', 'success');
 

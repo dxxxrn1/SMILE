@@ -26,19 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Only run on pages that have these elements
-  const spanID = document.getElementById("userName");
-  const spanInitials = document.getElementById("initials");
-
-  const userStored = localStorage.getItem("userName");
-  const initialStored = localStorage.getItem("initials");
-
-  if (spanID) {
-    spanID.textContent = userStored || "User not Found!!!!";
-  }
-
-  if (spanInitials) {
-    spanInitials.textContent = initialStored || "?";
-  }
+  loadStudentHeaderProfile();
 });
 
 /**
@@ -69,12 +57,12 @@ function initMobileNavigation() {
     });
 
     const logoutTag = document.getElementById("logout");
-    logoutTag.addEventListener("click", () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("accountType");
-      localStorage.removeItem("userName");
-      localStorage.removeItem("initials");
-    })
+    if (logoutTag) {
+      logoutTag.addEventListener("click", (e) => {
+        e.preventDefault();
+        logout();
+      });
+    }
   }
 }
 
@@ -141,7 +129,10 @@ function renderStudentAvatar(profile) {
   }
 
   if (initials) {
-    initials.textContent = localStorage.getItem("initials") || "?";
+    const firstInitial = profile?.StuName ? profile.StuName[0] : "";
+    const lastInitial = profile?.StuLastName ? profile.StuLastName[0] : "";
+    const initialsText = (firstInitial + lastInitial).toUpperCase();
+    initials.textContent = initialsText || "?";
   }
 }
 
@@ -150,7 +141,7 @@ async function loadNotifications() {
   const badge = document.getElementById("notificationBadge");
   if (!list || !badge) return;
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -187,7 +178,7 @@ async function loadNotifications() {
 }
 
 async function markNotificationsRead() {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -434,7 +425,7 @@ function loadEbooks(query = "career development south africa youth") {
   const ebooksGrid = document.querySelector(".ebooks-grid");
   if (!ebooksGrid) return;
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
 
   ebooksGrid.innerHTML = Array(4)
     .fill(
@@ -583,7 +574,7 @@ async function checkQuizStatus() {
 
   try {
     const res = await fetch("/api/get-my-interests", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      headers: { Authorization: `Bearer ${getToken()}` },
     });
     const data = await res.json();
 
@@ -659,7 +650,7 @@ window.saveQuizResults = async function () {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${getToken()}`,
     },
     body: JSON.stringify(results),
   });
@@ -714,7 +705,7 @@ window.sendChat = async function () {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${getToken()}`,
       },
       // body: JSON.stringify({ userPrompt: userText }),
       body: JSON.stringify({ history: chatHistory }),
@@ -760,7 +751,7 @@ window.downloadCareerDoc = async function () {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${getToken()}`,
       },
       body: JSON.stringify({ history: chatHistory }),
     });
@@ -843,7 +834,7 @@ async function loadSavedOpportunities() {
   const container = document.querySelector(".dashboard__section--opportunities .opportunities-list");
   if (!container) return;
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -912,7 +903,7 @@ async function loadApplications() {
   const container = document.querySelector(".dashboard__section--applications .applications-list");
   if (!container) return;
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -1064,7 +1055,7 @@ function initDynamicRemoveButtons() {
         try {
           const res = await fetch(`/api/student/saved-opportunities/${oppId}`, {
             method: 'DELETE',
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            headers: { Authorization: `Bearer ${getToken()}` }
           });
           const data = await res.json();
 
@@ -1123,7 +1114,7 @@ async function loadStudentTickets() {
   tbody.innerHTML = `<tr><td colspan="6" class="tkt-empty">Loading...</td></tr>`;
 
   try {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch("/api/tickets/my", {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -1181,7 +1172,7 @@ async function submitStudentTicket() {
   btn.innerHTML = `<svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Submitting...`;
 
   try {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch("/api/tickets", {
       method: "POST",
       headers: {
@@ -1239,7 +1230,7 @@ async function initProfileCompletionWidget() {
   const statIcon = document.getElementById("profileStrengthIcon");
   const statNumber = document.getElementById("profileStrengthNumber");
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -1387,8 +1378,8 @@ async function sendAIProfileChat() {
   win.scrollTop = win.scrollHeight;
 
   try {
-    const scannedMarks = window.latestScannedMarks || localStorage.getItem("latestScannedMarks");
-    const schoolName = window.latestScannedSchool || localStorage.getItem("latestScannedSchool") || "";
+    const scannedMarks = window.latestScannedMarks;
+    const schoolName = window.latestScannedSchool || "";
     const hasUploaded = !!scannedMarks;
 
     const scannedData = {
@@ -1401,7 +1392,7 @@ async function sendAIProfileChat() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        Authorization: `Bearer ${getToken()}`
       },
       body: JSON.stringify({
         message: userText,
@@ -1467,12 +1458,12 @@ async function applyAIProposedBio(button, bioText) {
     </svg> Applying...
   `;
   try {
-    const scannedMarks = window.latestScannedMarks || localStorage.getItem("latestScannedMarks") || null;
+    const scannedMarks = window.latestScannedMarks || null;
     const res = await fetch("/api/student/profile/bio", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        Authorization: `Bearer ${getToken()}`
       },
       body: JSON.stringify({ bio: bioText, academicSubjects: scannedMarks })
     });
@@ -1509,3 +1500,96 @@ window.closeAIProfileModal = closeAIProfileModal;
 window.sendAIProfileChat = sendAIProfileChat;
 window.applyAIProposedBio = applyAIProposedBio;
 window.initProfileCompletionWidget = initProfileCompletionWidget;
+
+async function loadStudentHeaderProfile() {
+  const avatar = document.querySelector(".nav__avatar");
+  const initials = document.getElementById("initials");
+  const userNameEl = document.getElementById("userName");
+  if (!avatar && !initials && !userNameEl) return;
+
+  const token = getToken();
+  if (!token) return;
+
+  try {
+    const res = await fetch("/api/student/profile", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (data.success && data.profile) {
+      const p = data.profile;
+      
+      // Store in memory, NOT in localStorage!
+      window.__currentUser = p;
+      
+      // Update avatar or initials
+      if (p.ProfilePicUrl) {
+        if (avatar) {
+          avatar.innerHTML = `<img src="${escapeHtml(p.ProfilePicUrl)}" alt="Profile picture" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        }
+      } else {
+        const firstInitial = p.StuName ? p.StuName[0] : "";
+        const lastInitial = p.StuLastName ? p.StuLastName[0] : "";
+        const initialsText = (firstInitial + lastInitial).toUpperCase();
+        if (initials) {
+          initials.textContent = initialsText || "?";
+        }
+      }
+      
+      // Update username if element present
+      if (userNameEl && p.StuName) {
+        userNameEl.textContent = p.StuName;
+      }
+    }
+  } catch (err) {
+    console.error("Error loading header profile:", err);
+  }
+}
+
+function isTokenExpired(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    const payload = JSON.parse(jsonPayload);
+    return payload.exp * 1000 < Date.now();
+  } catch (e) {
+    return true;
+  }
+}
+
+function getToken() {
+  const token = localStorage.getItem('token');
+  if (!token || isTokenExpired(token)) {
+    logout();
+    return null;
+  }
+  return token;
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('accountType');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('initials');
+  localStorage.removeItem('profilePicUrl');
+  localStorage.removeItem('profileComplete');
+  localStorage.removeItem("latestScannedMarks");
+  localStorage.removeItem("latestScannedSchool");
+  localStorage.removeItem("orgName");
+  localStorage.removeItem("orgInitials");
+  localStorage.removeItem("orgProfilePic");
+  window.__currentUser = null;
+  
+  fetch('/logout', { method: 'POST' })
+    .catch(() => {})
+    .finally(() => {
+      window.location.href = '/login-page';
+    });
+}
+
+// Expose helpers globally
+window.isTokenExpired = isTokenExpired;
+window.getToken = getToken;
+window.logout = logout;

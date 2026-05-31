@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ─────────────────────────────────────────────
 async function loadOrganisations() {
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
 
         const res = await fetch("/admin/organisations", {
             headers: {
@@ -108,7 +108,7 @@ async function handleApprove(orgId) {
     if (!confirm("Approve this organisation?")) return;
 
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
 
         const res = await fetch(`/admin/organisations/${orgId}/approve`, {
             method: "PATCH",
@@ -134,7 +134,7 @@ async function handleReject(orgId) {
     if (!confirm("Reject this organisation?")) return;
 
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
 
         const res = await fetch(`/admin/organisations/${orgId}/reject`, {
             method: "PATCH",
@@ -160,7 +160,7 @@ async function handleDelete(orgId) {
     if (!confirm("Permanently delete this organisation? This cannot be undone.")) return;
 
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
 
         const res = await fetch(`/admin/organisations/${orgId}`, {
             method: "DELETE",
@@ -184,7 +184,7 @@ async function handleDelete(orgId) {
 // ─────────────────────────────────────────────
 async function openDetailsModal(orgId) {
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
 
         const res = await fetch(`/admin/organisations/${orgId}`, {
             headers: { "Authorization": `Bearer ${token}` }
@@ -290,12 +290,61 @@ function formatDate(dateStr) {
 }
 
 const logoutTag = document.getElementById("logout");
-logoutTag.addEventListener("click", () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("accountType");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("initials");
-})
+if (logoutTag) {
+    logoutTag.addEventListener("click", (e) => {
+        e.preventDefault();
+        logout();
+    });
+}
+
+function isTokenExpired(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        const payload = JSON.parse(jsonPayload);
+        return payload.exp * 1000 < Date.now();
+    } catch (e) {
+        return true;
+    }
+}
+
+function getToken() {
+    const token = localStorage.getItem('token');
+    if (!token || isTokenExpired(token)) {
+        logout();
+        return null;
+    }
+    return token;
+}
+
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('accountType');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('initials');
+    localStorage.removeItem('profilePicUrl');
+    localStorage.removeItem('profileComplete');
+    localStorage.removeItem("latestScannedMarks");
+    localStorage.removeItem("latestScannedSchool");
+    localStorage.removeItem("orgName");
+    localStorage.removeItem("orgInitials");
+    localStorage.removeItem("orgProfilePic");
+    window.__currentUser = null;
+    
+    fetch('/logout', { method: 'POST' })
+        .catch(() => {})
+        .finally(() => {
+            window.location.href = '/login-page';
+        });
+}
+
+// Expose helpers globally
+window.isTokenExpired = isTokenExpired;
+window.getToken = getToken;
+window.logout = logout;
 
 // ─────────────────────────────────────────────────────────────────
 // ADMIN SUPPORT TICKETS  —  powers userTicket.html
@@ -334,7 +383,7 @@ async function loadAdminTickets() {
     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:#94a3b8;">Loading tickets...</td></tr>`;
 
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
         const res = await fetch("/admin/api/tickets", {
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -472,7 +521,7 @@ async function resolveTicket(ticketId) {
     }
 
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
         const res = await fetch(`/admin/api/tickets/${ticketId}`, {
             method: "PATCH",
             headers: {

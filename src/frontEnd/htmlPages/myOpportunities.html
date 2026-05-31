@@ -318,12 +318,12 @@
       const avatarEl = document.getElementById("sidebarInitials");
       const nameEl = document.getElementById("sidebarOrgName");
 
-      let orgName = localStorage.getItem("orgName") || localStorage.getItem("userName") || "My Organisation";
-      let initials = localStorage.getItem("orgInitials") || localStorage.getItem("initials") || orgName.substring(0, 2).toUpperCase();
+      let orgName = "My Organisation";
+      let initials = "MO";
       if (avatarEl) avatarEl.textContent = initials;
       if (nameEl) nameEl.textContent = orgName;
 
-      const token = localStorage.getItem("token");
+      const token = getToken();
       if (!token) return;
 
       try {
@@ -336,9 +336,6 @@
 
         orgName = data.profile.OrgName || orgName;
         initials = orgName.substring(0, 2).toUpperCase();
-        localStorage.setItem("orgName", orgName);
-        localStorage.setItem("orgInitials", initials);
-        if (data.profile.OrgProfilePic) localStorage.setItem("orgProfilePic", data.profile.OrgProfilePic);
 
         if (nameEl) nameEl.textContent = orgName;
         if (avatarEl) {

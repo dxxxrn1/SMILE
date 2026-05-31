@@ -452,7 +452,7 @@ function setMapStatus(type, text) {
 async function applyClicked(title, oppId) {
   if (!confirm(`Are you sure you want to apply for "${title}"?`)) return;
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) {
     alert("Please log in to apply.");
     window.location.href = "/login-page";
@@ -483,7 +483,7 @@ async function applyClicked(title, oppId) {
 }
 
 async function saveClicked(title, oppId) {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) {
     alert("Please log in to save opportunities.");
     window.location.href = "/login-page";
@@ -606,10 +606,4 @@ async function loadOpportunities(province) {
   }
 }
 
-const logoutTag = document.getElementById("logout");
-      logoutTag.addEventListener("click" , ()=>{
-      localStorage.removeItem("token");
-      localStorage.removeItem("accountType");
-      localStorage.removeItem("userName");
-      localStorage.removeItem("initials");
-})
+

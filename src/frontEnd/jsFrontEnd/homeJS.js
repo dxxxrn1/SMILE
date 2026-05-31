@@ -85,12 +85,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   const logoutTag = document.getElementById("logout");
-      logoutTag.addEventListener("click" , ()=>{
-          localStorage.removeItem("token");
-          localStorage.removeItem("accountType");
-          localStorage.removeItem("userName");
-          localStorage.removeItem("initials");
-      })
+  if (logoutTag) {
+    logoutTag.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (typeof logout === "function") {
+        logout();
+      } else {
+        localStorage.removeItem("token");
+        localStorage.removeItem("accountType");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("initials");
+        window.location.href = "/login-page";
+      }
+    });
+  }
   
 
 });

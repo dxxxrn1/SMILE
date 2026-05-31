@@ -289,7 +289,7 @@
     let selectedProfilePic = null;
 
     function authHeaders(extra = {}) {
-      const token = localStorage.getItem("token");
+      const token = getToken();
       return token ? { ...extra, Authorization: `Bearer ${token}` } : extra;
     }
 
@@ -378,10 +378,6 @@
         const data = await response.json();
 
         if (data.success) {
-          localStorage.setItem("profileComplete", "true"); //they are good to go!
-          if (data.profilePicUrl) {
-            localStorage.setItem("profilePicUrl", data.profilePicUrl);
-          }
           alert(
             "Profile Saved! You are now ready to apply for opportunities.",
           );

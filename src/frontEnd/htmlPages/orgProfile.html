@@ -321,7 +321,7 @@
       let selectedProfilePic = null;
 
       function authHeaders(extra = {}) {
-        const token = localStorage.getItem("token");
+        const token = getToken();
         return token ? { ...extra, Authorization: `Bearer ${token}` } : extra;
       }
 
@@ -366,13 +366,7 @@
             document.getElementById("orgProvince").value = org.Province || "Not Specified";
             document.getElementById("bio").value = org.OrgBio || "";
 
-            if (org.OrgName) {
-              localStorage.setItem("orgName", org.OrgName);
-              localStorage.setItem("orgInitials", org.OrgName.substring(0, 2).toUpperCase());
-            }
-            if (org.OrgProfilePic) {
-              localStorage.setItem("orgProfilePic", org.OrgProfilePic);
-            }
+            // No localStorage storage of sensitive keys
 
             if (org.OrgProfilePic) {
               document.getElementById("pfpPreview").innerHTML =
@@ -416,11 +410,6 @@
           const data = await response.json();
 
           if (data.success) {
-            localStorage.setItem("orgName", orgName);
-            localStorage.setItem("orgInitials", orgName.substring(0, 2).toUpperCase());
-            if (data.profilePicUrl) {
-              localStorage.setItem("orgProfilePic", data.profilePicUrl);
-            }
             alert("Organisation Profile saved successfully!");
             window.location.href = "/org/dashboard";
           } else {

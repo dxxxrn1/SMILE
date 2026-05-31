@@ -19,15 +19,10 @@ if (document.readyState === "loading") {
 }
 
 async function loadOrgSidebarProfile() {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   const nameEl = document.getElementById("sidebarOrgName");
   const initEl = document.getElementById("sidebarInitials");
   if (!nameEl && !initEl) return;
-
-  const cachedName = localStorage.getItem("orgName") || localStorage.getItem("userName") || "My Organisation";
-  const cachedInitials = localStorage.getItem("orgInitials") || localStorage.getItem("initials") || cachedName.slice(0, 2).toUpperCase();
-  if (nameEl) nameEl.textContent = cachedName;
-  if (initEl) initEl.textContent = cachedInitials;
   if (!token) return;
 
   try {
@@ -36,11 +31,8 @@ async function loadOrgSidebarProfile() {
     const data = await res.json();
     if (!data.success || !data.profile) return;
 
-    const orgName = data.profile.OrgName || cachedName;
+    const orgName = data.profile.OrgName || "My Organisation";
     const initials = orgName.slice(0, 2).toUpperCase();
-    localStorage.setItem("orgName", orgName);
-    localStorage.setItem("orgInitials", initials);
-    if (data.profile.OrgProfilePic) localStorage.setItem("orgProfilePic", data.profile.OrgProfilePic);
 
     if (nameEl) nameEl.textContent = orgName;
     if (initEl) {
@@ -59,7 +51,7 @@ async function loadOrgSidebarProfile() {
    FETCH LIVE DATA FROM ANALYTICS ENDPOINT
    ================================================================ */
 async function loadAnalyticsData() {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) { window.location.href = "/login-page"; return; }
 
   // Set initial loading placeholders
@@ -343,9 +335,58 @@ function showToast(msg, type) {
 }
 
 const logoutTag = document.getElementById("logout");
-logoutTag.addEventListener("click" , ()=>{
-    localStorage.removeItem("token");
-    localStorage.removeItem("accountType");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("initials");
-});
+if (logoutTag) {
+  logoutTag.addEventListener("click", (e) => {
+    e.preventDefault();
+    logout();
+  });
+}
+
+function isTokenExpired(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    const payload = JSON.parse(jsonPayload);
+    return payload.exp * 1000 < Date.now();
+  } catch (e) {
+    return true;
+  }
+}
+
+function getToken() {
+  const token = localStorage.getItem('token');
+  if (!token || isTokenExpired(token)) {
+    logout();
+    return null;
+  }
+  return token;
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('accountType');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('initials');
+  localStorage.removeItem('profilePicUrl');
+  localStorage.removeItem('profileComplete');
+  localStorage.removeItem("latestScannedMarks");
+  localStorage.removeItem("latestScannedSchool");
+  localStorage.removeItem("orgName");
+  localStorage.removeItem("orgInitials");
+  localStorage.removeItem("orgProfilePic");
+  window.__currentUser = null;
+  
+  fetch('/logout', { method: 'POST' })
+    .catch(() => {})
+    .finally(() => {
+      window.location.href = '/login-page';
+    });
+}
+
+// Expose helpers globally
+window.isTokenExpired = isTokenExpired;
+window.getToken = getToken;
+window.logout = logout;
