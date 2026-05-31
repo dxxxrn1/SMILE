@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { connectToDB, sql } from "../dbConnection/dbconnection.js"; // ✅ fixed
 
 const transporter = nodemailer.createTransport({

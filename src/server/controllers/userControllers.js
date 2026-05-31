@@ -2,7 +2,7 @@ import { rmSync } from "node:fs";
 import fs from "fs";
 import path from "path";
 import {sql , connectToDB} from "../dbConnection/dbconnection.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import nodemailer from  "nodemailer";
 import { error } from "node:console";
 import dotenv from "dotenv";
