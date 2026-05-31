@@ -66,6 +66,7 @@ route.get("/logout", (req, res) => {
     res.clearCookie('token');
     return res.redirect("/login-page");
 });
+//resetPasswordPage
 route.get("/api/jobs", fetchJobs);
 route.get("/org/dashboard", verifyToken ,orgDashboard);
 route.get("/org/profile", verifyToken, orgProfilePage);

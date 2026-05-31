@@ -60,7 +60,7 @@ export const forgotPassword = async (req, res) => {
             .query(`UPDATE ${table} SET ResetToken = @token, ResetTokenExpiry = @expiry WHERE ${idCol} = @id`);
 
         // Send email
-        const resetLink = `http://localhost:3000/reset-password?token=${token}&type=${accountType}`;
+        const resetLink = `${process.env.PUBLIC_BASE_URL}/reset-password?token=${token}&type=${accountType}`;
 
         await transporter.sendMail({
             from: process.env.LUCAS_EMAIL,
