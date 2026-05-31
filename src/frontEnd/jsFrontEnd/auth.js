@@ -844,13 +844,13 @@ function checkPasswordMatch() {
 
   if (password === confirm) {
     confirmMessage.className     = "match";
-    confirmIcon.textContent      = "âœ“";
+    confirmIcon.textContent      = "";
     confirmText.textContent      = "Passwords match";
     confirmInput.style.borderColor = "#10B981";
     confirmInput.classList.remove("form__input--error");
   } else {
     confirmMessage.className     = "no-match";
-    confirmIcon.textContent      = "âœ•";
+    confirmIcon.textContent      = "";
     confirmText.textContent      = "Passwords do not match";
     confirmInput.style.borderColor = "#EF4444";
   }
