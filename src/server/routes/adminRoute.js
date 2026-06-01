@@ -12,12 +12,19 @@ import {sendNewsletterToSubscribers } from "../controllers/newsletterSenderContr
 const router = express.Router();
 
 cron.schedule("0 8 * * *", async () => {
+
     console.log("Sending daily newsletter...");
+
     try {
+
         await sendNewsletterToSubscribersJob();
-        console.log("Daily newsletter sent successfully.");
-    } catch (error) {
-        console.error("Newsletter job failed:", error);
+
+        console.log("Daily newsletter sent.");
+
+    } catch (err) {
+
+        console.error("Newsletter job failed:", err);
+
     }
 });
 
