@@ -1,6 +1,6 @@
 /**
  * SMILE – News Page Frontend Script
- * Updated for newsdata.io API (cursor-based pagination)
+ * Updated for newsdata.io API (cursor-based pagination + smart image fallback)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // ─── State ──────────────────────────────────────────────────────────────
     const state = {
       category:   'all',
-      nextPage:   null,     // newsdata.io cursor token (replaces page number)
-      pageSize:   10,       // free plan cap
+      nextPage:   null,
+      pageSize:   10,
       loading:    false,
       hasMore:    true,
     };
@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const newsGrid     = document.getElementById('newsGrid');
     const loadMoreBtn  = document.getElementById('loadMoreNews');
     const categoryBtns = document.querySelectorAll('.news-category');
+
+    // ─── Image cache (avoid duplicate Unsplash calls for same keyword) ───────
+    const imageCache = {};
 
     // ─── Helpers ─────────────────────────────────────────────────────────────
 
@@ -34,7 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function getCategoryLabel(url, sourceName, rawCategory) {
-      // Prefer the category the API already gave us
       if (rawCategory) {
         const map = {
           education:    'Education',
@@ -47,7 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         if (map[rawCategory.toLowerCase()]) return map[rawCategory.toLowerCase()];
       }
-      // Fallback: heuristic from URL / source name
       const text = (url + sourceName).toLowerCase();
       if (text.includes('scholar') || text.includes('bursary'))  return 'Scholarships';
       if (text.includes('employ')  || text.includes('job'))       return 'Employment';
@@ -56,27 +57,61 @@ document.addEventListener("DOMContentLoaded", () => {
       return 'Education';
     }
 
-    const FALLBACK_IMAGES = [
-      'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=400&h=220&fit=crop',
-      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=220&fit=crop',
-      'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=220&fit=crop',
-      'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=220&fit=crop',
-    ];
-    let fallbackIndex = 0;
-    function getFallback() {
-      return FALLBACK_IMAGES[fallbackIndex++ % FALLBACK_IMAGES.length];
+    // Extract 2-3 meaningful keywords from the article title for image search
+    function extractKeywords(title, category) {
+      // Strip common filler words
+      const stopWords = new Set([
+        'the','a','an','and','or','but','in','on','at','to','for','of',
+        'with','by','from','as','is','was','are','were','be','been',
+        'has','have','had','will','would','could','should','may','might',
+        'that','this','these','those','it','its','new','says','say',
+        'after','before','over','under','about','into','out','up','down',
+        'south','africa','african','sa','how','why','what','when','who',
+      ]);
+
+      const words = title
+        .toLowerCase()
+        .replace(/[^a-z\s]/g, '')
+        .split(/\s+/)
+        .filter(w => w.length > 3 && !stopWords.has(w));
+
+      // Take top 2 meaningful words + category as context
+      const keywords = words.slice(0, 2);
+      if (category && category !== 'all') keywords.push(category);
+
+      return keywords.join(' ') || category || 'south africa news';
+    }
+
+    // Fetch a relevant image from Unsplash Source (no API key needed)
+    async function getSmartImage(title, category) {
+      const keyword = extractKeywords(title, category);
+      const cacheKey = keyword.replace(/\s+/g, '-');
+
+      if (imageCache[cacheKey]) return imageCache[cacheKey];
+
+      // Unsplash Source gives a random relevant image — we add a unique seed
+      // per article so cards don't all show the same image
+      const seed = Math.random().toString(36).slice(2, 7);
+      const url  = `https://source.unsplash.com/400x220/?${encodeURIComponent(keyword)}&sig=${seed}`;
+
+      imageCache[cacheKey] = url;
+      return url;
     }
 
     // ─── Render ──────────────────────────────────────────────────────────────
 
-    function renderCard(article) {
-      const imgSrc  = article.urlToImage || getFallback();
+    async function renderCard(article) {
       const label   = getCategoryLabel(article.url, article.source?.name || '', article.category);
       const date    = formatDate(article.publishedAt);
       const excerpt = article.description
         ? article.description.slice(0, 120) + (article.description.length > 120 ? '…' : '')
         : 'Click to read the full article.';
       const title   = article.title.slice(0, 80) + (article.title.length > 80 ? '…' : '');
+
+      // Use API image if available, otherwise fetch a smart contextual one
+      const imgSrc = article.urlToImage
+        ? article.urlToImage
+        : await getSmartImage(article.title, article.category || label.toLowerCase());
 
       const card = document.createElement('article');
       card.className = 'news-card';
@@ -86,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
             src="${imgSrc}"
             alt="${title}"
             crossorigin="anonymous"
-            onerror="this.src='${getFallback()}'"
+            onerror="this.onerror=null; this.src='https://source.unsplash.com/400x220/?news,southafrica&sig=${Math.random().toString(36).slice(2,7)}'"
           >
           <span class="news-card__category">${label}</span>
         </div>
@@ -144,9 +179,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (reset) {
         newsGrid.innerHTML = '';
-        state.nextPage = null;    // reset cursor
+        state.nextPage = null;
         state.hasMore  = true;
-        fallbackIndex  = 0;
       }
 
       if (!state.hasMore) {
@@ -154,7 +188,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Show skeletons on first load
       if (!state.nextPage) renderSkeleton();
 
       loadMoreBtn.disabled    = true;
@@ -166,7 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
           pageSize: state.pageSize,
         });
 
-        // Pass the cursor token for subsequent pages
         if (state.nextPage) {
           params.set('page', state.nextPage);
         }
@@ -183,16 +215,15 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!state.nextPage) showError('No news articles found for this category.');
           state.hasMore = false;
         } else {
-          data.articles.forEach(article => {
-            newsGrid.appendChild(renderCard(article));
-          });
+          // Render cards with smart images (async, but renders each card as ready)
+          const cardPromises = data.articles.map(article => renderCard(article));
+          const cards = await Promise.all(cardPromises);
+          cards.forEach(card => newsGrid.appendChild(card));
 
-          // Store the nextPage cursor for the next "Load More" click
           state.nextPage = data.nextPage || null;
           state.hasMore  = !!data.nextPage;
         }
 
-        // Update Load More button
         if (state.hasMore) {
           loadMoreBtn.disabled = false;
           loadMoreBtn.innerHTML = `Load More News
