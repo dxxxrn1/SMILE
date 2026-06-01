@@ -487,7 +487,7 @@ async function triggerOTP(type, form, submitBtn) {
 
     if (!data.success) {
       if (errorEl) {
-        errorEl.textContent = 'âŒ ' + data.message;
+        errorEl.textContent = data.message;
         errorEl.style.display = 'block';
       }
       resetSubmitButton(submitBtn);
@@ -505,7 +505,7 @@ async function triggerOTP(type, form, submitBtn) {
     console.error(err);
     if (statusEl) statusEl.textContent = '';
     if (errorEl) {
-      errorEl.textContent = 'âŒ Something went wrong while sending verification code.';
+      errorEl.textContent = 'Something went wrong while sending verification code.';
       errorEl.style.display = 'block';
     }
   }
@@ -542,7 +542,7 @@ async function verifyOTP() {
     } else {
       if (errorEl) {
         errorEl.style.display = 'block';
-        errorEl.textContent = 'âŒ ' + data.message;
+        errorEl.textContent = data.message;
       }
       document.querySelectorAll('.otp-digit').forEach(d => d.value = '');
       const inputs = document.querySelectorAll('.otp-digit');
@@ -844,13 +844,13 @@ function checkPasswordMatch() {
 
   if (password === confirm) {
     confirmMessage.className     = "match";
-    confirmIcon.textContent      = "âœ“";
+    confirmIcon.textContent      = "";
     confirmText.textContent      = "Passwords match";
     confirmInput.style.borderColor = "#10B981";
     confirmInput.classList.remove("form__input--error");
   } else {
     confirmMessage.className     = "no-match";
-    confirmIcon.textContent      = "âœ•";
+    confirmIcon.textContent      = "";
     confirmText.textContent      = "Passwords do not match";
     confirmInput.style.borderColor = "#EF4444";
   }
