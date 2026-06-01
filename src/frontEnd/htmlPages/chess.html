@@ -44,7 +44,13 @@
     }
 
     /* ── Layout ── */
-    .app { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
+    /* Main page container */
+.app {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
     .screen { display: none; }
     .screen.active { display: block; }
 
@@ -130,19 +136,32 @@
       width: 424px; font-size: 11px;
       color: var(--text3); padding: 4px 0;
     }
-    .board {
-      display: grid;
-      grid-template-columns: repeat(8, 53px);
-      grid-template-rows: repeat(8, 53px);
-      border: 2px solid var(--border2);
-      border-radius: 2px;
-    }
-    .sq {
-      width: 53px; height: 53px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 32px; cursor: pointer;
-      user-select: none; transition: background 0.1s;
-    }
+.board {
+  width: 424px;
+  height: 424px;
+
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+
+  border: 2px solid var(--border2);
+  border-radius: 2px;
+}
+
+.sq {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 32px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.1s;
+  position: relative;
+}
     .sq.light     { background: var(--sq-light); }
     .sq.dark      { background: var(--sq-dark); }
     .sq.selected  { background: var(--sq-select) !important; }
@@ -261,12 +280,73 @@
     }
     .topbar h2 { margin: 0; }
 
-    @media (max-width: 600px) {
-      .board { grid-template-columns: repeat(8, 40px); grid-template-rows: repeat(8, 40px); }
-      .sq { width: 40px; height: 40px; font-size: 24px; }
-      .rank-labels { height: 320px; }
-      .file-labels { width: 320px; }
-    }
+    /* =====================================================
+   MOBILE RESPONSIVE LAYOUT
+===================================================== */
+@media (max-width: 768px) {
+
+  /* Prevent page from scrolling sideways */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Stack board and side panel vertically */
+  .board-wrap {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .board-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Make board fit phone width */
+  .board {
+    width: 95vw;
+    height: 95vw;
+
+    max-width: 420px;
+    max-height: 420px;
+
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+  }
+
+  /* Scale chess pieces */
+  .sq {
+    width: 100%;
+    height: 100%;
+    font-size: clamp(20px, 5vw, 28px);
+  }
+
+  /* Match labels to board size */
+  .file-labels {
+    width: 95vw;
+    max-width: 420px;
+  }
+
+  .rank-labels {
+    height: 95vw;
+    max-height: 420px;
+  }
+
+  /* Make side panel appear below board */
+  .side-panel {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Better spacing on phones */
+  .app {
+    padding: 1rem 0.5rem;
+  }
+
+  /* Smaller top bar text */
+  .topbar h2 {
+    font-size: 20px;
+  }
+}
   </style>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/smileChess.css">
