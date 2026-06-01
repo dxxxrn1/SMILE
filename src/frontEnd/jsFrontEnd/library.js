@@ -260,3 +260,23 @@ loadMoreBtn.addEventListener("click", async () => {
 
 renderCollections();
 runSearch(libraryState.query, libraryState.title);
+
+
+
+const booksTopBtn = document.getElementById("booksTopBtn");
+const booksContainer = document.getElementById("libraryResults");
+
+booksContainer.addEventListener("scroll", () => {
+  if (booksContainer.scrollTop > 300) {
+    booksTopBtn.classList.add("show");
+  } else {
+    booksTopBtn.classList.remove("show");
+  }
+});
+
+booksTopBtn?.addEventListener("click", () => {
+  booksContainer.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+});
