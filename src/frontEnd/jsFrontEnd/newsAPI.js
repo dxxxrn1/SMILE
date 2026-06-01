@@ -263,14 +263,14 @@ document.addEventListener("DOMContentLoaded", () => {
           const data = await res.json();
 
           if (data.success) {
-            showToastNotification('🎉 Successfully subscribed to our newsletter!');
+            showToastNotification('Successfully subscribed to our newsletter!');
             newsletterForm.reset();
           } else {
-            showToastNotification('⚠️ ' + (data.message || 'Subscription failed.'), 'error');
+            showToastNotification('' + (data.message || 'Subscription failed.'), 'error');
           }
         } catch (err) {
           console.error('Newsletter subscribe error:', err);
-          showToastNotification('❌ A network error occurred. Please try again.', 'error');
+          showToastNotification(' A network error occurred. Please try again.', 'error');
         } finally {
           btn.disabled    = false;
           btn.textContent = 'Subscribe';
