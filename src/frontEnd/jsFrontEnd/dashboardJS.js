@@ -194,39 +194,25 @@ async function markNotificationsRead() {
 }
 
 function initNotifications() {
-  const btn = document.getElementById("notificationBtn");
   const panel = document.getElementById("notificationPanel");
   const markReadBtn = document.getElementById("notificationMarkRead");
-  if (!btn || !panel) return;
+  if (!panel) return;
 
   loadNotifications();
 
-  btn.addEventListener("click", async (event) => {
-    event.stopPropagation();
-    const isOpen = panel.classList.toggle("notification-panel--active");
-    btn.setAttribute("aria-expanded", String(isOpen));
-    if (isOpen) await loadNotifications();
-  });
-
-  panel.addEventListener("click", (event) => {
-    event.stopPropagation();
-  });
+  const profileBtn = document.querySelector(".nav__profile-btn");
+  if (profileBtn) {
+    profileBtn.addEventListener("click", async () => {
+      const profileMenu = document.getElementById("profileMenu");
+      if (profileMenu && !profileMenu.classList.contains("nav__profile-menu--active")) {
+        await loadNotifications();
+      }
+    });
+  }
 
   if (markReadBtn) {
     markReadBtn.addEventListener("click", markNotificationsRead);
   }
-
-  document.addEventListener("click", () => {
-    panel.classList.remove("notification-panel--active");
-    btn.setAttribute("aria-expanded", "false");
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      panel.classList.remove("notification-panel--active");
-      btn.setAttribute("aria-expanded", "false");
-    }
-  });
 }
 
 /**
@@ -578,9 +564,17 @@ async function checkQuizStatus() {
     });
     const data = await res.json();
 
+    const quizCardTitle = document.getElementById("quizCardTitle");
+    const quizCardBody = document.getElementById("quizCardBody");
+    const quizCardBtn = quizStatusCard.querySelector(".career-card__btn");
+
     if (data.exists) {
-      quizStatusCard.style.display = "none";
+      quizStatusCard.style.display = "flex";
       chatSection.style.display = "flex";
+
+      if (quizCardTitle) quizCardTitle.textContent = "Your profile is complete!";
+      if (quizCardBody) quizCardBody.textContent = "You can retake the personality quiz at any time to adjust your career interests.";
+      if (quizCardBtn) quizCardBtn.textContent = "Retake personality quiz";
 
       const downloadDocBtn = document.getElementById("downloadDocBtn");
       if (downloadDocBtn) downloadDocBtn.style.display = "inline-flex";
@@ -590,8 +584,8 @@ async function checkQuizStatus() {
         if (win) {
           win.innerHTML = `
             <div style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px;">
-              <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; color: var(--primary-pink); flex-shrink: 0; border: 1px solid #fbcfe8; box-shadow: var(--shadow-sm);">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center; color: #059669; flex-shrink: 0; border: 1px solid #a7f3d0; box-shadow: var(--shadow-sm);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
               </div>
               <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6;">
                 <p style="margin-bottom: 8px;">Welcome back! I see your top career interest is <strong style="color: var(--primary-pink);">${data.interest}</strong>.</p>
@@ -606,6 +600,10 @@ async function checkQuizStatus() {
     } else {
       quizStatusCard.style.display = "flex";
       chatSection.style.display = "flex";
+
+      if (quizCardTitle) quizCardTitle.textContent = "Complete your profile";
+      if (quizCardBody) quizCardBody.textContent = "Take the personality quiz to unlock personalised AI career advice tailored to your strengths.";
+      if (quizCardBtn) quizCardBtn.textContent = "Take personality quiz";
     }
   } catch (e) {
     console.error("Error loading quiz status:", e);
@@ -693,8 +691,8 @@ window.sendChat = async function () {
   const typingId = "typing-" + Date.now();
   win.innerHTML += `
     <div id="${typingId}" style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px;">
-      <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; color: var(--primary-pink); flex-shrink: 0; border: 1px solid #fbcfe8;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center; color: #059669; flex-shrink: 0; border: 1px solid #a7f3d0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
       </div>
       <div style="background: #ffffff; color: var(--gray-500); padding: 16px; border-radius: 0px 16px 16px 16px; border: 1px solid var(--gray-200); font-size: 0.9375rem; font-style: italic;">
         Thinking...
@@ -721,8 +719,8 @@ window.sendChat = async function () {
 
     win.innerHTML += `
       <div style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px;">
-        <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; color: var(--primary-pink); flex-shrink: 0; border: 1px solid #fbcfe8; box-shadow: var(--shadow-sm);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        <div style="width: 36px; height: 36px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center; color: #059669; flex-shrink: 0; border: 1px solid #a7f3d0; box-shadow: var(--shadow-sm);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
         </div>
         <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6;">
           ${formattedResponse}
@@ -963,16 +961,16 @@ async function loadApplications() {
         const step3Class = isShortlisted ? "app-timeline__step--shortlisted" : "";
 
         let step4Class = "";
-        let step4Title = "4. Decision";
+        let step4Title = "Step 4: Decision";
         let step4Sub = "Pending";
         if (isFinal) {
           if (isRejected) {
             step4Class = "app-timeline__step--rejected";
-            step4Title = "4. Rejected";
+            step4Title = "Step 4: Rejected";
             step4Sub = "Ended";
           } else {
             step4Class = "app-timeline__step--accepted";
-            step4Title = status === 'Approved' ? "4. Approved" : "4. Accepted";
+            step4Title = status === 'Approved' ? "Step 4: Approved" : "Step 4: Accepted";
             step4Sub = "Success";
           }
         }
@@ -1001,7 +999,7 @@ async function loadApplications() {
               <div class="app-timeline">
                 <!-- Step 1: Applied -->
                 <div class="app-timeline__step ${step1Class}">
-                  <span class="app-timeline__step-title">1. Applied</span>
+                  <span class="app-timeline__step-title">Step 1: Applied</span>
                   <span class="app-timeline__step-subtitle">${dateApplied}</span>
                 </div>
                 
@@ -1009,15 +1007,15 @@ async function loadApplications() {
                 
                 <!-- Step 2: Under Review -->
                 <div class="app-timeline__step ${step2Class}">
-                  <span class="app-timeline__step-title">2. Reviewed</span>
-                  <span class="app-timeline__step-subtitle">${isReviewed ? 'Completed' : 'Pending'}</span>
+                  <span class="app-timeline__step-title">Step 2: Reviewed</span>
+                  <span class="app-timeline__step-subtitle">${isReviewed ? '(Under Review)' : 'Pending'}</span>
                 </div>
                 
                 <div class="app-timeline__connector ${conn2}"></div>
                 
                 <!-- Step 3: Shortlisted -->
                 <div class="app-timeline__step ${step3Class}">
-                  <span class="app-timeline__step-title">3. Shortlisted</span>
+                  <span class="app-timeline__step-title">Step 3: Shortlisted</span>
                   <span class="app-timeline__step-subtitle">${isShortlisted ? 'Yes' : 'Pending'}</span>
                 </div>
                 
@@ -1223,14 +1221,71 @@ window.openTicketsTab = openTicketsTab;
 window.loadStudentTickets = loadStudentTickets;
 window.submitStudentTicket = submitStudentTicket;
 
+function applyProfileStrengthPercent(percent) {
+  const statCard = document.getElementById("profileStrengthCard");
+  const statIcon = document.getElementById("profileStrengthIcon");
+  const statNumber = document.getElementById("profileStrengthNumber");
+  const widget = document.getElementById("profileCompletionWidget");
+
+  if (widget) {
+    widget.style.display = "flex";
+    const percentText = document.getElementById("widgetProgressPercent");
+    if (percentText) percentText.textContent = `${percent}%`;
+    const progressRing = document.getElementById("widgetProgressRing");
+    if (progressRing) {
+      progressRing.style.strokeDasharray = `${percent}, 100`;
+    }
+  }
+
+  if (statCard && statIcon && statNumber) {
+    statNumber.textContent = `${percent}%`;
+    statCard.classList.remove("stat-card--neutral", "stat-card--red", "stat-card--orange", "stat-card--green", "stat-card--purple");
+    statIcon.classList.remove("stat-card__icon--red", "stat-card__icon--orange", "stat-card__icon--green", "stat-card__icon--purple");
+
+    // Assign color theme and dynamic mouth SVG shape based on bio completeness percentage
+    if (percent < 40) {
+      statCard.classList.add("stat-card--red");
+      statIcon.classList.add("stat-card__icon--red");
+      // Sad frowning mouth (no eyes)
+      statIcon.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M16 16s-1.5-2-4-2-4 2-4 2" />
+        </svg>
+      `;
+    } else if (percent < 80) {
+      statCard.classList.add("stat-card--orange");
+      statIcon.classList.add("stat-card__icon--orange");
+      // Neutral flat mouth (no eyes)
+      statIcon.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="8" y1="15" x2="16" y2="15" />
+        </svg>
+      `;
+    } else {
+      statCard.classList.add("stat-card--green");
+      statIcon.classList.add("stat-card__icon--green");
+      // Happy smiling mouth (no eyes)
+      statIcon.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+        </svg>
+      `;
+    }
+  }
+}
+
 /**
  * Profile Completion Widget Initialization
  */
 async function initProfileCompletionWidget() {
-  const widget = document.getElementById("profileCompletionWidget");
-  const statCard = document.getElementById("profileStrengthCard");
-  const statIcon = document.getElementById("profileStrengthIcon");
-  const statNumber = document.getElementById("profileStrengthNumber");
+  // Load cached strength immediately to prevent color/UI lagging
+  const cachedStrength = localStorage.getItem("profileStrength");
+  if (cachedStrength !== null) {
+    applyProfileStrengthPercent(parseInt(cachedStrength, 10));
+  }
 
   const token = getToken();
   if (!token) return;
@@ -1245,65 +1300,13 @@ async function initProfileCompletionWidget() {
       const p = data.profile;
       renderStudentAvatar(p);
 
-      let score = 0;
-      let total = 5;
+      // Compute score strictly based on bio word count (50 words = 50%, 100+ words = 100%)
+      const bioText = (p.StuBio && p.StuBio.trim() !== "None provided yet") ? p.StuBio.trim() : "";
+      const wordCount = bioText ? bioText.split(/\s+/).filter(Boolean).length : 0;
+      const percent = Math.min(100, wordCount);
 
-      if (p.StuName && p.StuName.trim().length > 0) score++;
-      if (p.StuLastName && p.StuLastName.trim().length > 0) score++;
-      if (p.StuEducationLevel && p.StuEducationLevel.trim().length > 0) score++;
-      if (p.StuBio && p.StuBio.trim().length > 0 && p.StuBio !== "None provided yet") score++;
-      if (p.ProfilePicUrl && p.ProfilePicUrl.trim().length > 0) score++;
-
-      const percent = Math.round((score / total) * 100);
-
-      if (widget) {
-        widget.style.display = "flex";
-
-        const percentText = document.getElementById("widgetProgressPercent");
-        if (percentText) percentText.textContent = `${percent}%`;
-
-        const progressRing = document.getElementById("widgetProgressRing");
-        if (progressRing) {
-          progressRing.style.strokeDasharray = `${percent}, 100`;
-        }
-      }
-      if (statCard && statIcon && statNumber) {
-        statNumber.textContent = `${percent}%`;
-
-        statCard.classList.remove("stat-card--red", "stat-card--orange", "stat-card--green", "stat-card--purple");
-        statIcon.classList.remove("stat-card__icon--red", "stat-card__icon--orange", "stat-card__icon--green", "stat-card__icon--purple");
-
-        // Assign color theme 
-        if (percent < 40) {
-          statCard.classList.add("stat-card--red");
-          statIcon.classList.add("stat-card__icon--red");
-          statIcon.innerHTML = `
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-          `;
-        } else if (percent < 80) {
-          statCard.classList.add("stat-card--orange");
-          statIcon.classList.add("stat-card__icon--orange");
-          statIcon.innerHTML = `
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-          `;
-        } else {
-          statCard.classList.add("stat-card--green");
-          statIcon.classList.add("stat-card__icon--green");
-          statIcon.innerHTML = `
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-          `;
-        }
-      }
+      applyProfileStrengthPercent(percent);
+      localStorage.setItem("profileStrength", String(percent));
     }
   } catch (err) {
     console.error("Error loading profile completion widget:", err);
@@ -1317,6 +1320,9 @@ function openAIProfileModal() {
   const modal = document.getElementById("aiProfileModal");
   if (!modal) return;
 
+  // Lock parent page scrolling
+  document.body.style.overflow = "hidden";
+
   modal.style.display = "flex";
   setTimeout(() => {
     modal.style.opacity = "1";
@@ -1327,9 +1333,14 @@ function openAIProfileModal() {
 
   const win = document.getElementById("aiProfileChatWindow");
   win.innerHTML = `
-    <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; border-radius: 0 20px 20px 20px;">
-      <p style="margin: 0 0 8px 0;"><strong>Hello! I'm your AI Profile Assistant.</strong></p>
-      <p style="margin: 0;">I'll help you craft a professional, compelling bio to attract the best opportunities. To get started, you can share your key skills, career interests, hobbies, or paste a rough draft you'd like me to polish!</p>
+    <div style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px; align-items: flex-start;">
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: #064e3b; display: flex; align-items: center; justify-content: center; color: #34d399; flex-shrink: 0; border: 1px solid #022c22; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+      </div>
+      <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; border-radius: 0 20px 20px 20px; flex: 1; max-width: 80%;">
+        <p style="margin: 0 0 8px 0;"><strong>Hello! I'm your AI Profile Assistant.</strong></p>
+        <p style="margin: 0;">I'll help you craft a professional, compelling bio to attract the best opportunities. To get started, you can share your key skills, career interests, hobbies, or paste a rough draft you'd like me to polish!</p>
+      </div>
     </div>
   `;
   aiProfileChatHistory = [];
@@ -1344,6 +1355,8 @@ function closeAIProfileModal() {
     modal.style.pointerEvents = "none";
     setTimeout(() => {
       modal.style.display = "none";
+      // Unlock parent page scrolling
+      document.body.style.overflow = "";
     }, 300);
   }
 }
@@ -1370,11 +1383,11 @@ async function sendAIProfileChat() {
   //  thinking indicator
   const typingId = "ai-typing-" + Date.now();
   win.innerHTML += `
-    <div id="${typingId}" style="display: flex; justify-content: flex-start; gap: 12px; align-self: flex-start; align-items: center;">
-      <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(249, 115, 22, 0.1); color: #f97316; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(249, 115, 22, 0.2); flex-shrink: 0;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+    <div id="${typingId}" style="display: flex; justify-content: flex-start; gap: 12px; align-self: flex-start; align-items: flex-start; margin-bottom: 16px;">
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: #064e3b; color: #34d399; display: flex; align-items: center; justify-content: center; border: 1px solid #022c22; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
       </div>
-      <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; font-style: italic; color: #64748b; border-radius: 0 20px 20px 20px;">
+      <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; font-style: italic; color: #64748b; border-radius: 0 20px 20px 20px; flex: 1; max-width: 80%;">
         Polishing bio options...
       </div>
     </div>
@@ -1424,9 +1437,9 @@ async function sendAIProfileChat() {
       const escapedBio = proposedBio.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, " ");
 
       proposedCardHtml = `
-        <div style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.05), rgba(236, 72, 153, 0.05)); border: 1.5px dashed rgba(236, 72, 153, 0.3); padding: 16px; border-radius: 16px; margin-top: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.01);">
-          <p style="margin: 0 0 10px 0; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #ec4899; letter-spacing: 0.5px;">✨ Proposed Bio</p>
-          <p style="margin: 0 0 14px 0; font-size: 13.5px; font-style: italic; color: #1e293b; line-height: 1.6;">"${proposedBio}"</p>
+        <div style="background: rgba(16, 185, 129, 0.03); border: 1.5px dashed rgba(16, 185, 129, 0.3); padding: 16px; border-radius: 16px; margin-top: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+          <p style="margin: 0 0 10px 0; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #10b981; letter-spacing: 0.5px;">✨ Proposed Bio</p>
+          <p style="margin: 0 0 14px 0; font-size: 13.5px; font-style: italic; color: #e4e4e7; line-height: 1.6;">"${proposedBio}"</p>
           <button class="btn-ai-apply" onclick="applyAIProposedBio(this, '${escapedBio}')">
              Apply to Profile
           </button>
@@ -1441,9 +1454,14 @@ async function sendAIProfileChat() {
       .replace(/\n/g, "<br>");
 
     win.innerHTML += `
-      <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; border-radius: 0 20px 20px 20px;">
-        <p style="margin: 0;">${formattedText}</p>
-        ${proposedCardHtml}
+      <div style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px; align-items: flex-start;">
+        <div style="width: 36px; height: 36px; border-radius: 50%; background: #064e3b; display: flex; align-items: center; justify-content: center; color: #34d399; flex-shrink: 0; border: 1px solid #022c22; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+        </div>
+        <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; border-radius: 0 20px 20px 20px; flex: 1; max-width: 80%;">
+          <p style="margin: 0;">${formattedText}</p>
+          ${proposedCardHtml}
+        </div>
       </div>
     `;
 

@@ -395,8 +395,23 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 
-  .nav__menu--dashboard {
+  /* Hide the nav links but allow toggle to show them */
+  .nav__menu--dashboard:not(.nav__menu--active) {
     display: none;
+  }
+
+  /* When toggled open, show as dropdown */
+  .nav__menu--dashboard.nav__menu--active {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--white, #fff);
+    flex-direction: column;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    z-index: 9998;
   }
 }
 

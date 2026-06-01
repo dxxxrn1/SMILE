@@ -12,6 +12,350 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/documentScanner.css" />
+
+  <style>
+    /* ── Careers Page Layout ─────────────────────────── */
+    .careers-page {
+      padding: 2rem 0 4rem;
+    }
+
+    .careers-page__header {
+      margin-bottom: 2rem;
+    }
+
+    .careers-page__title {
+      font-size: clamp(1.6rem, 4vw, 2.25rem);
+      font-weight: 800;
+      color: var(--gray-900, #0f172a);
+      margin: 0 0 0.375rem;
+      letter-spacing: -0.4px;
+    }
+
+    .careers-page__subtitle {
+      font-size: 1rem;
+      color: var(--gray-500, #64748b);
+      margin: 0;
+    }
+
+    /* Two-column grid on desktop */
+    .careers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    /* Left column: stacks quiz card + divider + scan card */
+    .careers-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Right column: sticky chat panel */
+    .careers-right {
+      position: sticky;
+      top: 80px;
+    }
+
+    /* ── Career Cards ──────────────────────────────── */
+    .career-card {
+      background: var(--white, #fff);
+      border: 1px solid var(--gray-200, #e2e8f0);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+      transition: box-shadow 0.2s;
+    }
+
+    .career-card:hover {
+      box-shadow: 0 8px 28px rgba(15, 23, 42, 0.09);
+    }
+
+    .career-card__header {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+    }
+
+    .career-card__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .career-card__icon--pink {
+      background: #fdf2f8;
+      color: #ec4899;
+    }
+
+    .career-card__icon--cream {
+      background: #fefce8;
+      color: #ca8a04;
+    }
+
+    .career-card__title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--gray-900, #0f172a);
+      margin: 0;
+    }
+
+    .career-card__body {
+      font-size: 0.9rem;
+      color: var(--gray-500, #64748b);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .career-card__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1.25rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      border: 1.5px solid var(--gray-300, #cbd5e1);
+      background: transparent;
+      color: var(--gray-800, #1e293b);
+      width: 100%;
+    }
+
+    .career-card__btn:hover {
+      background: var(--gray-50, #f8fafc);
+      border-color: var(--gray-400, #94a3b8);
+    }
+
+    .career-card__btn--primary {
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+    }
+
+    .career-card__btn--primary:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(249, 115, 22, 0.32);
+    }
+
+    /* Or divider */
+    .careers-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 0;
+      color: var(--gray-400, #94a3b8);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .careers-divider::before,
+    .careers-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gray-200, #e2e8f0);
+    }
+
+    /* ── Chat Panel ────────────────────────────────── */
+    .chat-panel {
+      background: var(--white, #fff);
+      border: 1px solid var(--gray-200, #e2e8f0);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    }
+
+    .chat-panel__header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--gray-100, #f3f4f6);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .chat-panel__avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #d1fae5;
+      color: #059669;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .chat-panel__name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--gray-900, #0f172a);
+      margin: 0 0 2px;
+    }
+
+    .chat-panel__status {
+      font-size: 0.75rem;
+      color: #059669;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chat-panel__status::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #059669;
+      flex-shrink: 0;
+    }
+
+    .chat-panel__window {
+      height: 320px;
+      overflow-y: auto;
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      background: var(--gray-50, #f8fafc);
+    }
+
+    .chat-panel__window::-webkit-scrollbar { width: 4px; }
+    .chat-panel__window::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+
+    .chat-panel__chips {
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      border-top: 1px solid var(--gray-100, #f3f4f6);
+    }
+
+    .chat-chip {
+      padding: 0.4rem 0.875rem;
+      border-radius: 999px;
+      border: 1px solid var(--gray-200, #e2e8f0);
+      background: var(--white, #fff);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--gray-700, #374151);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .chat-chip:hover {
+      border-color: #f97316;
+      color: #f97316;
+      background: #fff7ed;
+    }
+
+    .chat-panel__input-row {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.875rem 1.25rem;
+      border-top: 1px solid var(--gray-200, #e2e8f0);
+      background: #fff;
+    }
+
+    .chat-panel__input {
+      flex: 1;
+      padding: 0.625rem 1rem;
+      border: 1.5px solid var(--gray-200, #e2e8f0);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--gray-50, #f8fafc);
+    }
+
+    .chat-panel__input:focus {
+      border-color: #f97316;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.08);
+    }
+
+    .chat-panel__send {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s;
+      box-shadow: 0 3px 8px rgba(249, 115, 22, 0.3);
+    }
+
+    .chat-panel__send:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 14px rgba(249, 115, 22, 0.4);
+    }
+
+    /* Scroll-to-bottom btn */
+    .chat-scroll-btn {
+      position: absolute;
+      bottom: 130px;
+      right: 1.25rem;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--white, #fff);
+      border: 1px solid var(--gray-200);
+      color: var(--gray-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+    }
+
+    /* Scan panel inside scan card */
+    .scan-qr-panel {
+      display: none;
+      grid-template-columns: 140px 1fr;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed var(--gray-200, #e2e8f0);
+    }
+
+    /* ── Mobile responsive ─────────────────────────── */
+    @media (max-width: 768px) {
+      .careers-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .careers-right {
+        position: static;
+      }
+
+      .chat-panel__window {
+        height: 260px;
+      }
+    }
+  </style>
 </head>
 
 <body class="dashboard-page">
@@ -92,32 +436,14 @@
       </ul>
 
       <div class="nav__actions nav__actions--dashboard">
-        <button class="nav__icon-btn" id="notificationBtn" aria-label="Notifications" aria-expanded="false"
-          aria-controls="notificationPanel">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-          </svg>
-          <span class="nav__notification-badge" id="notificationBadge" hidden>0</span>
-        </button>
-        <div class="notification-panel" id="notificationPanel" aria-live="polite">
-          <div class="notification-panel__header">
-            <div>
-              <h2>Notifications</h2>
-              <p>Application updates from organisations</p>
-            </div>
-            <button type="button" class="notification-panel__mark" id="notificationMarkRead">Mark read</button>
-          </div>
-          <div class="notification-panel__list" id="notificationList">
-            <p class="notification-panel__empty">Loading notifications...</p>
-          </div>
-        </div>
         <div class="nav__profile" id="profileDropdown">
-          <button class="nav__profile-btn" aria-label="Profile menu">
+          <button class="nav__profile-btn" aria-label="Profile menu" style="position: relative;">
             <div class="nav__avatar">
               <span id="initials"></span>
             </div>
+            <span class="nav__notification-badge" id="notificationBadge"
+              style="position: absolute; top: -2px; right: -2px; display: inline-flex; align-items: center; justify-content: center; background: #ef4444; color: white; border-radius: 50%; font-size: 9px; width: 15px; height: 15px; font-weight: 700; border: 1.5px solid white;"
+              hidden>0</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
               stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 12 15 18 9"></polyline>
@@ -132,16 +458,22 @@
               </svg>
               My Profile
             </a>
-            <a href="#" class="nav__profile-link">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
-                </path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-              Settings
-            </a>
+            <hr class="nav__profile-divider" />
+            <div class="nav__profile-notifications" id="notificationPanel">
+              <div class="nav__profile-notifications-header"
+                style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--gray-200); margin-bottom: 6px;">
+                <span
+                  style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--gray-500); letter-spacing: 0.5px;">Updates</span>
+                <button type="button" class="notification-panel__mark" id="notificationMarkRead"
+                  style="font-size: 10px; color: var(--primary-pink); background: none; border: none; cursor: pointer; font-weight: 600;">Mark
+                  read</button>
+              </div>
+              <div class="notification-panel__list" id="notificationList"
+                style="max-height: 200px; overflow-y: auto; padding: 0 4px;">
+                <p class="notification-panel__empty"
+                  style="font-size: 12px; color: #888; text-align: center; padding: 12px;">Loading updates...</p>
+              </div>
+            </div>
             <hr class="nav__profile-divider" />
             <a href="#" id="myTicketsDropdownBtn" class="nav__profile-link" onclick="openTicketsTab(event)">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -170,198 +502,171 @@
     </nav>
   </header>
 
-  <main class="page-content">
+  <main class="careers-page">
     <div class="container">
-      <div class="page-header">
-        <h1 class="page-header__title">Career Path Explorer</h1>
-        <p class="page-header__subtitle">
-          Discover different careers and chat with our AI to build your
-          future.
-        </p>
+
+      <!-- Page header -->
+      <div class="careers-page__header">
+        <h1 class="careers-page__title">Career Path Explorer</h1>
+        <p class="careers-page__subtitle">Discover careers and chat with our AI to build your future.</p>
       </div>
 
-      <aside class="careers-chatbot-sidebar">
-        <div class="chatbot-section" style="
-                display: flex;
-                flex-direction: column;
-                min-height: 600px;
-                padding: 24px;
-              ">
-          <div id="quizStatusCard" class="quiz-prompt-card" style="
-                  display: none;
-                  flex: 1;
-                  flex-direction: column;
-                  justify-content: center;
-                  align-items: center;
-                ">
-            <div class="quiz-prompt-icon" style="width: 80px; height: 80px; margin-bottom: 16px">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-              </svg>
+      <!-- Two-column grid -->
+      <div class="careers-grid">
+
+        <!-- LEFT: Quiz card + Scan card -->
+        <div class="careers-left">
+
+          <!-- Personality Quiz Card -->
+          <div class="career-card" id="quizStatusCard">
+            <div class="career-card__header">
+              <div class="career-card__icon career-card__icon--pink">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+              </div>
+              <h3 class="career-card__title" id="quizCardTitle">Complete your profile</h3>
             </div>
-            <h3>Career Guidance Needed</h3>
-            <p>
-              You haven't taken the personality test yet! Take it now to
-              unlock personalized AI career advice.
-            </p>
-            <button class="btn btn--gradient" onclick="showQuiz()" style="margin-top: 1rem; width: 100%">
-              Take Personality Quiz
+            <p class="career-card__body" id="quizCardBody">Take the personality quiz to unlock personalised AI career
+              advice tailored to your strengths.</p>
+            <button class="career-card__btn career-card__btn--primary" onclick="showQuiz()">
+              Take personality quiz
             </button>
           </div>
 
-          <div id="chatSection" style="display: none; flex: 1; flex-direction: column">
-            <div class="career-scan-card" style="
-                    background: #fff7ed;
-                    border: 1px solid #fed7aa;
-                    border-radius: 12px;
-                    padding: 16px;
-                    margin-bottom: 16px;
-                  ">
-              <div style="
-                      display: flex;
-                      justify-content: space-between;
-                      gap: 12px;
-                      align-items: center;
-                      flex-wrap: wrap;
-                    ">
-                <div>
-                  <h3 style="margin: 0 0 4px; color: #0f172a">
-                    Scan School Report
-                  </h3>
-                  <p style="margin: 0; color: #64748b; font-size: 0.875rem">
-                    Scan a report, transcript, certificate, or qualification
-                    using your phone. SMILE Career AI will recommend a clear
-                    career path from the document.
-                  </p>
-                </div>
-                <button class="btn btn--gradient" type="button" onclick="startCareerDocumentScan()">
-                  Scan Document
-                </button>
-              </div>
+          <!-- Or divider -->
+          <div class="careers-divider">or</div>
 
-              <div id="careerScanPanel" style="
-                      display: none;
-                      grid-template-columns: 180px minmax(0, 1fr);
-                      gap: 16px;
-                      align-items: center;
-                      margin-top: 16px;
-                    ">
-                <canvas id="careerScanQr" width="160" height="160" style="
-                        background: white;
-                        border: 1px solid #e2e8f0;
-                        border-radius: 8px;
-                        padding: 8px;
-                      "></canvas>
-                <div>
-                  <p id="careerScanStatus" style="margin: 0 0 8px; font-weight: 700; color: #0f172a">
-                    Creating scan link...
-                  </p>
-                  <a id="careerScanUrl" href="#" target="_blank" rel="noreferrer" style="
-                          color: #ec4899;
-                          font-size: 0.875rem;
-                          font-weight: 700;
-                          word-break: break-word;
-                        "></a>
-                </div>
+          <!-- Scan School Report Card -->
+          <div class="career-card">
+            <div class="career-card__header">
+              <div class="career-card__icon career-card__icon--cream">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+                </svg>
+              </div>
+              <h3 class="career-card__title">Scan school report</h3>
+            </div>
+            <p class="career-card__body">Upload a report, transcript, certificate, or qualification. SMILE Career AI
+              will recommend a clear career path from the document.</p>
+            <button class="career-card__btn" onclick="startCareerDocumentScan()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              Scan document
+            </button>
+
+            <!-- QR Scan Panel (shown after button click) -->
+            <div id="careerScanPanel" class="scan-qr-panel">
+              <canvas id="careerScanQr" width="140" height="140"
+                style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px;"></canvas>
+              <div>
+                <p id="careerScanStatus"
+                  style="margin: 0 0 6px; font-weight: 700; font-size: 0.875rem; color: #0f172a;">Creating scan
+                  link...</p>
+                <a id="careerScanUrl" href="#" target="_blank" rel="noreferrer"
+                  style="color: #ec4899; font-size: 0.8rem; font-weight: 600; word-break: break-word;"></a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: AI Chat Panel -->
+        <div class="careers-right">
+          <div class="chat-panel" id="chatSection">
+
+            <!-- Chat header -->
+            <div class="chat-panel__header">
+              <div class="chat-panel__avatar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                </svg>
+              </div>
+              <div>
+                <p class="chat-panel__name">SMILE Career AI</p>
+                <span class="chat-panel__status">Online · Ready to assist</span>
               </div>
             </div>
 
-            <div class="chat-header">
-              <div class="chat-header__info">
-                <div class="chat-avatar" style="display: flex; align-items: center; justify-content: center; background: var(--purple-light); color: var(--purple);">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-                    <line x1="9" y1="9" x2="9.01" y2="9" />
-                    <line x1="15" y1="9" x2="15.01" y2="9" />
-                  </svg>
-                </div>
-                <div>
-                  <h3>SMILE Career AI</h3>
-                  <span class="chat-status" style="color: #059669; font-size: 0.75rem">Online • Ready to assist</span>
-                </div>
-              </div>
+            <!-- Chat window -->
+            <div class="chat-panel__window" id="chatWindow"></div>
+
+            <!-- Quick-reply chips -->
+            <div class="chat-panel__chips" id="chatChips">
+              <button class="chat-chip" onclick="sendChip('What careers suit me?')">What careers suit me?</button>
+              <button class="chat-chip" onclick="sendChip('Top bursaries in SA')">Top bursaries in SA</button>
+              <button class="chat-chip" onclick="sendChip('How to get an internship')">How to get an internship</button>
+              <button class="chat-chip" onclick="sendChip('I study IT, what next?')">I study IT, what next?</button>
             </div>
 
-            <div class="chat-window" id="chatWindow" style="
-                    flex: 1;
-                    height: 350px;
-                    overflow-y: auto;
-                    background: #f8fafc;
-                    padding: 16px;
-                    border-radius: 8px;
-                    margin-bottom: 16px;
-                    border: 1px solid #e5e7eb;
-                  "></div>
+            <!-- Input row -->
+            <div class="chat-panel__input-row">
+              <input type="text" id="chatInput" class="chat-panel__input" placeholder="Ask me anything about careers..."
+                onkeypress="if (event.key === 'Enter') sendChat();" />
+              <button class="chat-panel__send" onclick="sendChat()" aria-label="Send message">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </div>
 
-            <div class="chat-input-area" style="display: flex; gap: 8px; flex-direction: column">
-              <div style="display: flex; gap: 8px">
-                <input type="text" id="chatInput" class="chat-input" placeholder="Ask about careers..."
-                  onkeypress="if (event.key === 'Enter') sendChat();" style="
-                        flex: 1;
-                        padding: 12px;
-                        border-radius: 8px;
-                        border: 1px solid #d1d5db;
-                      " />
-                <button class="btn btn--gradient" onclick="sendChat()">
-                  Send
-                </button>
-              </div>
-              <button id="downloadDocBtn" class="btn btn--outline btn--sm" onclick="downloadCareerDoc()" style="
-                      display: none;
-                      width: 100%;
-                      justify-content: center;
-                      margin-top: 8px;
-                    ">
-                Download Career Path
+            <!-- Download button (hidden until a career doc is ready) -->
+            <div style="padding: 0 1.25rem 1rem; display: none;" id="downloadDocWrap">
+              <button id="downloadDocBtn" onclick="downloadCareerDoc()" style="width: 100%; background: none; border: 1.5px solid #e2e8f0; color: #374151; box-shadow: none; border-radius: 10px; font-size: 0.875rem; min-height: 40px;">
+                ⬇ Download Career Path PDF
               </button>
             </div>
           </div>
         </div>
-      </aside>
-    </div>
+
+      </div><!-- /careers-grid -->
     </div>
   </main>
 
-  <div class="modal-overlay" id="quizOverlay" style="display: none">
-    <div class="modal-card" style="
-          background: white;
-          border-radius: 12px;
-          padding: 24px;
-          max-width: 500px;
-          width: 90%;
-        ">
-      <div class="modal-header" style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 12px;
-            margin-bottom: 16px;
-          ">
-        <h3 style="margin: 0; font-size: 1.25rem">RIASEC Personality Quiz</h3>
-        <button class="modal-close" style="
-              background: none;
-              border: none;
-              font-size: 1.5rem;
-              cursor: pointer;
-            " onclick="closeQuiz()">
-          &times;
-        </button>
+  <!-- RIASEC Quiz Modal -->
+  <div class="modal-overlay" id="quizOverlay" style="display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(15,23,42,0.55); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center;">
+    <div class="modal-card"
+      style="background: white; border-radius: 20px; padding: 2rem; max-width: 520px; width: 90%; max-height: 85vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(15,23,42,0.18);">
+      <div class="modal-header"
+        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem; margin-bottom: 1.25rem;">
+        <h3 style="margin: 0; font-size: 1.2rem; font-weight: 700;">RIASEC Personality Quiz</h3>
+        <button
+          style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b; line-height: 1;"
+          onclick="closeQuiz()">&times;</button>
       </div>
       <form id="riasecForm"></form>
-      <div class="modal-actions" style="margin-top: 20px; text-align: right">
-        <button class="btn btn--gradient" onclick="saveQuizResults()">
-          Save & Start Chatting
+      <div class="modal-actions" style="margin-top: 1.25rem; text-align: right">
+        <button class="career-card__btn career-card__btn--primary" style="width: auto; padding: 0.625rem 1.5rem;"
+          onclick="saveQuizResults()">
+          Save &amp; Start Chatting
         </button>
       </div>
     </div>
   </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="../jsFrontEnd/dashboardJS.js"></script>
   <script src="../jsFrontEnd/careerDocumentScanner.js"></script>
+  <script>
+    // Quick-chip helper
+    function sendChip(text) {
+      const input = document.getElementById('chatInput');
+      if (input) { input.value = text; sendChat(); }
+    }
+
+  </script>
 </body>
 
 </html>

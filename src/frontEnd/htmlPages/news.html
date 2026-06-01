@@ -22,7 +22,7 @@
           fill="none"
           stroke="currentColor"
           stroke-width="2.5"
-          style="margin-right: 6px; flex-shrink: 0; color: var(--primary-pink, #ec4899);"
+          style="margin-right: 6px; flex-shrink: 0; color: var(--primary-orange, #f97316);"
         >
           <circle cx="12" cy="12" r="10" />
           <path d="M8 14s1.5 2 4 2 4-2 4-2" />
@@ -93,49 +93,39 @@
       </ul>
       
       <div class="nav__actions nav__actions--dashboard">
-        <button class="nav__icon-btn" id="notificationBtn" aria-label="Notifications" aria-expanded="false" aria-controls="notificationPanel">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-          </svg>
-          <span class="nav__notification-badge" id="notificationBadge" hidden>0</span>
-        </button>
-        <div class="notification-panel" id="notificationPanel" aria-live="polite">
-          <div class="notification-panel__header">
-            <div>
-              <h2>Notifications</h2>
-              <p>Application updates from organisations</p>
-            </div>
-            <button type="button" class="notification-panel__mark" id="notificationMarkRead">Mark read</button>
-          </div>
-          <div class="notification-panel__list" id="notificationList">
-            <p class="notification-panel__empty">Loading notifications...</p>
-          </div>
-        </div>
         <div class="nav__profile" id="profileDropdown">
-          <button class="nav__profile-btn" aria-label="Profile menu">
+          <button class="nav__profile-btn" aria-label="Profile menu" style="position: relative;">
             <div class="nav__avatar">
-              <span id="initials"></span>
+              <span id="initials">TM</span>
             </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <span class="nav__notification-badge" id="notificationBadge" style="position: absolute; top: -2px; right: -2px; display: inline-flex; align-items: center; justify-content: center; background: #ef4444; color: white; border-radius: 50%; font-size: 9px; width: 15px; height: 15px; font-weight: 700; border: 1.5px solid white;" hidden>0</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </button>
           <div class="nav__profile-menu" id="profileMenu">
-            <a href="/org/dashboard/student-profile" class="nav__profile-link">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <a href="/student/profile" class="nav__profile-link">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
               My Profile
             </a>
-            <a href="#" class="nav__profile-link">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-              Settings
-            </a>
+            <hr class="nav__profile-divider" />
+            
+            <!-- Integrated Notifications inside Profile Dropdown -->
+            <div class="nav__profile-notifications" id="notificationPanel">
+              <div class="nav__profile-notifications-header" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--gray-200); margin-bottom: 6px;">
+                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--gray-500); letter-spacing: 0.5px;">Updates</span>
+                <button type="button" class="notification-panel__mark" id="notificationMarkRead" style="font-size: 10px; color: var(--primary-pink); background: none; border: none; cursor: pointer; font-weight: 600;">Mark read</button>
+              </div>
+              <div class="notification-panel__list" id="notificationList" style="max-height: 200px; overflow-y: auto; padding: 0 4px;">
+                <p class="notification-panel__empty" style="font-size: 12px; color: #888; text-align: center; padding: 12px;">Loading updates...</p>
+              </div>
+            </div>
+            
             <hr class="nav__profile-divider" />
             <a href="#" id="myTicketsDropdownBtn" class="nav__profile-link" onclick="openTicketsTab(event)">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -336,7 +326,7 @@
             fill="none"
             stroke="currentColor"
             stroke-width="2.5"
-            style="margin-right: 6px; flex-shrink: 0; color: var(--primary-pink, #ec4899);"
+            style="margin-right: 6px; flex-shrink: 0; color: var(--primary-orange, #f97316);"
           >
             <circle cx="12" cy="12" r="10" />
             <path d="M8 14s1.5 2 4 2 4-2 4-2" />

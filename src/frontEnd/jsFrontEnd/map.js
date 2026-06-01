@@ -94,6 +94,10 @@ function addOpportunityPins(opps) {
       const center = getProvinceCenter(opp.Province);
       lat = center.lat + (Math.random() - 0.5) * 0.08;
       lng = center.lng + (Math.random() - 0.5) * 0.08;
+      
+      // Save coordinates back to the opp object so card click and pan work without crashing
+      opp.Lat = lat;
+      opp.Lng = lng;
     }
 
     const marker = L.marker([lat, lng], { icon: icon })
@@ -130,7 +134,7 @@ function buildPopup(opp) {
         <div class="smile-popup__title">${opp.Title}</div>
         <div class="smile-popup__org">${opp.OrgName}</div>
         <div class="smile-popup__meta">
-          📍 ${opp.Province} &nbsp;·&nbsp; ⏰ Closes ${formatDate(opp.ApplicationDeadline)}
+          Province: ${opp.Province} &nbsp;·&nbsp; Closes: ${formatDate(opp.ApplicationDeadline)}
         </div>
         <button class="smile-popup__btn" onclick="scrollToCard(${opp.OppID})">View Details ↓</button>
       </div>`;
@@ -326,7 +330,12 @@ function renderCards(opps) {
   if (!opps.length) {
     grid.innerHTML = `
         <div class="nearme-empty">
-          <div class="nearme-empty__icon">&#128205;</div>
+          <div class="nearme-empty__icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" style="color: var(--gray-400); margin: 0 auto 0.5rem;">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
           <div class="nearme-empty__title">No opportunities found</div>
           <p style="font-size:.875rem">Try a different province, type, or search term.</p>
         </div>`;
@@ -345,7 +354,7 @@ function renderCards(opps) {
           <div class="nearme-card__title">${opp.Title}</div>
           <div class="nearme-card__org">${opp.OrgName}</div>
           <div class="nearme-card__meta">
-            <span>&#9201; Closes ${formatDate(opp.ApplicationDeadline)}</span>
+            <span>Closes: ${formatDate(opp.ApplicationDeadline)}</span>
           </div>
 
           <div class="nearme-card__details" id="details-${opp.OppID}" style="display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--gray-200);">
@@ -362,6 +371,10 @@ function renderCards(opps) {
             </p>`
                 : ""
             }
+            <div style="font-size: 0.875rem; color: var(--gray-600); margin-top: 8px; border-top: 1px dashed var(--gray-200); padding-top: 8px;">
+              ${opp.OrgEmail ? `<p style="margin: 4px 0;"><strong>Contact Email:</strong> <a href="mailto:${opp.OrgEmail}" onclick="event.stopPropagation();" style="color: #ec4899; text-decoration: none;">${opp.OrgEmail}</a></p>` : ""}
+              ${opp.ApplicationLink ? `<p style="margin: 4px 0;"><strong>Application Link:</strong> <a href="${opp.ApplicationLink}" target="_blank" onclick="event.stopPropagation();" style="color: #ec4899; text-decoration: none;">Apply on external site</a></p>` : ""}
+            </div>
           </div>
           
           <div class="nearme-card__actions" style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
@@ -564,13 +577,6 @@ function aboutUsClicked(oppId) {
     }
   });
 }
-
-/* ================================================================
-     MOBILE NAV
-     ================================================================ */
-document.getElementById("mobileToggle")?.addEventListener("click", function () {
-  document.getElementById("navMenu").classList.toggle("nav__menu--active");
-});
 
 initMap();
 loadOpportunities("");
