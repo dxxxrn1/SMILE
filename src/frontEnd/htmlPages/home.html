@@ -577,6 +577,76 @@
         .stats-grid { grid-template-columns: repeat(2, 1fr); }
       }
 
+      /* Mobile Menu */
+.nav__menu-wrapper {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+
+  .nav__menu-wrapper {
+    position: absolute;
+    top: 75px;
+    right: 15px;
+    width: 220px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    padding: 12px;
+    display: none;
+    z-index: 999;
+  }
+
+  .nav__menu-wrapper.active {
+    display: block;
+  }
+
+  .nav__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .nav__actions a {
+    width: 100%;
+    text-align: center;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+
+  .btn--ghost-white,
+  .btn--neon {
+    min-width: unset;
+  }
+}
+
+  @media (max-width: 768px) {
+
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .features-v2__grid,
+  .testimonials-grid,
+  .mission-v2__pillars {
+    grid-template-columns: 1fr !important;
+  }
+
+  .feature-v2-card,
+  .testi-card,
+  .mission-pillar {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
     </style>
   </head>
  
