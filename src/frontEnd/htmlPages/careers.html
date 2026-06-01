@@ -71,10 +71,6 @@
       transition: box-shadow 0.2s;
     }
 
-    .career-card:hover {
-      box-shadow: 0 8px 28px rgba(15, 23, 42, 0.09);
-    }
-
     .career-card__header {
       display: flex;
       align-items: center;
@@ -146,6 +142,8 @@
     }
 
     .career-card__btn--primary:hover {
+      background: linear-gradient(135deg, #f97316, #ec4899) !important;
+      color: #fff !important;
       opacity: 0.92;
       transform: translateY(-1px);
       box-shadow: 0 6px 18px rgba(249, 115, 22, 0.32);
@@ -553,7 +551,7 @@
             </div>
             <p class="career-card__body">Upload a report, transcript, certificate, or qualification. SMILE Career AI
               will recommend a clear career path from the document.</p>
-            <button class="career-card__btn" onclick="startCareerDocumentScan()">
+            <button class="career-card__btn career-card__btn--primary" onclick="startCareerDocumentScan()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
