@@ -32,7 +32,7 @@ const authLimiter = rateLimit({
   }
 });
 
-// Apply rate limiter to authentication, registration and password-reset endpoints
+
 app.use("/login", authLimiter);
 app.use("/register/student", authLimiter);
 app.use("/register/organization", authLimiter);
@@ -47,13 +47,13 @@ const __filepath = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filepath);
 app.use(express.json({ limit: "25mb" }));
 app.use(express.urlencoded({ extended: true, limit: "25mb" }));
-app.use(express.static(path.join(__dirname , ".." ,"frontEnd")));
+app.use(express.static(path.join(__dirname, "..", "frontEnd")));
 // app.use(express.static(path.join(__dirname , ".." ,"frontEnd" , "css")));
 app.use(cookieParser())
-app.use("/" , route)
-app.use("/" , router)
-app.use("/" , chessRoutes)
-app.use("/" , documentScannerRoutes)
+app.use("/", route)
+app.use("/", router)
+app.use("/", chessRoutes)
+app.use("/", documentScannerRoutes)
 registerChessSockets(io);
 const PORT = process.env.PORT || 3000;
 

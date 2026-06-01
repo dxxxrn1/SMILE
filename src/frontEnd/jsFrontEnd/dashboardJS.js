@@ -1556,10 +1556,10 @@ async function loadStudentHeaderProfile() {
     const data = await res.json();
     if (data.success && data.profile) {
       const p = data.profile;
-      
+
       // Store in memory, NOT in localStorage!
       window.__currentUser = p;
-      
+
       // Update avatar or initials
       if (p.ProfilePicUrl) {
         if (avatar) {
@@ -1573,7 +1573,7 @@ async function loadStudentHeaderProfile() {
           initials.textContent = initialsText || "?";
         }
       }
-      
+
       // Update username if element present
       if (userNameEl && p.StuName) {
         userNameEl.textContent = p.StuName;
@@ -1588,8 +1588,8 @@ function isTokenExpired(token) {
   try {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
     const payload = JSON.parse(jsonPayload);
     return payload.exp * 1000 < Date.now();
@@ -1620,9 +1620,9 @@ function logout() {
   localStorage.removeItem("orgInitials");
   localStorage.removeItem("orgProfilePic");
   window.__currentUser = null;
-  
+
   fetch('/logout', { method: 'POST' })
-    .catch(() => {})
+    .catch(() => { })
     .finally(() => {
       window.location.href = '/login-page';
     });
@@ -1648,20 +1648,20 @@ function getGoogleCalDateStr(dateVal) {
     const d = String(now.getDate()).padStart(2, '0');
     return `${y}${m}${d}`;
   }
-  
+
   if (dateVal instanceof Date) {
     const y = dateVal.getFullYear();
     const m = String(dateVal.getMonth() + 1).padStart(2, '0');
     const d = String(dateVal.getDate()).padStart(2, '0');
     return `${y}${m}${d}`;
   }
-  
+
   const str = String(dateVal);
   const match = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (match) {
     return `${match[1]}${match[2]}${match[3]}`;
   }
-  
+
   const date = new Date(str);
   if (Number.isNaN(date.getTime())) {
     const now = new Date();
@@ -1676,22 +1676,20 @@ function getGoogleCalDateStr(dateVal) {
   return `${y}${m}${d}`;
 }
 
-/**
- * Display a breathtaking congratulatory modal popup for approved applications
- */
+
 function showApprovalPopup(notification) {
   const existing = document.getElementById("smileApprovalModal");
   if (existing) {
     existing.remove();
   }
-  
-  const deadlineDate = notification.ApplicationDeadline 
+
+  const deadlineDate = notification.ApplicationDeadline
     ? new Date(notification.ApplicationDeadline).toLocaleDateString("en-ZA", { day: "2-digit", month: "short", year: "numeric" })
     : "N/A";
-  const startDate = notification.StartDate 
+  const startDate = notification.StartDate
     ? new Date(notification.StartDate).toLocaleDateString("en-ZA", { day: "2-digit", month: "short", year: "numeric" })
     : "TBD";
-    
+
   const startYMD = getGoogleCalDateStr(notification.StartDate || notification.ApplicationDeadline);
   const eventText = `${notification.OppTitle || notification.Title} - Start Date (${notification.OrgName || "SMILE Partner"})`;
   const cleanDesc = (notification.Description || "").replace(/<[^>]*>/g, "").slice(0, 1000);
@@ -1699,12 +1697,11 @@ function showApprovalPopup(notification) {
   const eventLocation = notification.Province ? `${notification.Province}, South Africa` : "South Africa";
 
   let googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE` +
-      `&text=${encodeURIComponent(eventText)}` +
-      `&dates=${startYMD}T090000/${startYMD}T170000` +
-      `&details=${encodeURIComponent(eventDetails)}` +
-      `&location=${encodeURIComponent(eventLocation)}`;
+    `&text=${encodeURIComponent(eventText)}` +
+    `&dates=${startYMD}T090000/${startYMD}T170000` +
+    `&details=${encodeURIComponent(eventDetails)}` +
+    `&location=${encodeURIComponent(eventLocation)}`;
 
-  // Encode single quotes to prevent breaking when used in the inline click handler!
   googleCalUrl = googleCalUrl.replace(/'/g, "%27");
 
   const modal = document.createElement("div");
@@ -1720,7 +1717,7 @@ function showApprovalPopup(notification) {
   modal.style.opacity = "0";
   modal.style.transition = "opacity 0.3s ease";
   modal.style.pointerEvents = "auto";
-  
+
   modal.innerHTML = `
     <div id="smileApprovalModalContainer" style="background: #18181b; width: 90%; max-width: 520px; border-radius: 24px; box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6); border: 1px solid rgba(63, 63, 70, 0.9); overflow: hidden; display: flex; flex-direction: column; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); color: #fafafa; font-family: inherit;">
       
@@ -1782,10 +1779,10 @@ function showApprovalPopup(notification) {
 
     </div>
   `;
-  
+
   document.body.appendChild(modal);
   document.body.style.overflow = "hidden";
-  
+
   setTimeout(() => {
     modal.style.opacity = "1";
     const container = document.getElementById("smileApprovalModalContainer");
