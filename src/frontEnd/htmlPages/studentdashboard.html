@@ -934,25 +934,32 @@
     if (!token || accountType !== 'student') {
       window.location.href = '/login-page';
     }
-function openApplicationsPanel(event) {
+function openApplicationsModal(event) {
   if (event) event.preventDefault();
 
-  const panel = document.getElementById("applicationsPanel");
+  const panel = document.getElementById("applicationsModal");
   const list = document.getElementById("modalApplicationsList");
+
   const source = document.querySelector(".applications-list");
 
   if (source && source.innerHTML.trim() !== "") {
     list.innerHTML = source.innerHTML;
   } else {
-    list.innerHTML = "<p style='color:#888;'>No applications found.</p>";
+    list.innerHTML =
+      "<p style='color:#888;'>No applications found.</p>";
   }
 
   panel.classList.add("open");
+
+  /* stop background scrolling */
   document.body.style.overflow = "hidden";
 }
 
-function closeApplicationsPanel() {
-  document.getElementById("applicationsPanel").classList.remove("open");
+function closeApplicationsModal() {
+  document.getElementById("applicationsModal")
+    .classList.remove("open");
+
+  /* restore page scrolling */
   document.body.style.overflow = "";
 }
 
@@ -967,31 +974,23 @@ function closeApplicationsModal() {
     .classList.remove("open");
 }
 
-      function openOpportunitiesPanel(event) {
-  if (event) event.preventDefault();
+    function openOpportunitiesPanel(event) {
+    if (event) event.preventDefault();
 
-  const panel = document.getElementById("opportunitiesPanel");
-  const list = document.getElementById("modalOpportunitiesList");
-  const source = document.querySelector(".opportunities-list");
+    const panel = document.getElementById("opportunitiesPanel");
+    const list = document.getElementById("modalOpportunitiesList");
 
-  if (source && source.innerHTML.trim() !== "") {
-    list.innerHTML = source.innerHTML;
-  } else {
-    list.innerHTML = "<p style='color:#888;'>No saved opportunities found.</p>";
+    const source = document.querySelector(".opportunities-list");
+
+    if (source && source.innerHTML.trim() !== "") {
+      list.innerHTML = source.innerHTML;
+    } else {
+      list.innerHTML = "<p style='color:#888;'>No saved opportunities found.</p>";
+    }
+
+    panel.classList.add("open");
   }
 
-  panel.classList.add("open");
-
-  // Prevent background scrolling
-  document.body.style.overflow = "hidden";
-}
-
-function closeOpportunitiesPanel() {
-  document.getElementById("opportunitiesPanel").classList.remove("open");
-
-  // Restore scrolling
-  document.body.style.overflow = "";
-}
 function closeOpportunitiesPanel() {
   document.getElementById("opportunitiesPanel")
     .classList.remove("open");

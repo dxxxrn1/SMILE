@@ -6070,14 +6070,6 @@
   align-items: center;
 }
 
-#modalApplicationsList {
-  max-height: 60vh;   /* controls height */
-  overflow-y: auto;   /* enables scroll */
-  padding: 1rem;
-}
-
-
-
 .applications-panel {
   position: fixed;
   top: 0;
@@ -6087,27 +6079,16 @@
   background: #fff;
   box-shadow: -10px 0 30px rgba(0,0,0,0.15);
   z-index: 9999;
-
   display: flex;
   flex-direction: column;
-
   transition: right 0.3s ease;
+  overscroll-behavior: contain;
 }
 
 .applications-panel.open {
   right: 0;
 }
 
-/* THIS is the scrollable area */
-#modalApplicationsList,
-#savedList {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 16px;
-}
-
-/* header */
 .applications-panel .modal-header {
   padding: 16px;
   border-bottom: 1px solid #eee;
@@ -6116,13 +6097,25 @@
   align-items: center;
 }
 
-/* scroll area */
-#modalApplicationsList {
-  padding: 16px;
-  overflow-y: auto;
+#modalApplicationsList,
+#modalOpportunitiesList {
   flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px;
 }
 
+@media (max-width: 768px) {
+  .applications-panel {
+    width: 90%;
+    max-width: 350px;
+    right: -90%;
+  }
+
+  .applications-panel.open {
+    right: 0;
+  }
+}
 .dashboard__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
