@@ -918,7 +918,8 @@ async function loadApplications() {
     );
 
     if (data.success && data.applications.length > 0) {
-      container.innerHTML = data.applications.map(app => {
+      window.__loadedApplications = data.applications;
+      container.innerHTML = data.applications.map((app, index) => {
         const dateApplied = new Date(app.DateApplied).toLocaleDateString("en-US", {
           month: "short", day: "numeric", year: "numeric"
         });
@@ -983,7 +984,9 @@ async function loadApplications() {
           <article class="application-card" onclick="window.location.href='/careers/explore'" style="cursor: pointer;">
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
               <div>
-                <h3 class="application-card__title" style="margin: 0; font-size: 0.9375rem;">${app.Title}</h3>
+                <h3 class="application-card__title" style="margin: 0; font-size: 0.9375rem; display: flex; align-items: center; gap: 8px;">
+                  ${app.Title}
+                </h3>
                 <p class="application-card__org" style="margin: 2px 0 0; font-size: 0.8125rem;">${app.OrgName}</p>
               </div>
               <div class="application-card__status ${statusClass}" style="margin: 0;">
@@ -1028,6 +1031,20 @@ async function loadApplications() {
                 </div>
               </div>
             </div>
+            
+            ${(status === 'Approved' || status === 'Accepted') ? `
+            <div class="application-card__actions" style="margin-top: 12px; display: flex; justify-content: flex-end;" onclick="event.stopPropagation();">
+              <button class="btn btn--outline btn--sm btn-add-cal" onclick="showAppApprovalPopupByIndex(${index})" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 500; font-size: 0.8125rem; padding: 6px 12px; border-radius: 6px; border: 1px solid #bfdbfe; background: #eff6ff; color: #1e40af; cursor: pointer; transition: background 0.2s, transform 0.1s;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #2563eb;">
+                  <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                  <line x1="16" x2="16" y1="2" y2="6"></line>
+                  <line x1="8" x2="8" y1="2" y2="6"></line>
+                  <line x1="3" x2="21" y1="10" y2="10"></line>
+                </svg>
+                Add to Calendar
+              </button>
+            </div>
+            ` : ''}
           </article>
         `;
       }).join("");
@@ -1615,3 +1632,183 @@ function logout() {
 window.isTokenExpired = isTokenExpired;
 window.getToken = getToken;
 window.logout = logout;
+window.getGoogleCalDateStr = getGoogleCalDateStr;
+window.showApprovalPopup = showApprovalPopup;
+window.closeApprovalPopup = closeApprovalPopup;
+window.showAppApprovalPopupByIndex = showAppApprovalPopupByIndex;
+
+/**
+ * Timezone-safe Google Calendar Date Formatter (YYYYMMDD)
+ */
+function getGoogleCalDateStr(dateVal) {
+  if (!dateVal) {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}${m}${d}`;
+  }
+  
+  if (dateVal instanceof Date) {
+    const y = dateVal.getFullYear();
+    const m = String(dateVal.getMonth() + 1).padStart(2, '0');
+    const d = String(dateVal.getDate()).padStart(2, '0');
+    return `${y}${m}${d}`;
+  }
+  
+  const str = String(dateVal);
+  const match = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    return `${match[1]}${match[2]}${match[3]}`;
+  }
+  
+  const date = new Date(str);
+  if (Number.isNaN(date.getTime())) {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}${m}${d}`;
+  }
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}${m}${d}`;
+}
+
+/**
+ * Display a breathtaking congratulatory modal popup for approved applications
+ */
+function showApprovalPopup(notification) {
+  const existing = document.getElementById("smileApprovalModal");
+  if (existing) {
+    existing.remove();
+  }
+  
+  const deadlineDate = notification.ApplicationDeadline 
+    ? new Date(notification.ApplicationDeadline).toLocaleDateString("en-ZA", { day: "2-digit", month: "short", year: "numeric" })
+    : "N/A";
+  const startDate = notification.StartDate 
+    ? new Date(notification.StartDate).toLocaleDateString("en-ZA", { day: "2-digit", month: "short", year: "numeric" })
+    : "TBD";
+    
+  const startYMD = getGoogleCalDateStr(notification.StartDate || notification.ApplicationDeadline);
+  const eventText = `${notification.OppTitle || notification.Title} - Start Date (${notification.OrgName || "SMILE Partner"})`;
+  const cleanDesc = (notification.Description || "").replace(/<[^>]*>/g, "").slice(0, 1000);
+  const eventDetails = `SMILE Program Opportunity: ${notification.OppTitle || notification.Title}\nOrganisation: ${notification.OrgName || "SMILE Partner"}\nStatus: Approved\n\nDescription: ${cleanDesc}`;
+  const eventLocation = notification.Province ? `${notification.Province}, South Africa` : "South Africa";
+
+  let googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+      `&text=${encodeURIComponent(eventText)}` +
+      `&dates=${startYMD}T090000/${startYMD}T170000` +
+      `&details=${encodeURIComponent(eventDetails)}` +
+      `&location=${encodeURIComponent(eventLocation)}`;
+
+  // Encode single quotes to prevent breaking when used in the inline click handler!
+  googleCalUrl = googleCalUrl.replace(/'/g, "%27");
+
+  const modal = document.createElement("div");
+  modal.id = "smileApprovalModal";
+  modal.style.position = "fixed";
+  modal.style.inset = "0";
+  modal.style.zIndex = "10005";
+  modal.style.display = "flex";
+  modal.style.alignItems = "center";
+  modal.style.justifyContent = "center";
+  modal.style.background = "rgba(9, 9, 11, 0.75)";
+  modal.style.backdropFilter = "blur(10px)";
+  modal.style.opacity = "0";
+  modal.style.transition = "opacity 0.3s ease";
+  modal.style.pointerEvents = "auto";
+  
+  modal.innerHTML = `
+    <div id="smileApprovalModalContainer" style="background: #18181b; width: 90%; max-width: 520px; border-radius: 24px; box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6); border: 1px solid rgba(63, 63, 70, 0.9); overflow: hidden; display: flex; flex-direction: column; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); color: #fafafa; font-family: inherit;">
+      
+      <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 28px 24px; text-align: center; position: relative; color: white;">
+        <button onclick="closeApprovalPopup()" style="position: absolute; right: 16px; top: 16px; background: rgba(255, 255, 255, 0.15); border: none; color: white; font-size: 20px; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">&times;</button>
+        
+        <div style="width: 56px; height: 56px; background: rgba(255, 255, 255, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; border: 1.5px solid rgba(255, 255, 255, 0.4);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h2 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">Application Approved</h2>
+        <p style="margin: 6px 0 0; font-size: 13px; opacity: 0.9; font-weight: 400;">Congratulations! You have been accepted for this program.</p>
+      </div>
+
+      <div style="padding: 24px; background: #09090b; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; max-height: 60vh;">
+        
+        <div style="background: rgba(39, 39, 42, 0.4); border: 1px solid rgba(63, 63, 70, 0.5); padding: 18px; border-radius: 16px;">
+          <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #10b981; letter-spacing: 0.5px;">Opportunity Details</span>
+          <h3 style="margin: 6px 0 2px; font-size: 16px; font-weight: 700; color: #ffffff;">${escapeHtml(notification.OppTitle || notification.Title)}</h3>
+          <p style="margin: 0; font-size: 13px; color: #a1a1aa; font-weight: 500;">${escapeHtml(notification.OrgName || "SMILE Partner")}</p>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(63, 63, 70, 0.5);">
+            <div>
+              <span style="font-size: 10px; text-transform: uppercase; color: #71717a; font-weight: 600;">Start Date</span>
+              <p style="margin: 2px 0 0; font-size: 13px; font-weight: 600; color: #e4e4e7;">${startDate}</p>
+            </div>
+            <div>
+              <span style="font-size: 10px; text-transform: uppercase; color: #71717a; font-weight: 600;">Province</span>
+              <p style="margin: 2px 0 0; font-size: 13px; font-weight: 600; color: #e4e4e7;">${escapeHtml(notification.Province || "National")}</p>
+            </div>
+          </div>
+        </div>
+
+        ${notification.Description ? `
+          <div style="background: rgba(39, 39, 42, 0.2); border: 1px solid rgba(63, 63, 70, 0.3); padding: 16px; border-radius: 16px;">
+            <span style="font-size: 10px; text-transform: uppercase; color: #71717a; font-weight: 600; display: block; margin-bottom: 6px;">Program Description</span>
+            <p style="margin: 0; font-size: 12.5px; color: #d4d4d8; line-height: 1.5; max-height: 120px; overflow-y: auto;">
+              ${escapeHtml(notification.Description).replace(/\n/g, '<br>')}
+            </p>
+          </div>
+        ` : ''}
+        
+      </div>
+
+      <div style="padding: 16px 24px; background: #18181b; border-top: 1px solid rgba(63, 63, 70, 0.8); display: flex; gap: 12px; justify-content: flex-end;">
+        <button onclick="closeApprovalPopup()" style="padding: 10px 18px; border: 1px solid rgba(63, 63, 70, 0.8); border-radius: 12px; background: transparent; color: #a1a1aa; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 13px;" onmouseover="this.style.color='#ffffff'; this.style.borderColor='rgba(161, 161, 170, 0.8)'" onmouseout="this.style.color='#a1a1aa'; this.style.borderColor='rgba(63, 63, 70, 0.8)'">Close</button>
+        
+        <button onclick="window.open('${googleCalUrl}', '_blank'); closeApprovalPopup();" style="padding: 10px 20px; border: none; border-radius: 12px; background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);" onmouseover="this.style.opacity='0.95'; this.style.transform='translateY(-1px)'" onmouseout="this.style.opacity='1'; this.style.transform='none'">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+            <line x1="16" x2="16" y1="2" y2="6"></line>
+            <line x1="8" x2="8" y1="2" y2="6"></line>
+            <line x1="3" x2="21" y1="10" y2="10"></line>
+          </svg>
+          Add to Google Calendar
+        </button>
+      </div>
+
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  document.body.style.overflow = "hidden";
+  
+  setTimeout(() => {
+    modal.style.opacity = "1";
+    const container = document.getElementById("smileApprovalModalContainer");
+    if (container) container.style.transform = "scale(1)";
+  }, 50);
+}
+
+function closeApprovalPopup() {
+  const modal = document.getElementById("smileApprovalModal");
+  const container = document.getElementById("smileApprovalModalContainer");
+  if (container) container.style.transform = "scale(0.95)";
+  if (modal) {
+    modal.style.opacity = "0";
+    modal.style.pointerEvents = "none";
+    setTimeout(() => {
+      modal.remove();
+      document.body.style.overflow = "";
+    }, 300);
+  }
+}
+
+function showAppApprovalPopupByIndex(index) {
+  if (window.__loadedApplications && window.__loadedApplications[index]) {
+    showApprovalPopup(window.__loadedApplications[index]);
+  }
+}

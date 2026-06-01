@@ -111,10 +111,26 @@ export const getStudentNotifications = async (req, res) => {
 
     const result = await request.query(`
       SELECT TOP 20
-        NotificationID, AppID, Title, Message, NotificationType, IsRead, DateCreated
-      FROM StudentNotifications
-      WHERE StuID = @StuID
-      ORDER BY DateCreated DESC
+        sn.NotificationID,
+        sn.AppID,
+        sn.Title,
+        sn.Message,
+        sn.NotificationType,
+        sn.IsRead,
+        sn.DateCreated,
+        o.OppID,
+        o.Title AS OppTitle,
+        o.StartDate,
+        o.ApplicationDeadline,
+        o.Description,
+        o.Province,
+        org.OrgName
+      FROM StudentNotifications sn
+      LEFT JOIN Applications a ON sn.AppID = a.AppID
+      LEFT JOIN Opportunities o ON a.OppID = o.OppID
+      LEFT JOIN Organisation org ON o.OrgId = org.OrgId
+      WHERE sn.StuID = @StuID
+      ORDER BY sn.DateCreated DESC
     `);
 
     const unreadResult = await pool.request()
@@ -166,7 +182,7 @@ export const getStudentApplications = async (req, res) => {
     const result = await request.query(`
       SELECT
         a.AppID, a.Status, a.DateApplied,
-        o.OppID, o.Title, org.OrgName
+        o.OppID, o.Title, o.ApplicationDeadline, o.StartDate, o.Description, o.Province, o.OppType, org.OrgName
       FROM Applications a
       JOIN Opportunities o ON a.OppID = o.OppID
       JOIN Organisation org ON o.OrgId = org.OrgId
