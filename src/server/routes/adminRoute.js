@@ -5,7 +5,7 @@ import { verifyToken , requireAdmin } from "../controllers/sessionControllers.js
 import {adminDashBoard, userModeration, userTicket} from "../controllers/pageControllers.js";
 import {getAllUsers, getUserStats, getUserById, suspendUser, unsuspendUser, deleteUser} from "../controllers/userModerationController.js";
 import { getAllTickets, updateTicketStatus } from "../controllers/ticketController.js";
-import {sendNewsletterToSubscribers } from "../controllers/newsletterSenderController.js";
+import { sendNewsletterToSubscribersJob } from "../controllers/newsletterJob.js";
 
 
 
@@ -45,7 +45,7 @@ router.patch("/admin/users/:id/suspend",verifyToken, requireAdmin, suspendUser);
 router.patch("/admin/users/:id/unsuspend",verifyToken, requireAdmin, unsuspendUser);
 router.delete("/admin/users/:id",verifyToken, requireAdmin, deleteUser);
 
-router.post("/send-newsletter",verifyToken,requireAdmin,sendNewsletterToSubscribers);
+router.post("/send-newsletter",verifyToken,requireAdmin,sendNewsletterToSubscribersJob);
 
 // Admin support ticket routes
 router.get("/admin/api/tickets", verifyToken, requireAdmin, getAllTickets);
