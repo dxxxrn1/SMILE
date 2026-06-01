@@ -934,12 +934,11 @@
     if (!token || accountType !== 'student') {
       window.location.href = '/login-page';
     }
-function openApplicationsModal(event) {
+function openApplicationsPanel(event) {
   if (event) event.preventDefault();
 
-  const panel = document.getElementById("applicationsModal");
+  const panel = document.getElementById("applicationsPanel");
   const list = document.getElementById("modalApplicationsList");
-
   const source = document.querySelector(".applications-list");
 
   if (source && source.innerHTML.trim() !== "") {
@@ -949,19 +948,30 @@ function openApplicationsModal(event) {
   }
 
   panel.classList.add("open");
+  document.body.style.overflow = "hidden";
 }
 
+function closeApplicationsPanel() {
+  document.getElementById("applicationsPanel").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function closeApplicationsPanel() {
+  document.getElementById("applicationsPanel").classList.remove("open");
+
+  // restore scrolling
+  document.body.style.overflow = "";
+}
 function closeApplicationsModal() {
   document.getElementById("applicationsModal")
     .classList.remove("open");
 }
 
-  function openOpportunitiesPanel(event) {
+      function openOpportunitiesPanel(event) {
   if (event) event.preventDefault();
 
   const panel = document.getElementById("opportunitiesPanel");
   const list = document.getElementById("modalOpportunitiesList");
-
   const source = document.querySelector(".opportunities-list");
 
   if (source && source.innerHTML.trim() !== "") {
@@ -971,8 +981,17 @@ function closeApplicationsModal() {
   }
 
   panel.classList.add("open");
+
+  // Prevent background scrolling
+  document.body.style.overflow = "hidden";
 }
 
+function closeOpportunitiesPanel() {
+  document.getElementById("opportunitiesPanel").classList.remove("open");
+
+  // Restore scrolling
+  document.body.style.overflow = "";
+}
 function closeOpportunitiesPanel() {
   document.getElementById("opportunitiesPanel")
     .classList.remove("open");
