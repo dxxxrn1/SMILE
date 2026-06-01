@@ -28,8 +28,8 @@
         </a>
 
         <div class="nav__actions">
-          <a href="/login-page" class="btn--ghost-white">Log In</a>
-          <a href="/register-page" class="btn--neon">Get Started</a>
+          <a href="/login-page" class="btn--ghost-white" draggable="false">Log In</a>
+          <a href="/register-page" class="btn--neon" draggable="false">Get Started</a>
         </div>
 
         <button
@@ -341,8 +341,9 @@
             navActions.style.flexDirection = "column";
             navActions.style.position = "absolute";
             navActions.style.top = "70px";
-            navActions.style.left = "0";
-            navActions.style.width = "100%";
+          navActions.style.right = "1rem";
+          navActions.style.left = "auto";
+          navActions.style.width = "220px";
             navActions.style.background = "#fff";
             navActions.style.padding = "1rem";
             navActions.style.boxShadow = "0 10px 15px -3px rgba(0,0,0,0.1)";
@@ -594,8 +595,8 @@
         </a>
         <div class="nav__menu-wrapper" id="navMenu">
           <div class="nav__actions">
-            <a href="/login-page" class="btn--ghost-white">Log In</a>
-            <a href="/register-page" class="btn--neon">Get Started</a>
+            <a href="/login-page" class="btn--ghost-white" draggable="false">Log In</a>
+            <a href="/register-page" class="btn--neon" draggable="false">Get Started</a>
           </div>
         </div>
         <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">

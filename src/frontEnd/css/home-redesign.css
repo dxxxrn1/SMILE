@@ -49,6 +49,22 @@
   text-decoration: none;
 }
 
+.header--home .nav__actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.header--home .nav__actions a,
+.header--home .btn--ghost-white,
+.header--home .btn--neon {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
 /* Buttons */
 .btn--ghost-white {
   background: transparent;

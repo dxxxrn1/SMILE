@@ -5777,7 +5777,11 @@
    }
 
    .dashboard__bottom-cards {
-     display: none !important;
+     display: grid !important;
+     grid-template-columns: 1fr !important;
+     gap: 1rem !important;
+     margin-top: 1rem !important;
+     margin-bottom: 1.5rem !important;
    }
  }
 

@@ -161,12 +161,20 @@
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);
   gap: 1.5rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 .library-panel,
 .library-results-wrap {
   padding: 1.25rem;
+  height: min(640px, calc(100vh - 220px));
+  min-height: 520px;
+}
+
+.library-results-wrap {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .library-panel h2,
@@ -223,6 +231,19 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+}
+
+.library-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.library-results::-webkit-scrollbar-thumb {
+  background: #fbcfe8;
+  border-radius: 999px;
 }
 
 .library-book-card {
@@ -341,7 +362,14 @@
   .library-hero {
     padding: 1.5rem;
   }
-}
-   padding: 1.5rem;
+
+  .library-panel,
+  .library-results-wrap {
+    height: auto;
+    min-height: auto;
+  }
+
+  .library-results {
+    max-height: 620px;
   }
 }
