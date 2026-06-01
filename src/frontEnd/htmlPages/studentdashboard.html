@@ -291,12 +291,16 @@
               </svg>
               Saved Opportunities
             </h2>
-            <a href="/near/me" class="section__link">View All</a>
+          <a href="#" class="section__link" onclick="openOpportunitiesPanel(event)">
+            View All
+          </a>
           </div>
           <div class="opportunities-list">
             <p style="color:#888;padding:1rem;">Loading saved opportunities...</p>
           </div>
         </section>
+
+        
 
         <!-- Application Status Section -->
         <section class="dashboard__section dashboard__section--applications">
@@ -309,7 +313,9 @@
               </svg>
               Application Status
             </h2>
-            <a href="#" onclick="openTicketsTab(event)" class="section__link">View All</a>
+                <a href="#" class="section__link" onclick="openApplicationsModal(event)">
+                View All
+              </a>
           </div>
           <div class="applications-list">
             <p style="color:#888;padding:1rem;">Loading applications...</p>
@@ -716,7 +722,7 @@
   <footer class="footer">
     <div class="container">
       <div class="footer__content">
-        <a href="home.html" class="footer__logo">
+        <a href="/logout" class="footer__logo">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             style="margin-right: 6px; flex-shrink: 0; color: var(--primary-orange, #f97316);">
             <circle cx="12" cy="12" r="10" />
@@ -785,6 +791,34 @@
     </div>
   </div>
 
+
+    <!-- Application Slide Panel -->
+    <div id="applicationsModal" class="applications-panel">
+
+      <div class="modal-header">
+        <h2>All Application Status</h2>
+        <button onclick="closeApplicationsModal()">✕</button>
+      </div>
+
+      <div id="modalApplicationsList">
+        <p>Loading...</p>
+      </div>
+
+    </div>
+
+    <!-- Saved Opportunities Panel -->
+<div id="opportunitiesPanel" class="applications-panel">
+
+  <div class="modal-header">
+    <h2>All Saved Opportunities</h2>
+    <button onclick="closeOpportunitiesPanel()">✕</button>
+  </div>
+
+  <div id="modalOpportunitiesList">
+    <p>Loading...</p>
+  </div>
+
+</div>
   <!-- Styles for AI modal and widget -->
   <style>
     .btn-widget-ai:hover {
@@ -900,6 +934,50 @@
     if (!token || accountType !== 'student') {
       window.location.href = '/login-page';
     }
+function openApplicationsModal(event) {
+  if (event) event.preventDefault();
+
+  const panel = document.getElementById("applicationsModal");
+  const list = document.getElementById("modalApplicationsList");
+
+  const source = document.querySelector(".applications-list");
+
+  if (source && source.innerHTML.trim() !== "") {
+    list.innerHTML = source.innerHTML;
+  } else {
+    list.innerHTML = "<p style='color:#888;'>No applications found.</p>";
+  }
+
+  panel.classList.add("open");
+}
+
+function closeApplicationsModal() {
+  document.getElementById("applicationsModal")
+    .classList.remove("open");
+}
+
+  function openOpportunitiesPanel(event) {
+  if (event) event.preventDefault();
+
+  const panel = document.getElementById("opportunitiesPanel");
+  const list = document.getElementById("modalOpportunitiesList");
+
+  const source = document.querySelector(".opportunities-list");
+
+  if (source && source.innerHTML.trim() !== "") {
+    list.innerHTML = source.innerHTML;
+  } else {
+    list.innerHTML = "<p style='color:#888;'>No saved opportunities found.</p>";
+  }
+
+  panel.classList.add("open");
+}
+
+function closeOpportunitiesPanel() {
+  document.getElementById("opportunitiesPanel")
+    .classList.remove("open");
+}
+
   </script>
 </body>
 
