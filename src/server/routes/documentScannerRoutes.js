@@ -77,127 +77,282 @@ function getActiveSession(id) {
   return session;
 }
 
+
 async function parseAcademicDocumentWithGroq(file) {
-  const { createRequire } = await import("module");
-  const require = createRequire(import.meta.url);
-  const pdfParse = require("pdf-parse");
-
   try {
-    const base64Data = file.dataUrl.split(";base64,").pop();
-    const buffer = Buffer.from(base64Data, "base64");
-    const uint8Array = new Uint8Array(buffer);
-    const parser = new pdfParse.PDFParse({ data: uint8Array });
+    console.log("Processing file:", file.name, file.type);
 
-    let text = "";
-    try {
-      const textResult = await parser.getText();
-      text = textResult.text || "";
-    } catch (e) {
-      console.warn("Could not extract text layer from PDF, will try vision:", e.message);
-    }
+    // ----------------------------
+    // IMAGE FILES (JPG/PNG/WEBP)
+    // ----------------------------
+    if (file.type.startsWith("image/")) {
+      console.log("Using Groq Vision on image...");
 
-    let parsedResult = null;
-
-    if (text.trim().replace(/[^a-zA-Z0-9]/g, "").length > 10) {
-      console.log("PDF has readable text. Parsing text layer using Groq llama-3.1-8b-instant...");
       const response = await groq.chat.completions.create({
-        model: "llama-3.1-8b-instant",
+        model: "llama-3.2-11b-vision-preview",
         messages: [
           {
             role: "system",
-            content: `You are an academic results parser. Analyze the text of a school report or transcript.
-Extract all subject names and their numerical marks/percentages.
-Identify the grade level (e.g. "Grade 11"). If no grade is explicitly mentioned in the text, you MUST default the grade field to "Grade 11".
-Return ONLY a valid JSON object in this exact format:
+            content: `
+You are an academic results parser.
+
+Read the school report, transcript, statement of results, or certificate.
+
+Extract:
+- Grade level (default Grade 11 if missing)
+- All subjects
+- Numerical percentages
+
+Return ONLY valid JSON:
+
 {
   "grade": "Grade 11",
   "subjects": [
     { "name": "Mathematics", "mark": 85 },
     { "name": "Physical Sciences", "mark": 80 }
   ]
-}`
+}
+`
           },
           {
             role: "user",
-            content: text
+            content: [
+              {
+                type: "image_url",
+                image_url: {
+                  url: file.dataUrl
+                }
+              }
+            ]
           }
         ],
-        response_format: { type: "json_object" }
+        response_format: {
+          type: "json_object"
+        }
       });
 
-      parsedResult = JSON.parse(response.choices[0].message.content);
-    } else {
-      console.log("PDF text is empty. Attempting embedded image extraction for Groq Vision OCR...");
-      let imageDataUrl = null;
-      try {
-        const imageResult = await parser.getImage({ imageDataUrl: true });
-        for (const page of imageResult.pages) {
-          if (page.images && page.images.length > 0) {
-            imageDataUrl = page.images[0].dataUrl;
-            break;
-          }
-        }
-      } catch (e) {
-        console.error("Error extracting images from PDF:", e);
+      const result = JSON.parse(
+        response.choices[0].message.content
+      );
+
+      console.log("Vision result:", result);
+
+      if (!result.subjects?.length) {
+        throw new Error("No subjects detected.");
       }
 
-      if (imageDataUrl) {
-        console.log("Embedded image found. Parsing image using Groq llama-3.2-11b-vision-preview...");
+      return result;
+    }
+
+    // ----------------------------
+    // PDF FILES
+    // ----------------------------
+    if (file.type === "application/pdf") {
+      console.log("Processing PDF...");
+
+      const { createRequire } = await import("module");
+      const require = createRequire(import.meta.url);
+
+      const pdfParse = require("pdf-parse");
+
+      const base64Data = file.dataUrl.split(";base64,").pop();
+      const buffer = Buffer.from(base64Data, "base64");
+
+      const pdfText = await pdfParse(buffer);
+
+      console.log("PDF text:");
+      console.log(pdfText.text);
+
+      if (
+        pdfText.text &&
+        pdfText.text.trim().replace(/[^a-zA-Z0-9]/g, "").length > 20
+      ) {
         const response = await groq.chat.completions.create({
-          model: "llama-3.2-11b-vision-preview",
+          model: "llama-3.1-8b-instant",
           messages: [
             {
               role: "system",
-              content: `You are an academic results parser. Analyze the image of a school report or transcript.
-Extract all subject names and their numerical marks/percentages.
-Identify the grade level (e.g. "Grade 11"). If no grade is explicitly mentioned in the report, you MUST default the grade field to "Grade 11".
-Return ONLY a valid JSON object in this exact format:
+              content: `
+You are an academic results parser.
+
+Extract:
+- Grade level (default Grade 11)
+- Subjects
+- Marks
+
+Return ONLY valid JSON.
+
 {
   "grade": "Grade 11",
   "subjects": [
-    { "name": "Mathematics", "mark": 85 },
-    { "name": "Physical Sciences", "mark": 80 }
+    { "name": "Mathematics", "mark": 85 }
   ]
-}`
+}
+`
             },
             {
               role: "user",
-              content: [
-                {
-                  type: "image_url",
-                  image_url: {
-                    url: imageDataUrl
-                  }
-                }
-              ]
+              content: pdfText.text
             }
           ],
-          response_format: { type: "json_object" }
+          response_format: {
+            type: "json_object"
+          }
         });
 
-        parsedResult = JSON.parse(response.choices[0].message.content);
+        const result = JSON.parse(
+          response.choices[0].message.content
+        );
+
+        console.log("PDF parse result:", result);
+
+        if (!result.subjects?.length) {
+          throw new Error("No subjects detected.");
+        }
+
+        return result;
       }
+
+      throw new Error(
+        "PDF contains no readable text. Upload a clearer PDF or image."
+      );
     }
 
-    if (parsedResult && parsedResult.subjects && parsedResult.subjects.length > 0) {
-      return parsedResult;
-    }
+    throw new Error("Unsupported file type.");
   } catch (error) {
-    console.error("Error parsing academic report with Groq:", error);
-  }
+    console.error("Document parsing failed:", error);
 
-  // Graceful fallback to mock results only if Groq parsing fails completely
-  console.warn("Groq parsing returned no results. Falling back to default mock.");
-  return {
-    grade: "Grade 11",
-    subjects: [
-      { name: "Mathematics", mark: 78 },
-      { name: "Physical Sciences", mark: 82 },
-      { name: "English", mark: 71 },
-      { name: "Life Sciences", mark: 74 },
-    ]
-  };
+    throw new Error(
+      "Could not read the uploaded school document."
+    );
+  }
 }
+
+// async function parseAcademicDocumentWithGroq(file) {
+//   const { createRequire } = await import("module");
+//   const require = createRequire(import.meta.url);
+//   const pdfParse = require("pdf-parse");
+
+//   try {
+//     const base64Data = file.dataUrl.split(";base64,").pop();
+//     const buffer = Buffer.from(base64Data, "base64");
+//     const uint8Array = new Uint8Array(buffer);
+//     const parser = new pdfParse.PDFParse({ data: uint8Array });
+
+//     let text = "";
+//     try {
+//       const textResult = await parser.getText();
+//       text = textResult.text || "";
+//     } catch (e) {
+//       console.warn("Could not extract text layer from PDF, will try vision:", e.message);
+//     }
+
+//     let parsedResult = null;
+
+//     if (text.trim().replace(/[^a-zA-Z0-9]/g, "").length > 10) {
+//       console.log("PDF has readable text. Parsing text layer using Groq llama-3.1-8b-instant...");
+//       const response = await groq.chat.completions.create({
+//         model: "llama-3.1-8b-instant",
+//         messages: [
+//           {
+//             role: "system",
+//             content: `You are an academic results parser. Analyze the text of a school report or transcript.
+// Extract all subject names and their numerical marks/percentages.
+// Identify the grade level (e.g. "Grade 11"). If no grade is explicitly mentioned in the text, you MUST default the grade field to "Grade 11".
+// Return ONLY a valid JSON object in this exact format:
+// {
+//   "grade": "Grade 11",
+//   "subjects": [
+//     { "name": "Mathematics", "mark": 85 },
+//     { "name": "Physical Sciences", "mark": 80 }
+//   ]
+// }`
+//           },
+//           {
+//             role: "user",
+//             content: text
+//           }
+//         ],
+//         response_format: { type: "json_object" }
+//       });
+
+//       parsedResult = JSON.parse(response.choices[0].message.content);
+//     } else {
+//       console.log("PDF text is empty. Attempting embedded image extraction for Groq Vision OCR...");
+//       let imageDataUrl = null;
+//       try {
+//         const imageResult = await parser.getImage({ imageDataUrl: true });
+//         for (const page of imageResult.pages) {
+//           if (page.images && page.images.length > 0) {
+//             imageDataUrl = page.images[0].dataUrl;
+//             break;
+//           }
+//         }
+//       } catch (e) {
+//         console.error("Error extracting images from PDF:", e);
+//       }
+
+//       if (imageDataUrl) {
+//         console.log("Embedded image found. Parsing image using Groq llama-3.2-11b-vision-preview...");
+//         const response = await groq.chat.completions.create({
+//           model: "llama-3.2-11b-vision-preview",
+//           messages: [
+//             {
+//               role: "system",
+//               content: `You are an academic results parser. Analyze the image of a school report or transcript.
+// Extract all subject names and their numerical marks/percentages.
+// Identify the grade level (e.g. "Grade 11"). If no grade is explicitly mentioned in the report, you MUST default the grade field to "Grade 11".
+// Return ONLY a valid JSON object in this exact format:
+// {
+//   "grade": "Grade 11",
+//   "subjects": [
+//     { "name": "Mathematics", "mark": 85 },
+//     { "name": "Physical Sciences", "mark": 80 }
+//   ]
+// }`
+//             },
+//             {
+//               role: "user",
+//               content: [
+//                 {
+//                   type: "image_url",
+//                   image_url: {
+//                     url: imageDataUrl
+//                   }
+//                 }
+//               ]
+//             }
+//           ],
+//           response_format: { type: "json_object" }
+//         });
+
+//         parsedResult = JSON.parse(response.choices[0].message.content);
+//       }
+//     }
+
+//     if (parsedResult && parsedResult.subjects && parsedResult.subjects.length > 0) {
+//       return parsedResult;
+//     }
+//   } catch (error) {
+//     console.error("Error parsing academic report with Groq:", error);
+//   }
+
+//   // Graceful fallback to mock results only if Groq parsing fails completely
+//   console.warn("Groq parsing returned no results. Falling back to default mock.");
+//   // return {
+//   //   grade: "Grade 11",
+//   //   subjects: [
+//   //     { name: "Mathematics", mark: 78 },
+//   //     { name: "Physical Sciences", mark: 82 },
+//   //     { name: "English", mark: 71 },
+//   //     { name: "Life Sciences", mark: 74 },
+//   //   ]
+//   // };
+
+//     throw new Error(
+//     "Could not read any subjects from the uploaded document."
+//   );
+// }
 
 function classifySchoolDocument(parsedData) {
   const hasSubjects = parsedData && parsedData.subjects && parsedData.subjects.length > 0;
@@ -343,18 +498,29 @@ const allowedTypes = [
     return res.status(400).json({ message: "Please upload a PDF document." });
   }
 
+  // if (!allowedTypes.includes(file.type)) {
+  //   return res.status(400).json({ message: "Only PDF files are allowed." });
+  // }
+
   if (!allowedTypes.includes(file.type)) {
-    return res.status(400).json({ message: "Only PDF files are allowed." });
-  }
+  return res.status(400).json({
+    message: "Please upload a PDF, JPG, PNG or WEBP file."
+  });
+}
 
   if (!file.dataUrl || file.dataUrl.length > 20 * 1024 * 1024) {
     return res.status(400).json({ message: "The uploaded file is too large." });
   }
 
   try {
+    console.log("Uploaded file type:", file.type);
+    console.log("Data URL starts with:", file.dataUrl.substring(0, 50));
     const parsedData = await parseAcademicDocumentWithGroq(file);
     if (file.type.startsWith("image/")) {
       try {
+          console.log("Processing image with Groq Vision...")
+          console.log(file.type);
+          console.log(file.dataUrl.substring(0, 100));
         const response = await groq.chat.completions.create({
           model: "llama-3.2-11b-vision-preview",
           messages: [
