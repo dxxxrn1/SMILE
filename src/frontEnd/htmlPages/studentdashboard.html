@@ -914,89 +914,82 @@
   <script src="../jsFrontEnd/dashboardJS.js"></script>
 
   <script>
-    function getAccountTypeFromToken(token) {
-      if (!token) return null;
-      try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload).accountType;
-      } catch (e) {
-        return null;
-      }
-    }
-    const token = getToken();
-    const accountType = getAccountTypeFromToken(token);
-
-    // If no token or wrong account type, redirect to login
-    if (!token || accountType !== 'student') {
-      window.location.href = '/login-page';
-    }
 function openApplicationsModal(event) {
   if (event) event.preventDefault();
 
   const panel = document.getElementById("applicationsModal");
   const list = document.getElementById("modalApplicationsList");
-
   const source = document.querySelector(".applications-list");
 
-  if (source && source.innerHTML.trim() !== "") {
-    list.innerHTML = source.innerHTML;
-  } else {
-    list.innerHTML =
-      "<p style='color:#888;'>No applications found.</p>";
-  }
+  list.innerHTML =
+    source && source.innerHTML.trim()
+      ? source.innerHTML
+      : "<p style='color:#888;'>No applications found.</p>";
 
   panel.classList.add("open");
 
-  /* stop background scrolling */
   document.body.style.overflow = "hidden";
 }
 
 function closeApplicationsModal() {
-  document.getElementById("applicationsModal")
-    .classList.remove("open");
+  document.getElementById("applicationsModal").classList.remove("open");
 
-  /* restore page scrolling */
   document.body.style.overflow = "";
 }
 
-function closeApplicationsPanel() {
-  document.getElementById("applicationsPanel").classList.remove("open");
+function openOpportunitiesPanel(event) {
+  if (event) event.preventDefault();
 
-  // restore scrolling
-  document.body.style.overflow = "";
+  const panel = document.getElementById("opportunitiesPanel");
+  const list = document.getElementById("modalOpportunitiesList");
+  const source = document.querySelector(".opportunities-list");
+
+  list.innerHTML =
+    source && source.innerHTML.trim()
+      ? source.innerHTML
+      : "<p style='color:#888;'>No saved opportunities found.</p>";
+
+  panel.classList.add("open");
+
+  document.body.style.overflow = "hidden";
 }
-function closeApplicationsModal() {
-  document.getElementById("applicationsModal")
-    .classList.remove("open");
-}
-
-    function openOpportunitiesPanel(event) {
-    if (event) event.preventDefault();
-
-    const panel = document.getElementById("opportunitiesPanel");
-    const list = document.getElementById("modalOpportunitiesList");
-
-    const source = document.querySelector(".opportunities-list");
-
-    if (source && source.innerHTML.trim() !== "") {
-      list.innerHTML = source.innerHTML;
-    } else {
-      list.innerHTML = "<p style='color:#888;'>No saved opportunities found.</p>";
-    }
-
-    panel.classList.add("open");
-  }
 
 function closeOpportunitiesPanel() {
-  document.getElementById("opportunitiesPanel")
-    .classList.remove("open");
+  document.getElementById("opportunitiesPanel").classList.remove("open");
+
+  document.body.style.overflow = "";
 }
 
-  </script>
+/* Close panels when clicking outside */
+document.addEventListener("click", function (e) {
+  const appPanel = document.getElementById("applicationsModal");
+  const oppPanel = document.getElementById("opportunitiesPanel");
+
+  if (
+    appPanel.classList.contains("open") &&
+    !appPanel.contains(e.target) &&
+    !e.target.closest("[onclick*='openApplicationsModal']")
+  ) {
+    closeApplicationsModal();
+  }
+
+  if (
+    oppPanel.classList.contains("open") &&
+    !oppPanel.contains(e.target) &&
+    !e.target.closest("[onclick*='openOpportunitiesPanel']")
+  ) {
+    closeOpportunitiesPanel();
+  }
+});
+
+/* Escape key closes panels */
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
+    closeApplicationsModal();
+    closeOpportunitiesPanel();
+  }
+});
+</script>
 </body>
 
 </html>
