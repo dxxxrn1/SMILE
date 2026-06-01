@@ -6112,3 +6112,16 @@
   overflow-y: auto;
   flex: 1;
 }
+
+
+@media (max-width: 768px) {
+  .applications-panel {
+    width: 90%;
+    right: -90%;
+    max-width: 350px;
+  }
+
+  .applications-panel.open {
+    right: 0;
+  }
+}
