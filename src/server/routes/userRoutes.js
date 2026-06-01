@@ -3,7 +3,7 @@ import { sendOTP, verifyOTP } from '../controllers/otpController.js';
 import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,
         studentLandingPage,careersPage,orgDashboard,
         createOpportunity,adminDashBoard, applicantsPage, studentProfilePage, orgProfilePage, analyticsPage,
-        orgTicketsPage, myOpportunitiesPage ,studentProfile
+        orgTicketsPage, myOpportunitiesPage ,studentProfile, libraryPage
 } from "../controllers/pageControllers.js";
 
 import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageControllers.js";
@@ -54,6 +54,7 @@ route.get("/near/me" , verifyToken,nearMePage);
 route.get("/news/daily" ,verifyToken ,newsPage);
 route.get("/opportunities/browse", verifyToken,opportunitiesPage)
 route.get("/careers/explore" ,verifyToken,careersPage);
+route.get("/student/library" ,verifyToken,libraryPage);
 route.post("/login" , userLogin);
 route.get('/api/news' , verifyToken ,fectNews);
 route.get("/api/books", verifyToken ,fetchBooks);

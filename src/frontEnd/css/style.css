@@ -5597,6 +5597,11 @@
    background: #ecfdf5;
  }
 
+ .bottom-card__icon-box--purple {
+   background: #f3e8ff;
+   color: #7c3aed;
+ }
+
  .bottom-card__title {
    font-size: 1.125rem;
    font-weight: 700;
