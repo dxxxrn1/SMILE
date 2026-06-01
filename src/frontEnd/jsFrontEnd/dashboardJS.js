@@ -576,8 +576,8 @@ async function checkQuizStatus() {
       if (quizCardBody) quizCardBody.textContent = "You can retake the personality quiz at any time to adjust your career interests.";
       if (quizCardBtn) quizCardBtn.textContent = "Retake personality quiz";
 
-      const downloadDocBtn = document.getElementById("downloadDocBtn");
-      if (downloadDocBtn) downloadDocBtn.style.display = "inline-flex";
+      const downloadDocWrap = document.getElementById("downloadDocWrap");
+      if (downloadDocWrap) downloadDocWrap.style.display = "block";
 
       if (chatHistory.length === 0) {
         const win = document.getElementById("chatWindow");
@@ -587,7 +587,7 @@ async function checkQuizStatus() {
               <div style="width: 36px; height: 36px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center; color: #059669; flex-shrink: 0; border: 1px solid #a7f3d0; box-shadow: var(--shadow-sm);">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
               </div>
-              <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6;">
+              <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6; word-break: break-word; overflow-wrap: break-word;">
                 <p style="margin-bottom: 8px;">Welcome back! I see your top career interest is <strong style="color: var(--primary-pink);">${data.interest}</strong>.</p>
                 <p>What would you like to explore today? Ask me for career suggestions, university requirements, or salary info!</p>
                 <p style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--gray-200); font-size: 0.8125rem; color: var(--gray-500); display: flex; align-items: center; gap: 6px;">
@@ -675,7 +675,7 @@ window.sendChat = async function () {
 
   win.innerHTML += `
     <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
-      <div style="background: var(--gradient-primary); color: white; padding: 12px 16px; border-radius: 16px 16px 0px 16px; max-width: 80%; box-shadow: var(--shadow-sm); font-size: 0.9375rem; line-height: 1.5;">
+      <div style="background: var(--gradient-primary); color: white; padding: 12px 16px; border-radius: 16px 16px 0px 16px; max-width: 80%; box-shadow: var(--shadow-sm); font-size: 0.9375rem; line-height: 1.5; word-break: break-word; overflow-wrap: break-word;">
         ${userText}
       </div>
     </div>`;
@@ -722,7 +722,7 @@ window.sendChat = async function () {
         <div style="width: 36px; height: 36px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center; color: #059669; flex-shrink: 0; border: 1px solid #a7f3d0; box-shadow: var(--shadow-sm);">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
         </div>
-        <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6;">
+        <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6; word-break: break-word; overflow-wrap: break-word;">
           ${formattedResponse}
         </div>
       </div>`;
@@ -875,14 +875,7 @@ async function loadSavedOpportunities() {
               </span>
             </div>
             <div class="opportunity-card__actions">
-              <a href="${opp.ApplicationLink || '#'}" class="btn btn--primary btn--sm" target="_blank">Apply Now</a>
-              <button class="btn btn--outline btn--sm btn--icon btn-remove-saved" aria-label="Remove from saved">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 6h18"></path>
-                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                </svg>
-              </button>
+              <a href="${opp.ApplicationLink || '#'}" class="btn btn--primary btn--sm" style="width: 100%; text-align: center; justify-content: center;" target="_blank">Apply Now</a>
             </div>
           </article>
         `;
@@ -1120,6 +1113,19 @@ function openTicketsTab(event) {
 
   loadStudentTickets();
 }
+
+/**
+ * Closes the Tickets panel and returns to the dashboard grid view
+ */
+function closeTicketsTab() {
+  const dashGrid = document.querySelector(".dashboard__grid");
+  const ticketsPanel = document.getElementById("tickets-panel");
+  if (ticketsPanel) ticketsPanel.style.display = "none";
+  if (dashGrid) dashGrid.style.display = "";
+}
+
+window.openTicketsTab = openTicketsTab;
+window.closeTicketsTab = closeTicketsTab;
 
 /**
  * Fetch and render the student's own tickets

@@ -5777,12 +5777,9 @@
    }
 
    .dashboard__bottom-cards {
-     grid-template-columns: 1fr !important;
-     gap: 1rem !important;
+     display: none !important;
    }
  }
-<<<<<<< HEAD
-=======
 
  /* --- CALENDAR WIDGET SYSTEM --- */
  .calendar-widget-container {
@@ -5819,12 +5816,6 @@
    gap: 6px;
  }
 
-<<<<<<< HEAD
-.event-row-item.workshop .date-day { color: #10b981; }
-.event-row-item.workshop .color-bar { background: #10b981; }
-.workshop .category-pill { background: #ecfdf5; color: #059669; }
->>>>>>> ce526d66bc3ee4d6a97589d0e72e9b51e956c1c4
-=======
  .dot-indicator {
    width: 8px;
    height: 8px;
@@ -6035,4 +6026,3 @@
    background: #ecfdf5;
    color: #059669;
  }
->>>>>>> 41c8e6a7096488a10d0c26b81cf35c25da898f76

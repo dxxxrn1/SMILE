@@ -583,12 +583,20 @@
     <header class="header header--home">
       <nav class="nav container">
         <a href="/" class="nav__logo">
-          <div class="nav__logo-mark">&#9786;</div>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            style="margin-right: 6px; flex-shrink: 0; color: var(--primary-orange, #f97316);">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
+          </svg>
           <span class="nav__logo-text">SMILE</span>
         </a>
-        <div class="nav__actions">
-          <a href="/login-page" class="btn--ghost-white">Log In</a>
-          <a href="/register-page" class="btn--neon">Get Started</a>
+        <div class="nav__menu-wrapper" id="navMenu">
+          <div class="nav__actions">
+            <a href="/login-page" class="btn--ghost-white">Log In</a>
+            <a href="/register-page" class="btn--neon">Get Started</a>
+          </div>
         </div>
         <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
           <span></span><span></span><span></span>
@@ -913,7 +921,13 @@
         <div class="footer-v2__top" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; width: 100%;">
           <div class="footer-v2__brand">
             <a href="/" class="nav__logo">
-              <div class="nav__logo-mark" style="width:32px;height:32px;font-size:1rem">&#9786;</div>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                style="margin-right: 6px; flex-shrink: 0; color: var(--primary-orange, #f97316);">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                <line x1="9" y1="9" x2="9.01" y2="9" />
+                <line x1="15" y1="9" x2="15.01" y2="9" />
+              </svg>
               <span class="nav__logo-text" style="color:white">SMILE</span>
             </a>
           </div>
@@ -924,23 +938,6 @@
  
     <script src="../jsFrontEnd/homeJS.js"></script>
     <script>
-      // Mobile Menu Toggle
-      document.getElementById("mobileToggle").addEventListener("click", function () {
-        const navActions = document.querySelector(".nav__actions");
-        if (navActions.style.display === "flex") {
-          navActions.style.display = "none";
-        } else {
-          navActions.style.display = "flex";
-          navActions.style.flexDirection = "column";
-          navActions.style.position = "absolute";
-          navActions.style.top = "70px";
-          navActions.style.left = "0";
-          navActions.style.width = "100%";
-          navActions.style.background = "#fff";
-          navActions.style.padding = "1rem";
-          navActions.style.boxShadow = "0 10px 15px -3px rgba(0,0,0,0.1)";
-        }
-      });
  
       // Animated counter for impact stats
       function animateCounter(el) {

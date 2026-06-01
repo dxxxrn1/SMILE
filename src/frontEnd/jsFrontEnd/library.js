@@ -187,18 +187,13 @@ function renderBooks() {
             <p class="library-book-meta">${escapeHtml(book.publishedDate || "Date unknown")} · ${escapeHtml(ratingText)}</p>
             <p class="library-book-desc">${escapeHtml(description)}</p>
             <div class="library-book-actions">
-              <a href="${escapeHtml(previewLink)}" target="_blank" rel="noopener noreferrer">Read</a>
-              <button type="button" data-save-book="${escapeHtml(book.id)}">Save</button>
+              <a href="${escapeHtml(previewLink)}" target="_blank" rel="noopener noreferrer" style="width: 100%; text-align: center;">Read</a>
             </div>
           </div>
         </article>
       `;
     })
     .join("");
-
-  resultsEl.querySelectorAll("[data-save-book]").forEach((button) => {
-    button.addEventListener("click", () => saveBook(button.dataset.saveBook));
-  });
 }
 
 function saveBook(bookId) {

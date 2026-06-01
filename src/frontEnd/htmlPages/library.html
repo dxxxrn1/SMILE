@@ -12,32 +12,60 @@
     <link rel="stylesheet" href="../css/library.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   </head>
   <body class="dashboard-page library-page">
     <header class="header header--dashboard">
       <nav class="nav container">
         <a href="/" class="nav__logo">
-          <span class="nav__logo-icon">&#9786;</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            style="margin-right: 6px; flex-shrink: 0; color: var(--primary-orange, #f97316);">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
+          </svg>
           <span>SMILE</span>
         </a>
 
         <ul class="nav__menu nav__menu--dashboard" id="navMenu">
-          <li>
-            <a href="/careers/explore" class="nav__link">
-              <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <li><a href="/careers/explore" class="nav__link">
+              <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
                 <path d="M2 12h20"></path>
               </svg>
               Careers
+            </a></li>
+          <li>
+            <a href="/near/me" class="nav__link">
+              <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              Near Me
+            </a>
+          </li>
+          <li>
+            <a href="/news/daily" class="nav__link">
+              <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2">
+                </path>
+                <path d="M18 14h-8"></path>
+                <path d="M15 18h-5"></path>
+                <path d="M10 6h8v4h-8V6Z"></path>
+              </svg>
+              News
             </a>
           </li>
           <li>
             <a href="/student/library" class="nav__link nav__link--active">
-              <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
               </svg>
               Library
@@ -45,17 +73,23 @@
           </li>
           <li>
             <a href="/student/chess" class="nav__link">
-              <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M8 16h8"></path>
+                <path d="M9 12h6"></path>
                 <path d="M12 4v4"></path>
+                <path d="M10 8h4"></path>
                 <path d="M8 20h8"></path>
+                <path d="M9 16l-1 4"></path>
+                <path d="M15 16l1 4"></path>
               </svg>
               Chess
             </a>
           </li>
           <li>
             <a href="/student/dashboard" class="nav__link">
-              <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect width="7" height="9" x="3" y="3" rx="1"></rect>
                 <rect width="7" height="5" x="14" y="3" rx="1"></rect>
                 <rect width="7" height="9" x="14" y="12" rx="1"></rect>
@@ -65,20 +99,87 @@
             </a>
           </li>
         </ul>
+
+        <div class="nav__actions nav__actions--dashboard">
+          <div class="nav__profile" id="profileDropdown">
+            <button class="nav__profile-btn" aria-label="Profile menu" style="position: relative;">
+              <div class="nav__avatar">
+                <span id="initials">TM</span>
+              </div>
+              <span class="nav__notification-badge" id="notificationBadge"
+                style="position: absolute; top: -2px; right: -2px; display: inline-flex; align-items: center; justify-content: center; background: #ef4444; color: white; border-radius: 50%; font-size: 9px; width: 15px; height: 15px; font-weight: 700; border: 1.5px solid white;"
+                hidden>0</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="nav__profile-menu" id="profileMenu">
+              <a href="/student/profile" class="nav__profile-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                My Profile
+              </a>
+              <hr class="nav__profile-divider" />
+
+              <!-- Integrated Notifications inside Profile Dropdown -->
+              <div class="nav__profile-notifications" id="notificationPanel">
+                <div class="nav__profile-notifications-header"
+                  style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--gray-200); margin-bottom: 6px;">
+                  <span
+                    style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--gray-500); letter-spacing: 0.5px;">Updates</span>
+                  <button type="button" class="notification-panel__mark" id="notificationMarkRead"
+                    style="font-size: 10px; color: var(--primary-pink); background: none; border: none; cursor: pointer; font-weight: 600;">Mark
+                    read</button>
+                </div>
+                <div class="notification-panel__list" id="notificationList"
+                  style="max-height: 200px; overflow-y: auto; padding: 0 4px;">
+                  <p class="notification-panel__empty"
+                    style="font-size: 12px; color: #888; text-align: center; padding: 12px;">Loading updates...</p>
+                </div>
+              </div>
+
+              <hr class="nav__profile-divider" />
+              <a href="#" id="myTicketsDropdownBtn" class="nav__profile-link" onclick="openTicketsTab(event)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                My Tickets
+              </a>
+              <hr class="nav__profile-divider" />
+              <a href="/logout" id="logout" class="nav__profile-link nav__profile-link--logout">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" x2="9" y1="12" y2="12"></line>
+                </svg>
+                Log Out
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
+          &#9776;
+        </button>
       </nav>
     </header>
 
-    <main class="library-shell container">
-      <section class="library-hero">
-        <div>
-          <span class="library-badge">Free eBook Library</span>
-          <h1>Find books for school, skills, and career growth</h1>
-          <p>
-            Search textbooks, study guides, and career books. Use the career
-            collections to find reading material linked to your future path.
-          </p>
-        </div>
-      </section>
+    <main class="page-content container" style="padding-top: 2rem;">
+      <div class="page-header">
+        <span class="library-badge" style="margin-bottom: 1rem;">Free eBook Library</span>
+        <h1 class="page-header__title">Find books for school, skills, and career growth</h1>
+        <p class="page-header__subtitle">
+          Search textbooks, study guides, and career books. Use the career
+          collections to find reading material linked to your future path.
+        </p>
+      </div>
 
       <section class="library-toolbar">
         <form id="librarySearchForm" class="library-search">
@@ -132,13 +233,16 @@
               <h2 id="libraryResultsTitle">Career Guides</h2>
               <p id="libraryResultsMeta">Loading books...</p>
             </div>
-            <button id="libraryLoadMore" type="button">Load more</button>
           </div>
           <div id="libraryResults" class="library-results"></div>
+          <div class="library-load-more-wrap" style="text-align: center; margin-top: 1.5rem;">
+            <button id="libraryLoadMore" type="button">Load more</button>
+          </div>
         </section>
       </section>
     </main>
 
+    <script src="../jsFrontEnd/dashboardJS.js"></script>
     <script src="../jsFrontEnd/library.js"></script>
   </body>
 </html>

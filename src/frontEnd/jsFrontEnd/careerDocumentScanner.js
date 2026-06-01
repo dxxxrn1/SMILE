@@ -137,8 +137,9 @@ async function sendScannedDocumentToCareerBot(analysis) {
     chatSection.style.display = "flex";
   }
 
-  if (downloadDocBtn) {
-    downloadDocBtn.style.display = "inline-flex";
+  const downloadDocWrap = document.getElementById("downloadDocWrap");
+  if (downloadDocWrap) {
+    downloadDocWrap.style.display = "block";
   }
 
   if (!input || !analysis?.chatbotPrompt) {

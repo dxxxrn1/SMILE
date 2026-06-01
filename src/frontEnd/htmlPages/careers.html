@@ -350,7 +350,9 @@
       }
 
       .chat-panel__window {
-        height: 260px;
+        height: auto;
+        min-height: 260px;
+        max-height: 400px;
       }
     }
   </style>
@@ -361,7 +363,7 @@
     <nav class="nav container">
       <a href="/" class="nav__logo">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-          style="margin-right: 6px; flex-shrink: 0; color: var(--primary-pink, #ec4899);">
+          style="margin-right: 6px; flex-shrink: 0; color: var(--primary-orange, #f97316);">
           <circle cx="12" cy="12" r="10" />
           <path d="M8 14s1.5 2 4 2 4-2 4-2" />
           <line x1="9" y1="9" x2="9.01" y2="9" />
@@ -402,6 +404,15 @@
               <path d="M10 6h8v4h-8V6Z"></path>
             </svg>
             News
+          </a>
+        </li>
+        <li>
+          <a href="/student/library" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+            </svg>
+            Library
           </a>
         </li>
         <li>
