@@ -24,7 +24,7 @@ window.startCareerDocumentScan = async function () {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
 
@@ -83,7 +83,7 @@ async function checkCareerScanStatus() {
   try {
     const response = await fetch(`/api/scanner/sessions/${careerScanSessionId}`, {
       headers: {
-        Authorization: `Bearer ${getToken()}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
 
@@ -113,6 +113,8 @@ async function checkCareerScanStatus() {
         const marksStr = session.analysis.subjects.map(s => `${s.name}: ${s.mark}%`).join(", ");
         window.latestScannedMarks = marksStr;
         window.latestScannedSchool = session.analysis.schoolName || "";
+        localStorage.setItem("latestScannedMarks", marksStr);
+        localStorage.setItem("latestScannedSchool", session.analysis.schoolName || "");
       }
 
       await sendScannedDocumentToCareerBot(session.analysis);
@@ -137,9 +139,8 @@ async function sendScannedDocumentToCareerBot(analysis) {
     chatSection.style.display = "flex";
   }
 
-  const downloadDocWrap = document.getElementById("downloadDocWrap");
-  if (downloadDocWrap) {
-    downloadDocWrap.style.display = "block";
+  if (downloadDocBtn) {
+    downloadDocBtn.style.display = "inline-flex";
   }
 
   if (!input || !analysis?.chatbotPrompt) {
