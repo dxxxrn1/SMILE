@@ -6,7 +6,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const eventsFilePath = path.join(__dirname, "..", "utils", "events.json");
 
-// Helper function to safely read events
 const readEvents = () => {
     try {
         if (!fs.existsSync(eventsFilePath)) {
@@ -20,7 +19,7 @@ const readEvents = () => {
     }
 };
 
-// Helper function to safely write events
+
 const writeEvents = (events) => {
     try {
         fs.writeFileSync(eventsFilePath, JSON.stringify(events, null, 2), "utf8");
@@ -31,27 +30,22 @@ const writeEvents = (events) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────
-// GET /api/events/upcoming
-// Retrieves upcoming events from today onwards (sorted chronologically)
-// ─────────────────────────────────────────────────────────────────
 export const getUpcomingEvents = async (req, res) => {
     try {
         const events = readEvents();
-        
-        // Get today's date formatted as YYYY-MM-DD (local time)
+
+
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const dd = String(today.getDate()).padStart(2, '0');
         const todayStr = `${yyyy}-${mm}-${dd}`;
 
-        // Filter events that happen from today onwards
         const upcomingEvents = events.filter(e => {
             return e.EventDate >= todayStr;
         });
 
-        // Sort chronologically by date and start time
+
         upcomingEvents.sort((a, b) => {
             if (a.EventDate !== b.EventDate) {
                 return a.EventDate.localeCompare(b.EventDate);
@@ -68,10 +62,7 @@ export const getUpcomingEvents = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────
-// POST /api/events/create
-// Creates a new event linked to the active Organization
-// ─────────────────────────────────────────────────────────────────
+
 export const createEvent = async (req, res) => {
     try {
         const { title, category, eventDate, startTime, endTime, eventLocation, description } = req.body;
@@ -80,12 +71,11 @@ export const createEvent = async (req, res) => {
             return res.status(400).json({ success: false, message: "Title, category, and date are required." });
         }
 
-        // Get active OrgId from verifyToken payload
         const orgId = req.user && req.user.id ? req.user.id : null;
 
         const events = readEvents();
 
-        // Generate a new unique EventID
+
         const nextId = events.reduce((max, e) => (e.EventID > max ? e.EventID : max), 0) + 1;
 
         const newEvent = {
@@ -115,10 +105,7 @@ export const createEvent = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────────────────────────
-// DELETE /api/events/:id
-// Deletes a scheduled event (only if owned by the organization)
-// ─────────────────────────────────────────────────────────────────
+
 export const deleteEvent = async (req, res) => {
     try {
         const { id } = req.params;
@@ -130,7 +117,7 @@ export const deleteEvent = async (req, res) => {
 
         const events = readEvents();
         const eventIdNum = parseInt(id, 10);
-        
+
         const eventIndex = events.findIndex(e => e.EventID === eventIdNum);
 
         if (eventIndex === -1) {
@@ -139,7 +126,7 @@ export const deleteEvent = async (req, res) => {
 
         const targetEvent = events[eventIndex];
 
-        // Ensure organisation owns this event (or allow admin override if necessary)
+
         if (targetEvent.OrgId !== orgId && req.user.accountType !== "admin") {
             return res.status(403).json({ success: false, message: "Unauthorized. You can only delete your own events." });
         }
