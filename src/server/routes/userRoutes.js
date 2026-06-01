@@ -6,6 +6,7 @@ import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunit
         orgTicketsPage, myOpportunitiesPage ,studentProfile, libraryPage
 } from "../controllers/pageControllers.js";
 
+
 import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken , requireAdmin} from "../controllers/sessionControllers.js";
@@ -28,6 +29,7 @@ import {createNewOpportunity,getAllOpportunities, getOrganizationApplicants, get
 import { getSavedOpportunities, getStudentApplications, deleteSavedOpportunity, saveOpportunity, applyForOpportunity, getStudentProfile, updateStudentProfile, updateStudentBio, getStudentNotifications, markStudentNotificationsRead } from "../controllers/studentController.js";
 import { createTicket, getMyTickets } from "../controllers/ticketController.js";
 import { getOrganizationAnalytics } from "../controllers/analyticsController.js";
+
 
 
 const route = express.Router();
@@ -109,6 +111,9 @@ route.post("/api/newsletter/subscribe", subscribeToNewsletter);
 route.post("/api/tickets", verifyToken, createTicket);
 route.get("/api/tickets/my", verifyToken, getMyTickets);
 route.get("/org/tickets", verifyToken, orgTicketsPage);
+
+
+
 
 
 export default route;
