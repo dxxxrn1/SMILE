@@ -1,6 +1,6 @@
 /**
  * SMILE – News Page Frontend Script
- * Updated for newsdata.io API (cursor-based pagination + smart image fallback)
+ * Updated for newsdata.io API (cursor-based pagination + Picsum image fallback)
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -22,8 +22,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const loadMoreBtn  = document.getElementById('loadMoreNews');
     const categoryBtns = document.querySelectorAll('.news-category');
 
-    // ─── Image cache (avoid duplicate Unsplash calls for same keyword) ───────
-    const imageCache = {};
+    // ─── Category → consistent Picsum seed bank ──────────────────────────────
+    // Each category maps to a fixed pool of Picsum image IDs that are visually
+    // relevant. Picsum never has CORS issues and needs no API key.
+    const CATEGORY_IMAGES = {
+      education:    [167, 256, 301, 373, 412, 447, 513, 580, 610, 668],
+      business:     [0,   20,  48,  99,  180, 239, 274, 317, 395, 431],
+      politics:     [10,  43,  76,  119, 165, 210, 288, 330, 450, 500],
+      entertainment:[15,  55,  88,  142, 193, 260, 310, 380, 420, 490],
+      technology:   [7,   36,  69,  102, 160, 220, 270, 340, 400, 460],
+      science:      [25,  58,  91,  134, 175, 230, 295, 355, 415, 475],
+      tourism:      [11,  44,  77,  120, 166, 211, 289, 331, 451, 501],
+      default:      [1,   14,  29,  65,  110, 155, 200, 245, 290, 335],
+    };
+
+    // Give each article a unique but consistent image from its category pool
+    const categoryCounters = {};
+    function getFallbackImage(category) {
+      const key    = category?.toLowerCase() || 'default';
+      const pool   = CATEGORY_IMAGES[key] || CATEGORY_IMAGES.default;
+      const idx    = (categoryCounters[key] || 0) % pool.length;
+      categoryCounters[key] = idx + 1;
+      const id     = pool[idx];
+      return `https://picsum.photos/id/${id}/400/220`;
+    }
 
     // ─── Helpers ─────────────────────────────────────────────────────────────
 
@@ -57,50 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
       return 'Education';
     }
 
-    // Extract 2-3 meaningful keywords from the article title for image search
-    function extractKeywords(title, category) {
-      // Strip common filler words
-      const stopWords = new Set([
-        'the','a','an','and','or','but','in','on','at','to','for','of',
-        'with','by','from','as','is','was','are','were','be','been',
-        'has','have','had','will','would','could','should','may','might',
-        'that','this','these','those','it','its','new','says','say',
-        'after','before','over','under','about','into','out','up','down',
-        'south','africa','african','sa','how','why','what','when','who',
-      ]);
-
-      const words = title
-        .toLowerCase()
-        .replace(/[^a-z\s]/g, '')
-        .split(/\s+/)
-        .filter(w => w.length > 3 && !stopWords.has(w));
-
-      // Take top 2 meaningful words + category as context
-      const keywords = words.slice(0, 2);
-      if (category && category !== 'all') keywords.push(category);
-
-      return keywords.join(' ') || category || 'south africa news';
-    }
-
-    // Fetch a relevant image from Unsplash Source (no API key needed)
-    async function getSmartImage(title, category) {
-      const keyword = extractKeywords(title, category);
-      const cacheKey = keyword.replace(/\s+/g, '-');
-
-      if (imageCache[cacheKey]) return imageCache[cacheKey];
-
-      // Unsplash Source gives a random relevant image — we add a unique seed
-      // per article so cards don't all show the same image
-      const seed = Math.random().toString(36).slice(2, 7);
-      const url  = `https://source.unsplash.com/400x220/?${encodeURIComponent(keyword)}&sig=${seed}`;
-
-      imageCache[cacheKey] = url;
-      return url;
-    }
-
     // ─── Render ──────────────────────────────────────────────────────────────
 
-    async function renderCard(article) {
+    function renderCard(article) {
       const label   = getCategoryLabel(article.url, article.source?.name || '', article.category);
       const date    = formatDate(article.publishedAt);
       const excerpt = article.description
@@ -108,10 +89,10 @@ document.addEventListener("DOMContentLoaded", () => {
         : 'Click to read the full article.';
       const title   = article.title.slice(0, 80) + (article.title.length > 80 ? '…' : '');
 
-      // Use API image if available, otherwise fetch a smart contextual one
-      const imgSrc = article.urlToImage
-        ? article.urlToImage
-        : await getSmartImage(article.title, article.category || label.toLowerCase());
+      // Use the article's own image if available, else a category-matched Picsum photo
+      const categoryKey = article.category?.toLowerCase() || label.toLowerCase();
+      const fallbackSrc = getFallbackImage(categoryKey);
+      const imgSrc      = article.urlToImage || fallbackSrc;
 
       const card = document.createElement('article');
       card.className = 'news-card';
@@ -120,8 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <img
             src="${imgSrc}"
             alt="${title}"
-            crossorigin="anonymous"
-            onerror="this.onerror=null; this.src='https://source.unsplash.com/400x220/?news,southafrica&sig=${Math.random().toString(36).slice(2,7)}'"
+            onerror="this.onerror=null; this.src='${fallbackSrc}'"
           >
           <span class="news-card__category">${label}</span>
         </div>
@@ -181,6 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
         newsGrid.innerHTML = '';
         state.nextPage = null;
         state.hasMore  = true;
+        // Reset counters so images start fresh on category switch
+        Object.keys(categoryCounters).forEach(k => delete categoryCounters[k]);
       }
 
       if (!state.hasMore) {
@@ -215,10 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!state.nextPage) showError('No news articles found for this category.');
           state.hasMore = false;
         } else {
-          // Render cards with smart images (async, but renders each card as ready)
-          const cardPromises = data.articles.map(article => renderCard(article));
-          const cards = await Promise.all(cardPromises);
-          cards.forEach(card => newsGrid.appendChild(card));
+          data.articles.forEach(article => newsGrid.appendChild(renderCard(article)));
 
           state.nextPage = data.nextPage || null;
           state.hasMore  = !!data.nextPage;
@@ -284,14 +263,14 @@ document.addEventListener("DOMContentLoaded", () => {
           const data = await res.json();
 
           if (data.success) {
-            showToastNotification('🎉 Successfully subscribed to our newsletter!');
+            showToastNotification('Successfully subscribed to our newsletter!');
             newsletterForm.reset();
           } else {
-            showToastNotification('⚠️ ' + (data.message || 'Subscription failed.'), 'error');
+            showToastNotification('' + (data.message || 'Subscription failed.'), 'error');
           }
         } catch (err) {
           console.error('Newsletter subscribe error:', err);
-          showToastNotification('❌ A network error occurred. Please try again.', 'error');
+          showToastNotification(' A network error occurred. Please try again.', 'error');
         } finally {
           btn.disabled    = false;
           btn.textContent = 'Subscribe';

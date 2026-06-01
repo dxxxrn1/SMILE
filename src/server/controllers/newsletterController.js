@@ -40,7 +40,7 @@ export const subscribeToNewsletter = async (req, res) => {
             .input("Email", sql.VarChar, email)
             .query("INSERT INTO NewsletterSubscriptions (Email) VALUES (@Email)");
 
-        console.log(`✉️ New newsletter subscriber: ${email}`);
+        console.log(`New newsletter subscriber: ${email}`);
 
         // Send Welcome Email
         try {
@@ -48,7 +48,7 @@ export const subscribeToNewsletter = async (req, res) => {
             await transport.sendMail({
                 from: `"SMILE Platform" <${process.env.LUCAS_EMAIL}>`,
                 to: email,
-                subject: "✨ Welcome to the SMILE Newsletter!",
+                subject: "Welcome to the SMILE Newsletter!",
                 html: `
                     <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px; background: #0f172a; color: #f8fafc; border-radius: 12px; border: 1px solid #334155;">
                         <div style="text-align: center; margin-bottom: 24px;">
@@ -88,7 +88,7 @@ export const subscribeToNewsletter = async (req, res) => {
                     </div>
                 `
             });
-            console.log(`📧 Newsletter welcome email sent to ${email}`);
+            console.log(`Newsletter welcome email sent to ${email}`);
         } catch (emailErr) {
             console.error("Newsletter email failed (non-fatal):", emailErr.message);
         }
