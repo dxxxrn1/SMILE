@@ -332,7 +332,12 @@ route.post("/api/scanner/sessions/:sessionId/upload", async (req, res) => {
   }
 
   const file = req.body?.file;
-  const allowedTypes = ["application/pdf"];
+const allowedTypes = [
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+  "image/webp"
+];
 
   if (!file) {
     return res.status(400).json({ message: "Please upload a PDF document." });
@@ -348,6 +353,53 @@ route.post("/api/scanner/sessions/:sessionId/upload", async (req, res) => {
 
   try {
     const parsedData = await parseAcademicDocumentWithGroq(file);
+    if (file.type.startsWith("image/")) {
+      try {
+        const response = await groq.chat.completions.create({
+          model: "llama-3.2-11b-vision-preview",
+          messages: [
+            {
+              role: "system",
+              content: `You are an academic results parser.
+
+    Analyze the image of a school report, transcript, certificate, or results page.
+
+    Extract all subject names and their numerical marks/percentages.
+
+    Identify the grade level (e.g. Grade 11).
+
+    Return ONLY valid JSON in this format:
+
+    {
+      "grade": "Grade 11",
+      "subjects": [
+        { "name": "Mathematics", "mark": 85 },
+        { "name": "Physical Sciences", "mark": 80 }
+      ]
+    }`
+            },
+            {
+              role: "user",
+              content: [
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: file.dataUrl
+                  }
+                }
+              ]
+            }
+          ],
+          response_format: {
+            type: "json_object"
+          }
+        });
+
+        return JSON.parse(response.choices[0].message.content);
+      } catch (error) {
+        console.error("Image parsing failed:", error);
+      }
+    }
     const baseAnalysis = classifySchoolDocument(parsedData);
     const careerPaths = baseAnalysis.isSchoolDocument ? recommendCareerPaths(baseAnalysis) : [];
     const analysis = {
