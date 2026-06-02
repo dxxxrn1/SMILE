@@ -1102,7 +1102,7 @@ document.getElementById('chat-input')?.addEventListener('keydown', e => {
 });
 
 socket.on('chat_message', ({ sender, message }) => {
-  if (sender !== playerName) addChatMsg(sender, message, false);
+  addChatMsg(sender, message, false);
 });
 
 function addChatMsg(sender, message, isMe) {

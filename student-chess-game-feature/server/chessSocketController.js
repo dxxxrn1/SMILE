@@ -194,7 +194,7 @@ export function registerChessSockets(io) {
           ? room.players.white.name
           : room.players.black.name;
 
-      io.to(roomId).emit("chat_message", {
+      socket.to(roomId).emit("chat_message", {
         sender,
         message: message.trim().slice(0, 120),
       });

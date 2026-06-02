@@ -875,7 +875,13 @@ async function loadSavedOpportunities() {
               </span>
             </div>
             <div class="opportunity-card__actions">
-              <a href="${opp.ApplicationLink || '#'}" class="btn btn--primary btn--sm" style="width: 100%; text-align: center; justify-content: center;" target="_blank">Apply Now</a>
+              ${
+                (opp.ApplicationLink && opp.ApplicationLink !== "null" && opp.ApplicationLink !== "undefined" && opp.ApplicationLink.trim() !== "")
+                  ? `<a href="${opp.ApplicationLink}" class="btn btn--primary btn--sm" style="width: 100%; text-align: center; justify-content: center;" target="_blank">Apply Now</a>`
+                  : (opp.AppliedCount > 0)
+                    ? `<button class="btn btn--secondary btn--sm" style="width: 100%; text-align: center; justify-content: center; border: none; background: #e4e4e7; color: #71717a; cursor: not-allowed;" disabled>Applied</button>`
+                    : `<button class="btn btn--primary btn--sm" style="width: 100%; text-align: center; justify-content: center; border: none; cursor: pointer;" onclick="applyForOpportunity('${opp.Title.replace(/'/g, "\\'")}', ${opp.OppID}, this)">Apply Now</button>`
+              }
             </div>
           </article>
         `;
@@ -889,6 +895,48 @@ async function loadSavedOpportunities() {
   } catch (err) {
     console.error("Error loading saved opportunities:", err);
     container.innerHTML = "<p style='color:#dc2626;padding:1rem;'>Failed to load saved opportunities.</p>";
+  }
+}
+
+async function applyForOpportunity(title, oppId, button) {
+  if (!confirm(`Are you sure you want to apply for "${title}"?`)) return;
+
+  const token = getToken();
+  if (!token) {
+    alert("Please log in to apply.");
+    window.location.href = "/login-page";
+    return;
+  }
+
+  const originalHtml = button.innerHTML;
+  button.disabled = true;
+  button.innerHTML = "Applying...";
+
+  try {
+    const res = await fetch("/api/student/applications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ oppId })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      alert("Application submitted successfully!");
+      await loadSavedOpportunities();
+      await loadApplications();
+    } else {
+      alert(data.message || "Failed to submit application.");
+      button.disabled = false;
+      button.innerHTML = originalHtml;
+    }
+  } catch (err) {
+    console.error("Error applying:", err);
+    alert("Network error occurred while applying.");
+    button.disabled = false;
+    button.innerHTML = originalHtml;
   }
 }
 
@@ -1544,6 +1592,7 @@ window.openAIProfileModal = openAIProfileModal;
 window.closeAIProfileModal = closeAIProfileModal;
 window.sendAIProfileChat = sendAIProfileChat;
 window.applyAIProposedBio = applyAIProposedBio;
+window.applyForOpportunity = applyForOpportunity;
 window.initProfileCompletionWidget = initProfileCompletionWidget;
 
 async function loadStudentHeaderProfile() {
