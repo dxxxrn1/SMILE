@@ -1303,19 +1303,22 @@
       // Render open challenges list
       const challengesDiv = document.getElementById('open-challenges-list');
       if (challengesDiv) {
-        // Filter out our own challenges
-        const activeOthers = listChallenges.filter(c => c.hostId !== socket.id);
-        if (!activeOthers.length) {
-          challengesDiv.innerHTML = '<p style="text-align:center; padding:1rem; color:var(--text3);">No other open challenges at the moment.</p>';
+        if (!listChallenges.length) {
+          challengesDiv.innerHTML = '<p style="text-align:center; padding:1rem; color:var(--text3);">No open challenges at the moment.</p>';
         } else {
-          challengesDiv.innerHTML = activeOthers.map(c => `
-            <div class="lobby-row" style="border-left: 3px solid var(--purple);">
-              <div style="flex:1;">
-                <div style="font-size:14px;font-weight:600;color:var(--purple);">${c.challengeName}</div>
-                <div style="font-size:11px;color:var(--text3);">Host: ${c.challengerName} (Rating ${c.rating})</div>
-              </div>
-              <button class="btn btn-sm btn-primary" onclick="acceptOpenChallenge('${c.hostId}')">⚔ Play</button>
-            </div>`).join('');
+          challengesDiv.innerHTML = listChallenges.map(c => {
+            const isMe = c.hostId === socket.id;
+            return `
+              <div class="lobby-row" style="border-left: 3px solid ${isMe ? 'var(--purple)' : 'var(--green)'};">
+                <div style="flex:1;">
+                  <div style="font-size:14px;font-weight:600;color:${isMe ? 'var(--purple)' : 'var(--green)'};">${c.challengeName}</div>
+                  <div style="font-size:11px;color:var(--text3);">Host: ${c.challengerName} (Rating ${c.rating}) ${isMe ? '· (You)' : ''}</div>
+                </div>
+                ${isMe
+                  ? `<span class="badge badge-purple">Your Challenge</span>`
+                  : `<button class="btn btn-sm btn-primary" onclick="acceptOpenChallenge('${c.hostId}')">⚔ Play</button>`}
+              </div>`;
+          }).join('');
         }
       }
     });

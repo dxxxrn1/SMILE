@@ -27,7 +27,7 @@ export function registerChessSockets(io) {
     socket.on("join_lobby", ({ name, rating = 1200 }) => {
       // Clean up any existing lobby entries with the exact same name to prevent duplicates due to rapid page reloads/navigation
       for (const [id, data] of lobby.entries()) {
-        if (data.name === name) {
+        if (id !== socket.id && data.name === name) {
           lobby.delete(id);
           openChallenges.delete(id);
           const oldSocket = io.sockets.sockets.get(id);
