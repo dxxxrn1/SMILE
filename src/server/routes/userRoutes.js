@@ -13,6 +13,8 @@ import { verifyToken , requireAdmin} from "../controllers/sessionControllers.js"
 import { getOrgProfile, updateOrgProfile, getOrgPublicProfile } from "../controllers/orgController.js";
 import { subscribeToNewsletter } from "../controllers/newsletterController.js";
 import { fectNews } from "../apis/newsAPI.js";
+import jwt from "jsonwebtoken";
+import { logAudit } from "../controllers/auditController.js";
 import { fetchJobs } from "../apis/careers.js";
 import { fetchBooks } from "../apis/booksAPI.js";
 import { forgotPassword, resetPassword } from "../controllers/passwordController.js";
@@ -66,9 +68,41 @@ route.post("/api/chat", verifyToken, getCareerAdvice);
 route.post("/api/generate-doc-from-chat", verifyToken, generateDocFromChat);
 route.get("/api/saved-docs", verifyToken, getSavedDocs);
 route.get("/api/saved-docs/:id", verifyToken, getSingleDoc);
-route.get("/logout", (req, res) => {
+route.all("/logout", async (req, res) => {
+    try {
+        const authHeader = req.headers['authorization'];
+        const headerToken = authHeader && authHeader.split(' ')[1];
+        const cookieToken = req.cookies?.token;
+        const token = headerToken || cookieToken;
+
+        if (token) {
+            try {
+                let decoded;
+                try {
+                    decoded = jwt.verify(token, process.env.JWT_SECRET);
+                } catch (jwtErr) {
+                    console.log("Logout token verification failed, using fallback decode:", jwtErr.message);
+                    decoded = jwt.decode(token);
+                }
+
+                if (decoded) {
+                    req.user = decoded;
+                    await logAudit(req, "USER_LOGOUT", `User logged out successfully (${decoded.email || 'unknown'})`);
+                }
+            } catch (jwtErr) {
+                console.log("Logout token validation failed:", jwtErr.message);
+            }
+        }
+    } catch (err) {
+        console.error("Logout error:", err);
+    }
+
     res.clearCookie('token');
-    return res.redirect("/login-page");
+    if (req.method === 'POST') {
+        return res.status(200).json({ success: true });
+    } else {
+        return res.redirect("/login-page");
+    }
 });
 //resetPasswordPage
 route.get("/api/jobs", fetchJobs);

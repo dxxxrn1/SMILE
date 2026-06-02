@@ -27,6 +27,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Only run on pages that have these elements
   loadStudentHeaderProfile();
+
+  // Always bind logout button if it exists on the page
+  const logoutTag = document.getElementById("logout");
+  if (logoutTag) {
+    logoutTag.addEventListener("click", (e) => {
+      e.preventDefault();
+      logout();
+    });
+  }
 });
 
 /**
@@ -55,14 +64,6 @@ function initMobileNavigation() {
         mobileToggle.setAttribute("aria-expanded", "false");
       }
     });
-
-    const logoutTag = document.getElementById("logout");
-    if (logoutTag) {
-      logoutTag.addEventListener("click", (e) => {
-        e.preventDefault();
-        logout();
-      });
-    }
   }
 }
 

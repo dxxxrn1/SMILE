@@ -193,7 +193,7 @@ function getActionBadgeStyle(action) {
     let style = "";
     let label = action.replace(/_/g, " ");
 
-    if (action === "APPROVE_ORGANISATION" || action === "UNSUSPEND_USER" || action === "USER_LOGIN" || action === "USER_REGISTER" || action === "ORG_APPLY") {
+    if (action === "APPROVE_ORGANISATION" || action === "UNSUSPEND_USER" || action === "USER_LOGIN" || action === "USER_REGISTER" || action === "ORG_APPLY" || action === "USER_LOGOUT") {
         style = "background:#e6f4ea; color:#137333; border:1px solid #ceead6; padding:4px 10px; border-radius:12px; font-size:11.5px; font-weight:600; white-space:nowrap;";
     } else if (action === "REJECT_ORGANISATION" || action === "SUSPEND_USER") {
         style = "background:#fef7e0; color:#b06000; border:1px solid #fde293; padding:4px 10px; border-radius:12px; font-size:11.5px; font-weight:600; white-space:nowrap;";
