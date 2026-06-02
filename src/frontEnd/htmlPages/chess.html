@@ -582,7 +582,7 @@
           <div class="chat-box" id="chat-box"></div>
           <div class="chat-input-row">
             <input class="input" id="chat-input" placeholder="Say something..." maxlength="80" style="flex:1;" />
-            <button class="btn btn-sm btn-primary" onclick="sendChat()">Send</button>
+            <button class="btn btn-sm btn-primary" onclick="sendChessChat()">Send</button>
           </div>
         </div>
 
@@ -1299,7 +1299,7 @@ socket.on('opponent_disconnected', () => {
 });
 
 // ── Chat ──
-function sendChat() {
+function sendChessChat() {
   const input = document.getElementById('chat-input');
   const msg = input.value.trim();
   if (!msg || !roomId) return;
@@ -1308,7 +1308,7 @@ function sendChat() {
 }
 
 document.getElementById('chat-input')?.addEventListener('keydown', e => {
-  if (e.key === 'Enter') sendChat();
+  if (e.key === 'Enter') sendChessChat();
 });
 
 socket.on('chat_message', ({ sender, senderId, message }) => {
