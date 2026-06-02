@@ -166,7 +166,7 @@ function bindTabInterceptors() {
   document.querySelectorAll(".org-tab").forEach((tabLink) => {
     tabLink.addEventListener("click", function (e) {
       const href = this.getAttribute("href");
-      if (href && href.includes("?tab=")) {
+      if (window.location.pathname === "/org/dashboard" && href && href.includes("?tab=")) {
         e.preventDefault();
         const tabName = this.getAttribute("data-tab");
         switchTab(tabName, this);

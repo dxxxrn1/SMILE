@@ -1147,17 +1147,15 @@ function initDynamicRemoveButtons() {
 function openTicketsTab(event) {
   event.preventDefault();
 
-
-  const dashGrid = document.querySelector(".dashboard__grid");
   const ticketsPanel = document.getElementById("tickets-panel");
   const profileMenu = document.getElementById("profileMenu");
 
-  if (dashGrid) dashGrid.style.display = "none";
-  if (ticketsPanel) ticketsPanel.style.display = "block";
+  if (ticketsPanel) {
+    ticketsPanel.style.display = "flex";
+    ticketsPanel.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
   if (profileMenu) profileMenu.classList.remove("nav__profile-menu--active");
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
 
   loadStudentTickets();
 }
@@ -1166,10 +1164,12 @@ function openTicketsTab(event) {
  * Closes the Tickets panel and returns to the dashboard grid view
  */
 function closeTicketsTab() {
-  const dashGrid = document.querySelector(".dashboard__grid");
   const ticketsPanel = document.getElementById("tickets-panel");
-  if (ticketsPanel) ticketsPanel.style.display = "none";
-  if (dashGrid) dashGrid.style.display = "";
+  if (ticketsPanel) {
+    ticketsPanel.style.display = "none";
+    ticketsPanel.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
 }
 
 window.openTicketsTab = openTicketsTab;

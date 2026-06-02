@@ -216,7 +216,7 @@
             </svg>
           </div>
           <div class="stat-card__content">
-            <span class="stat-card__number">12</span>
+            <span class="stat-card__number"></span>
             <span class="stat-card__label">Saved Opportunities</span>
           </div>
         </div>
@@ -231,7 +231,7 @@
             </svg>
           </div>
           <div class="stat-card__content">
-            <span class="stat-card__number">5</span>
+            <span class="stat-card__number"></span>
             <span class="stat-card__label">Applications Sent</span>
           </div>
         </div>
@@ -291,16 +291,16 @@
               </svg>
               Saved Opportunities
             </h2>
-          <a href="#" class="section__link" onclick="openOpportunitiesPanel(event)">
-            View All
-          </a>
+            <a href="#" class="section__link" onclick="openOpportunitiesPanel(event)">
+              View All
+            </a>
           </div>
           <div class="opportunities-list">
             <p style="color:#888;padding:1rem;">Loading saved opportunities...</p>
           </div>
         </section>
 
-        
+
 
         <!-- Application Status Section -->
         <section class="dashboard__section dashboard__section--applications">
@@ -313,9 +313,9 @@
               </svg>
               Application Status
             </h2>
-                <a href="#" class="section__link" onclick="openApplicationsModal(event)">
-                View All
-              </a>
+            <a href="#" class="section__link" onclick="openApplicationsModal(event)">
+              View All
+            </a>
           </div>
           <div class="applications-list">
             <p style="color:#888;padding:1rem;">Loading applications...</p>
@@ -378,8 +378,27 @@
 
       <!-- Near Me Map Section commented out -->
 
-      <!-- ─── My Tickets Tab ─── -->
-      <div id="tickets-panel" style="display:none; margin-top: 2rem;">
+      <!-- ─── My Tickets Tab (Popup Modal) ─── -->
+      <div id="tickets-panel" class="modal hidden" onclick="if(event.target === this) closeTicketsTab()" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 20px; box-sizing: border-box;">
+
+        <div class="modal-content" style="max-width: 1100px; width: 100%; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; background: white; border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,0.25); box-sizing: border-box; position: relative;">
+          
+          <div class="modal-header" style="padding: 16px 24px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #fff; border-top-left-radius: 14px; border-top-right-radius: 14px; position: sticky; top: 0; z-index: 10;">
+            <h2 class="section__title" style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              My Support Tickets
+            </h2>
+            <button onclick="closeTicketsTab()"
+              style="background: none; border: none; font-size: 1.75rem; cursor: pointer; color: #64748b; line-height: 1; padding: 4px 8px; transition: color 0.2s;"
+              onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#64748b'"
+              aria-label="Close Tickets">&times;</button>
+          </div>
+
+          <div style="padding: 24px; box-sizing: border-box; flex: 1;">
 
         <style>
           /* Tickets tab inline styles */
@@ -616,18 +635,6 @@
           }
         </style>
 
-        <div class="section__header" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-          <h2 class="section__title" style="margin: 0;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-              <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-            My Support Tickets
-          </h2>
-          <button onclick="closeTicketsTab()" style="background: none; border: none; font-size: 1.75rem; cursor: pointer; color: #64748b; line-height: 1; padding: 4px 8px; transition: color 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#64748b'" aria-label="Close Tickets">&times;</button>
-        </div>
-
         <div class="tickets-layout">
 
           <!-- Create Ticket Form -->
@@ -707,6 +714,8 @@
             </div>
           </div>
         </div><!-- /tickets-layout -->
+          </div>
+        </div>
 
         <!-- Toast notification -->
         <div class="tkt-toast" id="tktToast"></div>
@@ -792,33 +801,33 @@
   </div>
 
 
-    <!-- Application Slide Panel -->
-    <div id="applicationsModal" class="applications-panel">
+  <!-- Application Slide Panel -->
+  <div id="applicationsModal" class="applications-panel">
 
-      <div class="modal-header">
-        <h2>All Application Status</h2>
-        <button onclick="closeApplicationsModal()">✕</button>
-      </div>
-
-      <div id="modalApplicationsList">
-        <p>Loading...</p>
-      </div>
-
+    <div class="modal-header">
+      <h2>All Application Status</h2>
+      <button onclick="closeApplicationsModal()">✕</button>
     </div>
 
-    <!-- Saved Opportunities Panel -->
-<div id="opportunitiesPanel" class="applications-panel">
+    <div id="modalApplicationsList">
+      <p>Loading...</p>
+    </div>
 
-  <div class="modal-header">
-    <h2>All Saved Opportunities</h2>
-    <button onclick="closeOpportunitiesPanel()">✕</button>
   </div>
 
-  <div id="modalOpportunitiesList">
-    <p>Loading...</p>
-  </div>
+  <!-- Saved Opportunities Panel -->
+  <div id="opportunitiesPanel" class="applications-panel">
 
-</div>
+    <div class="modal-header">
+      <h2>All Saved Opportunities</h2>
+      <button onclick="closeOpportunitiesPanel()">✕</button>
+    </div>
+
+    <div id="modalOpportunitiesList">
+      <p>Loading...</p>
+    </div>
+
+  </div>
   <!-- Styles for AI modal and widget -->
   <style>
     .btn-widget-ai:hover {
@@ -914,82 +923,82 @@
   <script src="../jsFrontEnd/dashboardJS.js"></script>
 
   <script>
-function openApplicationsModal(event) {
-  if (event) event.preventDefault();
+    function openApplicationsModal(event) {
+      if (event) event.preventDefault();
 
-  const panel = document.getElementById("applicationsModal");
-  const list = document.getElementById("modalApplicationsList");
-  const source = document.querySelector(".applications-list");
+      const panel = document.getElementById("applicationsModal");
+      const list = document.getElementById("modalApplicationsList");
+      const source = document.querySelector(".applications-list");
 
-  list.innerHTML =
-    source && source.innerHTML.trim()
-      ? source.innerHTML
-      : "<p style='color:#888;'>No applications found.</p>";
+      list.innerHTML =
+        source && source.innerHTML.trim()
+          ? source.innerHTML
+          : "<p style='color:#888;'>No applications found.</p>";
 
-  panel.classList.add("open");
+      panel.classList.add("open");
 
-  document.body.style.overflow = "hidden";
-}
+      document.body.style.overflow = "hidden";
+    }
 
-function closeApplicationsModal() {
-  document.getElementById("applicationsModal").classList.remove("open");
+    function closeApplicationsModal() {
+      document.getElementById("applicationsModal").classList.remove("open");
 
-  document.body.style.overflow = "";
-}
+      document.body.style.overflow = "";
+    }
 
-function openOpportunitiesPanel(event) {
-  if (event) event.preventDefault();
+    function openOpportunitiesPanel(event) {
+      if (event) event.preventDefault();
 
-  const panel = document.getElementById("opportunitiesPanel");
-  const list = document.getElementById("modalOpportunitiesList");
-  const source = document.querySelector(".opportunities-list");
+      const panel = document.getElementById("opportunitiesPanel");
+      const list = document.getElementById("modalOpportunitiesList");
+      const source = document.querySelector(".opportunities-list");
 
-  list.innerHTML =
-    source && source.innerHTML.trim()
-      ? source.innerHTML
-      : "<p style='color:#888;'>No saved opportunities found.</p>";
+      list.innerHTML =
+        source && source.innerHTML.trim()
+          ? source.innerHTML
+          : "<p style='color:#888;'>No saved opportunities found.</p>";
 
-  panel.classList.add("open");
+      panel.classList.add("open");
 
-  document.body.style.overflow = "hidden";
-}
+      document.body.style.overflow = "hidden";
+    }
 
-function closeOpportunitiesPanel() {
-  document.getElementById("opportunitiesPanel").classList.remove("open");
+    function closeOpportunitiesPanel() {
+      document.getElementById("opportunitiesPanel").classList.remove("open");
 
-  document.body.style.overflow = "";
-}
+      document.body.style.overflow = "";
+    }
 
-/* Close panels when clicking outside */
-document.addEventListener("click", function (e) {
-  const appPanel = document.getElementById("applicationsModal");
-  const oppPanel = document.getElementById("opportunitiesPanel");
+    /* Close panels when clicking outside */
+    document.addEventListener("click", function (e) {
+      const appPanel = document.getElementById("applicationsModal");
+      const oppPanel = document.getElementById("opportunitiesPanel");
 
-  if (
-    appPanel.classList.contains("open") &&
-    !appPanel.contains(e.target) &&
-    !e.target.closest("[onclick*='openApplicationsModal']")
-  ) {
-    closeApplicationsModal();
-  }
+      if (
+        appPanel.classList.contains("open") &&
+        !appPanel.contains(e.target) &&
+        !e.target.closest("[onclick*='openApplicationsModal']")
+      ) {
+        closeApplicationsModal();
+      }
 
-  if (
-    oppPanel.classList.contains("open") &&
-    !oppPanel.contains(e.target) &&
-    !e.target.closest("[onclick*='openOpportunitiesPanel']")
-  ) {
-    closeOpportunitiesPanel();
-  }
-});
+      if (
+        oppPanel.classList.contains("open") &&
+        !oppPanel.contains(e.target) &&
+        !e.target.closest("[onclick*='openOpportunitiesPanel']")
+      ) {
+        closeOpportunitiesPanel();
+      }
+    });
 
-/* Escape key closes panels */
-document.addEventListener("keydown", function (e) {
-  if (e.key === "Escape") {
-    closeApplicationsModal();
-    closeOpportunitiesPanel();
-  }
-});
-</script>
+    /* Escape key closes panels */
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        closeApplicationsModal();
+        closeOpportunitiesPanel();
+      }
+    });
+  </script>
 </body>
 
 </html>
