@@ -1093,7 +1093,6 @@ function sendChat() {
   const msg = input.value.trim();
   if (!msg || !roomId) return;
   socket.emit('chat_message', { roomId, message: msg });
-  addChatMsg(playerName, msg, true);
   input.value = '';
 }
 
@@ -1101,8 +1100,9 @@ document.getElementById('chat-input')?.addEventListener('keydown', e => {
   if (e.key === 'Enter') sendChat();
 });
 
-socket.on('chat_message', ({ sender, message }) => {
-  addChatMsg(sender, message, false);
+socket.on('chat_message', ({ sender, senderId, message }) => {
+  const isMe = (senderId === socket.id);
+  addChatMsg(sender, message, isMe);
 });
 
 function addChatMsg(sender, message, isMe) {
