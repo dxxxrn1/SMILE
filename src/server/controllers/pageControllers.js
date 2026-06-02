@@ -82,7 +82,11 @@ export const userModeration = (req,res)=>{
 }
 
 export const userTicket = (req,res)=>{
-    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "userTicket.html"));
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "tickets.html"));
+}
+
+export const auditLogsPage = (req,res)=>{
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "auditLogs.html"));
 }
 
 export const orgTicketsPage = (req,res)=>{

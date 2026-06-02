@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
 import { sql, connectToDB } from "../dbConnection/dbconnection.js";
+import { logAudit } from "./auditController.js";
 
 dotenv.config();
 
@@ -230,6 +231,7 @@ export const approveOrganisation = async (req, res) => {
     );
 
     console.log(`Organisation "${pendingOrg.OrgName}" approved and moved to Organisation table.`);
+    await logAudit(req, "APPROVE_ORGANISATION", `Approved organisation "${pendingOrg.OrgName}" (Email: ${pendingOrg.OrgEmail})`);
     return res.status(200).json({ message: "Organisation approved successfully." });
   } catch (err) {
     console.error("approveOrganisation error:", err);
@@ -302,6 +304,7 @@ export const rejectOrganisation = async (req, res) => {
     );
 
     console.log(`Pending organisation ${orgId} rejected and removed from pending queue.`);
+    await logAudit(req, "REJECT_ORGANISATION", `Rejected pending organisation "${pendingOrg.OrgName}" (Email: ${pendingOrg.OrgEmail}). Reason: ${reason}`);
     return res.status(200).json({ message: "Organisation rejected." });
   } catch (err) {
     console.error("rejectOrganisation error:", err);
@@ -350,6 +353,7 @@ export const deleteOrganisation = async (req, res) => {
     }
 
     console.log(`Organisation ${orgId} deleted.`);
+    await logAudit(req, "DELETE_ORGANISATION", `Deleted organisation ID: ${orgId}`);
     return res.status(200).json({ message: "Organisation deleted successfully." });
   } catch (err) {
     console.error("deleteOrganisation error:", err);
@@ -405,6 +409,7 @@ export const deleteStudent = async (req, res) => {
       .query("DELETE FROM Student WHERE StuID = @stuId");
 
     console.log(`Student ${stuId} deleted.`);
+    await logAudit(req, "DELETE_STUDENT", `Deleted student ID: ${stuId}`);
     return res.status(200).json({ message: "Student deleted successfully." });
   } catch (err) {
     console.error("deleteStudent error:", err);

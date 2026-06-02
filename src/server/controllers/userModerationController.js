@@ -1,4 +1,5 @@
 import { sql, connectToDB } from "../dbConnection/dbconnection.js";
+import { logAudit } from "./auditController.js";
 
 /**
  * ID CONVENTION
@@ -224,6 +225,7 @@ export const suspendUser = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found." });
     }
 
+    await logAudit(req, "SUSPEND_USER", `Suspended ${parsed.table} ID: ${parsed.numericId}`);
     return res.status(200).json({ success: true, message: "User suspended successfully." });
   } catch (error) {
     console.error("suspendUser:", error);
@@ -262,6 +264,7 @@ export const unsuspendUser = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found." });
     }
 
+    await logAudit(req, "UNSUSPEND_USER", `Unsuspended ${parsed.table} ID: ${parsed.numericId}`);
     return res.status(200).json({ success: true, message: "User reactivated successfully." });
   } catch (error) {
     console.error("unsuspendUser:", error);
@@ -321,6 +324,7 @@ export const deleteUser = async (req, res) => {
 
     await transaction.commit();
 
+    await logAudit(req, "DELETE_USER", `Permanently deleted ${parsed.table} ID: ${parsed.numericId}`);
     return res.status(200).json({ success: true, message: "User deleted successfully." });
   } catch (error) {
     await transaction.rollback();

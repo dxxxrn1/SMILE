@@ -1,4 +1,5 @@
 import { sql, connectToDB } from "../dbConnection/dbconnection.js";
+import { logAudit } from "./auditController.js";
 
 // ─────────────────────────────────────────────────────────────────
 // POST /api/tickets  →  Submit a new support ticket
@@ -190,6 +191,7 @@ export const updateTicketStatus = async (req, res) => {
         }
 
         console.log(`✅ Ticket #${id} resolved by admin`);
+        await logAudit(req, "RESOLVE_TICKET", `Resolved ticket #${id} submitted by ${ticket.SubmitterType} (ID: ${ticket.SubmitterID})`);
         return res.status(200).json({ success: true, message: "Ticket resolved successfully." });
 
     } catch (err) {
