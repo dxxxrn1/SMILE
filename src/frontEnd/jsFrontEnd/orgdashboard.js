@@ -21,6 +21,53 @@ document.addEventListener("DOMContentLoaded", function () {
   checkUrlParams();
   bindTabInterceptors();
   loadOrgEvents();
+  
+  const recentList = document.getElementById("recent-applicants-list");
+  const backToTopBtn = document.getElementById("backToTopBtn");
+  if (recentList && backToTopBtn) {
+    recentList.addEventListener("scroll", () => {
+      if (recentList.scrollTop > 50) {
+        backToTopBtn.style.display = "inline-flex";
+      } else {
+        backToTopBtn.style.display = "none";
+      }
+    });
+  }
+
+  const topOppsList = document.getElementById("top-performing-list");
+  const backToTopTopOppsBtn = document.getElementById("backToTopTopOppsBtn");
+  if (topOppsList && backToTopTopOppsBtn) {
+    topOppsList.addEventListener("scroll", () => {
+      if (topOppsList.scrollTop > 50) {
+        backToTopTopOppsBtn.style.display = "inline-flex";
+      } else {
+        backToTopTopOppsBtn.style.display = "none";
+      }
+    });
+  }
+
+  const eventsList = document.getElementById("dynamicEventsListOrg");
+  const backToTopEventsBtn = document.getElementById("backToTopEventsBtn");
+  if (eventsList && backToTopEventsBtn) {
+    eventsList.addEventListener("scroll", () => {
+      if (eventsList.scrollTop > 50) {
+        backToTopEventsBtn.style.display = "inline-flex";
+      } else {
+        backToTopEventsBtn.style.display = "none";
+      }
+    });
+  }
+
+  window.addEventListener("scroll", () => {
+    const btn = document.getElementById("backToTopPageBtn");
+    if (btn) {
+      if (window.scrollY > 150) {
+        btn.style.display = "inline-flex";
+      } else {
+        btn.style.display = "none";
+      }
+    }
+  });
 
   const logoutTag = document.getElementById("logout");
   if (logoutTag) {

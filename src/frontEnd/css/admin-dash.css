@@ -147,8 +147,25 @@ body {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
-  overflow: hidden;
+  max-height: 480px;
+  overflow-y: auto;
+  position: relative;
 }
+
+.table-section::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.table-section::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.table-section::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
 .org-table {
   width: 100%;
   border-collapse: collapse;
@@ -165,6 +182,10 @@ body {
   color: var(--color-text-secondary);
   font-size: 12px;
   text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: inset 0 -1px 0 var(--color-border);
 }
 
 .status-badge {
@@ -184,6 +205,89 @@ body {
 .status-badge.rejected {
   background: var(--color-danger-light);
   color: var(--color-danger);
+}
+
+/* Styled Action Buttons */
+.btn-view, .btn-approve, .btn-reject, .btn-delete {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+  text-align: center;
+  margin-right: 4px;
+}
+
+.btn-view {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+.btn-view:hover {
+  background-color: #e2e8f0;
+}
+
+.btn-approve {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+.btn-approve:hover {
+  background-color: #bbf7d0;
+}
+
+.btn-reject {
+  background-color: #ffedd5;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+.btn-reject:hover {
+  background-color: #fed7aa;
+}
+
+.btn-delete {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+.btn-delete:hover {
+  background-color: #fecaca;
+}
+
+/* User Moderation page buttons alignment */
+.btn-sm {
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.btn-success {
+  background-color: #22c55e !important;
+  color: white !important;
+}
+.btn-success:hover {
+  background-color: #16a34a !important;
+}
+
+.btn-warning {
+  background-color: #eab308 !important;
+  color: white !important;
+}
+.btn-warning:hover {
+  background-color: #ca8a04 !important;
+}
+
+.btn-outline {
+  background-color: transparent !important;
+  color: #64748b !important;
+  border: 1px solid #cbd5e1 !important;
+}
+.btn-outline:hover {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
 }
 
 .btn {

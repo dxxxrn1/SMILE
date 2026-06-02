@@ -157,7 +157,8 @@ export const getUserById = async (req, res) => {
             ISNULL(Status, 'active')          AS status,
             DateCreated                       AS createdAt,
             StuProvince                       AS province,
-            StuEducationLevel                 AS educationLevel
+            StuEducationLevel                 AS educationLevel,
+            ProfilePicUrl                     AS profilePicUrl
           FROM Student
           WHERE StuID = @id
         `);
@@ -174,7 +175,8 @@ export const getUserById = async (req, res) => {
             ISNULL(Status, 'active')          AS status,
             DateCreated                       AS createdAt,
             Province                          AS province,
-            Type                              AS orgType
+            Type                              AS orgType,
+            OrgProfilePic                     AS profilePicUrl
           FROM Organisation
           WHERE OrgId = @id
         `);

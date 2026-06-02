@@ -150,11 +150,13 @@ export const updateTicketStatus = async (req, res) => {
         const check = await pool
             .request()
             .input("id", sql.Int, id)
-            .query(`SELECT TicketID, Status FROM SupportTickets WHERE TicketID = @id`);
+            .query(`SELECT TicketID, Status, SubmitterID, SubmitterType FROM SupportTickets WHERE TicketID = @id`);
 
         if (check.recordset.length === 0) {
             return res.status(404).json({ success: false, message: "Ticket not found." });
         }
+
+        const ticket = check.recordset[0];
 
         await pool
             .request()
@@ -168,8 +170,27 @@ export const updateTicketStatus = async (req, res) => {
                 WHERE TicketID = @id
             `);
 
+        // If the ticket was submitted by a student, send them a student notification
+        if (ticket.SubmitterType === "student") {
+            try {
+                await pool
+                    .request()
+                    .input("stuId", sql.Int, ticket.SubmitterID)
+                    .input("title", sql.NVarChar, "Support Ticket Resolved")
+                    .input("message", sql.NVarChar, `Your support ticket #${id} has been resolved by the admin. Feedback: ${adminFeedback.trim()}`)
+                    .input("type", sql.NVarChar, "ticket")
+                    .query(`
+                        INSERT INTO StudentNotifications (StuID, AppID, Title, Message, NotificationType, IsRead, DateCreated)
+                        VALUES (@stuId, NULL, @title, @message, @type, 0, GETDATE())
+                    `);
+                console.log(`✅ Notification created for student StuID: ${ticket.SubmitterID} for ticket #${id}`);
+            } catch (notifyErr) {
+                console.error("❌ Failed to create student notification for resolved ticket:", notifyErr);
+            }
+        }
+
         console.log(`✅ Ticket #${id} resolved by admin`);
-        return res.status(200).json({ success: true, message: "Ticket resolved." });
+        return res.status(200).json({ success: true, message: "Ticket resolved successfully." });
 
     } catch (err) {
         console.error("❌ updateTicketStatus error:", err);

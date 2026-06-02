@@ -29,7 +29,8 @@
 
     body {
       font-family: "Inter", sans-serif;
-      background-color: var(--color-background);
+      background: linear-gradient(135deg, #fff5eb 0%, #fff0f6 100%) !important;
+      background-attachment: fixed !important;
       color: var(--color-text-primary);
       min-height: 100vh;
       display: flex;
@@ -316,6 +317,15 @@
 
   <script>
     let selectedProfilePic = null;
+
+    function getToken() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/login-page";
+        return null;
+      }
+      return token;
+    }
 
     function authHeaders(extra = {}) {
       const token = getToken();

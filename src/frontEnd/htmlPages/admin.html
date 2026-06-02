@@ -117,6 +117,25 @@
             <tbody id="org-table-body"></tbody>
           </table>
         </section>
+        
+        <!-- Back to Top Button for Table -->
+        <div style="text-align: center; margin-top: 1rem; display: flex; justify-content: center; align-items: center;">
+          <button id="backToTopTableBtn" onclick="document.querySelector('.table-section').scrollTo({ top: 0, behavior: 'smooth' })" class="btn btn-secondary" style="
+                display: none;
+                align-items: center;
+                gap: 6px;
+                padding: 8px 16px;
+                border-radius: 8px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+              ">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+            Back to Top
+          </button>
+        </div>
       </main>
     </div>
 

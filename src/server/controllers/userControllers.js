@@ -9,8 +9,26 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { validateRealEmail } from "../utils/validateEmail.js";
 import { consumeEmailVerification, isEmailVerified } from "./otpController.js";
+import cloudinary from "./cloudinaryConfig.js";
 
 dotenv.config();
+
+async function uploadToCloudinary(buffer, publicId, folder) {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      {
+        folder,
+        public_id: publicId,
+        overwrite: true,
+        resource_type: "auto"
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    ).end(buffer);
+  });
+}
 
 export const saveStudentDetails = async (req, res) => {
     console.log("The request is received!!")
@@ -253,16 +271,38 @@ export const saveOrganisationDetails = async (req, res) => {
         const safeDocumentName = String(orgDocumentName || "document")
           .replace(/[^a-z0-9._-]/gi, "_")
           .slice(0, 80);
-        const buffer = Buffer.from(base64Data, "base64");
-        const fileName = `org_doc_${Date.now()}_${safeDocumentName}.${ext}`;
-        const docDir = path.join(process.cwd(), "src", "frontEnd", "Assets", "uploads", "documents");
 
-        if (!fs.existsSync(docDir)) {
-          fs.mkdirSync(docDir, { recursive: true });
+        let baseName = safeDocumentName;
+        if (baseName.toLowerCase().endsWith("." + ext)) {
+          baseName = baseName.slice(0, -(ext.length + 1));
+        } else if (ext === "jpg" && baseName.toLowerCase().endsWith(".jpeg")) {
+          baseName = baseName.slice(0, -5);
         }
 
-        fs.writeFileSync(path.join(docDir, fileName), buffer);
-        documentUrlPath = `/Assets/uploads/documents/${fileName}`;
+        const buffer = Buffer.from(base64Data, "base64");
+
+        if (buffer.length > 5 * 1024 * 1024) {
+          return res.status(400).json({
+            message: "Document must be smaller than 5MB.",
+          });
+        }
+
+        let publicId;
+        if (ext === "pdf") {
+          publicId = `org_doc_${Date.now()}_${baseName}.pdf`;
+        } else {
+          publicId = `org_doc_${Date.now()}_${baseName}`;
+        }
+
+        try {
+          const uploadResult = await uploadToCloudinary(buffer, publicId, "smile/organisation_documents");
+          documentUrlPath = uploadResult.secure_url;
+        } catch (uploadErr) {
+          console.error("Cloudinary upload error:", uploadErr);
+          return res.status(500).json({
+            message: "Failed to upload NPO/registration document to Cloudinary.",
+          });
+        }
       }
     }
 

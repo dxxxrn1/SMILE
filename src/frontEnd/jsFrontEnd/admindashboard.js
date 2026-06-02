@@ -5,13 +5,31 @@
 let allOrganisations = []; // cache for filtering
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadOrganisations();
+    // Only load organisations if we are on the verification dashboard page
+    if (document.getElementById("org-table-body")) {
+        loadOrganisations();
+    }
 
     // Search filter
-    document.getElementById("search-input").addEventListener("input", filterTable);
+    const searchInput = document.getElementById("search-input");
+    if (searchInput) searchInput.addEventListener("input", filterTable);
 
     // Status filter
-    document.getElementById("status-filter").addEventListener("change", filterTable);
+    const statusFilter = document.getElementById("status-filter");
+    if (statusFilter) statusFilter.addEventListener("change", filterTable);
+
+    // Scroll Back to Top for Table Section
+    const tableSection = document.querySelector(".table-section");
+    const backToTopTableBtn = document.getElementById("backToTopTableBtn");
+    if (tableSection && backToTopTableBtn) {
+        tableSection.addEventListener("scroll", () => {
+            if (tableSection.scrollTop > 50) {
+                backToTopTableBtn.style.display = "inline-flex";
+            } else {
+                backToTopTableBtn.style.display = "none";
+            }
+        });
+    }
 });
 
 // ─────────────────────────────────────────────
@@ -429,7 +447,7 @@ function renderAdminTickets(tickets) {
             : `<span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">● Open</span>`;
 
         const actionBtn = t.Status === "Open"
-            ? `<button class="btn-approve" onclick="openResolveModal(${t.TicketID}, '${escapeHtml(t.Subject)}')">Review &amp; Resolve</button>`
+            ? `<button class="btn-approve" onclick="openResolveModal(${t.TicketID}, decodeURIComponent('${encodeURIComponent(t.Subject).replace(/'/g, "%27")}'))">Review &amp; Resolve</button>`
             : `<span style="font-size:12px;color:#94a3b8;">Resolved</span>`;
 
         return `

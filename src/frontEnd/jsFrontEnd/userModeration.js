@@ -196,9 +196,44 @@ async function handleDelete(userId) {
   }
 }
 
-function handleView(userId) {
-  window.location.href = `/admin/users/${userId}`;
+async function handleView(userId) {
+  try {
+    const data = await apiFetch(`/admin/users/${userId}`);
+    if (!data || !data.user) return;
+    const u = data.user;
+
+    document.getElementById("modal-user-name").textContent = u.name || "User Details";
+    document.getElementById("detail-name").textContent = u.name || "-";
+    document.getElementById("detail-role").textContent = u.role ? (u.role.charAt(0).toUpperCase() + u.role.slice(1)) : "-";
+    document.getElementById("detail-email").textContent = u.email || "-";
+    document.getElementById("detail-province").textContent = u.province || "Not Specified";
+    document.getElementById("detail-type").textContent = u.educationLevel || u.orgType || "Not Specified";
+    document.getElementById("detail-date").textContent = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "-";
+
+    const img = document.getElementById("detail-avatar");
+    const ph = document.getElementById("detail-avatar-placeholder");
+    if (u.profilePicUrl) {
+      img.src = u.profilePicUrl;
+      img.style.display = "block";
+      ph.style.display = "none";
+    } else {
+      img.src = "";
+      img.style.display = "none";
+      ph.style.display = "block";
+      ph.textContent = ((u.name || "").slice(0, 1)).toUpperCase() || "U";
+    }
+
+    document.getElementById("details-modal").classList.remove("hidden");
+  } catch (err) {
+    showToast(`Error: ${err.message}`, "danger");
+  }
 }
+
+function closeDetailsModal() {
+  document.getElementById("details-modal").classList.add("hidden");
+}
+
+window.closeDetailsModal = closeDetailsModal;
 
 // ─── Optimistic Status Update ─────────────────────────────────────────────────
 
@@ -295,4 +330,19 @@ document.getElementById("logout")?.addEventListener("click", async (e) => {
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
-document.addEventListener("DOMContentLoaded", fetchUsers);
+document.addEventListener("DOMContentLoaded", () => {
+  fetchUsers();
+
+  // Scroll Back to Top for Table Section
+  const tableSection = document.querySelector(".table-section");
+  const backToTopTableBtn = document.getElementById("backToTopTableBtn");
+  if (tableSection && backToTopTableBtn) {
+    tableSection.addEventListener("scroll", () => {
+      if (tableSection.scrollTop > 50) {
+        backToTopTableBtn.style.display = "inline-flex";
+      } else {
+        backToTopTableBtn.style.display = "none";
+      }
+    });
+  }
+});
