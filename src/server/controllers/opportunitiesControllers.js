@@ -93,6 +93,11 @@ export const createNewOpportunity = async (req, res) => {
             return res.status(400).json({ success: false, message: "Please fill in all required fields." });
         }
 
+        const todayStr = new Date().toLocaleDateString("en-CA");
+        if (deadline < todayStr) {
+            return res.status(400).json({ success: false, message: "Application closing date cannot be in the past." });
+        }
+
         const coords = await getCoordinates(address, province);
 
         // ✅ Upload opportunity image to Cloudinary if provided
@@ -175,7 +180,7 @@ export const getAllOpportunities = async (req, res) => {
                 org.OrgName, org.OrgBio, org.OrgProfilePic, org.OrgEmail
             FROM [dbo].[Opportunities] o
             JOIN [dbo].[Organisation] org ON o.OrgId = org.OrgId
-            WHERE o.Status = 'Active'
+            WHERE o.Status = 'Active' AND o.ApplicationDeadline >= CAST(GETDATE() AS DATE)
         `;
 
         if (type) {
@@ -617,6 +622,11 @@ export const updateOpportunity = async (req, res) => {
 
         if (!title || !type || !province || !description || !deadline) {
             return res.status(400).json({ success: false, message: "Please fill in all required fields." });
+        }
+
+        const todayStr = new Date().toLocaleDateString("en-CA");
+        if (deadline < todayStr) {
+            return res.status(400).json({ success: false, message: "Application closing date cannot be in the past." });
         }
 
         const coords = await getCoordinates(address, province);

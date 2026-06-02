@@ -72,17 +72,20 @@ export const sendNewsletterToSubscribersJob = async () => {
     const transport = createSmileMailTransport();
 
     for (const subscriber of subscribers.recordset) {
+        try {
+            await transport.sendMail({
+                from: `"SMILE Platform" <${process.env.LUCAS_EMAIL}>`,
+                to: subscriber.Email,
+                subject: "📰 SMILE Daily Newsletter",
+                html: `
+                    <h1>SMILE Daily Newsletter</h1>
+                    ${newsHtml}
+                `
+            });
 
-        await transport.sendMail({
-            from: `"SMILE Platform" <${process.env.LUCAS_EMAIL}>`,
-            to: subscriber.Email,
-            subject: "📰 SMILE Daily Newsletter",
-            html: `
-                <h1>SMILE Daily Newsletter</h1>
-                ${newsHtml}
-            `
-        });
-
-        console.log(`Newsletter sent to ${subscriber.Email}`);
+            console.log(`Newsletter sent to ${subscriber.Email}`);
+        } catch (mailErr) {
+            console.error(`Failed to send newsletter to ${subscriber.Email}:`, mailErr.message);
+        }
     }
 };

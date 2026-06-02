@@ -568,6 +568,13 @@ async function submitOpportunityEdit(e) {
   const token = getToken();
   if (!token) return;
 
+  const deadlineVal = document.getElementById("editDeadline").value;
+  const todayStr = new Date().toLocaleDateString("en-CA");
+  if (deadlineVal < todayStr) {
+    showToast("❌ Application closing date cannot be in the past.", "danger");
+    return;
+  }
+
   const oppId = document.getElementById("editOppID").value;
   const payload = {
     title: document.getElementById("editTitle").value.trim(),
@@ -731,6 +738,16 @@ function handlePublish(asDraft) {
   if (!valid) {
     showFormMsg("Please fill in all required fields.", "error");
     return;
+  }
+
+  if (!asDraft) {
+    const todayStr = new Date().toLocaleDateString("en-CA");
+    if (deadline.value < todayStr) {
+      showFormMsg("Application closing date cannot be in the past.", "error");
+      showToast("Application closing date cannot be in the past.", "error");
+      deadline.closest(".form__group").classList.add("form__group--error");
+      return;
+    }
   }
 
   const btn = document.getElementById(asDraft ? "saveDraftBtn" : "publishBtn");
@@ -1459,3 +1476,36 @@ async function loadOrgEvents() {
     container.innerHTML = `<p style="padding: 12px 0; color: #dc2626; text-align: center; font-size: 13px;">Failed to load schedule.</p>`;
   }
 }
+
+// Global Inactivity Auto-Logout Tracker (5 Minutes)
+(function() {
+  let timeoutId;
+  const INACTIVITY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+  function resetTimer() {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(logoutDueToInactivity, INACTIVITY_TIME);
+  }
+
+  function logoutDueToInactivity() {
+    console.log("Logout due to 5 minutes of inactivity.");
+    alert("You have been logged out due to 5 minutes of inactivity.");
+    if (typeof logout === "function") {
+      logout();
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('accountType');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('initials');
+      window.location.href = '/login-page';
+    }
+  }
+
+  // Events that indicate user activity
+  const activityEvents = ['mousemove', 'mousedown', 'keydown', 'keypress', 'click', 'scroll', 'touchstart'];
+  activityEvents.forEach(name => {
+    document.addEventListener(name, resetTimer, { passive: true });
+  });
+
+  resetTimer(); // Start the timer initially
+})();

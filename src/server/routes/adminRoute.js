@@ -26,6 +26,20 @@ cron.schedule("0 8 * * *", async () => {
         console.error("Newsletter job failed:", err);
 
     }
+}, {
+    scheduled: true,
+    timezone: "Africa/Johannesburg"
+});
+
+router.post("/api/admin/newsletter/send", verifyToken, requireAdmin, async (req, res) => {
+    try {
+        console.log("Admin manually triggered sending daily newsletter...");
+        await sendNewsletterToSubscribersJob();
+        return res.status(200).json({ success: true, message: "Newsletter sent successfully to all subscribers." });
+    } catch (err) {
+        console.error("Admin triggered newsletter job failed:", err);
+        return res.status(500).json({ success: false, message: "Failed to send newsletter: " + err.message });
+    }
 });
 
 router.get("/admin/dashboard",verifyToken,requireAdmin,adminDashBoard)

@@ -974,7 +974,7 @@ async function loadApplications() {
         const conn3 = isFinal ? "app-timeline__connector--active" : "";
 
         return `
-          <article class="application-card" onclick="window.location.href='/careers/explore'" style="cursor: pointer;">
+          <article class="application-card">
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
               <div>
                 <h3 class="application-card__title" style="margin: 0; font-size: 0.9375rem; display: flex; align-items: center; gap: 8px;">
@@ -1815,3 +1815,36 @@ function showAppApprovalPopupByIndex(index) {
     showApprovalPopup(window.__loadedApplications[index]);
   }
 }
+
+// Global Inactivity Auto-Logout Tracker (5 Minutes)
+(function() {
+  let timeoutId;
+  const INACTIVITY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+  function resetTimer() {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(logoutDueToInactivity, INACTIVITY_TIME);
+  }
+
+  function logoutDueToInactivity() {
+    console.log("Logout due to 5 minutes of inactivity.");
+    alert("You have been logged out due to 5 minutes of inactivity.");
+    if (typeof logout === "function") {
+      logout();
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('accountType');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('initials');
+      window.location.href = '/login-page';
+    }
+  }
+
+  // Events that indicate user activity
+  const activityEvents = ['mousemove', 'mousedown', 'keydown', 'keypress', 'click', 'scroll', 'touchstart'];
+  activityEvents.forEach(name => {
+    document.addEventListener(name, resetTimer, { passive: true });
+  });
+
+  resetTimer(); // Start the timer initially
+})();
