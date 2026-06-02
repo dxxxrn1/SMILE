@@ -122,7 +122,7 @@ function filterAuditLogs() {
             (log.Details && log.Details.toLowerCase().includes(searchVal)) ||
             (log.IpAddress && log.IpAddress.toLowerCase().includes(searchVal));
 
-        const matchesRole = roleVal === "all" || (log.UserType && log.UserType.toLowerCase() === roleVal);
+        const matchesRole = roleVal === "all" || (log.UserType && (log.UserType.toLowerCase() === roleVal || (roleVal === "organization" && log.UserType.toLowerCase() === "org")));
         const matchesAction = actionVal === "all" || log.Action === actionVal;
 
         return matchesSearch && matchesRole && matchesAction;
@@ -146,7 +146,7 @@ function exportAuditLogsToCSV() {
             (log.Details && log.Details.toLowerCase().includes(searchVal)) ||
             (log.IpAddress && log.IpAddress.toLowerCase().includes(searchVal));
 
-        const matchesRole = roleVal === "all" || (log.UserType && log.UserType.toLowerCase() === roleVal);
+        const matchesRole = roleVal === "all" || (log.UserType && (log.UserType.toLowerCase() === roleVal || (roleVal === "organization" && log.UserType.toLowerCase() === "org")));
         const matchesAction = actionVal === "all" || log.Action === actionVal;
 
         return matchesSearch && matchesRole && matchesAction;
