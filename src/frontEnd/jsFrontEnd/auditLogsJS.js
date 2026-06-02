@@ -193,11 +193,11 @@ function getActionBadgeStyle(action) {
     let style = "";
     let label = action.replace(/_/g, " ");
 
-    if (action === "APPROVE_ORGANISATION" || action === "UNSUSPEND_USER") {
+    if (action === "APPROVE_ORGANISATION" || action === "UNSUSPEND_USER" || action === "USER_LOGIN" || action === "USER_REGISTER" || action === "ORG_APPLY") {
         style = "background:#e6f4ea; color:#137333; border:1px solid #ceead6; padding:4px 10px; border-radius:12px; font-size:11.5px; font-weight:600; white-space:nowrap;";
     } else if (action === "REJECT_ORGANISATION" || action === "SUSPEND_USER") {
         style = "background:#fef7e0; color:#b06000; border:1px solid #fde293; padding:4px 10px; border-radius:12px; font-size:11.5px; font-weight:600; white-space:nowrap;";
-    } else if (action.startsWith("DELETE")) {
+    } else if (action.startsWith("DELETE") || action === "FAILED_LOGIN") {
         style = "background:#fce8e6; color:#c5221f; border:1px solid #fad2cf; padding:4px 10px; border-radius:12px; font-size:11.5px; font-weight:600; white-space:nowrap;";
     } else if (action === "RESOLVE_TICKET") {
         style = "background:#e8f0fe; color:#1a73e8; border:1px solid #d2e3fc; padding:4px 10px; border-radius:12px; font-size:11.5px; font-weight:600; white-space:nowrap;";
