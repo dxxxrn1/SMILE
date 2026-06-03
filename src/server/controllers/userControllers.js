@@ -435,6 +435,12 @@ export const userLogin = async (req, res) => {
             console.log(stuName);
 
             console.log("✅ Student login successfully!");
+            
+            // Set IsLoggedIn = 1
+            await pool.request()
+                .input("id", sql.Int, user.StuID)
+                .query(`UPDATE Student SET IsLoggedIn = 1 WHERE StuID = @id`);
+
             req.user = { id: user.StuID, email: user.StuEmail, accountType: "student" };
             await logAudit(req, "USER_LOGIN", `Student logged in successfully (Email: ${email})`);
             return res.status(200).json({ token, accountType: "student" , name: user.StuName,userinitials:initials});
@@ -519,6 +525,12 @@ export const userLogin = async (req, res) => {
     });
 
     console.log("✅ Organisation login successfully!");
+    
+    // Set IsLoggedIn = 1
+    await pool.request()
+        .input("id", sql.Int, user.OrgId)
+        .query(`UPDATE Organisation SET IsLoggedIn = 1 WHERE OrgId = @id`);
+
     req.user = { id: user.OrgId, email: user.OrgEmail, accountType: "organization" };
     await logAudit(req, "USER_LOGIN", `Organisation logged in successfully (Email: ${email})`);
     return res.status(200).json({ token, accountType: "organization", name: user.OrgName });

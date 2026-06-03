@@ -243,7 +243,7 @@ export const suspendUser = async (req, res) => {
       .input("id", sql.Int, parsed.numericId)
       .query(`
         UPDATE ${table}
-        SET    Status = 'suspended'
+        SET    Status = 'suspended', IsLoggedIn = 0
         WHERE  ${pkCol} = @id;
 
         SELECT @@ROWCOUNT AS affected;
@@ -395,5 +395,21 @@ export const deleteUser = async (req, res) => {
     await transaction.rollback();
     console.error("deleteUser:", error);
     return res.status(500).json({ success: false, message: "Failed to delete user." });
+  }
+};
+
+export const getOnlineUsersCount = async (req, res) => {
+  try {
+    const pool = await connectToDB();
+    const result = await pool.request().query(`
+      SELECT 
+        (SELECT COUNT(*) FROM Student WHERE IsLoggedIn = 1) AS studentCount,
+        (SELECT COUNT(*) FROM Organisation WHERE IsLoggedIn = 1) AS orgCount
+    `);
+    const { studentCount = 0, orgCount = 0 } = result.recordset[0] || {};
+    return res.status(200).json({ success: true, studentCount, orgCount, totalCount: studentCount + orgCount });
+  } catch (error) {
+    console.error("getOnlineUsersCount error:", error);
+    return res.status(500).json({ success: false, message: "Failed to retrieve online users count." });
   }
 };

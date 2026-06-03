@@ -322,6 +322,7 @@ const getToken = window.getToken || function() {
 };
 
 const logout = window.logout || function() {
+  const token = localStorage.getItem('token');
   localStorage.removeItem('token');
   localStorage.removeItem('accountType');
   localStorage.removeItem('userName');
@@ -335,7 +336,12 @@ const logout = window.logout || function() {
   localStorage.removeItem("orgProfilePic");
   window.__currentUser = null;
   
-  fetch('/logout', { method: 'POST' })
+  fetch('/logout', { 
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
     .catch(() => {})
     .finally(() => {
       window.location.href = '/login-page';

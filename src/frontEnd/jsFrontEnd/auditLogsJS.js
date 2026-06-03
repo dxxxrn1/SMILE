@@ -70,8 +70,22 @@ async function loadAuditLogs() {
 
         // Update stats
         document.getElementById("total-logs-count").textContent = allAuditLogs.length;
-        document.getElementById("newsletter-logs-count").textContent = 
-            allAuditLogs.filter(log => log.Action === "BROADCAST_NEWSLETTER").length;
+
+        // Fetch online users count
+        try {
+            const onlineRes = await fetch("/admin/users/online", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            if (onlineRes.ok) {
+                const onlineData = await onlineRes.json();
+                const countEl = document.getElementById("online-users-count");
+                if (countEl) countEl.textContent = onlineData.totalCount ?? 0;
+            }
+        } catch (onlineErr) {
+            console.error("Failed to fetch online users count:", onlineErr);
+        }
 
         renderAuditTable(allAuditLogs);
 
@@ -245,6 +259,7 @@ function getToken() {
 }
 
 function logout() {
+    const token = localStorage.getItem('token');
     localStorage.removeItem('token');
     localStorage.removeItem('accountType');
     localStorage.removeItem('userName');
@@ -257,7 +272,12 @@ function logout() {
     localStorage.removeItem("orgInitials");
     localStorage.removeItem("orgProfilePic");
     
-    fetch('/logout', { method: 'POST' })
+    fetch('/logout', { 
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .catch(() => {})
         .finally(() => {
             window.location.href = '/login-page';

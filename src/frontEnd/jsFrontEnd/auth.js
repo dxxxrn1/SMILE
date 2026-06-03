@@ -740,11 +740,17 @@ function showFormMessage(form, message, type = 'success') {
 }
 
 function handleLogout() {
+    const token = localStorage.getItem('token');
     localStorage.removeItem('token');
     localStorage.removeItem('accountType');
 
-    // âœ… Call logout endpoint to clear cookie on server
-    fetch('/logout', { method: 'POST' })
+    // ✅ Call logout endpoint to clear cookie on server
+    fetch('/logout', { 
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
     .then(() => {
         window.location.href = '/login-page';
     });

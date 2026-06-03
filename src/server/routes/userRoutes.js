@@ -18,6 +18,7 @@ import { logAudit } from "../controllers/auditController.js";
 import { fetchJobs } from "../apis/careers.js";
 import { fetchBooks } from "../apis/booksAPI.js";
 import { forgotPassword, resetPassword } from "../controllers/passwordController.js";
+import { connectToDB, sql } from "../dbConnection/dbconnection.js";
 import {
   getCareerAdvice,
   generateDocFromChat,
@@ -87,6 +88,23 @@ route.all("/logout", async (req, res) => {
 
                 if (decoded) {
                     req.user = decoded;
+
+                    // Clear IsLoggedIn session status in DB
+                    try {
+                        const pool = await connectToDB();
+                        if (decoded.accountType === "student") {
+                            await pool.request()
+                                .input("id", sql.Int, decoded.id)
+                                .query("UPDATE Student SET IsLoggedIn = 0 WHERE StuID = @id");
+                        } else if (decoded.accountType === "organization") {
+                            await pool.request()
+                                .input("id", sql.Int, decoded.id)
+                                .query("UPDATE Organisation SET IsLoggedIn = 0 WHERE OrgId = @id");
+                        }
+                    } catch (dbErr) {
+                        console.error("Failed to update IsLoggedIn on logout:", dbErr);
+                    }
+
                     await logAudit(req, "USER_LOGOUT", `User logged out successfully (${decoded.email || 'unknown'})`);
                 }
             } catch (jwtErr) {

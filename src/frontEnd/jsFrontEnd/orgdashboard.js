@@ -1398,6 +1398,7 @@ function getToken() {
 }
 
 function logout() {
+  const token = localStorage.getItem('token');
   localStorage.removeItem('token');
   localStorage.removeItem('accountType');
   localStorage.removeItem('userName');
@@ -1411,7 +1412,12 @@ function logout() {
   localStorage.removeItem("orgProfilePic");
   window.__currentUser = null;
 
-  fetch('/logout', { method: 'POST' })
+  fetch('/logout', { 
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
     .catch(() => { })
     .finally(() => {
       window.location.href = '/login-page';

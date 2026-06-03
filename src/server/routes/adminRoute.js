@@ -4,7 +4,7 @@ import {getAllOrganisations, getOrganisationById, approveOrganisation, rejectOrg
 import { verifyToken , requireAdmin } from "../controllers/sessionControllers.js";
 import {adminDashBoard, userModeration, userTicket, auditLogsPage} from "../controllers/pageControllers.js";
 import { getAuditLogs, logAudit } from "../controllers/auditController.js";
-import {getAllUsers, getUserStats, getUserById, suspendUser, unsuspendUser, deleteUser} from "../controllers/userModerationController.js";
+import {getAllUsers, getUserStats, getUserById, suspendUser, unsuspendUser, deleteUser, getOnlineUsersCount} from "../controllers/userModerationController.js";
 import { getAllTickets, updateTicketStatus } from "../controllers/ticketController.js";
 import { sendNewsletterToSubscribersJob } from "../controllers/newsletterJob.js";
 
@@ -57,6 +57,7 @@ router.get("/admin/tickets",verifyToken, requireAdmin, userTicket);
 router.get("/admin/audit-logs",verifyToken, requireAdmin, auditLogsPage);
 router.get("/admin/api/audit-logs",verifyToken, requireAdmin, getAuditLogs);
 router.get("/admin/users/stats",verifyToken, requireAdmin, getUserStats);
+router.get("/admin/users/online",verifyToken, requireAdmin, getOnlineUsersCount);
 router.get("/admin/users",verifyToken, requireAdmin, getAllUsers);
 router.get("/admin/users/:id",verifyToken, requireAdmin, getUserById);
 router.patch("/admin/users/:id/suspend",verifyToken, requireAdmin, suspendUser);

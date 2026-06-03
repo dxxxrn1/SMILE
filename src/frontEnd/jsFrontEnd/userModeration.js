@@ -366,7 +366,13 @@ document.getElementById("logout")?.addEventListener("click", async (e) => {
   e.preventDefault();
   if (!confirm("Log out of the admin panel?")) return;
   try {
-    await apiFetch("/logout", { method: "POST" });
+    const token = localStorage.getItem('token');
+    await apiFetch("/logout", { 
+      method: "POST",
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
   } finally {
     window.location.href = "/login";
   }
