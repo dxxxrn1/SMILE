@@ -187,19 +187,36 @@ export const approveOrganisation = async (req, res) => {
     await transaction.begin();
 
     try {
-      await transaction
+      const approvalResult = await transaction
         .request()
         .input("orgName", sql.VarChar, pendingOrg.OrgName)
         .input("orgEmail", sql.VarChar, pendingOrg.OrgEmail)
         .input("type", sql.VarChar, pendingOrg.Type)
         .input("province", sql.VarChar, pendingOrg.Province)
         .input("password", sql.VarChar, pendingOrg.Password)
-        .input("orgDocument", sql.VarChar, pendingOrg.OrgDocument)
         .input("orgBio", sql.NVarChar, pendingOrg.OrgBio)
         .input("orgProfilePic", sql.VarChar, pendingOrg.OrgProfilePic)
+        .input("orgDocFile", sql.VarBinary(sql.MAX), pendingOrg.OrgDocFile)
+        .input("orgDocFileName", sql.NVarChar(255), pendingOrg.OrgDocFileName)
+        .input("orgDocMimeType", sql.NVarChar(100), pendingOrg.OrgDocMimeType)
         .query(`
-          INSERT INTO Organisation (OrgName, OrgEmail, Type, Province, Password, Status, OrgDocument, OrgBio, OrgProfilePic)
-          VALUES (@orgName, @orgEmail, @type, @province, @password, 'Active', @orgDocument, @orgBio, @orgProfilePic)
+          INSERT INTO Organisation (OrgName, OrgEmail, Type, Province, Password, Status, OrgDocument, OrgBio, OrgProfilePic, OrgDocFile, OrgDocFileName, OrgDocMimeType)
+          VALUES (@orgName, @orgEmail, @type, @province, @password, 'Active', '', @orgBio, @orgProfilePic, @orgDocFile, @orgDocFileName, @orgDocMimeType);
+          SELECT SCOPE_IDENTITY() AS OrgId;
+        `);
+
+      const orgId = approvalResult.recordset[0].OrgId;
+      const ext = pendingOrg.OrgDocument ? pendingOrg.OrgDocument.split('.').pop() : 'pdf';
+      const documentUrlPath = `/api/admin/documents/active/${orgId}.${ext}`;
+
+      await transaction
+        .request()
+        .input("orgId", sql.Int, orgId)
+        .input("orgDocument", sql.VarChar(255), documentUrlPath)
+        .query(`
+          UPDATE Organisation
+          SET OrgDocument = @orgDocument
+          WHERE OrgId = @orgId
         `);
 
       await transaction
@@ -414,5 +431,51 @@ export const deleteStudent = async (req, res) => {
   } catch (err) {
     console.error("deleteStudent error:", err);
     return res.sendStatus(500);
+  }
+};
+
+export const getDocument = async (req, res) => {
+  try {
+    const { type, id } = req.params;
+    const parsedId = Number.parseInt(id, 10);
+
+    if (!Number.isInteger(parsedId) || parsedId <= 0) {
+      return res.status(400).json({ message: "Invalid ID format." });
+    }
+
+    if (type !== "pending" && type !== "active") {
+      return res.status(400).json({ message: "Invalid document source type." });
+    }
+
+    const pool = await connectToDB();
+    let query = "";
+    if (type === "pending") {
+      query = "SELECT OrgDocFile, OrgDocFileName, OrgDocMimeType FROM PendingOrganisation WHERE PendingId = @id";
+    } else {
+      query = "SELECT OrgDocFile, OrgDocFileName, OrgDocMimeType FROM Organisation WHERE OrgId = @id";
+    }
+
+    const result = await pool
+      .request()
+      .input("id", sql.Int, parsedId)
+      .query(query);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ message: "Document not found." });
+    }
+
+    const record = result.recordset[0];
+    if (!record.OrgDocFile) {
+      return res.status(404).json({ message: "No document file content found." });
+    }
+
+    // Set the headers to display the document correctly (inline inside the browser)
+    res.setHeader("Content-Type", record.OrgDocMimeType || "application/pdf");
+    res.setHeader("Content-Disposition", `inline; filename="${record.OrgDocFileName || 'document.pdf'}"`);
+    return res.send(record.OrgDocFile);
+
+  } catch (err) {
+    console.error("getDocument error:", err);
+    return res.status(500).json({ message: "Internal server error retrieving document." });
   }
 };

@@ -1,6 +1,6 @@
 import express from "express";
 import cron from "node-cron";
-import {getAllOrganisations, getOrganisationById, approveOrganisation, rejectOrganisation, deleteOrganisation, getAllStudents, deleteStudent} from "../controllers/adminController.js";
+import {getAllOrganisations, getOrganisationById, approveOrganisation, rejectOrganisation, deleteOrganisation, getAllStudents, deleteStudent, getDocument} from "../controllers/adminController.js";
 import { verifyToken , requireAdmin } from "../controllers/sessionControllers.js";
 import {adminDashBoard, userModeration, userTicket, auditLogsPage} from "../controllers/pageControllers.js";
 import { getAuditLogs, logAudit } from "../controllers/auditController.js";
@@ -50,6 +50,7 @@ router.get("/admin/organisations/:orgId",verifyToken, requireAdmin, getOrganisat
 router.patch("/admin/organisations/:orgId/approve",verifyToken, requireAdmin, approveOrganisation);
 router.patch("/admin/organisations/:orgId/reject", verifyToken, requireAdmin, rejectOrganisation);
 router.delete("/admin/organisations/:orgId",verifyToken, requireAdmin, deleteOrganisation);
+router.get("/api/admin/documents/:type/:id", verifyToken, requireAdmin, getDocument);
 router.get("/admin/students",verifyToken, requireAdmin, getAllStudents);
 router.delete("/admin/students/:stuId", verifyToken, requireAdmin, deleteStudent);
 router.get("/admin/user-moderation",verifyToken, requireAdmin, userModeration);
