@@ -154,7 +154,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
   // Check if the user has already taken the quiz when the page loads
   try {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch("/api/get-my-interests", {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -266,7 +266,7 @@ window.saveQuizResults = async function () {
   });
 
   try {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch("/api/save-interests", {
       method: "POST",
       headers: {
@@ -295,14 +295,53 @@ window.saveQuizResults = async function () {
   }
 
 
-    const logoutTag = document.getElementById("logout");
-    logoutTag.addEventListener("click" , ()=>{
-        localStorage.removeItem("token");
-        localStorage.removeItem("accountType");
-        localStorage.removeItem("userName");
-        localStorage.removeItem("initials");
-    })
-
-
-
 };
+
+// Safe globally exposed helpers
+const isTokenExpired = window.isTokenExpired || function(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    const payload = JSON.parse(jsonPayload);
+    return payload.exp * 1000 < Date.now();
+  } catch (e) {
+    return true;
+  }
+};
+
+const getToken = window.getToken || function() {
+  const token = localStorage.getItem('token');
+  if (!token || isTokenExpired(token)) {
+    logout();
+    return null;
+  }
+  return token;
+};
+
+const logout = window.logout || function() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('accountType');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('initials');
+  localStorage.removeItem('profilePicUrl');
+  localStorage.removeItem('profileComplete');
+  localStorage.removeItem("latestScannedMarks");
+  localStorage.removeItem("latestScannedSchool");
+  localStorage.removeItem("orgName");
+  localStorage.removeItem("orgInitials");
+  localStorage.removeItem("orgProfilePic");
+  window.__currentUser = null;
+  
+  fetch('/logout', { method: 'POST' })
+    .catch(() => {})
+    .finally(() => {
+      window.location.href = '/login-page';
+    });
+};
+
+if (!window.isTokenExpired) window.isTokenExpired = isTokenExpired;
+if (!window.getToken) window.getToken = getToken;
+if (!window.logout) window.logout = logout;

@@ -220,6 +220,32 @@
           </div>
         </div>
 
+        <!-- Back to Top Button for Page -->
+        <div style="text-align: center; margin-top: 1.5rem; display: flex; justify-content: center; align-items: center; padding-bottom: 2rem;">
+          <button id="backToTopPageBtn" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" class="btn btn--outline" style="
+                display: none;
+                align-items: center;
+                gap: 6px;
+                padding: 10px 20px;
+                border-radius: 8px;
+                border: 1px solid #cbd5e1;
+                background: #fff;
+                color: #475569;
+                font-weight: 600;
+                font-family: inherit;
+                cursor: pointer;
+                font-size: 0.875rem;
+                transition: all 0.2s;
+              "
+              onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#94a3b8';"
+              onmouseout="this.style.background='#fff'; this.style.borderColor='#cbd5e1';">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+            Back to Top
+          </button>
+        </div>
+
       </div>
     </main>
   </div>

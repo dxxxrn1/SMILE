@@ -3,8 +3,9 @@ import { sendOTP, verifyOTP } from '../controllers/otpController.js';
 import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,
         studentLandingPage,careersPage,orgDashboard,
         createOpportunity,adminDashBoard, applicantsPage, studentProfilePage, orgProfilePage, analyticsPage,
-        orgTicketsPage, myOpportunitiesPage ,studentProfile
+        orgTicketsPage, myOpportunitiesPage ,studentProfile, libraryPage
 } from "../controllers/pageControllers.js";
+
 
 import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
@@ -12,6 +13,8 @@ import { verifyToken , requireAdmin} from "../controllers/sessionControllers.js"
 import { getOrgProfile, updateOrgProfile, getOrgPublicProfile } from "../controllers/orgController.js";
 import { subscribeToNewsletter } from "../controllers/newsletterController.js";
 import { fectNews } from "../apis/newsAPI.js";
+import jwt from "jsonwebtoken";
+import { logAudit } from "../controllers/auditController.js";
 import { fetchJobs } from "../apis/careers.js";
 import { fetchBooks } from "../apis/booksAPI.js";
 import { forgotPassword, resetPassword } from "../controllers/passwordController.js";
@@ -27,6 +30,8 @@ import {
 import {createNewOpportunity,getAllOpportunities, getOrganizationApplicants, getOrgDashboardStats, updateApplicationStatus, getOrgOpportunities, updateOpportunity, deleteOpportunity} from '../controllers/opportunitiesControllers.js';
 import { getSavedOpportunities, getStudentApplications, deleteSavedOpportunity, saveOpportunity, applyForOpportunity, getStudentProfile, updateStudentProfile, updateStudentBio, getStudentNotifications, markStudentNotificationsRead } from "../controllers/studentController.js";
 import { createTicket, getMyTickets } from "../controllers/ticketController.js";
+import { getOrganizationAnalytics } from "../controllers/analyticsController.js";
+
 
 
 const route = express.Router();
@@ -53,6 +58,7 @@ route.get("/near/me" , verifyToken,nearMePage);
 route.get("/news/daily" ,verifyToken ,newsPage);
 route.get("/opportunities/browse", verifyToken,opportunitiesPage)
 route.get("/careers/explore" ,verifyToken,careersPage);
+route.get("/student/library" ,verifyToken,libraryPage);
 route.post("/login" , userLogin);
 route.get('/api/news' , verifyToken ,fectNews);
 route.get("/api/books", verifyToken ,fetchBooks);
@@ -62,10 +68,43 @@ route.post("/api/chat", verifyToken, getCareerAdvice);
 route.post("/api/generate-doc-from-chat", verifyToken, generateDocFromChat);
 route.get("/api/saved-docs", verifyToken, getSavedDocs);
 route.get("/api/saved-docs/:id", verifyToken, getSingleDoc);
-route.get("/logout", (req, res) => {
+route.all("/logout", async (req, res) => {
+    try {
+        const authHeader = req.headers['authorization'];
+        const headerToken = authHeader && authHeader.split(' ')[1];
+        const cookieToken = req.cookies?.token;
+        const token = headerToken || cookieToken;
+
+        if (token) {
+            try {
+                let decoded;
+                try {
+                    decoded = jwt.verify(token, process.env.JWT_SECRET);
+                } catch (jwtErr) {
+                    console.log("Logout token verification failed, using fallback decode:", jwtErr.message);
+                    decoded = jwt.decode(token);
+                }
+
+                if (decoded) {
+                    req.user = decoded;
+                    await logAudit(req, "USER_LOGOUT", `User logged out successfully (${decoded.email || 'unknown'})`);
+                }
+            } catch (jwtErr) {
+                console.log("Logout token validation failed:", jwtErr.message);
+            }
+        }
+    } catch (err) {
+        console.error("Logout error:", err);
+    }
+
     res.clearCookie('token');
-    return res.redirect("/login-page");
+    if (req.method === 'POST') {
+        return res.status(200).json({ success: true });
+    } else {
+        return res.redirect("/login-page");
+    }
 });
+//resetPasswordPage
 route.get("/api/jobs", fetchJobs);
 route.get("/org/dashboard", verifyToken ,orgDashboard);
 route.get("/org/profile", verifyToken, orgProfilePage);
@@ -77,6 +116,7 @@ route.put("/api/org/profile", verifyToken, updateOrgProfile);
 route.get("/api/org/public-profile/:orgId", verifyToken, getOrgPublicProfile);
 route.get("/api/org/applicants", verifyToken, getOrganizationApplicants);
 route.get("/api/org/dashboard-stats", verifyToken, getOrgDashboardStats);
+route.get("/api/org/analytics-overview", verifyToken, getOrganizationAnalytics);
 route.patch("/api/org/applicants/:appId/status", verifyToken, updateApplicationStatus);
 route.get("/org/analytics", verifyToken, analyticsPage);
 route.get("/forgot-password" , forgotPasswordPage)
@@ -105,6 +145,9 @@ route.post("/api/newsletter/subscribe", subscribeToNewsletter);
 route.post("/api/tickets", verifyToken, createTicket);
 route.get("/api/tickets/my", verifyToken, getMyTickets);
 route.get("/org/tickets", verifyToken, orgTicketsPage);
+
+
+
 
 
 export default route;

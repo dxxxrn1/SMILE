@@ -3,83 +3,99 @@ import https from "https";
 
 dotenv.config();
 
-console.log(process.env.NEWS_API_KEY);
-console.log(process.env.NEWS_API_KEY);
-
 const options = {
-  headers: {
-    'User-Agent': 'SMILE-News-App'
-  }
+    headers: {
+        'User-Agent': 'SMILE-News-App'
+    }
 };
 
+const CATEGORY_MAP = {
+    all:          null,
+    education:    'education',
+    employment:   'business',
+    scholarships: 'education',
+    events:       'entertainment',
+    government:   'politics',
+};
 
-export const fectNews =  (req, res) => {
-    // Category → keyword mapping
-    const CATEGORY_KEYWORDS = {
+// GET /api/news
+export const fectNews = (req, res) => {
 
-        all:          'education youth South Africa',
+    const category    = req.query.category || 'all';
+    const page        = req.query.page || null;
+    const pageSize    = parseInt(req.query.pageSize) || 10;
+    const apiCategory = CATEGORY_MAP[category] ?? null;
 
-        education:    'education schools South Africa',
+    if (!process.env.NEW_NEWS_API) {
+        console.error('[SMILE News] NEWS_API_KEY is missing from environment variables.');
+        return res.status(500).json({ success: false, message: 'News service is not configured.' });
+    }
 
-        employment:   'youth employment jobs South Africa',
-
-        scholarships: 'scholarships bursaries South Africa students',
-
-        events:       'youth events expo South Africa',
-
-        government:   'education government policy South Africa NSFAS',
-    };
-    
-    const category = req.query.category || 'all';
-    const q        = req.query.q || CATEGORY_KEYWORDS[category] || CATEGORY_KEYWORDS.all;
-    const sortBy   = ['publishedAt', 'relevancy', 'popularity'].includes(req.query.sortBy)
-                        ? req.query.sortBy
-                        : 'publishedAt';
-    const page     = parseInt(req.query.page)     || 1;
-    const pageSize = parseInt(req.query.pageSize) || 9;
-    
-    const apiUrl = `https://newsapi.org/v2/everything?`
-        + `q=${encodeURIComponent(q)}`
-        + `&language=en`
-        + `&sortBy=${sortBy}`
-        + `&page=${page}`
-        + `&pageSize=${pageSize}`
-        + `&apiKey=${process.env.NEWS_API_KEY}`;
-    
-   https.get(apiUrl, options, (apiRes) => {
-    let data = '';
-
-    apiRes.on('data', chunk => { data += chunk; });
-
-    apiRes.on('end', () => {
-        try {
-            const parsed = JSON.parse(data);
-
-            if (parsed.status !== 'ok') {
-                return res.status(502).json({
-                    success: false,
-                    message: parsed.message || 'NewsAPI returned an error',
-                });
-            }
-
-            const articles = (parsed.articles || []).filter(
-                a => a.title && a.title !== '[Removed]' && a.url
-            );
-
-            res.json({
-                success: true,
-                totalResults: parsed.totalResults,
-                page,
-                pageSize,
-                articles,
-            });
-
-        } catch (err) {
-            res.status(500).json({ success: false, message: 'Failed to parse API response' });
-        }
+    const params = new URLSearchParams({
+        apikey:   process.env.NEW_NEWS_API,
+        country:  'za',
+        language: 'en',
+        size:     Math.min(pageSize, 10),
     });
 
-}).on('error', (err) => {
-    res.status(500).json({ success: false, message: err.message });
-});
-}
+    if (apiCategory) {
+        params.set('category', apiCategory);
+    }
+
+    if (page && page !== '1') {
+        params.set('page', page);
+    }
+
+    const apiUrl = `https://newsdata.io/api/1/latest?${params.toString()}`;
+
+    console.log('[SMILE News] Fetching SA news, category:', category);
+
+    https.get(apiUrl, options, (apiRes) => {
+        let data = '';
+
+        apiRes.on('data', chunk => { data += chunk; });
+
+        apiRes.on('end', () => {
+            try {
+                const parsed = JSON.parse(data);
+
+                if (parsed.status !== 'success') {
+                    console.error('[SMILE News] API error:', parsed.results?.message);
+                    return res.status(502).json({
+                        success: false,
+                        message: parsed.results?.message || 'newsdata.io returned an error',
+                    });
+                }
+
+                const articles = (parsed.results || [])
+                    .filter(a => a.title && a.link)
+                    .map(a => ({
+                        title:       a.title,
+                        description: a.description || a.content || '',
+                        url:         a.link,
+                        urlToImage:  a.image_url || null,
+                        publishedAt: a.pubDate,
+                        source: {
+                            name: a.source_name || a.source_id || 'Unknown',
+                        },
+                        category: Array.isArray(a.category) ? a.category[0] : (a.category || ''),
+                    }));
+
+                res.json({
+                    success:      true,
+                    totalResults: parsed.totalResults || articles.length,
+                    nextPage:     parsed.nextPage || null,
+                    articles,
+                });
+
+            } catch (err) {
+                console.error('[SMILE News] Parse error:', err.message);
+                res.status(500).json({ success: false, message: 'Failed to parse API response' });
+            }
+        });
+
+    }).on('error', (err) => {
+        console.error('[SMILE News] Request error:', err.message);
+        res.status(500).json({ success: false, message: err.message });
+    });
+};

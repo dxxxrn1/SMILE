@@ -36,6 +36,10 @@ export const opportunitiesPage = (req,res)=>{
 export const careersPage = (req,res)=>{
     res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd","htmlPages" , "careers.html"));
 }
+
+export const libraryPage = (req,res)=>{
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd","htmlPages" , "library.html"));
+}
                                                                                     //orgdashboard
 export const orgDashboard = (req,res)=>{
     res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "orgdashboard.html"));
@@ -78,7 +82,11 @@ export const userModeration = (req,res)=>{
 }
 
 export const userTicket = (req,res)=>{
-    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "userTicket.html"));
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "tickets.html"));
+}
+
+export const auditLogsPage = (req,res)=>{
+    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "auditLogs.html"));
 }
 
 export const orgTicketsPage = (req,res)=>{

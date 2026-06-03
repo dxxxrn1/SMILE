@@ -1,29 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Stay updated with the latest news on education, opportunities, and youth development in South Africa.">
+  <meta name="description"
+    content="Stay updated with the latest news on education, opportunities, and youth development in South Africa.">
   <title>News - SMILE</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body class="dashboard-page">
   <!-- Header / Navigation -->
   <header class="header header--dashboard">
     <nav class="nav container">
       <a href="/" class="nav__logo">
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          style="margin-right: 6px; flex-shrink: 0; color: var(--primary-pink, #ec4899);"
-        >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          style="margin-right: 6px; flex-shrink: 0; color: var(--primary-orange, #f97316);">
           <circle cx="12" cy="12" r="10" />
           <path d="M8 14s1.5 2 4 2 4-2 4-2" />
           <line x1="9" y1="9" x2="9.01" y2="9" />
@@ -31,45 +27,50 @@
         </svg>
         <span>SMILE</span>
       </a>
-      
+
       <ul class="nav__menu nav__menu--dashboard" id="navMenu">
         <li><a href="/careers/explore" class="nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
-            <path d="M2 12h20"></path>
-          </svg>
-          Careers
-        </a></li>
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+              <path d="M2 12h20"></path>
+            </svg>
+            Careers
+          </a></li>
         <li><a href="/near/me" class="nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-            <circle cx="12" cy="10" r="3"></circle>
-          </svg>
-          Near Me
-        </a></li>
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            Near Me
+          </a></li>
         <li><a href="/news/daily" class="nav__link nav__link--active">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>
-            <path d="M18 14h-8"></path>
-            <path d="M15 18h-5"></path>
-            <path d="M10 6h8v4h-8V6Z"></path>
-          </svg>
-          News
-        </a></li>
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2">
+              </path>
+              <path d="M18 14h-8"></path>
+              <path d="M15 18h-5"></path>
+              <path d="M10 6h8v4h-8V6Z"></path>
+            </svg>
+            News
+          </a></li>
+        <li>
+          <a href="/student/library" class="nav__link">
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+            </svg>
+            Library
+          </a>
+        </li>
         <li>
           <a href="/student/chess" class="nav__link">
-            <svg
-              class="nav__link-svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M8 16h8"></path>
               <path d="M9 12h6"></path>
               <path d="M12 4v4"></path>
@@ -82,71 +83,72 @@
           </a>
         </li>
         <li><a href="/student/dashboard" class="nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect width="7" height="9" x="3" y="3" rx="1"></rect>
-            <rect width="7" height="5" x="14" y="3" rx="1"></rect>
-            <rect width="7" height="9" x="14" y="12" rx="1"></rect>
-            <rect width="7" height="5" x="3" y="16" rx="1"></rect>
-          </svg>
-          Dashboard
-        </a></li>
+            <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+              <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+              <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+              <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+            </svg>
+            Dashboard
+          </a></li>
       </ul>
-      
+
       <div class="nav__actions nav__actions--dashboard">
-        <button class="nav__icon-btn" id="notificationBtn" aria-label="Notifications" aria-expanded="false" aria-controls="notificationPanel">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-          </svg>
-          <span class="nav__notification-badge" id="notificationBadge" hidden>0</span>
-        </button>
-        <div class="notification-panel" id="notificationPanel" aria-live="polite">
-          <div class="notification-panel__header">
-            <div>
-              <h2>Notifications</h2>
-              <p>Application updates from organisations</p>
-            </div>
-            <button type="button" class="notification-panel__mark" id="notificationMarkRead">Mark read</button>
-          </div>
-          <div class="notification-panel__list" id="notificationList">
-            <p class="notification-panel__empty">Loading notifications...</p>
-          </div>
-        </div>
         <div class="nav__profile" id="profileDropdown">
-          <button class="nav__profile-btn" aria-label="Profile menu">
+          <button class="nav__profile-btn" aria-label="Profile menu" style="position: relative;">
             <div class="nav__avatar">
               <span id="initials"></span>
             </div>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <span class="nav__notification-badge" id="notificationBadge"
+              style="position: absolute; top: -2px; right: -2px; display: inline-flex; align-items: center; justify-content: center; background: #ef4444; color: white; border-radius: 50%; font-size: 9px; width: 15px; height: 15px; font-weight: 700; border: 1.5px solid white;"
+              hidden>0</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </button>
           <div class="nav__profile-menu" id="profileMenu">
-            <a href="/org/dashboard/student-profile" class="nav__profile-link">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <a href="/student/profile" class="nav__profile-link">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
               My Profile
             </a>
-            <a href="#" class="nav__profile-link">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-              Settings
-            </a>
+            <hr class="nav__profile-divider" />
+
+            <!-- Integrated Notifications inside Profile Dropdown -->
+            <div class="nav__profile-notifications" id="notificationPanel">
+              <div class="nav__profile-notifications-header"
+                style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--gray-200); margin-bottom: 6px;">
+                <span
+                  style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--gray-500); letter-spacing: 0.5px;">Updates</span>
+                <button type="button" class="notification-panel__mark" id="notificationMarkRead"
+                  style="font-size: 10px; color: var(--primary-pink); background: none; border: none; cursor: pointer; font-weight: 600;">Mark
+                  read</button>
+              </div>
+              <div class="notification-panel__list" id="notificationList"
+                style="max-height: 200px; overflow-y: auto; padding: 0 4px;">
+                <p class="notification-panel__empty"
+                  style="font-size: 12px; color: #888; text-align: center; padding: 12px;">Loading updates...</p>
+              </div>
+            </div>
+
             <hr class="nav__profile-divider" />
             <a href="#" id="myTicketsDropdownBtn" class="nav__profile-link" onclick="openTicketsTab(event)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                 <polyline points="22,6 12,13 2,6"></polyline>
               </svg>
               My Tickets
             </a>
             <hr class="nav__profile-divider" />
-            <a href="/logout"  id="logout" class="nav__profile-link nav__profile-link--logout">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <a href="/logout" id="logout" class="nav__profile-link nav__profile-link--logout">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                 <polyline points="16 17 21 12 16 7"></polyline>
                 <line x1="21" x2="9" y1="12" y2="12"></line>
@@ -156,7 +158,7 @@
           </div>
         </div>
       </div>
-      
+
       <button class="nav__mobile-toggle" id="mobileToggle" aria-label="Toggle navigation menu">
         &#9776;
       </button>
@@ -168,38 +170,9 @@
       <!-- Page Header -->
       <div class="page-header">
         <h1 class="page-header__title">Youth Empowerment News</h1>
-        <p class="page-header__subtitle">Stay updated with the latest news on education, opportunities, and youth development.</p>
+        <p class="page-header__subtitle">Stay updated with the latest news on education, opportunities, and youth
+          development.</p>
       </div>
-
-      <!-- Featured Article -->
-      <!-- <article class="featured-article">
-        <div class="featured-article__image">
-          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop" alt="Youth Employment Initiative" crossorigin="anonymous">
-        </div>
-        <div class="featured-article__content">
-          <span class="featured-article__category">Employment</span>
-          <h2 class="featured-article__title">New Youth Employment Initiative Launches in Gauteng</h2>
-          <p class="featured-article__excerpt">The Gauteng provincial government announces R500 million investment in youth skills development and job creation programs targeting 50,000 young people.</p>
-          <div class="featured-article__meta">
-            <span class="featured-article__date">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
-                <line x1="16" x2="16" y1="2" y2="6"></line>
-                <line x1="8" x2="8" y1="2" y2="6"></line>
-                <line x1="3" x2="21" y1="10" y2="10"></line>
-              </svg>
-              18 March 2026
-            </span>
-          </div>
-          <a href="#" class="btn btn--gradient">
-            Read Full Article
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" x2="19" y1="12" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </a>
-        </div>
-      </article> -->
 
       <!-- News Categories -->
       <div class="news-categories">
@@ -214,96 +187,32 @@
       <!-- Recent Updates Section -->
       <section class="recent-updates">
         <h2 class="recent-updates__title">Recent Updates</h2>
-        
+
         <div class="news-grid" id="newsGrid">
           <!-- News Card 1 -->
           <article class="news-card">
             <div class="news-card__image">
-              <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=400&h=220&fit=crop" alt="University Applications" crossorigin="anonymous">
+              <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=400&h=220&fit=crop"
+                alt="University Applications" crossorigin="anonymous">
               <span class="news-card__category">Education</span>
             </div>
             <div class="news-card__content">
               <h3 class="news-card__title">University Applications for 2027 Now Open</h3>
-              <p class="news-card__excerpt">Major South African universities begin accepting applications for the 2027 academic year with expanded financial aid options.</p>
+              <p class="news-card__excerpt">Major South African universities begin accepting applications for the 2027
+                academic year with expanded financial aid options.</p>
               <div class="news-card__footer">
                 <span class="news-card__date">15 March 2026</span>
                 <a href="#" class="news-card__link">Read More</a>
               </div>
             </div>
           </article>
-
-          <!-- News Card 2 -->
-           <!-- <article class="news-card">
-            <div class="news-card__image">
-              <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&h=220&fit=crop" alt="Tech Skills Program" crossorigin="anonymous">
-              <span class="news-card__category">Employment</span>
-            </div>
-            <div class="news-card__content">
-              <h3 class="news-card__title">Google Africa Announces Free Coding Bootcamp</h3>
-              <p class="news-card__excerpt">Google partners with local organizations to provide free coding bootcamps to 10,000 young South Africans.</p>
-              <div class="news-card__footer">
-                <span class="news-card__date">12 March 2026</span>
-                <a href="#" class="news-card__link">Read More</a>
-              </div>
-            </div>
-          </article> -->
-
-          <!-- News Card 3 --> 
-          <!-- <article class="news-card">
-            <div class="news-card__image">
-              <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=220&fit=crop" alt="Youth Event" crossorigin="anonymous">
-              <span class="news-card__category">Events</span>
-            </div>
-            <div class="news-card__content">
-              <h3 class="news-card__title">Youth Career Expo Coming to Cape Town</h3>
-              <p class="news-card__excerpt">The annual Youth Career Expo returns with over 100 exhibitors and free workshops for students.</p>
-              <div class="news-card__footer">
-                <span class="news-card__date">10 March 2026</span>
-                <a href="#" class="news-card__link">Read More</a>
-              </div>
-            </div>
-          </article> -->
-
-          <!-- News Card 4 -->
-          <!-- <article class="news-card">
-            <div class="news-card__image">
-              <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=220&fit=crop" alt="Scholarship Announcement" crossorigin="anonymous">
-              <span class="news-card__category">Scholarships</span>
-            </div>
-            <div class="news-card__content">
-              <h3 class="news-card__title">Mandela Rhodes Foundation Opens 2027 Applications</h3>
-              <p class="news-card__excerpt">The prestigious Mandela Rhodes Scholarship now accepting applications for postgraduate studies.</p>
-              <div class="news-card__footer">
-                <span class="news-card__date">8 March 2026</span>
-                <a href="#" class="news-card__link">Read More</a>
-              </div>
-            </div>
-          </article> -->
-
-          <!-- News Card 5 -->
-          <!-- <article class="news-card">
-            <div class="news-card__image">
-              <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=400&h=220&fit=crop" alt="NSFAS Update" crossorigin="anonymous">
-              <span class="news-card__category">Government</span>
-            </div>
-            <div class="news-card__content">
-              <h3 class="news-card__title">NSFAS Increases Funding Limit for 2027</h3>
-              <p class="news-card__excerpt">National Student Financial Aid Scheme announces increased funding limits and simplified application process.</p>
-              <div class="news-card__footer">
-                <span class="news-card__date">5 March 2026</span>
-                <a href="#" class="news-card__link">Read More</a>
-              </div>
-            </div>
-          </article> -->
-
         </div>
-      
-
         <!-- Load More -->
         <div class="load-more">
           <button class="btn btn--outline btn--lg" id="loadMoreNews">
             Load More News
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </button>
@@ -314,7 +223,8 @@
       <section class="newsletter">
         <div class="newsletter__content">
           <h2 class="newsletter__title">Stay Informed</h2>
-          <p class="newsletter__text">Subscribe to our newsletter to receive the latest opportunities and news directly in your inbox.</p>
+          <p class="newsletter__text">Subscribe to our newsletter to receive the latest opportunities and news directly
+            in your inbox.</p>
           <form class="newsletter__form" id="newsletterForm">
             <input type="email" class="newsletter__input" placeholder="Enter your email address" required>
             <button type="submit" class="btn btn--gradient">Subscribe</button>
@@ -323,21 +233,13 @@
       </section>
     </div>
   </main>
-
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="footer__content">
         <a href="/" class="footer__logo">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            style="margin-right: 6px; flex-shrink: 0; color: var(--primary-pink, #ec4899);"
-          >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            style="margin-right: 6px; flex-shrink: 0; color: var(--primary-orange, #f97316);">
             <circle cx="12" cy="12" r="10" />
             <path d="M8 14s1.5 2 4 2 4-2 4-2" />
             <line x1="9" y1="9" x2="9.01" y2="9" />
@@ -350,8 +252,8 @@
     </div>
   </footer>
 
-
   <script src="../jsFrontEnd/dashboardJS.js"></script>
   <script src="../jsFrontEnd/newsAPI.js"></script>
 </body>
+
 </html>

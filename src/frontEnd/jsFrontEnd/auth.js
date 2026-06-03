@@ -183,24 +183,38 @@ function handleLoginSubmit(event) {
     if (response.status === 200) {
       return response.json();
     }
-    if (response.status === 401) {
-      showFormMessage(form, 'Invalid email or password.', 'error');
-      resetSubmitButton(submitBtn);
-    } else if (response.status === 403) {
-      showFormMessage(form, 'Invalid email or password.', 'error');
-      resetSubmitButton(submitBtn);
-    } else {
-      showFormMessage(form, 'Something went wrong. Please try again.', 'error');
-      resetSubmitButton(submitBtn);
-    }
+    return response.json()
+      .then(data => {
+        const errorMsg = data?.message || 'Invalid email or password.';
+        showFormMessage(form, errorMsg, 'error');
+        resetSubmitButton(submitBtn);
+        return null;
+      })
+      .catch(() => {
+        if (response.status === 401 || response.status === 403) {
+          showFormMessage(form, 'Invalid email or password.', 'error');
+        } else {
+          showFormMessage(form, 'Something went wrong. Please try again.', 'error');
+        }
+        resetSubmitButton(submitBtn);
+        return null;
+      });
   })
   .then(data => {
     if (!data) return;
 
     localStorage.setItem("token", data.token);
-    localStorage.setItem("accountType", data.accountType);
-    localStorage.setItem("userName", data.name);
-    localStorage.setItem("initials", data.userinitials);
+    // Explicitly clean up legacy/sensitive localStorage keys
+    localStorage.removeItem("accountType");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("initials");
+    localStorage.removeItem("profilePicUrl");
+    localStorage.removeItem("profileComplete");
+    localStorage.removeItem("latestScannedMarks");
+    localStorage.removeItem("latestScannedSchool");
+    localStorage.removeItem("orgName");
+    localStorage.removeItem("orgInitials");
+    localStorage.removeItem("orgProfilePic");
 
     showFormMessage(form, 'Login successful! Redirecting...', 'success');
 
@@ -479,7 +493,7 @@ async function triggerOTP(type, form, submitBtn) {
 
     if (!data.success) {
       if (errorEl) {
-        errorEl.textContent = 'âŒ ' + data.message;
+        errorEl.textContent = data.message;
         errorEl.style.display = 'block';
       }
       resetSubmitButton(submitBtn);
@@ -497,7 +511,7 @@ async function triggerOTP(type, form, submitBtn) {
     console.error(err);
     if (statusEl) statusEl.textContent = '';
     if (errorEl) {
-      errorEl.textContent = 'âŒ Something went wrong while sending verification code.';
+      errorEl.textContent = 'Something went wrong while sending verification code.';
       errorEl.style.display = 'block';
     }
   }
@@ -534,7 +548,7 @@ async function verifyOTP() {
     } else {
       if (errorEl) {
         errorEl.style.display = 'block';
-        errorEl.textContent = 'âŒ ' + data.message;
+        errorEl.textContent = data.message;
       }
       document.querySelectorAll('.otp-digit').forEach(d => d.value = '');
       const inputs = document.querySelectorAll('.otp-digit');
@@ -836,13 +850,13 @@ function checkPasswordMatch() {
 
   if (password === confirm) {
     confirmMessage.className     = "match";
-    confirmIcon.textContent      = "âœ“";
+    confirmIcon.textContent      = "";
     confirmText.textContent      = "Passwords match";
     confirmInput.style.borderColor = "#10B981";
     confirmInput.classList.remove("form__input--error");
   } else {
     confirmMessage.className     = "no-match";
-    confirmIcon.textContent      = "âœ•";
+    confirmIcon.textContent      = "";
     confirmText.textContent      = "Passwords do not match";
     confirmInput.style.borderColor = "#EF4444";
   }

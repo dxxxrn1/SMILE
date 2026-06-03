@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { connectToDB, sql } from "../dbConnection/dbconnection.js"; // ✅ fixed
 
 const transporter = nodemailer.createTransport({
@@ -60,7 +60,7 @@ export const forgotPassword = async (req, res) => {
             .query(`UPDATE ${table} SET ResetToken = @token, ResetTokenExpiry = @expiry WHERE ${idCol} = @id`);
 
         // Send email
-        const resetLink = `http://localhost:3000/reset-password?token=${token}&type=${accountType}`;
+        const resetLink = `https://smile-btbme0gpbph3f4gh.uaenorth-01.azurewebsites.net/reset-password?token=${token}&type=${accountType}`;
 
         await transporter.sendMail({
             from: process.env.LUCAS_EMAIL,

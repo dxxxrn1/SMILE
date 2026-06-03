@@ -13,22 +13,27 @@
 </head>
 <body class="scanner-page dashboard-page">
   <header class="scanner-mobile-header">
-    <a href="/" class="scanner-mobile-logo">
-      <span>&#9786;</span>
-      SMILE
-    </a>
+    <a href="/" class="nav__logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            style="margin-right: 6px; flex-shrink: 0; color: var(--primary-orange, #f97316);">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
+          </svg>
+          <span class="nav__logo-text">SMILE</span>
+        </a>
   </header>
-
   <main class="mobile-shell">
     <section class="scanner-card scanner-card--mobile">
       <span class="scanner-badge">Phone scanner</span>
       <h1>Capture the school document</h1>
-      <p class="lead">Take a clear photo of the report, transcript, certificate, or results page.</p>
+      <p class="lead">Upload pdf of the report, transcript, certificate, or results.</p>
 
       <form id="uploadForm" class="upload-form">
         <label class="file-drop" for="documentFile">
-          <span>Tap to open camera or choose file</span>
-          <small>JPG, PNG, WEBP, or PDF</small>
+          <span>choose file</span>
+          <small>PDF</small>
         </label>
         <input id="documentFile" name="document" type="file" accept="image/*,application/pdf" capture="environment" required>
 

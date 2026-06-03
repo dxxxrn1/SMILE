@@ -350,6 +350,22 @@ body.layout-with-sidebar .dashboard-layout {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.recent-applicants-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.recent-applicants-list::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 9999px;
+}
+
+.recent-applicants-list::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
 }
 
 .applicant-feed-item {
@@ -474,6 +490,22 @@ body.layout-with-sidebar .dashboard-layout {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.events-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.events-list::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 9999px;
+}
+
+.events-list::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
 }
 
 .event-item {
@@ -611,6 +643,22 @@ body.layout-with-sidebar .dashboard-layout {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.top-opps-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.top-opps-list::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 9999px;
+}
+
+.top-opps-list::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
 }
 
 .top-opp-item {

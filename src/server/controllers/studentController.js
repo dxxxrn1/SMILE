@@ -74,6 +74,27 @@ export const getSavedOpportunities = async (req, res) => {
   try {
     const stuId = req.user.id;
     const pool = await connectToDB();
+
+    // Run automatic database cleanup/deduplication and restore UNIQUE constraint
+    try {
+      await pool.request().query(`
+        -- Deduplicate Applications table keeping only the latest application per student/opportunity
+        WITH CTE AS (
+            SELECT AppID, ROW_NUMBER() OVER (PARTITION BY StuID, OppID ORDER BY DateApplied DESC, AppID DESC) as rn
+            FROM dbo.Applications
+        )
+        DELETE FROM dbo.Applications WHERE AppID IN (SELECT AppID FROM CTE WHERE rn > 1);
+
+        -- Re-add the UNIQUE constraint if it doesn't exist
+        IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UQ_Student_Opp]') AND type in (N'UQ'))
+        BEGIN
+            ALTER TABLE dbo.Applications ADD CONSTRAINT UQ_Student_Opp UNIQUE (OppID, StuID);
+        END
+      `);
+    } catch (migErr) {
+      console.warn("[SMILE] Database cleanup/UNIQUE constraint migration ignored:", migErr.message);
+    }
+
     const request = pool.request();
     request.input("StuID", stuId);
 
@@ -85,7 +106,8 @@ export const getSavedOpportunities = async (req, res) => {
         o.OppType,
         o.Province,
         o.ApplicationDeadline,
-        org.OrgName
+        org.OrgName,
+        (SELECT COUNT(*) FROM dbo.Applications a WHERE a.StuID = so.StuID AND a.OppID = o.OppID) AS AppliedCount
       FROM SavedOpportunities so
       JOIN Opportunities o ON so.OppID = o.OppID
       JOIN Organisation org ON o.OrgId = org.OrgId
@@ -111,10 +133,26 @@ export const getStudentNotifications = async (req, res) => {
 
     const result = await request.query(`
       SELECT TOP 20
-        NotificationID, AppID, Title, Message, NotificationType, IsRead, DateCreated
-      FROM StudentNotifications
-      WHERE StuID = @StuID
-      ORDER BY DateCreated DESC
+        sn.NotificationID,
+        sn.AppID,
+        sn.Title,
+        sn.Message,
+        sn.NotificationType,
+        sn.IsRead,
+        sn.DateCreated,
+        o.OppID,
+        o.Title AS OppTitle,
+        o.StartDate,
+        o.ApplicationDeadline,
+        o.Description,
+        o.Province,
+        org.OrgName
+      FROM StudentNotifications sn
+      LEFT JOIN Applications a ON sn.AppID = a.AppID
+      LEFT JOIN Opportunities o ON a.OppID = o.OppID
+      LEFT JOIN Organisation org ON o.OrgId = org.OrgId
+      WHERE sn.StuID = @StuID
+      ORDER BY sn.DateCreated DESC
     `);
 
     const unreadResult = await pool.request()
@@ -166,7 +204,7 @@ export const getStudentApplications = async (req, res) => {
     const result = await request.query(`
       SELECT
         a.AppID, a.Status, a.DateApplied,
-        o.OppID, o.Title, org.OrgName
+        o.OppID, o.Title, o.ApplicationDeadline, o.StartDate, o.Description, o.Province, o.OppType, org.OrgName
       FROM Applications a
       JOIN Opportunities o ON a.OppID = o.OppID
       JOIN Organisation org ON o.OrgId = org.OrgId
@@ -233,15 +271,46 @@ export const applyForOpportunity = async (req, res) => {
     if (!oppId) return res.status(400).json({ success: false, message: "Opportunity ID is required" });
 
     const pool = await connectToDB();
+
+    // Run database cleanup and restore UNIQUE constraint
+    try {
+      await pool.request().query(`
+        WITH CTE AS (
+            SELECT AppID, ROW_NUMBER() OVER (PARTITION BY StuID, OppID ORDER BY DateApplied DESC, AppID DESC) as rn
+            FROM dbo.Applications
+        )
+        DELETE FROM dbo.Applications WHERE AppID IN (SELECT AppID FROM CTE WHERE rn > 1);
+
+        IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UQ_Student_Opp]') AND type in (N'UQ'))
+        BEGIN
+            ALTER TABLE dbo.Applications ADD CONSTRAINT UQ_Student_Opp UNIQUE (OppID, StuID);
+        END
+      `);
+    } catch (migErr) {
+      console.warn("[SMILE] Database UNIQUE constraint migration ignored:", migErr.message);
+    }
+
+    // Check if the student has already applied for this opportunity (limit to 1)
+    const countCheck = await pool.request()
+      .input("StuID", sql.Int, stuId)
+      .input("OppID", sql.Int, oppId)
+      .query(`SELECT COUNT(*) AS AppCount FROM Applications WHERE StuID = @StuID AND OppID = @OppID`);
+
+    const appCount = countCheck.recordset[0]?.AppCount || 0;
+    if (appCount >= 1) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already applied for this opportunity."
+      });
+    }
+
     const request = pool.request();
-    request.input("StuID", stuId);
-    request.input("OppID", oppId);
+    request.input("StuID", sql.Int, stuId);
+    request.input("OppID", sql.Int, oppId);
 
     await request.query(`
-      IF NOT EXISTS (SELECT 1 FROM Applications WHERE StuID = @StuID AND OppID = @OppID)
-      BEGIN
-        INSERT INTO Applications (StuID, OppID, Status, DateApplied) VALUES (@StuID, @OppID, 'Pending', GETDATE())
-      END
+      INSERT INTO Applications (StuID, OppID, Status, DateApplied) 
+      VALUES (@StuID, @OppID, 'Pending', GETDATE())
     `);
 
     return res.status(200).json({ success: true, message: "Application submitted successfully." });

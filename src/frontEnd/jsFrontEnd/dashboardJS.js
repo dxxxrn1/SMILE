@@ -26,18 +26,15 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Only run on pages that have these elements
-  const spanID = document.getElementById("userName");
-  const spanInitials = document.getElementById("initials");
+  loadStudentHeaderProfile();
 
-  const userStored = localStorage.getItem("userName");
-  const initialStored = localStorage.getItem("initials");
-
-  if (spanID) {
-    spanID.textContent = userStored || "User not Found!!!!";
-  }
-
-  if (spanInitials) {
-    spanInitials.textContent = initialStored || "?";
+  // Always bind logout button if it exists on the page
+  const logoutTag = document.getElementById("logout");
+  if (logoutTag) {
+    logoutTag.addEventListener("click", (e) => {
+      e.preventDefault();
+      logout();
+    });
   }
 });
 
@@ -67,14 +64,6 @@ function initMobileNavigation() {
         mobileToggle.setAttribute("aria-expanded", "false");
       }
     });
-
-    const logoutTag = document.getElementById("logout");
-    logoutTag.addEventListener("click", () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("accountType");
-      localStorage.removeItem("userName");
-      localStorage.removeItem("initials");
-    })
   }
 }
 
@@ -141,7 +130,10 @@ function renderStudentAvatar(profile) {
   }
 
   if (initials) {
-    initials.textContent = localStorage.getItem("initials") || "?";
+    const firstInitial = profile?.StuName ? profile.StuName[0] : "";
+    const lastInitial = profile?.StuLastName ? profile.StuLastName[0] : "";
+    const initialsText = (firstInitial + lastInitial).toUpperCase();
+    initials.textContent = initialsText || "?";
   }
 }
 
@@ -150,7 +142,7 @@ async function loadNotifications() {
   const badge = document.getElementById("notificationBadge");
   if (!list || !badge) return;
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -187,7 +179,7 @@ async function loadNotifications() {
 }
 
 async function markNotificationsRead() {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -203,39 +195,25 @@ async function markNotificationsRead() {
 }
 
 function initNotifications() {
-  const btn = document.getElementById("notificationBtn");
   const panel = document.getElementById("notificationPanel");
   const markReadBtn = document.getElementById("notificationMarkRead");
-  if (!btn || !panel) return;
+  if (!panel) return;
 
   loadNotifications();
 
-  btn.addEventListener("click", async (event) => {
-    event.stopPropagation();
-    const isOpen = panel.classList.toggle("notification-panel--active");
-    btn.setAttribute("aria-expanded", String(isOpen));
-    if (isOpen) await loadNotifications();
-  });
-
-  panel.addEventListener("click", (event) => {
-    event.stopPropagation();
-  });
+  const profileBtn = document.querySelector(".nav__profile-btn");
+  if (profileBtn) {
+    profileBtn.addEventListener("click", async () => {
+      const profileMenu = document.getElementById("profileMenu");
+      if (profileMenu && !profileMenu.classList.contains("nav__profile-menu--active")) {
+        await loadNotifications();
+      }
+    });
+  }
 
   if (markReadBtn) {
     markReadBtn.addEventListener("click", markNotificationsRead);
   }
-
-  document.addEventListener("click", () => {
-    panel.classList.remove("notification-panel--active");
-    btn.setAttribute("aria-expanded", "false");
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      panel.classList.remove("notification-panel--active");
-      btn.setAttribute("aria-expanded", "false");
-    }
-  });
 }
 
 /**
@@ -434,7 +412,7 @@ function loadEbooks(query = "career development south africa youth") {
   const ebooksGrid = document.querySelector(".ebooks-grid");
   if (!ebooksGrid) return;
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
 
   ebooksGrid.innerHTML = Array(4)
     .fill(
@@ -583,30 +561,38 @@ async function checkQuizStatus() {
 
   try {
     const res = await fetch("/api/get-my-interests", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      headers: { Authorization: `Bearer ${getToken()}` },
     });
     const data = await res.json();
 
+    const quizCardTitle = document.getElementById("quizCardTitle");
+    const quizCardBody = document.getElementById("quizCardBody");
+    const quizCardBtn = quizStatusCard.querySelector(".career-card__btn");
+
     if (data.exists) {
-      quizStatusCard.style.display = "none";
+      quizStatusCard.style.display = "flex";
       chatSection.style.display = "flex";
 
-      const downloadDocBtn = document.getElementById("downloadDocBtn");
-      if (downloadDocBtn) downloadDocBtn.style.display = "inline-flex";
+      if (quizCardTitle) quizCardTitle.textContent = "Your profile is complete!";
+      if (quizCardBody) quizCardBody.textContent = "You can retake the personality quiz at any time to adjust your career interests.";
+      if (quizCardBtn) quizCardBtn.textContent = "Retake personality quiz";
+
+      const downloadDocWrap = document.getElementById("downloadDocWrap");
+      if (downloadDocWrap) downloadDocWrap.style.display = "block";
 
       if (chatHistory.length === 0) {
         const win = document.getElementById("chatWindow");
         if (win) {
           win.innerHTML = `
             <div style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px;">
-              <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; border: 1px solid #fbcfe8; box-shadow: var(--shadow-sm);">
-                🤖
+              <div style="width: 36px; height: 36px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center; color: #059669; flex-shrink: 0; border: 1px solid #a7f3d0; box-shadow: var(--shadow-sm);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
               </div>
-              <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6;">
+              <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6; word-break: break-word; overflow-wrap: break-word;">
                 <p style="margin-bottom: 8px;">Welcome back! I see your top career interest is <strong style="color: var(--primary-pink);">${data.interest}</strong>.</p>
                 <p>What would you like to explore today? Ask me for career suggestions, university requirements, or salary info!</p>
                 <p style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--gray-200); font-size: 0.8125rem; color: var(--gray-500); display: flex; align-items: center; gap: 6px;">
-                  💡 <em>Tip: You can upload your report card/marks (optional) at any time to unlock highly realistic, grade-matched recommendations!</em>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; color: #f97316;"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A5 5 0 0 0 8 8c0 1 .3 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> <em>Tip: You can upload your report card/marks (optional) at any time to unlock highly realistic, grade-matched recommendations!</em>
                 </p>
               </div>
             </div>`;
@@ -615,6 +601,10 @@ async function checkQuizStatus() {
     } else {
       quizStatusCard.style.display = "flex";
       chatSection.style.display = "flex";
+
+      if (quizCardTitle) quizCardTitle.textContent = "Complete your profile";
+      if (quizCardBody) quizCardBody.textContent = "Take the personality quiz to unlock personalised AI career advice tailored to your strengths.";
+      if (quizCardBtn) quizCardBtn.textContent = "Take personality quiz";
     }
   } catch (e) {
     console.error("Error loading quiz status:", e);
@@ -659,7 +649,7 @@ window.saveQuizResults = async function () {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${getToken()}`,
     },
     body: JSON.stringify(results),
   });
@@ -686,7 +676,7 @@ window.sendChat = async function () {
 
   win.innerHTML += `
     <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
-      <div style="background: var(--gradient-primary); color: white; padding: 12px 16px; border-radius: 16px 16px 0px 16px; max-width: 80%; box-shadow: var(--shadow-sm); font-size: 0.9375rem; line-height: 1.5;">
+      <div style="background: var(--gradient-primary); color: white; padding: 12px 16px; border-radius: 16px 16px 0px 16px; max-width: 80%; box-shadow: var(--shadow-sm); font-size: 0.9375rem; line-height: 1.5; word-break: break-word; overflow-wrap: break-word;">
         ${userText}
       </div>
     </div>`;
@@ -702,7 +692,9 @@ window.sendChat = async function () {
   const typingId = "typing-" + Date.now();
   win.innerHTML += `
     <div id="${typingId}" style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px;">
-      <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; border: 1px solid #fbcfe8;">🤖</div>
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center; color: #059669; flex-shrink: 0; border: 1px solid #a7f3d0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+      </div>
       <div style="background: #ffffff; color: var(--gray-500); padding: 16px; border-radius: 0px 16px 16px 16px; border: 1px solid var(--gray-200); font-size: 0.9375rem; font-style: italic;">
         Thinking...
       </div>
@@ -714,7 +706,7 @@ window.sendChat = async function () {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${getToken()}`,
       },
       // body: JSON.stringify({ userPrompt: userText }),
       body: JSON.stringify({ history: chatHistory }),
@@ -728,10 +720,10 @@ window.sendChat = async function () {
 
     win.innerHTML += `
       <div style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px;">
-        <div style="width: 36px; height: 36px; border-radius: 50%; background: #fdf2f8; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; border: 1px solid #fbcfe8; box-shadow: var(--shadow-sm);">
-          🤖
+        <div style="width: 36px; height: 36px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center; color: #059669; flex-shrink: 0; border: 1px solid #a7f3d0; box-shadow: var(--shadow-sm);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
         </div>
-        <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6;">
+        <div style="background: #ffffff; color: var(--gray-800); padding: 16px; border-radius: 0px 16px 16px 16px; max-width: 85%; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); font-size: 0.9375rem; line-height: 1.6; word-break: break-word; overflow-wrap: break-word;">
           ${formattedResponse}
         </div>
       </div>`;
@@ -760,7 +752,7 @@ window.downloadCareerDoc = async function () {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${getToken()}`,
       },
       body: JSON.stringify({ history: chatHistory }),
     });
@@ -843,7 +835,7 @@ async function loadSavedOpportunities() {
   const container = document.querySelector(".dashboard__section--opportunities .opportunities-list");
   if (!container) return;
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -884,14 +876,13 @@ async function loadSavedOpportunities() {
               </span>
             </div>
             <div class="opportunity-card__actions">
-              <a href="${opp.ApplicationLink || '#'}" class="btn btn--primary btn--sm" target="_blank">Apply Now</a>
-              <button class="btn btn--outline btn--sm btn--icon btn-remove-saved" aria-label="Remove from saved">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 6h18"></path>
-                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                </svg>
-              </button>
+              ${
+                (opp.ApplicationLink && opp.ApplicationLink !== "null" && opp.ApplicationLink !== "undefined" && opp.ApplicationLink.trim() !== "")
+                  ? `<a href="${opp.ApplicationLink}" class="btn btn--primary btn--sm" style="width: 100%; text-align: center; justify-content: center;" target="_blank">Apply Now</a>`
+                  : (opp.AppliedCount > 0)
+                    ? `<button class="btn btn--secondary btn--sm" style="width: 100%; text-align: center; justify-content: center; border: none; background: #e4e4e7; color: #71717a; cursor: not-allowed;" disabled>Applied</button>`
+                    : `<button class="btn btn--primary btn--sm" style="width: 100%; text-align: center; justify-content: center; border: none; cursor: pointer;" onclick="applyForOpportunity('${opp.Title.replace(/'/g, "\\'")}', ${opp.OppID}, this)">Apply Now</button>`
+              }
             </div>
           </article>
         `;
@@ -908,11 +899,53 @@ async function loadSavedOpportunities() {
   }
 }
 
+async function applyForOpportunity(title, oppId, button) {
+  if (!confirm(`Are you sure you want to apply for "${title}"?`)) return;
+
+  const token = getToken();
+  if (!token) {
+    alert("Please log in to apply.");
+    window.location.href = "/login-page";
+    return;
+  }
+
+  const originalHtml = button.innerHTML;
+  button.disabled = true;
+  button.innerHTML = "Applying...";
+
+  try {
+    const res = await fetch("/api/student/applications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ oppId })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      alert("Application submitted successfully!");
+      await loadSavedOpportunities();
+      await loadApplications();
+    } else {
+      alert(data.message || "Failed to submit application.");
+      button.disabled = false;
+      button.innerHTML = originalHtml;
+    }
+  } catch (err) {
+    console.error("Error applying:", err);
+    alert("Network error occurred while applying.");
+    button.disabled = false;
+    button.innerHTML = originalHtml;
+  }
+}
+
 async function loadApplications() {
   const container = document.querySelector(".dashboard__section--applications .applications-list");
   if (!container) return;
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -927,7 +960,8 @@ async function loadApplications() {
     );
 
     if (data.success && data.applications.length > 0) {
-      container.innerHTML = data.applications.map(app => {
+      window.__loadedApplications = data.applications;
+      container.innerHTML = data.applications.map((app, index) => {
         const dateApplied = new Date(app.DateApplied).toLocaleDateString("en-US", {
           month: "short", day: "numeric", year: "numeric"
         });
@@ -970,16 +1004,16 @@ async function loadApplications() {
         const step3Class = isShortlisted ? "app-timeline__step--shortlisted" : "";
 
         let step4Class = "";
-        let step4Title = "4. Decision";
+        let step4Title = "Step 4: Decision";
         let step4Sub = "Pending";
         if (isFinal) {
           if (isRejected) {
             step4Class = "app-timeline__step--rejected";
-            step4Title = "4. Rejected";
+            step4Title = "Step 4: Rejected";
             step4Sub = "Ended";
           } else {
             step4Class = "app-timeline__step--accepted";
-            step4Title = status === 'Approved' ? "4. Approved" : "4. Accepted";
+            step4Title = status === 'Approved' ? "Step 4: Approved" : "Step 4: Accepted";
             step4Sub = "Success";
           }
         }
@@ -989,10 +1023,12 @@ async function loadApplications() {
         const conn3 = isFinal ? "app-timeline__connector--active" : "";
 
         return `
-          <article class="application-card" onclick="window.location.href='/careers/explore'" style="cursor: pointer;">
+          <article class="application-card">
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
               <div>
-                <h3 class="application-card__title" style="margin: 0; font-size: 0.9375rem;">${app.Title}</h3>
+                <h3 class="application-card__title" style="margin: 0; font-size: 0.9375rem; display: flex; align-items: center; gap: 8px;">
+                  ${app.Title}
+                </h3>
                 <p class="application-card__org" style="margin: 2px 0 0; font-size: 0.8125rem;">${app.OrgName}</p>
               </div>
               <div class="application-card__status ${statusClass}" style="margin: 0;">
@@ -1008,7 +1044,7 @@ async function loadApplications() {
               <div class="app-timeline">
                 <!-- Step 1: Applied -->
                 <div class="app-timeline__step ${step1Class}">
-                  <span class="app-timeline__step-title">1. Applied</span>
+                  <span class="app-timeline__step-title">Step 1: Applied</span>
                   <span class="app-timeline__step-subtitle">${dateApplied}</span>
                 </div>
                 
@@ -1016,15 +1052,15 @@ async function loadApplications() {
                 
                 <!-- Step 2: Under Review -->
                 <div class="app-timeline__step ${step2Class}">
-                  <span class="app-timeline__step-title">2. Reviewed</span>
-                  <span class="app-timeline__step-subtitle">${isReviewed ? 'Completed' : 'Pending'}</span>
+                  <span class="app-timeline__step-title">Step 2: Reviewed</span>
+                  <span class="app-timeline__step-subtitle">${isReviewed ? '(Under Review)' : 'Pending'}</span>
                 </div>
                 
                 <div class="app-timeline__connector ${conn2}"></div>
                 
                 <!-- Step 3: Shortlisted -->
                 <div class="app-timeline__step ${step3Class}">
-                  <span class="app-timeline__step-title">3. Shortlisted</span>
+                  <span class="app-timeline__step-title">Step 3: Shortlisted</span>
                   <span class="app-timeline__step-subtitle">${isShortlisted ? 'Yes' : 'Pending'}</span>
                 </div>
                 
@@ -1037,6 +1073,20 @@ async function loadApplications() {
                 </div>
               </div>
             </div>
+            
+            ${(status === 'Approved' || status === 'Accepted') ? `
+            <div class="application-card__actions" style="margin-top: 12px; display: flex; justify-content: flex-end;" onclick="event.stopPropagation();">
+              <button class="btn btn--outline btn--sm btn-add-cal" onclick="showAppApprovalPopupByIndex(${index})" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 500; font-size: 0.8125rem; padding: 6px 12px; border-radius: 6px; border: 1px solid #bfdbfe; background: #eff6ff; color: #1e40af; cursor: pointer; transition: background 0.2s, transform 0.1s;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #2563eb;">
+                  <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                  <line x1="16" x2="16" y1="2" y2="6"></line>
+                  <line x1="8" x2="8" y1="2" y2="6"></line>
+                  <line x1="3" x2="21" y1="10" y2="10"></line>
+                </svg>
+                Add to Calendar
+              </button>
+            </div>
+            ` : ''}
           </article>
         `;
       }).join("");
@@ -1064,7 +1114,7 @@ function initDynamicRemoveButtons() {
         try {
           const res = await fetch(`/api/student/saved-opportunities/${oppId}`, {
             method: 'DELETE',
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            headers: { Authorization: `Bearer ${getToken()}` }
           });
           const data = await res.json();
 
@@ -1098,20 +1148,33 @@ function initDynamicRemoveButtons() {
 function openTicketsTab(event) {
   event.preventDefault();
 
-
-  const dashGrid = document.querySelector(".dashboard__grid");
   const ticketsPanel = document.getElementById("tickets-panel");
   const profileMenu = document.getElementById("profileMenu");
 
-  if (dashGrid) dashGrid.style.display = "none";
-  if (ticketsPanel) ticketsPanel.style.display = "block";
+  if (ticketsPanel) {
+    ticketsPanel.style.display = "flex";
+    ticketsPanel.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
   if (profileMenu) profileMenu.classList.remove("nav__profile-menu--active");
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
 
   loadStudentTickets();
 }
+
+/**
+ * Closes the Tickets panel and returns to the dashboard grid view
+ */
+function closeTicketsTab() {
+  const ticketsPanel = document.getElementById("tickets-panel");
+  if (ticketsPanel) {
+    ticketsPanel.style.display = "none";
+    ticketsPanel.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+}
+
+window.openTicketsTab = openTicketsTab;
+window.closeTicketsTab = closeTicketsTab;
 
 /**
  * Fetch and render the student's own tickets
@@ -1123,7 +1186,7 @@ async function loadStudentTickets() {
   tbody.innerHTML = `<tr><td colspan="6" class="tkt-empty">Loading...</td></tr>`;
 
   try {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch("/api/tickets/my", {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -1181,7 +1244,7 @@ async function submitStudentTicket() {
   btn.innerHTML = `<svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Submitting...`;
 
   try {
-    const token = localStorage.getItem("token");
+    const token = getToken();
     const res = await fetch("/api/tickets", {
       method: "POST",
       headers: {
@@ -1230,16 +1293,73 @@ window.openTicketsTab = openTicketsTab;
 window.loadStudentTickets = loadStudentTickets;
 window.submitStudentTicket = submitStudentTicket;
 
+function applyProfileStrengthPercent(percent) {
+  const statCard = document.getElementById("profileStrengthCard");
+  const statIcon = document.getElementById("profileStrengthIcon");
+  const statNumber = document.getElementById("profileStrengthNumber");
+  const widget = document.getElementById("profileCompletionWidget");
+
+  if (widget) {
+    widget.style.display = "flex";
+    const percentText = document.getElementById("widgetProgressPercent");
+    if (percentText) percentText.textContent = `${percent}%`;
+    const progressRing = document.getElementById("widgetProgressRing");
+    if (progressRing) {
+      progressRing.style.strokeDasharray = `${percent}, 100`;
+    }
+  }
+
+  if (statCard && statIcon && statNumber) {
+    statNumber.textContent = `${percent}%`;
+    statCard.classList.remove("stat-card--neutral", "stat-card--red", "stat-card--orange", "stat-card--green", "stat-card--purple");
+    statIcon.classList.remove("stat-card__icon--red", "stat-card__icon--orange", "stat-card__icon--green", "stat-card__icon--purple");
+
+    // Assign color theme and dynamic mouth SVG shape based on bio completeness percentage
+    if (percent < 40) {
+      statCard.classList.add("stat-card--red");
+      statIcon.classList.add("stat-card__icon--red");
+      // Sad frowning mouth (no eyes)
+      statIcon.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M16 16s-1.5-2-4-2-4 2-4 2" />
+        </svg>
+      `;
+    } else if (percent < 80) {
+      statCard.classList.add("stat-card--orange");
+      statIcon.classList.add("stat-card__icon--orange");
+      // Neutral flat mouth (no eyes)
+      statIcon.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="8" y1="15" x2="16" y2="15" />
+        </svg>
+      `;
+    } else {
+      statCard.classList.add("stat-card--green");
+      statIcon.classList.add("stat-card__icon--green");
+      // Happy smiling mouth (no eyes)
+      statIcon.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+        </svg>
+      `;
+    }
+  }
+}
+
 /**
  * Profile Completion Widget Initialization
  */
 async function initProfileCompletionWidget() {
-  const widget = document.getElementById("profileCompletionWidget");
-  const statCard = document.getElementById("profileStrengthCard");
-  const statIcon = document.getElementById("profileStrengthIcon");
-  const statNumber = document.getElementById("profileStrengthNumber");
+  // Load cached strength immediately to prevent color/UI lagging
+  const cachedStrength = localStorage.getItem("profileStrength");
+  if (cachedStrength !== null) {
+    applyProfileStrengthPercent(parseInt(cachedStrength, 10));
+  }
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -1252,65 +1372,13 @@ async function initProfileCompletionWidget() {
       const p = data.profile;
       renderStudentAvatar(p);
 
-      let score = 0;
-      let total = 5;
+      // Compute score strictly based on bio word count (50 words = 50%, 100+ words = 100%)
+      const bioText = (p.StuBio && p.StuBio.trim() !== "None provided yet") ? p.StuBio.trim() : "";
+      const wordCount = bioText ? bioText.split(/\s+/).filter(Boolean).length : 0;
+      const percent = Math.min(100, wordCount);
 
-      if (p.StuName && p.StuName.trim().length > 0) score++;
-      if (p.StuLastName && p.StuLastName.trim().length > 0) score++;
-      if (p.StuEducationLevel && p.StuEducationLevel.trim().length > 0) score++;
-      if (p.StuBio && p.StuBio.trim().length > 0 && p.StuBio !== "None provided yet") score++;
-      if (p.ProfilePicUrl && p.ProfilePicUrl.trim().length > 0) score++;
-
-      const percent = Math.round((score / total) * 100);
-
-      if (widget) {
-        widget.style.display = "flex";
-
-        const percentText = document.getElementById("widgetProgressPercent");
-        if (percentText) percentText.textContent = `${percent}%`;
-
-        const progressRing = document.getElementById("widgetProgressRing");
-        if (progressRing) {
-          progressRing.style.strokeDasharray = `${percent}, 100`;
-        }
-      }
-      if (statCard && statIcon && statNumber) {
-        statNumber.textContent = `${percent}%`;
-
-        statCard.classList.remove("stat-card--red", "stat-card--orange", "stat-card--green", "stat-card--purple");
-        statIcon.classList.remove("stat-card__icon--red", "stat-card__icon--orange", "stat-card__icon--green", "stat-card__icon--purple");
-
-        // Assign color theme 
-        if (percent < 40) {
-          statCard.classList.add("stat-card--red");
-          statIcon.classList.add("stat-card__icon--red");
-          statIcon.innerHTML = `
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-          `;
-        } else if (percent < 80) {
-          statCard.classList.add("stat-card--orange");
-          statIcon.classList.add("stat-card__icon--orange");
-          statIcon.innerHTML = `
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-          `;
-        } else {
-          statCard.classList.add("stat-card--green");
-          statIcon.classList.add("stat-card__icon--green");
-          statIcon.innerHTML = `
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-          `;
-        }
-      }
+      applyProfileStrengthPercent(percent);
+      localStorage.setItem("profileStrength", String(percent));
     }
   } catch (err) {
     console.error("Error loading profile completion widget:", err);
@@ -1324,6 +1392,9 @@ function openAIProfileModal() {
   const modal = document.getElementById("aiProfileModal");
   if (!modal) return;
 
+  // Lock parent page scrolling
+  document.body.style.overflow = "hidden";
+
   modal.style.display = "flex";
   setTimeout(() => {
     modal.style.opacity = "1";
@@ -1334,9 +1405,14 @@ function openAIProfileModal() {
 
   const win = document.getElementById("aiProfileChatWindow");
   win.innerHTML = `
-    <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; border-radius: 0 20px 20px 20px;">
-      <p style="margin: 0 0 8px 0;"><strong>Hello! I'm your AI Profile Assistant.</strong></p>
-      <p style="margin: 0;">I'll help you craft a professional, compelling bio to attract the best opportunities. To get started, you can share your key skills, career interests, hobbies, or paste a rough draft you'd like me to polish!</p>
+    <div style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px; align-items: flex-start;">
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: #064e3b; display: flex; align-items: center; justify-content: center; color: #34d399; flex-shrink: 0; border: 1px solid #022c22; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+      </div>
+      <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; border-radius: 0 20px 20px 20px; flex: 1; max-width: 80%;">
+        <p style="margin: 0 0 8px 0;"><strong>Hello! I'm your AI Profile Assistant.</strong></p>
+        <p style="margin: 0;">I'll help you craft a professional, compelling bio to attract the best opportunities. To get started, you can share your key skills, career interests, hobbies, or paste a rough draft you'd like me to polish!</p>
+      </div>
     </div>
   `;
   aiProfileChatHistory = [];
@@ -1351,6 +1427,8 @@ function closeAIProfileModal() {
     modal.style.pointerEvents = "none";
     setTimeout(() => {
       modal.style.display = "none";
+      // Unlock parent page scrolling
+      document.body.style.overflow = "";
     }, 300);
   }
 }
@@ -1377,9 +1455,11 @@ async function sendAIProfileChat() {
   //  thinking indicator
   const typingId = "ai-typing-" + Date.now();
   win.innerHTML += `
-    <div id="${typingId}" style="display: flex; justify-content: flex-start; gap: 12px; align-self: flex-start;">
-      <div style="font-size: 1.5rem;">🤖</div>
-      <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; font-style: italic; color: #64748b; border-radius: 0 20px 20px 20px;">
+    <div id="${typingId}" style="display: flex; justify-content: flex-start; gap: 12px; align-self: flex-start; align-items: flex-start; margin-bottom: 16px;">
+      <div style="width: 36px; height: 36px; border-radius: 50%; background: #064e3b; color: #34d399; display: flex; align-items: center; justify-content: center; border: 1px solid #022c22; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+      </div>
+      <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; font-style: italic; color: #64748b; border-radius: 0 20px 20px 20px; flex: 1; max-width: 80%;">
         Polishing bio options...
       </div>
     </div>
@@ -1387,8 +1467,8 @@ async function sendAIProfileChat() {
   win.scrollTop = win.scrollHeight;
 
   try {
-    const scannedMarks = window.latestScannedMarks || localStorage.getItem("latestScannedMarks");
-    const schoolName = window.latestScannedSchool || localStorage.getItem("latestScannedSchool") || "";
+    const scannedMarks = window.latestScannedMarks;
+    const schoolName = window.latestScannedSchool || "";
     const hasUploaded = !!scannedMarks;
 
     const scannedData = {
@@ -1401,7 +1481,7 @@ async function sendAIProfileChat() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        Authorization: `Bearer ${getToken()}`
       },
       body: JSON.stringify({
         message: userText,
@@ -1429,9 +1509,9 @@ async function sendAIProfileChat() {
       const escapedBio = proposedBio.replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, " ");
 
       proposedCardHtml = `
-        <div style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.05), rgba(236, 72, 153, 0.05)); border: 1.5px dashed rgba(236, 72, 153, 0.3); padding: 16px; border-radius: 16px; margin-top: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.01);">
-          <p style="margin: 0 0 10px 0; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #ec4899; letter-spacing: 0.5px;">✨ Proposed Bio</p>
-          <p style="margin: 0 0 14px 0; font-size: 13.5px; font-style: italic; color: #1e293b; line-height: 1.6;">"${proposedBio}"</p>
+        <div style="background: rgba(16, 185, 129, 0.03); border: 1.5px dashed rgba(16, 185, 129, 0.3); padding: 16px; border-radius: 16px; margin-top: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+          <p style="margin: 0 0 10px 0; font-size: 11px; text-transform: uppercase; font-weight: 700; color: #10b981; letter-spacing: 0.5px;">✨ Proposed Bio</p>
+          <p style="margin: 0 0 14px 0; font-size: 13.5px; font-style: italic; color: #e4e4e7; line-height: 1.6;">"${proposedBio}"</p>
           <button class="btn-ai-apply" onclick="applyAIProposedBio(this, '${escapedBio}')">
              Apply to Profile
           </button>
@@ -1446,9 +1526,14 @@ async function sendAIProfileChat() {
       .replace(/\n/g, "<br>");
 
     win.innerHTML += `
-      <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; border-radius: 0 20px 20px 20px;">
-        <p style="margin: 0;">${formattedText}</p>
-        ${proposedCardHtml}
+      <div style="display: flex; justify-content: flex-start; margin-bottom: 16px; gap: 12px; align-items: flex-start;">
+        <div style="width: 36px; height: 36px; border-radius: 50%; background: #064e3b; display: flex; align-items: center; justify-content: center; color: #34d399; flex-shrink: 0; border: 1px solid #022c22; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+        </div>
+        <div class="ai-chat-bubble ai-chat-bubble--assistant" style="padding: 14px 18px; line-height: 1.5; font-size: 14px; border-radius: 0 20px 20px 20px; flex: 1; max-width: 80%;">
+          <p style="margin: 0;">${formattedText}</p>
+          ${proposedCardHtml}
+        </div>
       </div>
     `;
 
@@ -1467,12 +1552,12 @@ async function applyAIProposedBio(button, bioText) {
     </svg> Applying...
   `;
   try {
-    const scannedMarks = window.latestScannedMarks || localStorage.getItem("latestScannedMarks") || null;
+    const scannedMarks = window.latestScannedMarks || null;
     const res = await fetch("/api/student/profile/bio", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
+        Authorization: `Bearer ${getToken()}`
       },
       body: JSON.stringify({ bio: bioText, academicSubjects: scannedMarks })
     });
@@ -1508,4 +1593,308 @@ window.openAIProfileModal = openAIProfileModal;
 window.closeAIProfileModal = closeAIProfileModal;
 window.sendAIProfileChat = sendAIProfileChat;
 window.applyAIProposedBio = applyAIProposedBio;
+window.applyForOpportunity = applyForOpportunity;
 window.initProfileCompletionWidget = initProfileCompletionWidget;
+
+async function loadStudentHeaderProfile() {
+  const avatar = document.querySelector(".nav__avatar");
+  const initials = document.getElementById("initials");
+  const userNameEl = document.getElementById("userName");
+  if (!avatar && !initials && !userNameEl) return;
+
+  const token = getToken();
+  if (!token) return;
+
+  try {
+    const res = await fetch("/api/student/profile", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (data.success && data.profile) {
+      const p = data.profile;
+
+      // Store in memory, NOT in localStorage!
+      window.__currentUser = p;
+
+      // Update avatar or initials
+      if (p.ProfilePicUrl) {
+        if (avatar) {
+          avatar.innerHTML = `<img src="${escapeHtml(p.ProfilePicUrl)}" alt="Profile picture" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        }
+      } else {
+        const firstInitial = p.StuName ? p.StuName[0] : "";
+        const lastInitial = p.StuLastName ? p.StuLastName[0] : "";
+        const initialsText = (firstInitial + lastInitial).toUpperCase();
+        if (initials) {
+          initials.textContent = initialsText || "?";
+        }
+      }
+
+      // Update username if element present
+      if (userNameEl && p.StuName) {
+        userNameEl.textContent = p.StuName;
+      }
+    }
+  } catch (err) {
+    console.error("Error loading header profile:", err);
+  }
+}
+
+function isTokenExpired(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    const payload = JSON.parse(jsonPayload);
+    return payload.exp * 1000 < Date.now();
+  } catch (e) {
+    return true;
+  }
+}
+
+function getToken() {
+  const token = localStorage.getItem('token');
+  if (!token || isTokenExpired(token)) {
+    logout();
+    return null;
+  }
+  return token;
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('accountType');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('initials');
+  localStorage.removeItem('profilePicUrl');
+  localStorage.removeItem('profileComplete');
+  localStorage.removeItem("latestScannedMarks");
+  localStorage.removeItem("latestScannedSchool");
+  localStorage.removeItem("orgName");
+  localStorage.removeItem("orgInitials");
+  localStorage.removeItem("orgProfilePic");
+  window.__currentUser = null;
+
+  fetch('/logout', { method: 'POST' })
+    .catch(() => { })
+    .finally(() => {
+      window.location.href = '/login-page';
+    });
+}
+
+// Expose helpers globally
+window.isTokenExpired = isTokenExpired;
+window.getToken = getToken;
+window.logout = logout;
+window.getGoogleCalDateStr = getGoogleCalDateStr;
+window.showApprovalPopup = showApprovalPopup;
+window.closeApprovalPopup = closeApprovalPopup;
+window.showAppApprovalPopupByIndex = showAppApprovalPopupByIndex;
+
+/**
+ * Timezone-safe Google Calendar Date Formatter (YYYYMMDD)
+ */
+function getGoogleCalDateStr(dateVal) {
+  if (!dateVal) {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}${m}${d}`;
+  }
+
+  if (dateVal instanceof Date) {
+    const y = dateVal.getFullYear();
+    const m = String(dateVal.getMonth() + 1).padStart(2, '0');
+    const d = String(dateVal.getDate()).padStart(2, '0');
+    return `${y}${m}${d}`;
+  }
+
+  const str = String(dateVal);
+  const match = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    return `${match[1]}${match[2]}${match[3]}`;
+  }
+
+  const date = new Date(str);
+  if (Number.isNaN(date.getTime())) {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}${m}${d}`;
+  }
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}${m}${d}`;
+}
+
+
+function showApprovalPopup(notification) {
+  const existing = document.getElementById("smileApprovalModal");
+  if (existing) {
+    existing.remove();
+  }
+
+  const deadlineDate = notification.ApplicationDeadline
+    ? new Date(notification.ApplicationDeadline).toLocaleDateString("en-ZA", { day: "2-digit", month: "short", year: "numeric" })
+    : "N/A";
+  const startDate = notification.StartDate
+    ? new Date(notification.StartDate).toLocaleDateString("en-ZA", { day: "2-digit", month: "short", year: "numeric" })
+    : "TBD";
+
+  const startYMD = getGoogleCalDateStr(notification.StartDate || notification.ApplicationDeadline);
+  const eventText = `${notification.OppTitle || notification.Title} - Start Date (${notification.OrgName || "SMILE Partner"})`;
+  const cleanDesc = (notification.Description || "").replace(/<[^>]*>/g, "").slice(0, 1000);
+  const eventDetails = `SMILE Program Opportunity: ${notification.OppTitle || notification.Title}\nOrganisation: ${notification.OrgName || "SMILE Partner"}\nStatus: Approved\n\nDescription: ${cleanDesc}`;
+  const eventLocation = notification.Province ? `${notification.Province}, South Africa` : "South Africa";
+
+  let googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+    `&text=${encodeURIComponent(eventText)}` +
+    `&dates=${startYMD}T090000/${startYMD}T170000` +
+    `&details=${encodeURIComponent(eventDetails)}` +
+    `&location=${encodeURIComponent(eventLocation)}`;
+
+  googleCalUrl = googleCalUrl.replace(/'/g, "%27");
+
+  const modal = document.createElement("div");
+  modal.id = "smileApprovalModal";
+  modal.style.position = "fixed";
+  modal.style.inset = "0";
+  modal.style.zIndex = "10005";
+  modal.style.display = "flex";
+  modal.style.alignItems = "center";
+  modal.style.justifyContent = "center";
+  modal.style.background = "rgba(9, 9, 11, 0.75)";
+  modal.style.backdropFilter = "blur(10px)";
+  modal.style.opacity = "0";
+  modal.style.transition = "opacity 0.3s ease";
+  modal.style.pointerEvents = "auto";
+
+  modal.innerHTML = `
+    <div id="smileApprovalModalContainer" style="background: #18181b; width: 90%; max-width: 520px; border-radius: 24px; box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6); border: 1px solid rgba(63, 63, 70, 0.9); overflow: hidden; display: flex; flex-direction: column; transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); color: #fafafa; font-family: inherit;">
+      
+      <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 28px 24px; text-align: center; position: relative; color: white;">
+        <button onclick="closeApprovalPopup()" style="position: absolute; right: 16px; top: 16px; background: rgba(255, 255, 255, 0.15); border: none; color: white; font-size: 20px; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">&times;</button>
+        
+        <div style="width: 56px; height: 56px; background: rgba(255, 255, 255, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; border: 1.5px solid rgba(255, 255, 255, 0.4);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h2 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">Application Approved</h2>
+        <p style="margin: 6px 0 0; font-size: 13px; opacity: 0.9; font-weight: 400;">Congratulations! You have been accepted for this program.</p>
+      </div>
+
+      <div style="padding: 24px; background: #09090b; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; max-height: 60vh;">
+        
+        <div style="background: rgba(39, 39, 42, 0.4); border: 1px solid rgba(63, 63, 70, 0.5); padding: 18px; border-radius: 16px;">
+          <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #10b981; letter-spacing: 0.5px;">Opportunity Details</span>
+          <h3 style="margin: 6px 0 2px; font-size: 16px; font-weight: 700; color: #ffffff;">${escapeHtml(notification.OppTitle || notification.Title)}</h3>
+          <p style="margin: 0; font-size: 13px; color: #a1a1aa; font-weight: 500;">${escapeHtml(notification.OrgName || "SMILE Partner")}</p>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(63, 63, 70, 0.5);">
+            <div>
+              <span style="font-size: 10px; text-transform: uppercase; color: #71717a; font-weight: 600;">Start Date</span>
+              <p style="margin: 2px 0 0; font-size: 13px; font-weight: 600; color: #e4e4e7;">${startDate}</p>
+            </div>
+            <div>
+              <span style="font-size: 10px; text-transform: uppercase; color: #71717a; font-weight: 600;">Province</span>
+              <p style="margin: 2px 0 0; font-size: 13px; font-weight: 600; color: #e4e4e7;">${escapeHtml(notification.Province || "National")}</p>
+            </div>
+          </div>
+        </div>
+
+        ${notification.Description ? `
+          <div style="background: rgba(39, 39, 42, 0.2); border: 1px solid rgba(63, 63, 70, 0.3); padding: 16px; border-radius: 16px;">
+            <span style="font-size: 10px; text-transform: uppercase; color: #71717a; font-weight: 600; display: block; margin-bottom: 6px;">Program Description</span>
+            <p style="margin: 0; font-size: 12.5px; color: #d4d4d8; line-height: 1.5; max-height: 120px; overflow-y: auto;">
+              ${escapeHtml(notification.Description).replace(/\n/g, '<br>')}
+            </p>
+          </div>
+        ` : ''}
+        
+      </div>
+
+      <div style="padding: 16px 24px; background: #18181b; border-top: 1px solid rgba(63, 63, 70, 0.8); display: flex; gap: 12px; justify-content: flex-end;">
+        <button onclick="closeApprovalPopup()" style="padding: 10px 18px; border: 1px solid rgba(63, 63, 70, 0.8); border-radius: 12px; background: transparent; color: #a1a1aa; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 13px;" onmouseover="this.style.color='#ffffff'; this.style.borderColor='rgba(161, 161, 170, 0.8)'" onmouseout="this.style.color='#a1a1aa'; this.style.borderColor='rgba(63, 63, 70, 0.8)'">Close</button>
+        
+        <button onclick="window.open('${googleCalUrl}', '_blank'); closeApprovalPopup();" style="padding: 10px 20px; border: none; border-radius: 12px; background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);" onmouseover="this.style.opacity='0.95'; this.style.transform='translateY(-1px)'" onmouseout="this.style.opacity='1'; this.style.transform='none'">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+            <line x1="16" x2="16" y1="2" y2="6"></line>
+            <line x1="8" x2="8" y1="2" y2="6"></line>
+            <line x1="3" x2="21" y1="10" y2="10"></line>
+          </svg>
+          Add to Google Calendar
+        </button>
+      </div>
+
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  document.body.style.overflow = "hidden";
+
+  setTimeout(() => {
+    modal.style.opacity = "1";
+    const container = document.getElementById("smileApprovalModalContainer");
+    if (container) container.style.transform = "scale(1)";
+  }, 50);
+}
+
+function closeApprovalPopup() {
+  const modal = document.getElementById("smileApprovalModal");
+  const container = document.getElementById("smileApprovalModalContainer");
+  if (container) container.style.transform = "scale(0.95)";
+  if (modal) {
+    modal.style.opacity = "0";
+    modal.style.pointerEvents = "none";
+    setTimeout(() => {
+      modal.remove();
+      document.body.style.overflow = "";
+    }, 300);
+  }
+}
+
+function showAppApprovalPopupByIndex(index) {
+  if (window.__loadedApplications && window.__loadedApplications[index]) {
+    showApprovalPopup(window.__loadedApplications[index]);
+  }
+}
+
+// Global Inactivity Auto-Logout Tracker (5 Minutes)
+(function() {
+  let timeoutId;
+  const INACTIVITY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+  function resetTimer() {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(logoutDueToInactivity, INACTIVITY_TIME);
+  }
+
+  function logoutDueToInactivity() {
+    console.log("Logout due to 5 minutes of inactivity.");
+    alert("You have been logged out due to 5 minutes of inactivity.");
+    if (typeof logout === "function") {
+      logout();
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('accountType');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('initials');
+      window.location.href = '/login-page';
+    }
+  }
+
+  // Events that indicate user activity
+  const activityEvents = ['mousemove', 'mousedown', 'keydown', 'keypress', 'click', 'scroll', 'touchstart'];
+  activityEvents.forEach(name => {
+    document.addEventListener(name, resetTimer, { passive: true });
+  });
+
+  resetTimer(); // Start the timer initially
+})();

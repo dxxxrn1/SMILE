@@ -42,7 +42,7 @@
 /* Make sure the main layout stretches correctly */
 .dashboard-main {
   min-height: 100vh;
-  background-color: #f9fafb;
+  background-color: transparent !important;
 }
 
 /* Smooth transition for status badges */

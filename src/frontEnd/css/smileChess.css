@@ -7,8 +7,17 @@
   --smile-muted: #64748b;
   --smile-line: #e2e8f0;
   --smile-soft: #f8fafc;
+
+  /* Board square size — overridden at each breakpoint */
+  --sq: 70px;
 }
 
+/* ── Responsive square size ─────────────────────────────────── */
+@media (max-width: 780px) { :root { --sq: 44px; } }
+@media (max-width: 420px) { :root { --sq: 38px; } }
+@media (max-width: 360px) { :root { --sq: 34px; } }
+
+/* ── Page ───────────────────────────────────────────────────── */
 .smile-chess-page {
   background-color: #e8e7fa;
   background-image:
@@ -23,6 +32,7 @@
   padding: 2rem 1.5rem 4rem;
 }
 
+/* ── Cards & modals ─────────────────────────────────────────── */
 .smile-chess-page .card,
 .smile-chess-page .modal-box {
   background: #ffffff;
@@ -57,6 +67,7 @@
   z-index: 1;
 }
 
+/* ── Typography ─────────────────────────────────────────────── */
 .smile-chess-page h1,
 .smile-chess-page h2,
 .smile-chess-page h3 {
@@ -73,6 +84,7 @@
   color: var(--smile-muted);
 }
 
+/* ── Buttons ────────────────────────────────────────────────── */
 .smile-chess-page .btn {
   border: 1px solid var(--smile-line);
   border-radius: 0.5rem;
@@ -107,6 +119,7 @@
   color: #991b1b;
 }
 
+/* ── Inputs ─────────────────────────────────────────────────── */
 .smile-chess-page .input {
   border: 1px solid var(--smile-line);
   border-radius: 0.5rem;
@@ -120,106 +133,65 @@
   box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.12);
 }
 
-.smile-chess-page .badge {
-  border-radius: 999px;
-  font-weight: 700;
-}
+/* ── Badges ─────────────────────────────────────────────────── */
+.smile-chess-page .badge            { border-radius: 999px; font-weight: 700; }
+.smile-chess-page .badge-purple     { background: #f3e8ff; color: #7e22ce; }
+.smile-chess-page .badge-green      { background: #d1fae5; color: #065f46; }
+.smile-chess-page .badge-amber      { background: #fef3c7; color: #92400e; }
+.smile-chess-page .badge-red        { background: #fee2e2; color: #991b1b; }
 
-.smile-chess-page .badge-purple {
-  background: #f3e8ff;
-  color: #7e22ce;
-}
-
-.smile-chess-page .badge-green {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.smile-chess-page .badge-amber {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.smile-chess-page .badge-red {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.smile-chess-page .status-bar {
-  border-radius: 0.75rem;
-  font-weight: 700;
-}
-
-.smile-chess-page .s-playing {
-  background: #d1fae5;
-  color: #065f46;
-}
-
+/* ── Status bar ─────────────────────────────────────────────── */
+.smile-chess-page .status-bar       { border-radius: 0.75rem; font-weight: 700; }
+.smile-chess-page .s-playing        { background: #d1fae5; color: #065f46; }
 .smile-chess-page .s-check,
-.smile-chess-page .s-waiting {
-  background: #fff7ed;
-  color: #ea580c;
-}
+.smile-chess-page .s-waiting        { background: #fff7ed; color: #ea580c; }
+.smile-chess-page .s-over           { background: #fee2e2; color: #991b1b; }
 
-.smile-chess-page .s-over {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
+/* ── Board wrapper — stacks vertically on mobile ────────────── */
 .smile-chess-page .board-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
   align-items: flex-start;
   justify-content: center;
 }
 
+/* ── Board — fluid square size via CSS variable ─────────────── */
 .smile-chess-page .board {
   border: 4px solid #ffffff;
   border-radius: 0.75rem;
   overflow: hidden;
   box-shadow: 0 20px 35px rgba(15, 23, 42, 0.14);
-  grid-template-columns: repeat(8, 70px) !important;
-  grid-template-rows: repeat(8, 70px) !important;
+  /* Override the inline grid sizing from the base stylesheet */
+  grid-template-columns: repeat(8, var(--sq)) !important;
+  grid-template-rows:    repeat(8, var(--sq)) !important;
 }
 
 .smile-chess-page .sq {
-  width: 70px !important;
-  height: 70px !important;
-  font-size: 40px !important;
+  width:     var(--sq) !important;
+  height:    var(--sq) !important;
+  font-size: calc(var(--sq) * 0.6) !important;
 }
 
+/* Labels must match board dimension exactly */
 .smile-chess-page .rank-labels {
-  height: 560px !important;
+  height: calc(var(--sq) * 8) !important;
 }
 
 .smile-chess-page .file-labels {
-  width: 560px !important;
+  width: calc(var(--sq) * 8) !important;
 }
 
-.smile-chess-page .sq.light {
-  background: #fff7ed;
-}
-
-.smile-chess-page .sq.dark {
-  background: #ec4899;
-  color: #ffffff;
-}
-
+/* ── Square colours ─────────────────────────────────────────── */
+.smile-chess-page .sq.light    { background: #fff7ed; }
+.smile-chess-page .sq.dark     { background: #ec4899; color: #ffffff; }
 .smile-chess-page .sq.selected,
-.smile-chess-page .sq.last-to {
-  background: #f97316 !important;
-}
+.smile-chess-page .sq.last-to  { background: #f97316 !important; }
+.smile-chess-page .sq.possible { background: #fbcfe8 !important; }
+.smile-chess-page .sq.last-from{ background: #fed7aa !important; }
+.smile-chess-page .sq.in-check { background: #ef4444 !important; }
 
-.smile-chess-page .sq.possible {
-  background: #fbcfe8 !important;
-}
-
-.smile-chess-page .sq.last-from {
-  background: #fed7aa !important;
-}
-
-.smile-chess-page .sq.in-check {
-  background: #ef4444 !important;
-}
-
+/* ── Side panel ─────────────────────────────────────────────── */
 .smile-chess-page .side-panel {
   min-width: 280px;
 }
@@ -236,16 +208,16 @@
   background: #fdf2f8;
 }
 
+/* ── Chat ───────────────────────────────────────────────────── */
 .smile-chess-page .chat-box {
   background: var(--smile-soft);
   border: 1px solid var(--smile-line);
   border-radius: 0.75rem;
 }
 
-.smile-chess-page .chat-msg .sender {
-  color: var(--smile-pink);
-}
+.smile-chess-page .chat-msg .sender { color: var(--smile-pink); }
 
+/* ── Modals ─────────────────────────────────────────────────── */
 .smile-chess-page .modal-overlay {
   display: flex;
   min-height: 420px;
@@ -257,6 +229,7 @@
   display: none;
 }
 
+/* ── Difficulty / promotion buttons ─────────────────────────── */
 .smile-chess-page .diff-btn,
 .smile-chess-page .promo-btn {
   border: 1px solid var(--smile-line);
@@ -270,6 +243,7 @@
   border-color: #fed7aa;
 }
 
+/* ── Toast ──────────────────────────────────────────────────── */
 .smile-chess-page #toast {
   background: var(--smile-gradient);
   color: #ffffff;
@@ -277,21 +251,7 @@
   box-shadow: 0 10px 25px rgba(236, 72, 153, 0.25);
 }
 
-@media (max-width: 780px) {
-  .smile-chess-page .app {
-    padding: 1rem 0.75rem 3rem;
-  }
-
-  .smile-chess-page .side-panel {
-    min-width: 100%;
-  }
-
-  .smile-chess-header .nav__menu {
-    display: none;
-  }
-}
-
-/* Premium Player-Specific Chess Piece Styling */
+/* ── Piece colours ──────────────────────────────────────────── */
 .smile-chess-page .sq.white-piece,
 .smile-chess-page .white-piece,
 .white-piece {
@@ -302,4 +262,34 @@
 .smile-chess-page .black-piece,
 .black-piece {
   color: #000000 !important;
+}
+
+/* ── Mobile overrides ───────────────────────────────────────── */
+@media (max-width: 780px) {
+  .smile-chess-page .app {
+    padding: 1rem 0.5rem 3rem;
+  }
+
+  /* Side panel goes full-width below the board */
+  .smile-chess-page .side-panel {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  /* Board wrapper centres the board and stacks panel below */
+  .smile-chess-page .board-wrap {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Hide desktop nav links on mobile */
+  .smile-chess-header .nav__menu {
+    display: none;
+  }
+
+  /* Rank/file label font shrinks on small screens */
+  .smile-chess-page .rank-labels,
+  .smile-chess-page .file-labels {
+    font-size: 9px;
+  }
 }

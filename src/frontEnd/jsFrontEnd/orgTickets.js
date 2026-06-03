@@ -14,7 +14,7 @@ async function loadOrgTickets() {
     tbody.innerHTML = `<tr><td colspan="6" class="otkt-empty">Loading...</td></tr>`;
 
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
         const res = await fetch("/api/tickets/my", {
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -69,7 +69,7 @@ async function submitOrgTicket() {
     btn.innerHTML = `<svg class="spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Submitting...`;
 
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
         const res = await fetch("/api/tickets", {
             method: "POST",
             headers: {

@@ -20,14 +20,60 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   checkUrlParams();
   bindTabInterceptors();
+  loadOrgEvents();
+  
+  const recentList = document.getElementById("recent-applicants-list");
+  const backToTopBtn = document.getElementById("backToTopBtn");
+  if (recentList && backToTopBtn) {
+    recentList.addEventListener("scroll", () => {
+      if (recentList.scrollTop > 50) {
+        backToTopBtn.style.display = "inline-flex";
+      } else {
+        backToTopBtn.style.display = "none";
+      }
+    });
+  }
+
+  const topOppsList = document.getElementById("top-performing-list");
+  const backToTopTopOppsBtn = document.getElementById("backToTopTopOppsBtn");
+  if (topOppsList && backToTopTopOppsBtn) {
+    topOppsList.addEventListener("scroll", () => {
+      if (topOppsList.scrollTop > 50) {
+        backToTopTopOppsBtn.style.display = "inline-flex";
+      } else {
+        backToTopTopOppsBtn.style.display = "none";
+      }
+    });
+  }
+
+  const eventsList = document.getElementById("dynamicEventsListOrg");
+  const backToTopEventsBtn = document.getElementById("backToTopEventsBtn");
+  if (eventsList && backToTopEventsBtn) {
+    eventsList.addEventListener("scroll", () => {
+      if (eventsList.scrollTop > 50) {
+        backToTopEventsBtn.style.display = "inline-flex";
+      } else {
+        backToTopEventsBtn.style.display = "none";
+      }
+    });
+  }
+
+  window.addEventListener("scroll", () => {
+    const btn = document.getElementById("backToTopPageBtn");
+    if (btn) {
+      if (window.scrollY > 150) {
+        btn.style.display = "inline-flex";
+      } else {
+        btn.style.display = "none";
+      }
+    }
+  });
 
   const logoutTag = document.getElementById("logout");
   if (logoutTag) {
-    logoutTag.addEventListener("click", () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("accountType");
-      localStorage.removeItem("userName");
-      localStorage.removeItem("initials");
+    logoutTag.addEventListener("click", (e) => {
+      e.preventDefault();
+      logout();
     });
   }
 });
@@ -37,12 +83,7 @@ async function loadOrgSidebarProfile() {
   const nameEl = document.getElementById("sidebarOrgName");
   if (!avatarEl && !nameEl) return;
 
-  const cachedName = localStorage.getItem("orgName") || localStorage.getItem("userName") || "My Organisation";
-  const cachedInitials = localStorage.getItem("orgInitials") || localStorage.getItem("initials") || cachedName.slice(0, 2).toUpperCase();
-  if (nameEl) nameEl.textContent = cachedName;
-  if (avatarEl) avatarEl.textContent = cachedInitials;
-
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -55,11 +96,12 @@ async function loadOrgSidebarProfile() {
     if (!data.success || !data.profile) return;
 
     const org = data.profile;
-    const orgName = org.OrgName || cachedName;
+
+    // Store in memory, NOT in localStorage!
+    window.__currentUser = org;
+
+    const orgName = org.OrgName || "My Organisation";
     const initials = orgName.slice(0, 2).toUpperCase();
-    localStorage.setItem("orgName", orgName);
-    localStorage.setItem("orgInitials", initials);
-    if (org.OrgProfilePic) localStorage.setItem("orgProfilePic", org.OrgProfilePic);
 
     if (nameEl) nameEl.textContent = orgName;
     if (avatarEl) {
@@ -171,7 +213,7 @@ function bindTabInterceptors() {
   document.querySelectorAll(".org-tab").forEach((tabLink) => {
     tabLink.addEventListener("click", function (e) {
       const href = this.getAttribute("href");
-      if (href && href.includes("?tab=")) {
+      if (window.location.pathname === "/org/dashboard" && href && href.includes("?tab=")) {
         e.preventDefault();
         const tabName = this.getAttribute("data-tab");
         switchTab(tabName, this);
@@ -418,7 +460,7 @@ let _oppIdToDelete = null;
 let _opportunitiesCache = [];
 
 async function loadOrgOpportunities() {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   const tbody = document.getElementById("oppTableBody");
@@ -500,7 +542,7 @@ function closeDeleteModal() {
 
 async function executeDelete() {
   if (!_oppIdToDelete) return;
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -522,7 +564,7 @@ async function executeDelete() {
       _rowToDelete.style.transform = "translateX(-12px)";
       setTimeout(function () {
         if (_rowToDelete) _rowToDelete.remove();
-        loadOrgDashboard(); // Refresh metrics on stats cards
+        loadOrgDashboard();
       }, 300);
     }
   } catch (err) {
@@ -570,8 +612,15 @@ function closeEditModal() {
 
 async function submitOpportunityEdit(e) {
   e.preventDefault();
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
+
+  const deadlineVal = document.getElementById("editDeadline").value;
+  const todayStr = new Date().toLocaleDateString("en-CA");
+  if (deadlineVal < todayStr) {
+    showToast("❌ Application closing date cannot be in the past.", "danger");
+    return;
+  }
 
   const oppId = document.getElementById("editOppID").value;
   const payload = {
@@ -738,6 +787,16 @@ function handlePublish(asDraft) {
     return;
   }
 
+  if (!asDraft) {
+    const todayStr = new Date().toLocaleDateString("en-CA");
+    if (deadline.value < todayStr) {
+      showFormMsg("Application closing date cannot be in the past.", "error");
+      showToast("Application closing date cannot be in the past.", "error");
+      deadline.closest(".form__group").classList.add("form__group--error");
+      return;
+    }
+  }
+
   const btn = document.getElementById(asDraft ? "saveDraftBtn" : "publishBtn");
   const orig = btn.textContent;
   btn.disabled = true;
@@ -827,7 +886,7 @@ function bindQuickCreate() {
    LIVE DATA — ORG DASHBOARD STATS + RECENT APPLICANTS
    ================================================================ */
 async function loadOrgDashboard() {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   try {
@@ -944,7 +1003,7 @@ function parseSafeDate(dateVal) {
 }
 
 async function updateAppStatus(appId, newStatus, btn) {
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) return;
 
   const originalText = btn ? btn.textContent : "";
@@ -1056,7 +1115,7 @@ async function updateAppStatus(appId, newStatus, btn) {
 let _allApplicantRows = []; // To store rows for client-side filtering
 
 async function loadApplicants() {
-  const token = localStorage.getItem("token");
+  const token = getToken();
 
   const tbody = document.getElementById("applicantTableBody");
   if (!tbody) return;
@@ -1118,7 +1177,7 @@ function renderApplicantRows(list) {
     const fullName = `${a.StuName} ${a.StuLastName}`;
     const initials = ((a.StuName || "").slice(0, 1) + (a.StuLastName || "").slice(0, 1)).toUpperCase() || "SA";
 
-    // Determine badge class
+
     const classMap = {
       Pending: "app-status--pending",
       Reviewed: "app-status--reviewed",
@@ -1129,7 +1188,7 @@ function renderApplicantRows(list) {
     };
     const badgeClass = classMap[a.ApplicationStatus] || "app-status--pending";
 
-    // Determine actions cell contents
+
     let actionButtons = "";
     if (a.ApplicationStatus === "Pending" || a.ApplicationStatus === "Reviewed") {
       actionButtons = `
@@ -1302,15 +1361,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const tabHref = tab.getAttribute("href");
     const tabHrefBase = tabHref ? tabHref.split('?')[0] : "";
 
-    // Remove active from all first
     tab.classList.remove("org-tab--active");
 
-    // Highlight exact match OR path match without query params
     if (tabHref && (currentPath === tabHref || currentPath === tabHrefBase)) {
       tab.classList.add("org-tab--active");
     }
-
-    // Highlight on click
     tab.addEventListener("click", () => {
       tabs.forEach(t => t.classList.remove("org-tab--active"));
       tab.classList.add("org-tab--active");
@@ -1318,3 +1373,186 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+
+function isTokenExpired(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    const payload = JSON.parse(jsonPayload);
+    return payload.exp * 1000 < Date.now();
+  } catch (e) {
+    return true;
+  }
+}
+
+function getToken() {
+  const token = localStorage.getItem('token');
+  if (!token || isTokenExpired(token)) {
+    logout();
+    return null;
+  }
+  return token;
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('accountType');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('initials');
+  localStorage.removeItem('profilePicUrl');
+  localStorage.removeItem('profileComplete');
+  localStorage.removeItem("latestScannedMarks");
+  localStorage.removeItem("latestScannedSchool");
+  localStorage.removeItem("orgName");
+  localStorage.removeItem("orgInitials");
+  localStorage.removeItem("orgProfilePic");
+  window.__currentUser = null;
+
+  fetch('/logout', { method: 'POST' })
+    .catch(() => { })
+    .finally(() => {
+      window.location.href = '/login-page';
+    });
+}
+
+
+window.isTokenExpired = isTokenExpired;
+window.getToken = getToken;
+window.logout = logout;
+window.loadOrgEvents = loadOrgEvents;
+window.openCreateEventModal = function () {
+  window.location.href = '/org/dashboard/createOpportunity';
+};
+
+function escapeHtml(val) {
+  return String(val ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+async function loadOrgEvents() {
+  const container = document.getElementById("dynamicEventsListOrg");
+  if (!container) return;
+
+  const token = getToken();
+  if (!token) return;
+
+  try {
+    const res = await fetch("/api/org/opportunities", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (data.success && data.opportunities && data.opportunities.length > 0) {
+
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const todayStr = `${yyyy}-${mm}-${dd}`;
+
+      const upcomingOpps = data.opportunities.filter(opp => {
+        if (!opp.ApplicationDeadline) return false;
+        const deadlineStr = opp.ApplicationDeadline.slice(0, 10);
+        return deadlineStr >= todayStr;
+      });
+
+      upcomingOpps.sort((a, b) => a.ApplicationDeadline.localeCompare(b.ApplicationDeadline));
+
+      if (upcomingOpps.length > 0) {
+        container.innerHTML = "";
+
+        upcomingOpps.slice(0, 5).forEach(opp => {
+          const eDate = new Date(opp.ApplicationDeadline);
+          const day = eDate.getDate();
+          const monthStr = eDate.toLocaleString("en-US", { month: "short" });
+
+          const timeLabel = `Deadline: ${eDate.toLocaleDateString("en-ZA")}`;
+
+          let colorThemeClass = "indigo"; // default
+          const type = (opp.OppType || "").toLowerCase();
+          if (type.includes("deadline") || type.includes("scholarship")) colorThemeClass = "rose";
+          else if (type.includes("bursary")) colorThemeClass = "amber";
+          else if (type.includes("internship") || type.includes("learnership")) colorThemeClass = "indigo";
+          else if (type.includes("workshop") || type.includes("programme")) colorThemeClass = "emerald";
+
+          const startYMD = opp.ApplicationDeadline.slice(0, 10).replace(/-/g, "");
+          const cleanDesc = (opp.Description || "").replace(/<[^>]*>/g, "").slice(0, 450);
+          const eventText = `${opp.OppType || "Program"} Deadline: ${opp.Title}`;
+          const eventDetails = `SMILE Organization Program Opportunity\n\nType: ${opp.OppType}\nProvince: ${opp.Province}\n\nDescription: ${cleanDesc}`;
+          const eventLocation = `${opp.Province || "National"}, South Africa`;
+
+          const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+            `&text=${encodeURIComponent(eventText)}` +
+            `&dates=${startYMD}T090000/${startYMD}T100000` +
+            `&details=${encodeURIComponent(eventDetails)}` +
+            `&location=${encodeURIComponent(eventLocation)}`;
+
+          const item = document.createElement("div");
+          item.className = "event-item";
+          item.style.cursor = "pointer";
+          item.onclick = () => window.open(googleCalUrl, "_blank");
+
+          item.innerHTML = `
+            <div class="event-date-badge event-date-badge--${colorThemeClass}">
+              <span class="event-date-badge__month">${monthStr}</span>
+              <span class="event-date-badge__day">${day}</span>
+            </div>
+            <div class="event-details" style="flex-grow: 1;">
+              <span class="event-title">${escapeHtml(opp.Title)}</span>
+              <span class="event-time">${timeLabel}</span>
+            </div>
+            <span style="font-size: 10px; color: #3b82f6; border: 1px solid #bfdbfe; background: #eff6ff; padding: 2px 6px; border-radius: 6px;">Add</span>
+          `;
+          container.appendChild(item);
+        });
+      } else {
+        container.innerHTML = `<p style="padding: 12px 0; color: #9ca3af; text-align: center; font-size: 13px;">No upcoming opportunities.</p>`;
+      }
+    } else {
+      container.innerHTML = `<p style="padding: 12px 0; color: #9ca3af; text-align: center; font-size: 13px;">No active programs found.</p>`;
+    }
+  } catch (err) {
+    console.error("Error loading dynamically populated org opportunities:", err);
+    container.innerHTML = `<p style="padding: 12px 0; color: #dc2626; text-align: center; font-size: 13px;">Failed to load schedule.</p>`;
+  }
+}
+
+// Global Inactivity Auto-Logout Tracker (5 Minutes)
+(function() {
+  let timeoutId;
+  const INACTIVITY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+  function resetTimer() {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(logoutDueToInactivity, INACTIVITY_TIME);
+  }
+
+  function logoutDueToInactivity() {
+    console.log("Logout due to 5 minutes of inactivity.");
+    alert("You have been logged out due to 5 minutes of inactivity.");
+    if (typeof logout === "function") {
+      logout();
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('accountType');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('initials');
+      window.location.href = '/login-page';
+    }
+  }
+
+  // Events that indicate user activity
+  const activityEvents = ['mousemove', 'mousedown', 'keydown', 'keypress', 'click', 'scroll', 'touchstart'];
+  activityEvents.forEach(name => {
+    document.addEventListener(name, resetTimer, { passive: true });
+  });
+
+  resetTimer(); // Start the timer initially
+})();

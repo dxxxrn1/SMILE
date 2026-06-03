@@ -4,9 +4,6 @@ import os from "os";
 import path from "path";
 import { fileURLToPath } from "url";
 import QRCode from "qrcode";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const pdfParse = require("pdf-parse");
 import Groq from "groq-sdk";
 
 const route = express.Router();
@@ -80,7 +77,162 @@ function getActiveSession(id) {
   return session;
 }
 
+
+// async function parseAcademicDocumentWithGroq(file) {
+//   try {
+//     console.log("Processing file:", file.name, file.type);
+
+//     // ----------------------------
+//     // IMAGE FILES (JPG/PNG/WEBP)
+//     // ----------------------------
+//     if (file.type.startsWith("image/")) {
+//       console.log("Using Groq Vision on image...");
+
+//       const response = await groq.chat.completions.create({
+//         model: "llama-3.2-11b-vision-preview",
+//         messages: [
+//           {
+//             role: "system",
+//             content: `
+// You are an academic results parser.
+
+// Read the school report, transcript, statement of results, or certificate.
+
+// Extract:
+// - Grade level (default Grade 11 if missing)
+// - All subjects
+// - Numerical percentages
+
+// Return ONLY valid JSON:
+
+// {
+//   "grade": "Grade 11",
+//   "subjects": [
+//     { "name": "Mathematics", "mark": 85 },
+//     { "name": "Physical Sciences", "mark": 80 }
+//   ]
+// }
+// `
+//           },
+//           {
+//             role: "user",
+//             content: [
+//               {
+//                 type: "image_url",
+//                 image_url: {
+//                   url: file.dataUrl
+//                 }
+//               }
+//             ]
+//           }
+//         ],
+//         response_format: {
+//           type: "json_object"
+//         }
+//       });
+
+//       const result = JSON.parse(
+//         response.choices[0].message.content
+//       );
+
+//       console.log("Vision result:", result);
+
+//       if (!result.subjects?.length) {
+//         throw new Error("No subjects detected.");
+//       }
+
+//       return result;
+//     }
+
+//     // ----------------------------
+//     // PDF FILES
+//     // ----------------------------
+//     if (file.type === "application/pdf") {
+//       console.log("Processing PDF...");
+
+//       const { createRequire } = await import("module");
+//       const require = createRequire(import.meta.url);
+
+//       const pdfParse = require("pdf-parse");
+
+//       const base64Data = file.dataUrl.split(";base64,").pop();
+//       const buffer = Buffer.from(base64Data, "base64");
+
+//       const pdfText = await pdfParse(buffer);
+
+//       console.log("PDF text:");
+//       console.log(pdfText.text);
+
+//       if (
+//         pdfText.text &&
+//         pdfText.text.trim().replace(/[^a-zA-Z0-9]/g, "").length > 20
+//       ) {
+//         const response = await groq.chat.completions.create({
+//           model: "llama-3.1-8b-instant",
+//           messages: [
+//             {
+//               role: "system",
+//               content: `
+// You are an academic results parser.
+
+// Extract:
+// - Grade level (default Grade 11)
+// - Subjects
+// - Marks
+
+// Return ONLY valid JSON.
+
+// {
+//   "grade": "Grade 11",
+//   "subjects": [
+//     { "name": "Mathematics", "mark": 85 }
+//   ]
+// }
+// `
+//             },
+//             {
+//               role: "user",
+//               content: pdfText.text
+//             }
+//           ],
+//           response_format: {
+//             type: "json_object"
+//           }
+//         });
+
+//         const result = JSON.parse(
+//           response.choices[0].message.content
+//         );
+
+//         console.log("PDF parse result:", result);
+
+//         if (!result.subjects?.length) {
+//           throw new Error("No subjects detected.");
+//         }
+
+//         return result;
+//       }
+
+//       throw new Error(
+//         "PDF contains no readable text. Upload a clearer PDF or image."
+//       );
+//     }
+
+//     throw new Error("Unsupported file type.");
+//   } catch (error) {
+//     console.error("Document parsing failed:", error);
+
+//     throw new Error(
+//       "Could not read the uploaded school document."
+//     );
+//   }
+// }
+
 async function parseAcademicDocumentWithGroq(file) {
+  const { createRequire } = await import("module");
+  const require = createRequire(import.meta.url);
+  const pdfParse = require("pdf-parse");
+
   try {
     const base64Data = file.dataUrl.split(";base64,").pop();
     const buffer = Buffer.from(base64Data, "base64");
@@ -187,15 +339,19 @@ Return ONLY a valid JSON object in this exact format:
 
   // Graceful fallback to mock results only if Groq parsing fails completely
   console.warn("Groq parsing returned no results. Falling back to default mock.");
-  return {
-    grade: "Grade 11",
-    subjects: [
-      { name: "Mathematics", mark: 78 },
-      { name: "Physical Sciences", mark: 82 },
-      { name: "English", mark: 71 },
-      { name: "Life Sciences", mark: 74 },
-    ]
-  };
+  // return {
+  //   grade: "Grade 11",
+  //   subjects: [
+  //     { name: "Mathematics", mark: 78 },
+  //     { name: "Physical Sciences", mark: 82 },
+  //     { name: "English", mark: 71 },
+  //     { name: "Life Sciences", mark: 74 },
+  //   ]
+  // };
+
+    throw new Error(
+    "Could not read any subjects from the uploaded document."
+  );
 }
 
 function classifySchoolDocument(parsedData) {
@@ -331,22 +487,85 @@ route.post("/api/scanner/sessions/:sessionId/upload", async (req, res) => {
   }
 
   const file = req.body?.file;
-  const allowedTypes = ["application/pdf"];
+const allowedTypes = [
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+  "image/webp"
+];
 
   if (!file) {
     return res.status(400).json({ message: "Please upload a PDF document." });
   }
 
+  // if (!allowedTypes.includes(file.type)) {
+  //   return res.status(400).json({ message: "Only PDF files are allowed." });
+  // }
+
   if (!allowedTypes.includes(file.type)) {
-    return res.status(400).json({ message: "Only PDF files are allowed." });
-  }
+  return res.status(400).json({
+    message: "Please upload a PDF, JPG, PNG or WEBP file."
+  });
+}
 
   if (!file.dataUrl || file.dataUrl.length > 20 * 1024 * 1024) {
     return res.status(400).json({ message: "The uploaded file is too large." });
   }
 
   try {
+    console.log("Uploaded file type:", file.type);
+    console.log("Data URL starts with:", file.dataUrl.substring(0, 50));
     const parsedData = await parseAcademicDocumentWithGroq(file);
+    if (file.type.startsWith("image/")) {
+      try {
+          console.log("Processing image with Groq Vision...")
+          console.log(file.type);
+          console.log(file.dataUrl.substring(0, 100));
+        const response = await groq.chat.completions.create({
+          model: "llama-3.2-11b-vision-preview",
+          messages: [
+            {
+              role: "system",
+              content: `You are an academic results parser.
+
+    Analyze the image of a school report, transcript, certificate, or results page.
+
+    Extract all subject names and their numerical marks/percentages.
+
+    Identify the grade level (e.g. Grade 11).
+
+    Return ONLY valid JSON in this format:
+
+    {
+      "grade": "Grade 11",
+      "subjects": [
+        { "name": "Mathematics", "mark": 85 },
+        { "name": "Physical Sciences", "mark": 80 }
+      ]
+    }`
+            },
+            {
+              role: "user",
+              content: [
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: file.dataUrl
+                  }
+                }
+              ]
+            }
+          ],
+          response_format: {
+            type: "json_object"
+          }
+        });
+
+        return JSON.parse(response.choices[0].message.content);
+      } catch (error) {
+        console.error("Image parsing failed:", error);
+      }
+    }
     const baseAnalysis = classifySchoolDocument(parsedData);
     const careerPaths = baseAnalysis.isSchoolDocument ? recommendCareerPaths(baseAnalysis) : [];
     const analysis = {

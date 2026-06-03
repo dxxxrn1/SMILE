@@ -2,15 +2,34 @@ import { rmSync } from "node:fs";
 import fs from "fs";
 import path from "path";
 import {sql , connectToDB} from "../dbConnection/dbconnection.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import nodemailer from  "nodemailer";
 import { error } from "node:console";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { validateRealEmail } from "../utils/validateEmail.js";
 import { consumeEmailVerification, isEmailVerified } from "./otpController.js";
+import cloudinary from "./cloudinaryConfig.js";
+import { logAudit } from "./auditController.js";
 
 dotenv.config();
+
+async function uploadToCloudinary(buffer, publicId, folder) {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(
+      {
+        folder,
+        public_id: publicId,
+        overwrite: true,
+        resource_type: "auto"
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    ).end(buffer);
+  });
+}
 
 export const saveStudentDetails = async (req, res) => {
     console.log("The request is received!!")
@@ -78,6 +97,9 @@ export const saveStudentDetails = async (req, res) => {
         } catch (emailError) {
             console.log("Email failed but user was still registered:", emailError);
         }
+
+        req.user = { id: null, email: email, accountType: "student" };
+        await logAudit(req, "USER_REGISTER", `Student registered successfully (Email: ${email})`);
 
         return res.sendStatus(201);
 
@@ -253,16 +275,38 @@ export const saveOrganisationDetails = async (req, res) => {
         const safeDocumentName = String(orgDocumentName || "document")
           .replace(/[^a-z0-9._-]/gi, "_")
           .slice(0, 80);
-        const buffer = Buffer.from(base64Data, "base64");
-        const fileName = `org_doc_${Date.now()}_${safeDocumentName}.${ext}`;
-        const docDir = path.join(process.cwd(), "src", "frontEnd", "Assets", "uploads", "documents");
 
-        if (!fs.existsSync(docDir)) {
-          fs.mkdirSync(docDir, { recursive: true });
+        let baseName = safeDocumentName;
+        if (baseName.toLowerCase().endsWith("." + ext)) {
+          baseName = baseName.slice(0, -(ext.length + 1));
+        } else if (ext === "jpg" && baseName.toLowerCase().endsWith(".jpeg")) {
+          baseName = baseName.slice(0, -5);
         }
 
-        fs.writeFileSync(path.join(docDir, fileName), buffer);
-        documentUrlPath = `/Assets/uploads/documents/${fileName}`;
+        const buffer = Buffer.from(base64Data, "base64");
+
+        if (buffer.length > 5 * 1024 * 1024) {
+          return res.status(400).json({
+            message: "Document must be smaller than 5MB.",
+          });
+        }
+
+        let publicId;
+        if (ext === "pdf") {
+          publicId = `org_doc_${Date.now()}_${baseName}.pdf`;
+        } else {
+          publicId = `org_doc_${Date.now()}_${baseName}`;
+        }
+
+        try {
+          const uploadResult = await uploadToCloudinary(buffer, publicId, "smile/organisation_documents");
+          documentUrlPath = uploadResult.secure_url;
+        } catch (uploadErr) {
+          console.error("Cloudinary upload error:", uploadErr);
+          return res.status(500).json({
+            message: "Failed to upload NPO/registration document to Cloudinary.",
+          });
+        }
       }
     }
 
@@ -316,6 +360,9 @@ export const saveOrganisationDetails = async (req, res) => {
       console.error("Application received email failed (non-fatal):", emailErr.message);
     }
 
+    req.user = { id: null, email: normalizedOrgEmail, accountType: "organization" };
+    await logAudit(req, "ORG_APPLY", `Organisation applied for registration: "${orgName}" (Email: ${normalizedOrgEmail})`);
+
     return res.status(201).json({
       message: "Application received. Your organisation will be reviewed by an admin before the account is created.",
     });
@@ -343,20 +390,31 @@ export const userLogin = async (req, res) => {
                 .query(`SELECT * FROM Student WHERE StuEmail = @email`);
 
             if (results.recordset.length <= 0) {
+                req.user = { id: null, email, accountType: "student" };
+                await logAudit(req, "FAILED_LOGIN", `Failed student login attempt (Email not found: ${email})`);
                 return res.sendStatus(401);
             }
 
             const user = results.recordset[0];
             console.log(user);
 
-            // âœ… correct variable name
+            // Check if user is suspended
+            if (user.Status === 'suspended') {
+                req.user = { id: user.StuID, email: user.StuEmail, accountType: "student" };
+                await logAudit(req, "FAILED_LOGIN", `Failed student login attempt (Account suspended: ${email})`);
+                return res.status(403).json({ message: "Your account has been suspended. Please contact the administrator." });
+            }
+
+            // ✅ correct variable name
             const passwordMatch = await bcrypt.compare(password, user.StuPassword);
 
             if (!passwordMatch) {
+                req.user = { id: user.StuID, email: user.StuEmail, accountType: "student" };
+                await logAudit(req, "FAILED_LOGIN", `Failed student login attempt (Incorrect password for ${email})`);
                 return res.status(401).json({ message: "Invalid credentials" });
             }
 
-            // âœ… correct env variable names
+            // ✅ correct env variable names
             const token = jwt.sign(
                 { id: user.StuID, email: user.StuEmail, accountType: "student" },
                 process.env.JWT_SECRET,
@@ -376,12 +434,14 @@ export const userLogin = async (req, res) => {
 
             console.log(stuName);
 
-            console.log("âœ… Student login successfully!");
+            console.log("✅ Student login successfully!");
+            req.user = { id: user.StuID, email: user.StuEmail, accountType: "student" };
+            await logAudit(req, "USER_LOGIN", `Student logged in successfully (Email: ${email})`);
             return res.status(200).json({ token, accountType: "student" , name: user.StuName,userinitials:initials});
 
         } else if (accountType === "organization") {
 
-    // âœ… Check Admin table first
+    // ✅ Check Admin table first
     const adminResult = await pool
         .request()
         .input("email", sql.VarChar, email)
@@ -394,6 +454,8 @@ export const userLogin = async (req, res) => {
         const passwordMatch = await bcrypt.compare(password, admin.AdminPassword);
 
         if (!passwordMatch) {
+            req.user = { id: admin.AdminID, email: admin.AdminEmail, accountType: "admin" };
+            await logAudit(req, "FAILED_LOGIN", `Failed admin login attempt (Incorrect password for ${email})`);
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
@@ -409,25 +471,38 @@ export const userLogin = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
-        console.log("âœ… Admin login via organisation card!");
+        console.log("✅ Admin login via organisation card!");
+        req.user = { id: admin.AdminID, email: admin.AdminEmail, accountType: "admin" };
+        await logAudit(req, "USER_LOGIN", `Admin logged in successfully (Email: ${email})`);
         return res.status(200).json({ token, accountType: "admin", name: admin.AdminName });
     }
 
-    // âœ… Not an admin â€” check Organisation table as normal
+    // ✅ Not an admin — check Organisation table as normal
     const orgResult = await pool
         .request()
         .input("email", sql.VarChar, email)
         .query(`SELECT * FROM Organisation WHERE OrgEmail = @email`);
 
     if (orgResult.recordset.length <= 0) {
+        req.user = { id: null, email, accountType: "organization" };
+        await logAudit(req, "FAILED_LOGIN", `Failed organisation login attempt (Email not found: ${email})`);
         return res.sendStatus(401);
     }
 
     const user = orgResult.recordset[0];
 
+    // Check if organisation is suspended
+    if (user.Status === 'suspended') {
+        req.user = { id: user.OrgId, email: user.OrgEmail, accountType: "organization" };
+        await logAudit(req, "FAILED_LOGIN", `Failed organisation login attempt (Account suspended: ${email})`);
+        return res.status(403).json({ message: "Your account has been suspended. Please contact the administrator." });
+    }
+
     const passwordMatch = await bcrypt.compare(password, user.Password);
 
     if (!passwordMatch) {
+        req.user = { id: user.OrgId, email: user.OrgEmail, accountType: "organization" };
+        await logAudit(req, "FAILED_LOGIN", `Failed organisation login attempt (Incorrect password for ${email})`);
         return res.status(401).json({ message: "Invalid credentials" });
     }
 
@@ -443,7 +518,9 @@ export const userLogin = async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
-    console.log("âœ… Organisation login successfully!");
+    console.log("✅ Organisation login successfully!");
+    req.user = { id: user.OrgId, email: user.OrgEmail, accountType: "organization" };
+    await logAudit(req, "USER_LOGIN", `Organisation logged in successfully (Email: ${email})`);
     return res.status(200).json({ token, accountType: "organization", name: user.OrgName });
 }
 

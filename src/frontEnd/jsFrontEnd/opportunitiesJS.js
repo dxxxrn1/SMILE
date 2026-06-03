@@ -10,12 +10,20 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("sortSelect").addEventListener("change", () => loadOpportunities());
 
     const logoutTag = document.getElementById("logout");
-      logoutTag.addEventListener("click" , ()=>{
+    if (logoutTag) {
+      logoutTag.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (typeof logout === "function") {
+          logout();
+        } else {
           localStorage.removeItem("token");
           localStorage.removeItem("accountType");
           localStorage.removeItem("userName");
           localStorage.removeItem("initials");
-    })
+          window.location.href = "/login-page";
+        }
+      });
+    }
 });
 
 async function loadOpportunities() {

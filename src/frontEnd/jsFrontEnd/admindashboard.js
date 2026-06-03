@@ -5,13 +5,31 @@
 let allOrganisations = []; // cache for filtering
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadOrganisations();
+    // Only load organisations if we are on the verification dashboard page
+    if (document.getElementById("org-table-body")) {
+        loadOrganisations();
+    }
 
     // Search filter
-    document.getElementById("search-input").addEventListener("input", filterTable);
+    const searchInput = document.getElementById("search-input");
+    if (searchInput) searchInput.addEventListener("input", filterTable);
 
     // Status filter
-    document.getElementById("status-filter").addEventListener("change", filterTable);
+    const statusFilter = document.getElementById("status-filter");
+    if (statusFilter) statusFilter.addEventListener("change", filterTable);
+
+    // Scroll Back to Top for Table Section
+    const tableSection = document.querySelector(".table-section");
+    const backToTopTableBtn = document.getElementById("backToTopTableBtn");
+    if (tableSection && backToTopTableBtn) {
+        tableSection.addEventListener("scroll", () => {
+            if (tableSection.scrollTop > 50) {
+                backToTopTableBtn.style.display = "inline-flex";
+            } else {
+                backToTopTableBtn.style.display = "none";
+            }
+        });
+    }
 });
 
 // ─────────────────────────────────────────────
@@ -19,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ─────────────────────────────────────────────
 async function loadOrganisations() {
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
 
         const res = await fetch("/admin/organisations", {
             headers: {
@@ -108,7 +126,7 @@ async function handleApprove(orgId) {
     if (!confirm("Approve this organisation?")) return;
 
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
 
         const res = await fetch(`/admin/organisations/${orgId}/approve`, {
             method: "PATCH",
@@ -134,7 +152,7 @@ async function handleReject(orgId) {
     if (!confirm("Reject this organisation?")) return;
 
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
 
         const res = await fetch(`/admin/organisations/${orgId}/reject`, {
             method: "PATCH",
@@ -160,7 +178,7 @@ async function handleDelete(orgId) {
     if (!confirm("Permanently delete this organisation? This cannot be undone.")) return;
 
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
 
         const res = await fetch(`/admin/organisations/${orgId}`, {
             method: "DELETE",
@@ -184,7 +202,7 @@ async function handleDelete(orgId) {
 // ─────────────────────────────────────────────
 async function openDetailsModal(orgId) {
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
 
         const res = await fetch(`/admin/organisations/${orgId}`, {
             headers: { "Authorization": `Bearer ${token}` }
@@ -290,12 +308,61 @@ function formatDate(dateStr) {
 }
 
 const logoutTag = document.getElementById("logout");
-logoutTag.addEventListener("click", () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("accountType");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("initials");
-})
+if (logoutTag) {
+    logoutTag.addEventListener("click", (e) => {
+        e.preventDefault();
+        logout();
+    });
+}
+
+function isTokenExpired(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        const payload = JSON.parse(jsonPayload);
+        return payload.exp * 1000 < Date.now();
+    } catch (e) {
+        return true;
+    }
+}
+
+function getToken() {
+    const token = localStorage.getItem('token');
+    if (!token || isTokenExpired(token)) {
+        logout();
+        return null;
+    }
+    return token;
+}
+
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('accountType');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('initials');
+    localStorage.removeItem('profilePicUrl');
+    localStorage.removeItem('profileComplete');
+    localStorage.removeItem("latestScannedMarks");
+    localStorage.removeItem("latestScannedSchool");
+    localStorage.removeItem("orgName");
+    localStorage.removeItem("orgInitials");
+    localStorage.removeItem("orgProfilePic");
+    window.__currentUser = null;
+    
+    fetch('/logout', { method: 'POST' })
+        .catch(() => {})
+        .finally(() => {
+            window.location.href = '/login-page';
+        });
+}
+
+// Expose helpers globally
+window.isTokenExpired = isTokenExpired;
+window.getToken = getToken;
+window.logout = logout;
 
 // ─────────────────────────────────────────────────────────────────
 // ADMIN SUPPORT TICKETS  —  powers userTicket.html
@@ -334,7 +401,7 @@ async function loadAdminTickets() {
     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;color:#94a3b8;">Loading tickets...</td></tr>`;
 
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
         const res = await fetch("/admin/api/tickets", {
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -380,7 +447,7 @@ function renderAdminTickets(tickets) {
             : `<span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;">● Open</span>`;
 
         const actionBtn = t.Status === "Open"
-            ? `<button class="btn-approve" onclick="openResolveModal(${t.TicketID}, '${escapeHtml(t.Subject)}')">Review &amp; Resolve</button>`
+            ? `<button class="btn-approve" onclick="openResolveModal(${t.TicketID}, decodeURIComponent('${encodeURIComponent(t.Subject).replace(/'/g, "%27")}'))">Review &amp; Resolve</button>`
             : `<span style="font-size:12px;color:#94a3b8;">Resolved</span>`;
 
         return `
@@ -472,7 +539,7 @@ async function resolveTicket(ticketId) {
     }
 
     try {
-        const token = localStorage.getItem("token");
+        const token = getToken();
         const res = await fetch(`/admin/api/tickets/${ticketId}`, {
             method: "PATCH",
             headers: {

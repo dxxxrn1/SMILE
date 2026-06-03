@@ -70,6 +70,10 @@ if (oppImageInput) {
                 preview.src = e.target.result;
                 preview.style.display = "block";
             }
+            const placeholder = document.getElementById("uploadPlaceholder");
+            if (placeholder) {
+                placeholder.style.display = "none";
+            }
         };
         reader.readAsDataURL(file);
     });
@@ -80,6 +84,8 @@ document.getElementById("clearBtn").addEventListener("click", function () {
     window._oppImageBase64 = null;
     const preview = document.getElementById("oppImagePreview");
     if (preview) { preview.src = ""; preview.style.display = "none"; }
+    const placeholder = document.getElementById("uploadPlaceholder");
+    if (placeholder) { placeholder.style.display = "block"; }
     // ... rest of your existing clear logic
 });
 
@@ -102,6 +108,14 @@ document.getElementById("clearBtn").addEventListener("click", function () {
 
         if (!valid) {
             setFormMsg("Please fill in all required fields before publishing.", "error");
+            return;
+        }
+
+        const deadlineVal = document.getElementById("newDeadline").value;
+        const todayStr = new Date().toLocaleDateString("en-CA");
+        if (deadlineVal < todayStr) {
+            setFormMsg("Application closing date cannot be in the past.", "error");
+            showToast("Application closing date cannot be in the past.", "error");
             return;
         }
         // Add to your existing payload object
@@ -135,10 +149,16 @@ document.getElementById("clearBtn").addEventListener("click", function () {
         publishBtn.disabled = true;
         publishBtn.textContent = "Publishing...";
 
+        const token = getToken();
+        if (!token) return;
+
         try {
             const res = await fetch("/api/opportunities/create", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify(payload)
             });
 
@@ -149,6 +169,13 @@ document.getElementById("clearBtn").addEventListener("click", function () {
                 showToast("Opportunity published!", "success");
                 document.getElementById("createOppForm").reset();
                 document.getElementById("descCount").textContent = "0 / 1000";
+
+                // Reset image preview and base64 cache
+                window._oppImageBase64 = null;
+                const preview = document.getElementById("oppImagePreview");
+                if (preview) { preview.src = ""; preview.style.display = "none"; }
+                const placeholder = document.getElementById("uploadPlaceholder");
+                if (placeholder) { placeholder.style.display = "block"; }
             } else {
                 setFormMsg(data.message || "Something went wrong.", "error");
                 showToast("Failed to publish.", "error");
@@ -187,12 +214,12 @@ document.getElementById("clearBtn").addEventListener("click", function () {
 
 
     const logoutTag = document.getElementById("logout");
-    logoutTag.addEventListener("click" , ()=>{
-        localStorage.removeItem("token");
-        localStorage.removeItem("accountType");
-        localStorage.removeItem("userName");
-        localStorage.removeItem("initials");
-    })
+    if (logoutTag) {
+        logoutTag.addEventListener("click", (e) => {
+            e.preventDefault();
+            logout();
+        });
+    }
 });
 
 async function loadOrgSidebarProfile() {
@@ -200,12 +227,7 @@ async function loadOrgSidebarProfile() {
     const nameEl = document.getElementById("sidebarOrgName");
     if (!avatarEl && !nameEl) return;
 
-    const cachedName = localStorage.getItem("orgName") || localStorage.getItem("userName") || "My Organisation";
-    const cachedInitials = localStorage.getItem("orgInitials") || localStorage.getItem("initials") || cachedName.slice(0, 2).toUpperCase();
-    if (avatarEl) avatarEl.textContent = cachedInitials;
-    if (nameEl) nameEl.textContent = cachedName;
-
-    const token = localStorage.getItem("token");
+    const token = getToken();
     if (!token) return;
 
     try {
@@ -217,11 +239,8 @@ async function loadOrgSidebarProfile() {
         const data = await res.json();
         if (!data.success || !data.profile) return;
 
-        const orgName = data.profile.OrgName || cachedName;
+        const orgName = data.profile.OrgName || "My Organisation";
         const initials = orgName.slice(0, 2).toUpperCase();
-        localStorage.setItem("orgName", orgName);
-        localStorage.setItem("orgInitials", initials);
-        if (data.profile.OrgProfilePic) localStorage.setItem("orgProfilePic", data.profile.OrgProfilePic);
 
         if (nameEl) nameEl.textContent = orgName;
         if (avatarEl) {
@@ -235,3 +254,85 @@ async function loadOrgSidebarProfile() {
         console.error("[SMILE] Could not load organisation sidebar profile:", err);
     }
 }
+
+function isTokenExpired(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        const payload = JSON.parse(jsonPayload);
+        return payload.exp * 1000 < Date.now();
+    } catch (e) {
+        return true;
+    }
+}
+
+function getToken() {
+    const token = localStorage.getItem('token');
+    if (!token || isTokenExpired(token)) {
+        logout();
+        return null;
+    }
+    return token;
+}
+
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('accountType');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('initials');
+    localStorage.removeItem('profilePicUrl');
+    localStorage.removeItem('profileComplete');
+    localStorage.removeItem("latestScannedMarks");
+    localStorage.removeItem("latestScannedSchool");
+    localStorage.removeItem("orgName");
+    localStorage.removeItem("orgInitials");
+    localStorage.removeItem("orgProfilePic");
+    window.__currentUser = null;
+    
+    fetch('/logout', { method: 'POST' })
+        .catch(() => {})
+        .finally(() => {
+            window.location.href = '/login-page';
+        });
+}
+
+// Expose helpers globally
+window.isTokenExpired = isTokenExpired;
+window.getToken = getToken;
+window.logout = logout;
+
+// Global Inactivity Auto-Logout Tracker (5 Minutes)
+(function() {
+  let timeoutId;
+  const INACTIVITY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+  function resetTimer() {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(logoutDueToInactivity, INACTIVITY_TIME);
+  }
+
+  function logoutDueToInactivity() {
+    console.log("Logout due to 5 minutes of inactivity.");
+    alert("You have been logged out due to 5 minutes of inactivity.");
+    if (typeof logout === "function") {
+      logout();
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('accountType');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('initials');
+      window.location.href = '/login-page';
+    }
+  }
+
+  // Events that indicate user activity
+  const activityEvents = ['mousemove', 'mousedown', 'keydown', 'keypress', 'click', 'scroll', 'touchstart'];
+  activityEvents.forEach(name => {
+    document.addEventListener(name, resetTimer, { passive: true });
+  });
+
+  resetTimer(); // Start the timer initially
+})();

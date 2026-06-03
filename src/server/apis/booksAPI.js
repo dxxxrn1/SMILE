@@ -7,8 +7,9 @@ const GOOGLE_BOOKS_API_KEY = process.env.BOOKS_API;
 
 export const fetchBooks = (req, res) => {
   const query = req.query.q || "career development";
-  const maxResults = parseInt(req.query.maxResults) || 12;
+  const maxResults = Math.min(parseInt(req.query.maxResults) || 12, 40);
   const startIndex = parseInt(req.query.startIndex) || 0;
+  const keyParam = GOOGLE_BOOKS_API_KEY ? `&key=${GOOGLE_BOOKS_API_KEY}` : "";
 
   const url = `https://www.googleapis.com/books/v1/volumes`
     + `?q=${encodeURIComponent(query)}`
@@ -16,7 +17,7 @@ export const fetchBooks = (req, res) => {
     + `&startIndex=${startIndex}`
     + `&printType=books`
     + `&langRestrict=en`
-    + `&key=${GOOGLE_BOOKS_API_KEY}`;
+    + keyParam;
 
   https.get(url, (apiRes) => {
     let data = "";
