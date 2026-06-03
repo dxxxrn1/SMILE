@@ -291,12 +291,7 @@ export const saveOrganisationDetails = async (req, res) => {
           });
         }
 
-        let publicId;
-        if (ext === "pdf") {
-          publicId = `org_doc_${Date.now()}_${baseName}.pdf`;
-        } else {
-          publicId = `org_doc_${Date.now()}_${baseName}`;
-        }
+        const publicId = `org_doc_${Date.now()}_${baseName}`;
 
         try {
           const uploadResult = await uploadToCloudinary(buffer, publicId, "smile/organisation_documents");
