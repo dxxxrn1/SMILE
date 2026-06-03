@@ -11,7 +11,7 @@ import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageContro
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken , requireAdmin} from "../controllers/sessionControllers.js";
 import { getOrgProfile, updateOrgProfile, getOrgPublicProfile } from "../controllers/orgController.js";
-import { subscribeToNewsletter } from "../controllers/newsletterController.js";
+import { subscribeToNewsletter, unsubscribeFromNewsletter } from "../controllers/newsletterController.js";
 import { fectNews } from "../apis/newsAPI.js";
 import jwt from "jsonwebtoken";
 import { logAudit } from "../controllers/auditController.js";
@@ -158,6 +158,7 @@ route.post("/api/verify-otp", verifyOTP);
 
 // Newsletter subscription
 route.post("/api/newsletter/subscribe", subscribeToNewsletter);
+route.post("/api/newsletter/unsubscribe", unsubscribeFromNewsletter);
 
 // Support Ticket routes
 route.post("/api/tickets", verifyToken, createTicket);

@@ -388,6 +388,39 @@ document.addEventListener("DOMContentLoaded", () => {
     confirmSuspendBtn.addEventListener("click", submitSuspension);
   }
 
+  const sendNewsletterBtn = document.getElementById("send-newsletter-btn");
+  if (sendNewsletterBtn) {
+    sendNewsletterBtn.addEventListener("click", async () => {
+      if (!confirm("Are you sure you want to send the daily newsletter to all subscribed users?")) return;
+      
+      const originalText = sendNewsletterBtn.innerHTML;
+      sendNewsletterBtn.disabled = true;
+      sendNewsletterBtn.textContent = "Sending...";
+      
+      try {
+        const token = localStorage.getItem('token');
+        const data = await apiFetch("/api/admin/newsletter/send", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        
+        if (data && data.success) {
+          alert(data.message || "Newsletter sent successfully!");
+        } else {
+          alert("Failed to send newsletter: " + (data?.message || "Unknown error"));
+        }
+      } catch (err) {
+        console.error("Error sending newsletter:", err);
+        alert("Failed to send newsletter: " + err.message);
+      } finally {
+        sendNewsletterBtn.disabled = false;
+        sendNewsletterBtn.innerHTML = originalText;
+      }
+    });
+  }
+
   // Scroll Back to Top for Table Section
   const tableSection = document.querySelector(".table-section");
   const backToTopTableBtn = document.getElementById("backToTopTableBtn");

@@ -276,6 +276,45 @@ document.addEventListener("DOMContentLoaded", () => {
           btn.textContent = 'Subscribe';
         }
       });
+
+      const btnUnsubscribe = document.getElementById('btnUnsubscribe');
+      if (btnUnsubscribe) {
+        btnUnsubscribe.addEventListener('click', async () => {
+          const input = newsletterForm.querySelector('.newsletter__input');
+          const email = input.value.trim();
+
+          if (!email) {
+            showToastNotification('Please enter your email address to unsubscribe.', 'error');
+            return;
+          }
+
+          btnUnsubscribe.disabled = true;
+          const originalText = btnUnsubscribe.textContent;
+          btnUnsubscribe.textContent = 'Unsubscribing...';
+
+          try {
+            const res = await fetch('/api/newsletter/unsubscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+              showToastNotification('Successfully unsubscribed from our newsletter!');
+              newsletterForm.reset();
+            } else {
+              showToastNotification('' + (data.message || 'Unsubscription failed.'), 'error');
+            }
+          } catch (err) {
+            console.error('Newsletter unsubscribe error:', err);
+            showToastNotification('A network error occurred. Please try again.', 'error');
+          } finally {
+            btnUnsubscribe.disabled = false;
+            btnUnsubscribe.textContent = originalText;
+          }
+        });
+      }
     }
 
     function showToastNotification(message, type = 'success') {
