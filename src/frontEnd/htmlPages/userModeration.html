@@ -174,6 +174,29 @@
       </div>
     </div>
 
+    <!-- Suspend Reason Modal -->
+    <div id="suspend-modal" class="modal-overlay hidden">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Suspend User</h3>
+          <button class="modal-close" onclick="closeSuspendModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="display:flex; flex-direction:column; gap:16px;">
+          <p style="font-size: 14px; color: var(--color-text-secondary); line-height: 1.5;">
+            Please state the reason why you are suspending this user. An email notification will be sent to the user.
+          </p>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label for="suspend-reason" style="font-size:12px; font-weight:600; color:var(--color-text-primary); text-transform:uppercase;">Reason for Suspension</label>
+            <textarea id="suspend-reason" rows="4" placeholder="e.g., Inappropriate behaviour, violation of terms of service..." style="width:100%; padding:10px; border:1px solid var(--color-border); border-radius:6px; font-family:inherit; font-size:14px; outline:none; resize:none;"></textarea>
+          </div>
+          <div class="modal-footer" style="margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--color-border); display:flex; justify-content:flex-end; gap:12px;">
+            <button class="btn btn-secondary" onclick="closeSuspendModal()">Cancel</button>
+            <button class="btn btn-danger" id="confirm-suspend-btn">Suspend User</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="../jsFrontEnd/admindashboard.js"></script>
     <script src="../jsFrontEnd/userModeration.js"></script>
   </body>

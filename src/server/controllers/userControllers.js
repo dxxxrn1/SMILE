@@ -398,6 +398,13 @@ export const userLogin = async (req, res) => {
             const user = results.recordset[0];
             console.log(user);
 
+            // Check if user is suspended
+            if (user.Status === 'suspended') {
+                req.user = { id: user.StuID, email: user.StuEmail, accountType: "student" };
+                await logAudit(req, "FAILED_LOGIN", `Failed student login attempt (Account suspended: ${email})`);
+                return res.status(403).json({ message: "Your account has been suspended. Please contact the administrator." });
+            }
+
             // ✅ correct variable name
             const passwordMatch = await bcrypt.compare(password, user.StuPassword);
 
@@ -483,6 +490,13 @@ export const userLogin = async (req, res) => {
     }
 
     const user = orgResult.recordset[0];
+
+    // Check if organisation is suspended
+    if (user.Status === 'suspended') {
+        req.user = { id: user.OrgId, email: user.OrgEmail, accountType: "organization" };
+        await logAudit(req, "FAILED_LOGIN", `Failed organisation login attempt (Account suspended: ${email})`);
+        return res.status(403).json({ message: "Your account has been suspended. Please contact the administrator." });
+    }
 
     const passwordMatch = await bcrypt.compare(password, user.Password);
 

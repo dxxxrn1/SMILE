@@ -155,14 +155,7 @@ async function handleAction(e) {
 }
 
 async function handleSuspend(userId) {
-  if (!confirm("Suspend this user? They will lose access to the platform.")) return;
-  try {
-    await apiFetch(`/admin/users/${userId}/suspend`, { method: "PATCH" });
-    setUserStatus(userId, "suspended");
-    showToast("User suspended.", "warning");
-  } catch (err) {
-    showToast(`Error: ${err.message}`, "danger");
-  }
+  openSuspendModal(userId);
 }
 
 async function handleUnsuspend(userId) {
@@ -234,6 +227,57 @@ function closeDetailsModal() {
 }
 
 window.closeDetailsModal = closeDetailsModal;
+
+// --- Suspend Reason Modal Handling ---
+let currentSuspendUserId = null;
+
+function openSuspendModal(userId) {
+  currentSuspendUserId = userId;
+  const reasonTextarea = document.getElementById("suspend-reason");
+  if (reasonTextarea) reasonTextarea.value = "";
+  document.getElementById("suspend-modal")?.classList.remove("hidden");
+  reasonTextarea?.focus();
+}
+
+function closeSuspendModal() {
+  document.getElementById("suspend-modal")?.classList.add("hidden");
+  currentSuspendUserId = null;
+}
+
+window.closeSuspendModal = closeSuspendModal;
+
+async function submitSuspension() {
+  if (!currentSuspendUserId) return;
+  const reasonTextarea = document.getElementById("suspend-reason");
+  const reason = reasonTextarea?.value.trim() || "";
+  if (!reason) {
+    alert("Please enter a reason for suspension.");
+    return;
+  }
+
+  const confirmBtn = document.getElementById("confirm-suspend-btn");
+  if (confirmBtn) {
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = "Suspending...";
+  }
+
+  try {
+    await apiFetch(`/admin/users/${currentSuspendUserId}/suspend`, {
+      method: "PATCH",
+      body: JSON.stringify({ reason })
+    });
+    setUserStatus(currentSuspendUserId, "suspended");
+    showToast("User suspended.", "warning");
+    closeSuspendModal();
+  } catch (err) {
+    showToast(`Error: ${err.message}`, "danger");
+  } finally {
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = "Suspend User";
+    }
+  }
+}
 
 // ─── Optimistic Status Update ─────────────────────────────────────────────────
 
@@ -332,6 +376,11 @@ document.getElementById("logout")?.addEventListener("click", async (e) => {
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchUsers();
+
+  const confirmSuspendBtn = document.getElementById("confirm-suspend-btn");
+  if (confirmSuspendBtn) {
+    confirmSuspendBtn.addEventListener("click", submitSuspension);
+  }
 
   // Scroll Back to Top for Table Section
   const tableSection = document.querySelector(".table-section");
