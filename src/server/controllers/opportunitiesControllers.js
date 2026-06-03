@@ -362,7 +362,7 @@ export const getOrgDashboardStats = async (req, res) => {
             const topOpps = await pool.request()
                 .input("OrgId", sql.Int, orgId)
                 .query(`
-                    SELECT TOP 4
+                    SELECT TOP 3
                         o.Title,
                         COUNT(a.AppID) AS Count
                     FROM Opportunities o
