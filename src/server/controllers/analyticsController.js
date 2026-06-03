@@ -72,7 +72,6 @@ export const getOrganizationAnalytics = async (req, res) => {
             totalTalent: totalTalent,
             avgReviewDays: avgReviewDays !== null && avgReviewDays !== undefined ? avgReviewDays : null
         });
-
     } catch (err) {
         console.error("Analytics Aggregation Fault: ", err);
         return res.status(500).json({ success: false, error: "Database analytics aggregation pipeline failed." });
