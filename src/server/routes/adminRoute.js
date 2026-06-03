@@ -7,24 +7,14 @@ import {getAllUsers, getUserStats, getUserById, suspendUser, unsuspendUser, dele
 import { getAllTickets, updateTicketStatus } from "../controllers/ticketController.js";
 import { sendNewsletterToSubscribersJob } from "../controllers/newsletterJob.js";
 
-
-
 const router = express.Router();
-
 cron.schedule("0 8 * * *", async () => {
-
     console.log("Sending daily newsletter...");
-
     try {
-
         await sendNewsletterToSubscribersJob();
-
         console.log("Daily newsletter sent.");
-
     } catch (err) {
-
         console.error("Newsletter job failed:", err);
-
     }
 });
 
