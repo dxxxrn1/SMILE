@@ -6,8 +6,6 @@
 USE [SMILE];
 GO
 
-
-
     CREATE TABLE [dbo].[SupportTickets] (
         [TicketID]       INT           IDENTITY(1,1) NOT NULL,
         [SubmitterID]    INT           NOT NULL,            -- StuID or OrgId
@@ -24,3 +22,4 @@ GO
         CONSTRAINT [CHK_TicketStatus]     CHECK ([Status]        IN ('Open', 'Resolved')),
         CONSTRAINT [CHK_SubmitterType]    CHECK ([SubmitterType] IN ('student', 'org'))
  
+    )

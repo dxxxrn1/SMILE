@@ -233,6 +233,69 @@ document.addEventListener("DOMContentLoaded" , ()=>{
     loadMoreBtn.addEventListener('click', () => loadNews());
   }
 
+  // Newsletter Form submit
+  const newsletterForm = document.getElementById('newsletterForm');
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = newsletterForm.querySelector('.newsletter__input');
+      const email = input.value.trim();
+      const btn = newsletterForm.querySelector('button[type="submit"]');
+
+      if (!email) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Subscribing...';
+
+      try {
+        const res = await fetch('/api/newsletter/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showToastNotification('🎉 Successfully subscribed to our newsletter!');
+          newsletterForm.reset();
+        } else {
+          showToastNotification('⚠️ ' + (data.message || 'Subscription failed.'), 'error');
+        }
+      } catch (err) {
+        console.error('Newsletter subscribe error:', err);
+        showToastNotification('❌ A network error occurred. Please try again.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Subscribe';
+      }
+    });
+  }
+
+  // Helper function for quick toast notification inside News page context
+  function showToastNotification(message, type = 'success') {
+    const existing = document.getElementById('news-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'news-toast';
+    toast.textContent = message;
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: ${type === 'error' ? '#ef4444' : '#10b981'};
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
   // ─── Init ─────────────────────────────────────────────────────────────────
   // Clear the static placeholder cards and load live data
   newsGrid.innerHTML = '';

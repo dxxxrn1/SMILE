@@ -301,7 +301,14 @@
     <aside class="dashboard-sidebar">
       <div class="dashboard-sidebar__header">
         <a href="/" class="nav__logo">
-          <span class="nav__logo-icon">&#9786;</span>
+          <span class="nav__logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: white;">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+              <line x1="9" y1="9" x2="9.01" y2="9" />
+              <line x1="15" y1="9" x2="15.01" y2="9" />
+            </svg>
+          </span>
           <span>SMILE Org</span>
         </a>
       </div>
@@ -323,7 +330,7 @@
           </svg>
           Analytics
         </a>
-        <a href="/org/dashboard?tab=myopps" class="org-tab" data-tab="myopps" style="text-decoration: none">
+        <a href="/org/dashboard/myOpportunities" class="org-tab" data-tab="myopps" style="text-decoration: none">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="2" y="7" width="20" height="14" rx="2" />
             <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
@@ -345,6 +352,20 @@
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           Create New
+        </a>
+        <a href="/org/tickets" class="org-tab" data-tab="tickets" style="text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+            <line x1="4" y1="22" x2="4" y2="15"/>
+          </svg>
+          Report Issue
+        </a>
+        <a href="/org/profile" class="org-tab" data-tab="profile" style="text-decoration: none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          My Profile
         </a>
       </div>
 

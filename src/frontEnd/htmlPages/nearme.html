@@ -8,7 +8,119 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
+  <style>
+    /* Glassmorphism About Us Popup Modal */
+    .about-us-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .about-us-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .about-us-card {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 32px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      color: #f8fafc;
+    }
+    .about-us-overlay.active .about-us-card {
+      transform: scale(1);
+    }
+    .about-us-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #94a3b8;
+      font-size: 18px;
+      transition: all 0.2s;
+    }
+    .about-us-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #f8fafc;
+      transform: rotate(90deg);
+    }
+    .about-us-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .about-us-logo {
+      width: 70px;
+      height: 70px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(236, 72, 153, 0.3);
+      flex-shrink: 0;
+    }
+    .about-us-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .about-us-org-details h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 4px;
+    }
+    .about-us-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(236, 72, 153, 0.15);
+      color: #ec4899;
+    }
+    .about-us-bio {
+      font-size: 15px;
+      color: #cbd5e1;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body class="dashboard-page nearme-page">
 
@@ -16,20 +128,24 @@
   <header class="header header--dashboard">
     <nav class="nav container">
       <a href="/" class="nav__logo">
-  <span class="nav__logo-icon">&#9786;</span>
-  <span>SMILE</span>
-  </a>
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          style="margin-right: 6px; flex-shrink: 0; color: var(--primary-pink, #ec4899);"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+          <line x1="9" y1="9" x2="9.01" y2="9" />
+          <line x1="15" y1="9" x2="15.01" y2="9" />
+        </svg>
+        <span>SMILE</span>
+      </a>
       
       <ul class="nav__menu nav__menu--dashboard" id="navMenu">
-        
-        <!-- <li><a href="opportunities.html" class="nav__link nav__link--active"> -->
-        <!-- <li><a href="/opportunities/browse" class="nav__link nav__link">
-          <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-          </svg>
-          Opportunities
-        </a></li> -->
-        <!-- <li><a href="careers.html" class="nav__link"> -->
         <li><a href="/careers/explore" class="nav__link">
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
@@ -54,6 +170,30 @@
           </svg>
           News
         </a></li>
+        <li>
+          <a href="/student/chess" class="nav__link">
+            <svg
+              class="nav__link-svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M8 16h8"></path>
+              <path d="M9 12h6"></path>
+              <path d="M12 4v4"></path>
+              <path d="M10 8h4"></path>
+              <path d="M8 20h8"></path>
+              <path d="M9 16l-1 4"></path>
+              <path d="M15 16l1 4"></path>
+            </svg>
+            Chess
+          </a>
+        </li>
         <li><a href="/student/dashboard" class="nav__link">
           <svg class="nav__link-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect width="7" height="9" x="3" y="3" rx="1"></rect>
@@ -66,13 +206,25 @@
       </ul>
       
       <div class="nav__actions nav__actions--dashboard">
-        <button class="nav__icon-btn" aria-label="Notifications">
+        <button class="nav__icon-btn" id="notificationBtn" aria-label="Notifications" aria-expanded="false" aria-controls="notificationPanel">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
             <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
           </svg>
-          <span class="nav__notification-badge">3</span>
+          <span class="nav__notification-badge" id="notificationBadge" hidden>0</span>
         </button>
+        <div class="notification-panel" id="notificationPanel" aria-live="polite">
+          <div class="notification-panel__header">
+            <div>
+              <h2>Notifications</h2>
+              <p>Application updates from organisations</p>
+            </div>
+            <button type="button" class="notification-panel__mark" id="notificationMarkRead">Mark read</button>
+          </div>
+          <div class="notification-panel__list" id="notificationList">
+            <p class="notification-panel__empty">Loading notifications...</p>
+          </div>
+        </div>
         <div class="nav__profile" id="profileDropdown">
           <button class="nav__profile-btn" aria-label="Profile menu">
             <div class="nav__avatar">
@@ -83,7 +235,7 @@
             </svg>
           </button>
           <div class="nav__profile-menu" id="profileMenu">
-            <a href="#" class="nav__profile-link">
+            <a href="/org/dashboard/student-profile" class="nav__profile-link">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
@@ -97,7 +249,15 @@
               </svg>
               Settings
             </a>
-            <hr class="nav__profile-divider">
+            <hr class="nav__profile-divider" />
+            <a href="#" id="myTicketsDropdownBtn" class="nav__profile-link" onclick="openTicketsTab(event)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              My Tickets
+            </a>
+            <hr class="nav__profile-divider" />
             <a href="/logout"  id="logout" class="nav__profile-link nav__profile-link--logout">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -206,16 +366,23 @@
   <footer class="footer">
     <div class="container">
       <div class="footer__content">
-        <a href="/logout" class="footer__logo" id="logout">
-          <span class="nav__logo-icon">&#9786;</span>
+        <a href="/" class="footer__logo">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            style="margin-right: 6px; flex-shrink: 0; color: var(--primary-pink, #ec4899);"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
+          </svg>
           <span>SMILE</span>
         </a>
-        <nav class="footer__links">
-          <a href="#" class="footer__link">About Us</a>
-          <a href="#" class="footer__link">Contact</a>
-          <a href="#" class="footer__link">Privacy Policy</a>
-          <a href="#" class="footer__link">Terms of Service</a>
-        </nav>
         <p class="footer__copy">&copy; 2026 SMILE. All rights reserved.</p>
       </div>
     </div>

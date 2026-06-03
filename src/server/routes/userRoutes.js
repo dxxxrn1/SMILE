@@ -2,13 +2,15 @@ import express from "express";
 import { sendOTP, verifyOTP } from '../controllers/otpController.js';
 import { homePage , loginPage  , registerPage ,nearMePage, newsPage , opportunitiesPage,
         studentLandingPage,careersPage,orgDashboard,
-        createOpportunity,adminDashBoard, applicantsPage, studentProfilePage, analyticsPage,
-        orgTicketsPage
+        createOpportunity,adminDashBoard, applicantsPage, studentProfilePage, orgProfilePage, analyticsPage,
+        orgTicketsPage, myOpportunitiesPage ,studentProfile
 } from "../controllers/pageControllers.js";
 
 import { forgotPasswordPage , resetPasswordPage} from "../controllers/pageControllers.js";
 import {saveStudentDetails, saveOrganisationDetails , userLogin} from "../controllers/userControllers.js";
 import { verifyToken , requireAdmin} from "../controllers/sessionControllers.js";
+import { getOrgProfile, updateOrgProfile, getOrgPublicProfile } from "../controllers/orgController.js";
+import { subscribeToNewsletter } from "../controllers/newsletterController.js";
 import { fectNews } from "../apis/newsAPI.js";
 import { fetchJobs } from "../apis/careers.js";
 import { fetchBooks } from "../apis/booksAPI.js";
@@ -23,7 +25,7 @@ import {
   getProfileBioAdvice,
 } from "../controllers/chatbotController.js";
 import {createNewOpportunity,getAllOpportunities, getOrganizationApplicants, getOrgDashboardStats, updateApplicationStatus, getOrgOpportunities, updateOpportunity, deleteOpportunity} from '../controllers/opportunitiesControllers.js';
-import { getSavedOpportunities, getStudentApplications, deleteSavedOpportunity, saveOpportunity, applyForOpportunity, getStudentProfile, updateStudentProfile, updateStudentBio } from "../controllers/studentController.js";
+import { getSavedOpportunities, getStudentApplications, deleteSavedOpportunity, saveOpportunity, applyForOpportunity, getStudentProfile, updateStudentProfile, updateStudentBio, getStudentNotifications, markStudentNotificationsRead } from "../controllers/studentController.js";
 import { createTicket, getMyTickets } from "../controllers/ticketController.js";
 
 
@@ -38,6 +40,9 @@ route.put("/api/student/profile", verifyToken, updateStudentProfile);
 route.patch("/api/student/profile/bio", verifyToken, updateStudentBio);
 route.post("/api/chat/profile-writer", verifyToken, getProfileBioAdvice);
 route.get("/api/student/applications", verifyToken, getStudentApplications);
+route.get("/api/student/notifications", verifyToken, getStudentNotifications);
+route.patch("/api/student/notifications/read", verifyToken, markStudentNotificationsRead);
+route.post("/api/student/notifications/read", verifyToken, markStudentNotificationsRead);
 route.post("/api/student/applications", verifyToken, applyForOpportunity);
 route.get("/api/student/saved-opportunities", verifyToken, getSavedOpportunities);
 route.post("/api/student/saved-opportunities", verifyToken, saveOpportunity);
@@ -63,8 +68,13 @@ route.get("/logout", (req, res) => {
 });
 route.get("/api/jobs", fetchJobs);
 route.get("/org/dashboard", verifyToken ,orgDashboard);
+route.get("/org/profile", verifyToken, orgProfilePage);
 route.get("/org/dashboard/applicants", verifyToken, applicantsPage);
+route.get("/org/dashboard/myOpportunities", verifyToken, myOpportunitiesPage);
 route.get("/org/dashboard/student-profile", verifyToken, studentProfilePage);
+route.get("/api/org/profile", verifyToken, getOrgProfile);
+route.put("/api/org/profile", verifyToken, updateOrgProfile);
+route.get("/api/org/public-profile/:orgId", verifyToken, getOrgPublicProfile);
 route.get("/api/org/applicants", verifyToken, getOrganizationApplicants);
 route.get("/api/org/dashboard-stats", verifyToken, getOrgDashboardStats);
 route.patch("/api/org/applicants/:appId/status", verifyToken, updateApplicationStatus);
@@ -79,10 +89,17 @@ route.get("/api/opportunities", verifyToken, getAllOpportunities);
 route.get("/api/org/opportunities", verifyToken, getOrgOpportunities);
 route.put("/api/opportunities/:oppId", verifyToken, updateOpportunity);
 route.delete("/api/opportunities/:oppId", verifyToken, deleteOpportunity);
+route.get("/student/profile" , verifyToken , studentProfile);
+route.get("/api/student/profile" , verifyToken , getStudentProfile);
+
+// /api/student/profile
 
 // OTP email verification routes
 route.post("/api/send-otp", sendOTP);
 route.post("/api/verify-otp", verifyOTP);
+
+// Newsletter subscription
+route.post("/api/newsletter/subscribe", subscribeToNewsletter);
 
 // Support Ticket routes
 route.post("/api/tickets", verifyToken, createTicket);

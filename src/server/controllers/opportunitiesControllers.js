@@ -1,9 +1,88 @@
 import { connectToDB, sql } from "../dbConnection/dbconnection.js";
-import { getCoordinates } from '../apis/geoHelper.js'; 
+import { getCoordinates } from '../apis/geoHelper.js';
+import dotenv from "dotenv";
+import nodemailer from "nodemailer";
+import { v2 as cloudinary } from "cloudinary";
+
+dotenv.config();
+
+const mailTransport = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.LUCAS_EMAIL,
+        pass: process.env.LUCAS_APP_PASS
+    }
+});
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+async function ensureStudentNotificationsTable(pool) {
+    await pool.request().query(`
+        IF OBJECT_ID('dbo.StudentNotifications', 'U') IS NULL
+        BEGIN
+            CREATE TABLE dbo.StudentNotifications (
+                NotificationID INT IDENTITY(1,1) PRIMARY KEY,
+                StuID INT NOT NULL,
+                AppID INT NULL,
+                Title NVARCHAR(150) NOT NULL,
+                Message NVARCHAR(1000) NOT NULL,
+                NotificationType VARCHAR(40) NOT NULL,
+                IsRead BIT NOT NULL CONSTRAINT DF_StudentNotifications_IsRead DEFAULT 0,
+                DateCreated DATETIME NOT NULL CONSTRAINT DF_StudentNotifications_DateCreated DEFAULT GETDATE(),
+                CONSTRAINT FK_StudentNotifications_Student FOREIGN KEY (StuID) REFERENCES dbo.Student(StuID) ON DELETE CASCADE
+            );
+        END
+    `);
+}
+
+function buildApplicationStatusNotification({ status, studentName, opportunityTitle, orgName }) {
+    const readableStatus = status === "Approved" ? "approved" : status.toLowerCase();
+    const titleMap = {
+        Pending: "Application status updated",
+        Reviewed: "Your application was reviewed",
+        Shortlisted: "You were shortlisted",
+        Interview: "Interview update",
+        Approved: "Application approved",
+        Rejected: "Application not approved"
+    };
+
+    const messageMap = {
+        Pending: `${orgName} moved your application for "${opportunityTitle}" back to pending review.`,
+        Reviewed: `${orgName} reviewed your application for "${opportunityTitle}".`,
+        Shortlisted: `${orgName} shortlisted your application for "${opportunityTitle}".`,
+        Interview: `${orgName} would like to move forward with an interview for "${opportunityTitle}".`,
+        Approved: `${orgName} approved your application for "${opportunityTitle}".`,
+        Rejected: `${orgName} updated your application for "${opportunityTitle}" as not approved.`
+    };
+
+    return {
+        title: titleMap[status] || "Application status updated",
+        message: messageMap[status] || `${orgName} updated your application for "${opportunityTitle}" to ${readableStatus}.`,
+        emailSubject: titleMap[status] || "Your SMILE application status changed",
+        emailHtml: `
+            <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px;background:#f9fafb;border-radius:8px;">
+                <h2 style="color:#111827;margin:0 0 12px;">Hi ${studentName},</h2>
+                <p style="color:#374151;line-height:1.6;margin:0 0 16px;">
+                    ${messageMap[status] || `${orgName} updated your application status.`}
+                </p>
+                <div style="background:#EEF2FF;border-left:4px solid #6366F1;padding:16px;border-radius:4px;margin:20px 0;">
+                    <p style="margin:0;color:#3730A3;font-weight:700;">Current status: ${status}</p>
+                </div>
+                <p style="color:#6B7280;font-size:13px;line-height:1.6;">
+                    You can also view this update from the notification icon on your SMILE student dashboard.
+                </p>
+            </div>
+        `
+    };
+}
 
 export const createNewOpportunity = async (req, res) => {
     try {
-        const { title, type, address, province, maxApplicants, description, requirements, deadline, startDate, applicationLink } = req.body;
+        const { title, type, address, province, maxApplicants, description, requirements, deadline, startDate, applicationLink, oppImage } = req.body;
 
         const orgId = req.user?.id;
         if (!orgId || req.user?.accountType !== "organization") {
@@ -16,8 +95,37 @@ export const createNewOpportunity = async (req, res) => {
 
         const coords = await getCoordinates(address, province);
 
-        const pool = await connectToDB();
+        // ✅ Upload opportunity image to Cloudinary if provided
+        let oppImageUrl = null;
+        if (typeof oppImage === "string" && oppImage.startsWith("data:image/")) {
+            const matches = oppImage.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+            if (matches && matches.length === 3) {
+                const buffer = Buffer.from(matches[2], "base64");
 
+                if (buffer.length > 5 * 1024 * 1024) {
+                    return res.status(400).json({ success: false, message: "Image must be smaller than 5MB." });
+                }
+
+                const uploadResult = await new Promise((resolve, reject) => {
+                    cloudinary.uploader.upload_stream(
+                        {
+                            folder: "smile/opportunities",
+                            public_id: `opp_${orgId}_${Date.now()}`,
+                            overwrite: true,
+                            resource_type: "image"
+                        },
+                        (error, result) => {
+                            if (error) reject(error);
+                            else resolve(result);
+                        }
+                    ).end(buffer);
+                });
+
+                oppImageUrl = uploadResult.secure_url;
+            }
+        }
+
+        const pool = await connectToDB();
 
         await pool.request()
             .input("OrgId",               sql.Int,           orgId)
@@ -25,30 +133,30 @@ export const createNewOpportunity = async (req, res) => {
             .input("OppType",             sql.VarChar(50),   type)
             .input("Province",            sql.VarChar(50),   province)
             .input("Description",         sql.VarChar,       description)
-            .input("Requirements",        sql.VarChar,       requirements   || null)
+            .input("Requirements",        sql.VarChar,       requirements    || null)
             .input("ApplicationLink",     sql.VarChar(255),  applicationLink || null)
-            .input("MaxApplicants",       sql.Int,           maxApplicants  || null)
+            .input("MaxApplicants",       sql.Int,           maxApplicants   || null)
             .input("ApplicationDeadline", sql.Date,          deadline)
-            .input("StartDate",           sql.Date,          startDate      || null)
+            .input("StartDate",           sql.Date,          startDate       || null)
             .input("Lat",                 sql.Decimal(9,6),  coords.lat)
             .input("Lng",                 sql.Decimal(9,6),  coords.lng)
+            .input("OppImageUrl",         sql.NVarChar(500), oppImageUrl)
             .query(`
                 INSERT INTO [dbo].[Opportunities]
                     (OrgId, Title, OppType, Province, Description, Requirements,
-                     ApplicationLink, MaxApplicants, ApplicationDeadline, StartDate, Lat, Lng)
+                     ApplicationLink, MaxApplicants, ApplicationDeadline, StartDate, Lat, Lng, OppImageUrl)
                 VALUES
                     (@OrgId, @Title, @OppType, @Province, @Description, @Requirements,
-                     @ApplicationLink, @MaxApplicants, @ApplicationDeadline, @StartDate, @Lat, @Lng)
+                     @ApplicationLink, @MaxApplicants, @ApplicationDeadline, @StartDate, @Lat, @Lng, @OppImageUrl)
             `);
 
         return res.status(201).json({ success: true, message: "Opportunity published successfully!" });
 
     } catch (err) {
-        console.log(err);
+        console.error(err);
         return res.status(500).json({ success: false, message: "Something went wrong. Please try again." });
     }
 };
-
 export const getAllOpportunities = async (req, res) => {
     try {
         const { type, province, search, sort } = req.query;
@@ -57,12 +165,14 @@ export const getAllOpportunities = async (req, res) => {
         const request = pool.request();
 
         let query = `
-            SELECT 
+            SELECT
                 o.OppID, o.Title, o.OppType, o.Province, o.Description,
                 o.ApplicationDeadline, o.StartDate, o.ApplicationLink,
                 o.MaxApplicants, o.Status, o.DateCreated,
-                o.Lat, o.Lng, 
-                org.OrgName
+                o.Lat, o.Lng,
+                o.OrgId,
+                o.OppImageUrl,
+                org.OrgName, org.OrgBio, org.OrgProfilePic
             FROM [dbo].[Opportunities] o
             JOIN [dbo].[Organisation] org ON o.OrgId = org.OrgId
             WHERE o.Status = 'Active'
@@ -102,7 +212,6 @@ export const getAllOpportunities = async (req, res) => {
         return res.status(500).json({ success: false, message: "Failed to fetch opportunities." });
     }
 };
-
 export const getOrganizationApplicants = async (req, res) => {
     try {
         const orgId = req.user?.id;
@@ -114,12 +223,12 @@ export const getOrganizationApplicants = async (req, res) => {
 
         let applicants = [];
 
-        // Primary query — uses all columns including StuBio and ProfilePicUrl
+        // Primary query â€” uses all columns including StuBio and ProfilePicUrl
         try {
             const request = pool.request();
             request.input("OrgId", sql.Int, orgId);
             const result = await request.query(`
-                SELECT 
+                SELECT
                     a.AppID, a.Status AS ApplicationStatus, a.DateApplied,
                     o.Title AS OpportunityTitle, o.OppType, o.Province AS OpportunityProvince,
                     s.StuID, s.StuName, s.StuLastName, s.StuEmail, s.StuProvince, s.StuEducationLevel,
@@ -134,12 +243,12 @@ export const getOrganizationApplicants = async (req, res) => {
         } catch (primaryErr) {
             console.warn("[SMILE] Primary applicants query failed, running fallback:", primaryErr.message);
 
-            // Fallback query — excludes optional columns in case they don't exist on this DB instance
+            // Fallback query â€” excludes optional columns in case they don't exist on this DB instance
             try {
                 const fallbackReq = pool.request();
                 fallbackReq.input("OrgId", sql.Int, orgId);
                 const fallbackResult = await fallbackReq.query(`
-                    SELECT 
+                    SELECT
                         a.AppID, a.Status AS ApplicationStatus, a.DateApplied,
                         o.Title AS OpportunityTitle, o.OppType, o.Province AS OpportunityProvince,
                         s.StuID, s.StuName, s.StuLastName, s.StuEmail, s.StuProvince, s.StuEducationLevel,
@@ -168,9 +277,9 @@ export const getOrganizationApplicants = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────
-// GET  /api/org/dashboard-stats  →  stat counts + comprehensive dashboard details
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// GET  /api/org/dashboard-stats  â†’  stat counts + comprehensive dashboard details
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const getOrgDashboardStats = async (req, res) => {
     try {
         const orgId = req.user?.id;
@@ -364,9 +473,9 @@ export const getOrgDashboardStats = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────
-// PATCH  /api/org/applicants/:appId/status  →  update application status
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// PATCH  /api/org/applicants/:appId/status  â†’  update application status
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const updateApplicationStatus = async (req, res) => {
     try {
         const orgId = req.user?.id;
@@ -374,24 +483,38 @@ export const updateApplicationStatus = async (req, res) => {
             return res.status(401).json({ success: false, message: "Unauthorised." });
         }
 
-        const { appId } = req.params;
+        const appId = Number.parseInt(req.params.appId, 10);
         const { status } = req.body;
 
-        const allowed = ['Pending', 'Reviewed', 'Shortlisted', 'Rejected'];
+        if (!Number.isInteger(appId) || appId <= 0) {
+            return res.status(400).json({ success: false, message: "Invalid application id." });
+        }
+
+        const allowed = ["Pending", "Reviewed", "Shortlisted", "Interview", "Approved", "Rejected"];
         if (!allowed.includes(status)) {
             return res.status(400).json({ success: false, message: "Invalid status value." });
         }
 
         const pool = await connectToDB();
+        await ensureStudentNotificationsTable(pool);
 
-        // Verify this application belongs to this org
         const check = await pool.request()
             .input("AppId", sql.Int, appId)
             .input("OrgId", sql.Int, orgId)
             .query(`
-                SELECT a.AppID
+                SELECT
+                    a.AppID,
+                    a.StuID,
+                    a.Status AS PreviousStatus,
+                    s.StuName,
+                    s.StuLastName,
+                    s.StuEmail,
+                    o.Title AS OpportunityTitle,
+                    org.OrgName
                 FROM Applications a
                 JOIN Opportunities o ON a.OppID = o.OppID
+                JOIN Organisation org ON o.OrgId = org.OrgId
+                JOIN Student s ON a.StuID = s.StuID
                 WHERE a.AppID = @AppId AND o.OrgId = @OrgId
             `);
 
@@ -399,13 +522,51 @@ export const updateApplicationStatus = async (req, res) => {
             return res.status(404).json({ success: false, message: "Application not found." });
         }
 
+        const application = check.recordset[0];
+        const studentName = `${application.StuName || "Student"} ${application.StuLastName || ""}`.trim();
+        const notification = buildApplicationStatusNotification({
+            status,
+            studentName,
+            opportunityTitle: application.OpportunityTitle,
+            orgName: application.OrgName || "An organisation"
+        });
+
         await pool.request()
             .input("AppId", sql.Int, appId)
             .input("Status", sql.VarChar(20), status)
-            .query(`UPDATE Applications SET Status = @Status WHERE AppID = @AppId`);
+            .query("UPDATE Applications SET Status = @Status WHERE AppID = @AppId");
 
-        console.log(`✅ Application ${appId} status updated to ${status}`);
-        return res.status(200).json({ success: true, message: `Status updated to ${status}` });
+        await pool.request()
+            .input("StuID", sql.Int, application.StuID)
+            .input("AppID", sql.Int, application.AppID)
+            .input("Title", sql.NVarChar(150), notification.title)
+            .input("Message", sql.NVarChar(1000), notification.message)
+            .input("NotificationType", sql.VarChar(40), `application_${status.toLowerCase()}`)
+            .query(`
+                INSERT INTO StudentNotifications (StuID, AppID, Title, Message, NotificationType)
+                VALUES (@StuID, @AppID, @Title, @Message, @NotificationType)
+            `);
+
+        let emailSent = false;
+        try {
+            await mailTransport.sendMail({
+                from: `"SMILE Platform" <${process.env.LUCAS_EMAIL}>`,
+                to: application.StuEmail,
+                subject: notification.emailSubject,
+                html: notification.emailHtml
+            });
+            emailSent = true;
+        } catch (emailErr) {
+            console.error("Application status email failed (non-fatal):", emailErr.message);
+        }
+
+        console.log(`Application ${appId} status updated to ${status}; notification created; emailSent=${emailSent}`);
+        return res.status(200).json({
+            success: true,
+            message: `Status updated to ${status}`,
+            notificationCreated: true,
+            emailSent
+        });
 
     } catch (err) {
         console.error("Error updating application status:", err);
@@ -413,9 +574,7 @@ export const updateApplicationStatus = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────
-// GET  /api/org/opportunities  →  get organization's own opportunities
-// ─────────────────────────────────────────────
+// GET  /api/org/opportunities  - get organization's own opportunities
 export const getOrgOpportunities = async (req, res) => {
     try {
         const orgId = req.user?.id;
@@ -427,7 +586,7 @@ export const getOrgOpportunities = async (req, res) => {
         const result = await pool.request()
             .input("OrgId", sql.Int, orgId)
             .query(`
-                SELECT 
+                SELECT
                     o.OppID, o.Title, o.OppType, o.Province, o.Description, o.Requirements,
                     o.ApplicationDeadline, o.StartDate, o.ApplicationLink, o.MaxApplicants, o.Status, o.DateCreated,
                     (SELECT COUNT(*) FROM Applications a WHERE a.OppID = o.OppID) AS ApplicationCount
@@ -443,9 +602,9 @@ export const getOrgOpportunities = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────
-// PUT  /api/opportunities/:oppId  →  update opportunity
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// PUT  /api/opportunities/:oppId  â†’  update opportunity
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const updateOpportunity = async (req, res) => {
     try {
         const orgId = req.user?.id;
@@ -505,7 +664,7 @@ export const updateOpportunity = async (req, res) => {
                 WHERE OppID = @OppID
             `);
 
-        console.log(`✅ Opportunity ${oppId} updated`);
+        console.log(`âœ… Opportunity ${oppId} updated`);
         return res.status(200).json({ success: true, message: "Opportunity updated successfully!" });
     } catch (err) {
         console.error("Error updating opportunity:", err);
@@ -513,9 +672,9 @@ export const updateOpportunity = async (req, res) => {
     }
 };
 
-// ─────────────────────────────────────────────
-// DELETE  /api/opportunities/:oppId  →  delete opportunity (cascades Applications)
-// ─────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// DELETE  /api/opportunities/:oppId  â†’  delete opportunity (cascades Applications)
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const deleteOpportunity = async (req, res) => {
     try {
         const orgId = req.user?.id;
@@ -547,7 +706,7 @@ export const deleteOpportunity = async (req, res) => {
             .input("OppID", sql.Int, oppId)
             .query(`DELETE FROM Opportunities WHERE OppID = @OppID`);
 
-        console.log(`✅ Opportunity ${oppId} and its applications deleted`);
+        console.log(`âœ… Opportunity ${oppId} and its applications deleted`);
         return res.status(200).json({ success: true, message: "Opportunity deleted successfully." });
     } catch (err) {
         console.error("Error deleting opportunity:", err);

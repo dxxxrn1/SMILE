@@ -66,11 +66,11 @@ export const getCareerAdvice = async (req, res) => {
 // 
 export const generateDocFromChat = async (req, res) => {
   try {
-    const { history } = req.body;
+    const { history, academicSubjects } = req.body;
     const pool = await connectToDB();
 
     const result = await pool.request().input("stuID", sql.Int, req.user.id)
-      .query(`SELECT s.StuName, s.StuProvince, i.TopInterest
+      .query(`SELECT s.StuName, s.StuProvince, s.StuBio, s.StuAcademicSubjects, i.TopInterest
               FROM Student s LEFT JOIN StudentInterests i ON s.StuID = i.StuID
               WHERE s.StuID = @stuID`);
 
@@ -85,9 +85,29 @@ export const generateDocFromChat = async (req, res) => {
           .join("\n")
       : null;
 
+    const finalAcademicSubjects = student.StuAcademicSubjects || academicSubjects || null;
+
+    const academicContext = finalAcademicSubjects
+      ? `\nAcademic Record (Scanned Subjects & Marks): ${finalAcademicSubjects}`
+      : "";
+    const bioContext = student.StuBio
+      ? `\nStudent Biography / Core Passion: ${student.StuBio}`
+      : "";
+
     const userPrompt = hasRealChat
-      ? `Here is our career counselling conversation:\n\n${summary}\n\nBased on what was discussed, generate a career path document. If no specific career was chosen, use the student's top interest (${student.TopInterest}) as the focus.`
-      : `No detailed conversation happened yet. Generate a comprehensive career path document based on the student's top interest: ${student.TopInterest}.`;
+      ? `Here is our career counselling conversation:\n\n${summary}\n\nBased on what was discussed, generate a career path document. If no specific career was chosen, use the student's top interest (${student.TopInterest || "Not completed"}) and academic details as the focus.${academicContext}${bioContext}`
+      : `No detailed conversation happened yet. Generate a comprehensive career path document based on the student's top interest: ${student.TopInterest || "Not completed"}.${academicContext}${bioContext}`;
+
+    const systemPromptContent = `You are the SMILE Career Guide. Generate a detailed, structured career path document for ${student.StuName} from ${student.StuProvince}.
+    
+    Current Top Interest (Quiz Result): ${student.TopInterest || "Not completed yet"}.
+    ${academicContext}
+    ${bioContext}
+    
+    CRITICAL CONTEXT RULES:
+    1. IF ACADEMIC MARKS ARE PROVIDED: These verified subjects and marks are the student's baseline reality. Use them. If they scored 80% in Math but say they want to be an artist, or scored 50% in Math but want to be a data scientist, address it warmly and realistically. Recommend realistic paths, bridging programs, bursaries, or specific career paths that fit their actual marks, but align with their passions/top interest.
+    2. Always produce a FULL document even if no specific career was discussed. If no specific career was chosen, synthesize a career path that dynamically bridges their top interest/personality with their academic strengths. Do not rely on just static interests.
+    3. LANGUAGE: Completely ban corporate jargon (e.g., do not use "proactive professional"). Use authentic phrases like "My drive", "My hustle", "My core strengths".`;
 
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
@@ -95,7 +115,7 @@ export const generateDocFromChat = async (req, res) => {
       messages: [
         {
           role: "system",
-          content: `You are the SMILE Career Guide. Generate a detailed, structured career path document for ${student.StuName} from ${student.StuProvince}, whose top interest is ${student.TopInterest}. Always produce a FULL document even if no specific career was discussed — use the top interest as the career focus.`,
+          content: systemPromptContent,
         },
         {
           role: "user",
@@ -236,37 +256,63 @@ export const getProfileBioAdvice = async (req, res) => {
     const student = result.recordset[0];
 
     if (!student) {
-      return res.status(404).json({ response: "Student profile not found." });
+      return res.status(404).json({ success: false, response: "Student profile not found." });
     }
 
-    const { history } = req.body;
+    const { message, chatHistory, scannedData, history } = req.body;
+
+    let processedMessage = message || "";
+    let actualHistory = chatHistory || history || [];
+
+    // Gracefully handle older client payloads (where only history was sent)
+    if (!message && actualHistory.length > 0) {
+      const lastMsg = actualHistory[actualHistory.length - 1];
+      if (lastMsg.role === "user") {
+        processedMessage = lastMsg.content;
+        actualHistory = actualHistory.slice(0, -1);
+      }
+    }
+
+    // If a document was uploaded, inject it as a hidden system injection flag so the AI learns it instantly
+    if (scannedData && scannedData.hasUploaded) {
+      processedMessage = `[SYSTEM DATA MATCH]: User uploaded an official document from ${scannedData.schoolName || "unknown school"}. 
+      Scanned Marks: ${scannedData.topSubjects}. 
+      User Message: ${processedMessage}`;
+    }
+
+    const systemInstruction = {
+      role: "system",
+      content: `You are the SMILE Hybrid Career Coach. Your job is to help South African youth build a standout summary profile card. 
+      Student Name: ${student.StuName}.
+      Current Top Interest (Quiz Result): ${student.TopInterest || "Not completed yet"}.
+      You must balance raw academic data with human personality—never rely on just one.
+
+      CRITICAL CONTEXT RULES:
+      1. Check if the user has uploaded an academic document (passed in the prompt as [SYSTEM DATA MATCH]).
+      2. IF A DOC IS UPLOADED: Use those exact marks as your foundational reality. Do not guess. If they scored 80% in Math but say they want to be an artist, or scored 50% in Math but want to be a data scientist, address it warmly and realistically. Suggest bridging programs, bursaries, or specific career paths that fit their actual marks, but align with their passions.
+      3. IF NO DOC IS UPLOADED YET: Keep the conversation focused on their interests, but politely remind them that they can drop a report card in at any time to unlock realistic, grade-matched opportunities.
+      4. LANGUAGE: Completely ban corporate jargon (e.g., do not use "proactive professional"). Use authentic phrases like "My drive", "My hustle", "My core strengths".
+
+      OUTPUT FORMAT:
+      When the user is happy, wrap the updated summary exactly inside [PROPOSED_BIO] and [/PROPOSED_BIO] tags. You must include an "Academic Strength" section based on their doc if they uploaded one.`
+    };
+
+    const messagesPayload = [
+      systemInstruction,
+      ...actualHistory,
+      { role: "user", content: processedMessage }
+    ];
 
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
-      max_tokens: 1024,
-      messages: [
-        {
-          role: "system",
-          content: `You are the SMILE AI Profile Assistant. Your sole mission is to help South African student ${student.StuName} write an outstanding, professional, and highly compelling personal bio that will dramatically increase their chances of getting bursaries, scholarships, internships, or job opportunities.
-          
-          Current Top Interest (Quiz Result): ${student.TopInterest || "Not taken quiz yet"}.
-          Current Bio: "${student.StuBio || "None provided yet"}".
-          
-          STRICT RULES:
-          1. Be warm, encouraging, conversational, and professional.
-          2. Ask brief questions to get their top skills, hobbies, education details, and career aspirations, or take their rough notes and refine them.
-          3. Once you have enough context or when they provide a draft, generate a beautifully polished, professional bio tailored for them.
-          4. When you output a polished bio proposal, ALWAYS wrap it inside [PROPOSED_BIO] ... [/PROPOSED_BIO] tags. Explain to them that they can click the "Apply to Profile" button to save it instantly.
-          5. Keep the bio proposal around 3 to 5 sentences. Highlight their potential, ambition, and key competencies.`,
-        },
-        ...history,
-      ],
+      messages: messagesPayload,
+      temperature: 0.7
     });
 
-    res.json({ response: completion.choices[0].message.content });
+    return res.status(200).json({ success: true, response: completion.choices[0].message.content });
   } catch (err) {
     console.error("AI Profile Writer Error:", err);
-    res.status(500).json({ response: "AI connection error." });
+    return res.status(500).json({ success: false, response: "AI connection error.", error: "AI Engine context mapping failed." });
   }
 };
 

@@ -49,6 +49,10 @@ export const studentProfilePage = (req,res)=>{
     res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "studentProfile.html"));
 }
 
+export const orgProfilePage = (req,res)=>{
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages", "orgProfile.html"));
+}
+
 export const forgotPasswordPage = (req,res)=>{
     res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" ,"htmlPages" , "forget-password.html"));
 }
@@ -78,7 +82,16 @@ export const userTicket = (req,res)=>{
 }
 
 export const orgTicketsPage = (req,res)=>{
-    res.sendFile(path.join(__dirname , ".." , ".." , "frontEnd" , "htmlPages" , "orgTickets.html"));
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages" , "orgTickets.html"));
 }
+
+export const myOpportunitiesPage = (req,res)=>{
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages" , "myOpportunities.html"));
+}
+
+export const studentProfile = (req,res)=>{
+    res.sendFile(path.join(__dirname, ".." , ".." , "frontEnd" , "htmlPages" , "studentProfile.html"));
+}
+
 
 //Lucas Bohani Maluleke and Darren Foster

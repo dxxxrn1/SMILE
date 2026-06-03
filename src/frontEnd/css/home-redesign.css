@@ -14,13 +14,13 @@
 
 /* ---- NAV ---- */
 .header--home {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 242, 239, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(229, 231, 235, 0.5);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 9999;
 }
 
 .header--home .nav__logo-mark {
@@ -142,11 +142,14 @@
 /* ---- HERO V2 (Taller with soft gradient background) ---- */
 .hero-v2 {
   position: relative;
-  /* Increased padding to push the trust bar down */
-  padding: 7rem 0 6rem; 
+  min-height: calc(100vh - 142px);
+  padding: 2rem 0;
+  display: flex;
+  align-items: center;
   overflow: hidden;
-  /* Added a beautiful soft sunset wash behind the hero */
-  background: radial-gradient(circle at top left, #fff1f2 0%, #ffffff 40%, #fff7ed 100%);
+  background:
+    radial-gradient(circle at 47% 58%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 28%),
+    linear-gradient(120deg, #ff6b12 0%, #ff3f35 45%, #e8338e 100%);
 }
 
 .hero-v2__bg {
@@ -159,32 +162,138 @@
 .hero-v2__grid {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(249, 115, 22, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(249, 115, 22, 0.05) 1px, transparent 1px);
-  background-size: 60px 60px;
+  display: none;
 }
 
 .hero-v2__orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(90px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  filter: none;
 }
 
 .hero-v2__orb--1 {
-  width: 600px;
-  height: 600px;
-  background: rgba(249, 115, 22, 0.15);
-  top: -200px;
-  right: -100px;
+  width: 430px;
+  height: 430px;
+  top: -230px;
+  left: -220px;
 }
 
 .hero-v2__orb--2 {
-  width: 500px;
-  height: 500px;
-  background: rgba(236, 72, 153, 0.1);
-  bottom: -150px;
-  left: -100px;
+  width: 390px;
+  height: 390px;
+  bottom: -225px;
+  left: -220px;
+}
+
+.hero-v2__orb--3 {
+  width: 230px;
+  height: 230px;
+  background: rgba(255, 255, 255, 0.06);
+  top: -95px;
+  right: -90px;
+}
+
+.hero-v2__dots {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  opacity: 0.58;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.72) 2.5px, transparent 3px);
+  background-size: 18px 18px;
+}
+
+.hero-v2__dots--1 {
+  top: 150px;
+  left: 64px;
+}
+
+.hero-v2__dots--2 {
+  top: 22px;
+  left: 51%;
+  width: 86px;
+  height: 70px;
+  opacity: 0.35;
+}
+
+.hero-v2__dots--3 {
+  right: 42px;
+  bottom: 48px;
+  width: 86px;
+  height: 120px;
+}
+
+.hero-v2__burst {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  opacity: 0.45;
+}
+
+.hero-v2__burst::before,
+.hero-v2__burst::after {
+  content: "";
+  position: absolute;
+  left: 22px;
+  top: 2px;
+  width: 5px;
+  height: 28px;
+  border-radius: 999px;
+  background: #ffb84d;
+  transform-origin: 50% 46px;
+}
+
+.hero-v2__burst::after {
+  transform: rotate(38deg);
+}
+
+.hero-v2__burst--1 {
+  top: 186px;
+  left: 160px;
+  transform: rotate(-55deg);
+}
+
+.hero-v2__burst--2 {
+  top: 30px;
+  right: 76px;
+  opacity: 0.8;
+  transform: rotate(18deg);
+}
+
+.hero-v2__squiggle {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  fill: none;
+  opacity: 0.9;
+}
+
+.hero-v2__squiggle path {
+  stroke: #ffb84d;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hero-v2__squiggle--1 {
+  top: 86px;
+  right: 48%;
+  width: 180px;
+  height: 160px;
+  transform: rotate(-14deg);
+}
+
+.hero-v2__squiggle--2 {
+  top: 38px;
+  right: 4%;
+  width: 120px;
+  height: 120px;
+  transform: rotate(12deg);
+}
+
+.hero-v2__squiggle--2 path {
+  stroke: #ff7a4d;
 }
 
 .hero-v2__content {
@@ -192,7 +301,7 @@
   z-index: 1;
   display: flex;
   align-items: center;
-  gap: 4rem;
+  gap: 5rem;
 }
 
 .hero-v2__text {
@@ -204,14 +313,14 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
-  color: #ea580c;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
   font-size: 0.85rem;
   font-weight: 600;
   padding: 0.4rem 1rem;
   border-radius: 999px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   letter-spacing: 0.05em;
   box-shadow: 0 4px 10px rgba(249, 115, 22, 0.1);
 }
@@ -231,23 +340,22 @@
 
 .hero-v2__title {
   font-family: 'Outfit', sans-serif;
-  font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+  font-size: clamp(3rem, 5.8vw, 5.1rem);
   font-weight: 900;
   line-height: 1.1;
-  color: #0f172a;
-  margin-bottom: 1.25rem;
+  color: #fff;
+  margin-bottom: 1.4rem;
 }
 
 .hero-v2__title-gradient {
-  background: linear-gradient(135deg, #f97316, #ec4899, #a855f7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: #fff;
 }
 
 .hero-v2__description {
-  font-size: 1.1rem;
-  color: #4b5563;
+  font-size: 1.15rem;
+  color: #fff;
   line-height: 1.8;
   max-width: 520px;
   margin-bottom: 2rem;
@@ -257,7 +365,31 @@
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 3rem;
+  margin-bottom: 2.4rem;
+}
+
+.hero-v2 .btn--neon {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  color: #fff;
+  box-shadow: none;
+}
+
+.hero-v2 .btn--neon:hover {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+
+.hero-v2 .btn--ghost-outline {
+  background: #fff;
+  border-color: #fff;
+  color: #f97316;
+}
+
+.hero-v2 .btn--ghost-outline:hover {
+  background: #fffaf5;
+  border-color: #fffaf5;
+  color: #f97316;
 }
 
 /* STAT PILLS - Made significantly bigger to fill space */
@@ -272,7 +404,8 @@
   backdrop-filter: blur(10px);
   border: 1px solid rgba(249, 115, 22, 0.2);
   border-radius: 16px;
-  padding: 1.25rem 2rem;
+  min-width: 180px;
+  padding: 1.05rem 1.8rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.04);
 }
 
@@ -299,18 +432,19 @@
 /* hero image */
 .hero-v2__visual {
   flex: 1;
-  max-width: 540px;
-  background: linear-gradient(135deg, #ffe4e6 0%, #ffedd5 100%); 
+  max-width: 560px;
+  background: transparent;
   border-radius: 30px;
-  padding: 2rem;
+  padding: 0;
   position: relative;
 }
 
 .hero-v2__image-wrap {
   position: relative;
-  border-radius: 20px;
+  border: 4px solid rgba(255, 255, 255, 0.82);
+  border-radius: 30px;
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+  box-shadow: 0 28px 45px rgba(15, 23, 42, 0.28);
 }
 
 .hero-v2__image-wrap img { width: 100%; height: auto; display: block; }
@@ -368,18 +502,18 @@
   background: #0f172a; /* Deep slate blue */
   border-top: 1px solid #1e293b;
   border-bottom: 1px solid #1e293b;
-  padding: 1.25rem 0;
+  padding: 1.35rem 0;
   overflow: hidden;
   box-shadow: inset 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .trust-bar__inner {
   display: flex;
-  gap: 3rem;
+  gap: 3.4rem;
   white-space: nowrap;
   animation: scrollTrust 25s linear infinite;
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.95rem;
+  font-weight: 800;
   color: #94a3b8;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -685,7 +819,7 @@
 .footer-v2 {
   background: #0b0f19;
   border-top: 1px solid #1e293b;
-  padding: 4rem 0 2rem;
+  padding: 1.5rem 0;
 }
 
 .footer-v2__top {
@@ -694,7 +828,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 2rem;
-  margin-bottom: 3rem;
+  margin-bottom: 0;
 }
 
 .footer-v2__brand .nav__logo-text { color: #f8fafc; }
@@ -749,6 +883,49 @@
 @media (max-width: 1024px) {
   .features-v2__grid { grid-template-columns: 1fr 1fr; }
   .hero-v2__content { gap: 2rem; }
+}
+
+@media (min-width: 900px) and (max-height: 760px) {
+  .hero-v2 {
+    min-height: calc(100vh - 132px);
+    padding: 1rem 0;
+  }
+
+  .hero-v2__content {
+    gap: 3rem;
+  }
+
+  .hero-v2__badge {
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-v2__title {
+    font-size: clamp(2.75rem, 5vw, 4.05rem);
+    margin-bottom: 1rem;
+  }
+
+  .hero-v2__description {
+    font-size: 1.02rem;
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-v2__actions {
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-pill {
+    min-width: 170px;
+    padding: 0.85rem 1.55rem;
+  }
+
+  .stat-pill__num {
+    font-size: 1.95rem;
+  }
+
+  .hero-v2__visual {
+    max-width: 540px;
+  }
 }
 
 @media (max-width: 768px) {

@@ -4,15 +4,47 @@ import nodemailer from 'nodemailer';
 import { connectToDB, sql } from '../dbConnection/dbconnection.js';
 
 dotenv.config()
-console.log('EMAIL_USER:', process.env.EMAIL_USER);
-console.log('EMAIL_PASS:', process.env.EMAIL_PASS ? 'loaded' : 'MISSING ❌');
+console.log('EMAIL_USER:', process.env.LUCAS_EMAIL);
+console.log('EMAIL_PASS:',process.env.LUCAS_APP_PASS) ? 'loaded' : 'MISSING';
+
 
 const otpStore = {};
+const verifiedEmailStore = {};
+const VERIFIED_EMAIL_TTL_MS = 30 * 60 * 1000;
+
+const normalizeEmail = (email = "") => email.trim().toLowerCase();
+
+export const isEmailVerified = (email) => {
+  const normalizedEmail = normalizeEmail(email);
+  const record = verifiedEmailStore[normalizedEmail];
+
+  if (!record) return false;
+
+  if (Date.now() > record.expires) {
+    delete verifiedEmailStore[normalizedEmail];
+    return false;
+  }
+
+  return true;
+};
+
+export const consumeEmailVerification = (email) => {
+  const normalizedEmail = normalizeEmail(email);
+  const verified = isEmailVerified(normalizedEmail);
+  if (verified) {
+    delete verifiedEmailStore[normalizedEmail];
+  }
+  return verified;
+};
 
 export const sendOTP = async (req, res) => {
-  const { email } = req.body;
+  const email = normalizeEmail(req.body?.email);
 
   try {
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Please enter an email address' });
+    }
+
     const pool = await connectToDB();
 
     // Check if email exists in Student table
@@ -25,23 +57,33 @@ export const sendOTP = async (req, res) => {
       .input('email', sql.VarChar, email)
       .query('SELECT * FROM Organisation WHERE OrgEmail = @email');
 
+    // Check if email exists in PendingOrganisation table
+    const pendingCheck = await pool.request()
+      .input('email', sql.VarChar, email)
+      .query('SELECT * FROM PendingOrganisation WHERE OrgEmail = @email');
+
     if (studentCheck.recordset.length > 0 || orgCheck.recordset.length > 0) {
       return res.status(400).json({ success: false, message: 'This email is already registered' });
     }
 
+    if (pendingCheck.recordset.length > 0) {
+      return res.status(400).json({ success: false, message: 'An application with this email is currently pending admin review' });
+    }
+
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpStore[email] = { otp, expires: Date.now() + 10 * 60 * 1000 };
+    delete verifiedEmailStore[email];
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        user: process.env.LUCAS_EMAIL,
+        pass: process.env.LUCAS_APP_PASS
       }
     });
 
     await transporter.sendMail({
-      from: `"SMILE" <${process.env.EMAIL_USER}>`,
+      from: `"SMILE" <${process.env.LUCAS_EMAIL}>`,
       to: email,
       subject: 'Your SMILE verification code',
       html: `
@@ -65,9 +107,11 @@ export const sendOTP = async (req, res) => {
 };
 
 export const verifyOTP = (req, res) => {
-  const { email, otp } = req.body;
+  const email = normalizeEmail(req.body?.email);
+  const otp = String(req.body?.otp || '').trim();
   const record = otpStore[email];
 
+  if (!email || !otp) return res.status(400).json({ success: false, message: 'Email and OTP are required.' });
   if (!record) return res.status(400).json({ success: false, message: 'No OTP found. Please request a new one.' });
   if (Date.now() > record.expires) {
     delete otpStore[email];
@@ -76,5 +120,6 @@ export const verifyOTP = (req, res) => {
   if (record.otp !== otp) return res.status(400).json({ success: false, message: 'Incorrect code. Try again.' });
 
   delete otpStore[email];
+  verifiedEmailStore[email] = { expires: Date.now() + VERIFIED_EMAIL_TTL_MS };
   res.json({ success: true, message: 'Email verified' });
 };
