@@ -233,7 +233,7 @@
         <div class="form__actions">
           <div class="form__checkbox">
             <input type="checkbox" id="studentTerms" name="terms" required>
-            <label for="studentTerms">I agree to the <a href="#" class="form__link">Terms</a> and <a href="#" class="form__link">Privacy Policy</a></label>
+            <label for="studentTerms">I agree to the <a href="#" onclick="openTermsModal(event)" class="form__link">Terms and Conditions</a></label>
           </div>
         </div>
         <div class="form__group" style="margin-top: -15px;">
@@ -331,7 +331,7 @@
         <div class="form__actions">
           <div class="form__checkbox">
             <input type="checkbox" id="orgTerms" name="terms" required>
-            <label for="orgTerms">I agree to the <a href="#" class="form__link">Terms</a> and <a href="#" class="form__link">Privacy Policy</a></label>
+            <label for="orgTerms">I agree to the <a href="#" onclick="openTermsModal(event)" class="form__link">Terms and Conditions</a></label>
           </div>
         </div>
         <div class="form__group" style="margin-top: -15px;">
@@ -349,6 +349,103 @@
       <p class="auth-v2-footer">
         Already have an account? <a href="/login-page">Log in</a>
       </p>
+    </div>
+  </div>
+
+  <!-- TERMS & CONDITIONS MODAL -->
+  <div id="termsModal" class="terms-modal-overlay" style="display: none;" onclick="if(event.target === this) closeTermsModal()">
+    <div class="terms-modal">
+      <div class="terms-modal__header">
+        <h2 class="terms-modal__title">Terms & Conditions</h2>
+        <button type="button" class="terms-modal__close" onclick="closeTermsModal()">&times;</button>
+      </div>
+      <div class="terms-modal__body">
+        <h3>Terms and Conditions of Use for the SMILE Platform</h3>
+        <p><strong>Last Updated: June 3, 2026</strong></p>
+        <p>Welcome to SMILE (the "Platform"). By registering for an account, accessing, or using the Platform, you (the "User") agree to be bound by these Terms and Conditions ("T&Cs"). If you do not agree to these terms, you must not register an account or use any services provided by the Platform.</p>
+        
+        <h4>1. Description of the Platform</h4>
+        <p>SMILE is an online directory and facilitation platform designed to connect South African youth (specifically students, learners, and job-seekers) with various organisations (including Non-Governmental Organisations (NGOs), non-profits, commercial companies, government institutions, and educational facilities) for the purpose of identifying and applying for developmental opportunities, internships, volunteer work, tutoring, and employment.</p>
+        <p>SMILE acts solely as a facilitator. We do not employ users, nor do we guarantee the quality, safety, legality, or suitability of any opportunity posted by organisations.</p>
+
+        <h4>2. Account Eligibility and Registration</h4>
+        <h5>2.1 Student Accounts</h5>
+        <ul>
+          <li>Student accounts are intended for individuals seeking academic support, career advice, and community/vocational opportunities.</li>
+          <li>Users must provide accurate, current, and complete details during registration (including name, verified email address, province, and education level).</li>
+          <li>Account activation is subject to successful One-Time Pin (OTP) email verification.</li>
+        </ul>
+        <h5>2.2 Organisation Accounts</h5>
+        <ul>
+          <li>Organisation accounts are intended for registered entities (NGOs, corporations, or public agencies) seeking to post listings, support tickets, and interact with students.</li>
+          <li>Organisations must submit proof of registration or a valid Non-Profit Organisation (NPO) certificate during the signup phase.</li>
+          <li><strong>Admin Moderation:</strong> All organisation registration applications are subject to mandatory manual review and approval by a SMILE Platform Administrator.</li>
+          <li>Applications that are incomplete, provide invalid documentation, or fail to meet platform safety guidelines will be rejected. The admin will specify the exact reason for rejection, which will be emailed to the applicant.</li>
+          <li>Approved organisations are granted a credentials license to log in and post opportunities.</li>
+        </ul>
+        <h5>2.3 Account Security</h5>
+        <p>Users are solely responsible for maintaining the confidentiality of their credentials (passwords, session cookies, and login tokens) and all activities occurring under their accounts. Any unauthorized account activity must be reported immediately to a SMILE Administrator.</p>
+
+        <h4>3. Platform Code of Conduct</h4>
+        <p>All Users agree to use the Platform strictly for lawful purposes and adhere to the following rules:</p>
+        <h5>3.1 Prohibited Content & Postings</h5>
+        <p>Organisations and Students are strictly prohibited from posting, distributing, or transmitting any content that:</p>
+        <ul>
+          <li>Is fraudulent, inaccurate, misleading, or intentionally false.</li>
+          <li>Contains abusive, defamatory, harassing, threatening, hateful, or obscene language.</li>
+          <li>Promotes discrimination based on race, gender, religion, nationality, disability, sexual orientation, or age.</li>
+          <li>Violates any third-party intellectual property or privacy rights.</li>
+          <li>Contains malware, viruses, or phishing links.</li>
+        </ul>
+        <h5>3.2 Opportunities Guidelines</h5>
+        <p>Any opportunity posted on the Platform by an organisation must represent a legitimate position, workshop, scholarship, or event. Posting spam, commercial advertisements unrelated to student growth, or pyramid/multi-level marketing schemes is strictly prohibited.</p>
+
+        <h4>4. Account Suspension, Restrictions, and Termination</h4>
+        <h5>4.1 Suspension Flow</h5>
+        <p>To safeguard Platform security, SMILE Administrators reserve the absolute right to suspend any Student or Organisation account at any time if they violate these T&Cs.</p>
+        <ul>
+          <li><strong>Reasoning Requirement:</strong> Prior to suspending an account, the Administrator must state a specific reason for the action.</li>
+          <li><strong>Notification:</strong> The system will automatically dispatch an email notification to the User explaining the suspension reason.</li>
+          <li><strong>Login Blocking:</strong> Suspended users are immediately prevented from logging into the Platform. Any attempt to log in will be blocked at the gateway, displaying a clear suspension status message.</li>
+          <li><strong>Unsuspension:</strong> An account will remain inactive and inaccessible until a SMILE Administrator reviews the case and manually lifts the suspension.</li>
+        </ul>
+        <h5>4.2 Account Deletion</h5>
+        <p>Users may request the deletion of their accounts at any time. Upon deletion, personal details are purged or anonymized in accordance with applicable data privacy regulations.</p>
+
+        <h4>5. Privacy, Data Protection, and Documents</h4>
+        <h5>5.1 POPIA Compliance</h5>
+        <p>SMILE processes all personal information in accordance with the <strong>Protection of Personal Information Act (POPIA)</strong> of South Africa. By using the Platform, you consent to the collection, storage, and processing of your profile data (such as names, emails, academic info, and logs) to enable Platform functionality.</p>
+        <h5>5.2 Document Upload Security</h5>
+        <ul>
+          <li>Organisations upload registration certificates and credentials to verify legitimacy.</li>
+          <li>These files are securely stored as binary data (<code>VARBINARY(MAX)</code>) directly in our database and are accessible strictly to authorized SMILE Administrators for moderation purposes.</li>
+          <li>Student profiles and application histories are stored securely and shared only with organisations to which students explicitly apply.</li>
+        </ul>
+
+        <h4>6. Limitation of Liability and Indemnity</h4>
+        <h5>6.1 Disclaimer of Warranties</h5>
+        <p>The Platform and all listings, services, and features are provided on an "as is" and "as available" basis without any express or implied warranties. We do not warrant that the Platform will be error-free, secure, or operate without interruptions.</p>
+        <h5>6.2 Exclusion of Damages</h5>
+        <p>To the maximum extent permitted by South African law, SMILE, its administrators, and its affiliates shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from:</p>
+        <ul>
+          <li>The use or inability to use the Platform.</li>
+          <li>The conduct or listings of any student or organisation.</li>
+          <li>Any disputes, contract breaches, or safety issues arising out of applications or accepted opportunities.</li>
+        </ul>
+        <h5>6.3 Indemnification</h5>
+        <p>Users agree to indemnify and hold harmless SMILE, its creators, and its administrators from any claims, losses, or legal costs arising from their breach of these T&Cs or violation of any laws.</p>
+
+        <h4>7. Modifications to Terms</h4>
+        <p>SMILE reserves the right to amend or update these Terms and Conditions at any time. Significant changes will be communicated via email or through prominent notifications on the Platform dashboard. Continued use of the Platform after updates constitutes acceptance of the modified Terms.</p>
+
+        <h4>8. Governing Law</h4>
+        <p>These Terms and Conditions are governed by and construed in accordance with the laws of the <strong>Republic of South Africa</strong>. Any disputes arising from the use of the Platform shall fall under the exclusive jurisdiction of the competent courts of South Africa.</p>
+
+        <p>For any questions, clarifications, or support requests regarding these Terms and Conditions, please open a support ticket or contact our administration team at support@smile.co.za.</p>
+      </div>
+      <div class="terms-modal__footer">
+        <button type="button" class="btn--auth-submit" style="margin-top: 0; width: auto; padding: 0.7rem 1.5rem; border-radius: 10px; font-size: 0.85rem;" onclick="closeTermsModal()">Close & Accept</button>
+      </div>
     </div>
   </div>
 

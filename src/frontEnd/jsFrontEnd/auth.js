@@ -900,3 +900,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
+window.openTermsModal = function(event) {
+  if (event) event.preventDefault();
+  const modal = document.getElementById("termsModal");
+  if (modal) {
+    modal.style.display = "flex";
+    modal.classList.remove("hidden");
+  }
+};
+
+window.closeTermsModal = function() {
+  const modal = document.getElementById("termsModal");
+  if (modal) {
+    modal.style.display = "none";
+    modal.classList.add("hidden");
+  }
+};
