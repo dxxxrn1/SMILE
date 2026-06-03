@@ -262,8 +262,12 @@ export const rejectOrganisation = async (req, res) => {
     return res.status(400).json({ message: "Invalid organisation id." });
   }
 
+  const { reason } = req.body || {};
+  if (!reason || !reason.trim()) {
+    return res.status(400).json({ message: "Rejection reason is required." });
+  }
+
   try {
-    const { reason = "Your application did not meet our current requirements." } = req.body || {};
     const pool = await connectToDB();
 
     if (!isPendingDisplayId(orgId)) {

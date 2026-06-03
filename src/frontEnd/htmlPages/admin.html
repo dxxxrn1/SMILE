@@ -191,6 +191,29 @@
       </div>
     </div>
 
+    <!-- Reject Reason Modal -->
+    <div id="reject-modal" class="modal-overlay hidden">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Reject Organisation</h3>
+          <button class="modal-close" onclick="closeRejectModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="display:flex; flex-direction:column; gap:16px; padding: 20px;">
+          <p style="font-size: 14px; color: var(--color-text-secondary); line-height: 1.5; margin: 0;">
+            Please state the reason why you are rejecting this organisation. An email notification will be sent to the applicant.
+          </p>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <label for="reject-reason" style="font-size:12px; font-weight:600; color:var(--color-text-primary); text-transform:uppercase;">Reason for Rejection</label>
+            <textarea id="reject-reason" rows="4" placeholder="e.g., The registration document uploaded is invalid or incomplete..." style="width:100%; padding:10px; border:1px solid var(--color-border); border-radius:6px; font-family:inherit; font-size:14px; outline:none; resize:none; box-sizing: border-box;"></textarea>
+          </div>
+          <div class="modal-footer" style="margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--color-border); display:flex; justify-content:flex-end; gap:12px;">
+            <button class="btn btn-secondary" onclick="closeRejectModal()" style="padding: 8px 16px; border-radius: 6px; cursor: pointer; border: 1px solid var(--color-border); background: white;">Cancel</button>
+            <button class="btn btn-danger" id="confirm-reject-btn" onclick="confirmReject()" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer;">Reject Organisation</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="../jsFrontEnd/admindashboard.js"></script>
   </body>
 </html>

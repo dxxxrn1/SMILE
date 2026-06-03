@@ -148,22 +148,52 @@ async function handleApprove(orgId) {
 // ─────────────────────────────────────────────
 // REJECT
 // ─────────────────────────────────────────────
-async function handleReject(orgId) {
-    if (!confirm("Reject this organisation?")) return;
+let currentRejectOrgId = null;
+
+function openRejectModal(orgId) {
+    currentRejectOrgId = orgId;
+    document.getElementById("reject-reason").value = "";
+    document.getElementById("reject-modal").classList.remove("hidden");
+}
+
+function closeRejectModal() {
+    currentRejectOrgId = null;
+    document.getElementById("reject-modal").classList.add("hidden");
+}
+
+function handleReject(orgId) {
+    openRejectModal(orgId);
+}
+
+async function confirmReject() {
+    if (!currentRejectOrgId) return;
+    const reasonInput = document.getElementById("reject-reason");
+    const reason = reasonInput.value.trim();
+
+    if (!reason) {
+        showToast("❌ Rejection reason is required.", "error");
+        return;
+    }
 
     try {
         const token = getToken();
 
-        const res = await fetch(`/admin/organisations/${orgId}/reject`, {
+        const res = await fetch(`/admin/organisations/${currentRejectOrgId}/reject`, {
             method: "PATCH",
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ reason: reason })
         });
 
         if (res.ok) {
             showToast("✅ Organisation rejected.");
+            closeRejectModal();
             loadOrganisations();
         } else {
-            showToast("❌ Failed to reject.", "error");
+            const data = await res.json();
+            showToast(`❌ Failed to reject: ${data.message || "Unknown error"}`, "error");
         }
     } catch (err) {
         console.error("❌ Reject error:", err);
