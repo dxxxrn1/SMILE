@@ -16,7 +16,7 @@
   <style>
     /* ── Analytics Page Styles ───────────────────────────── */
     .analytics-page {
-      background: #f8fafc;
+      background: transparent !important;
       min-height: 100vh;
     }
 
@@ -35,7 +35,6 @@
       box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
       border: 1px solid #e5e7eb !important;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      border-top: 4px solid #e2e8f0 !important;
     }
 
     .chart-card {
@@ -45,47 +44,30 @@
       box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
       border: 1px solid #e5e7eb !important;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      border-top: 4px solid #e2e8f0 !important;
     }
 
     /* Colored highlights & hover glow animations */
-    .card-orange {
-      border-top-color: #f97316 !important;
-    }
     .card-orange:hover {
-      box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.25), 0 8px 10px -6px rgba(249, 115, 22, 0.15) !important;
-      border-color: #fed7aa !important;
-      border-top-color: #f97316 !important;
+      box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.15), 0 8px 10px -6px rgba(249, 115, 22, 0.05) !important;
+      border-color: #f97316 !important;
       transform: translateY(-2px);
     }
 
-    .card-blue {
-      border-top-color: #3b82f6 !important;
-    }
     .card-blue:hover {
-      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.25), 0 8px 10px -6px rgba(59, 130, 246, 0.15) !important;
-      border-color: #bfdbfe !important;
-      border-top-color: #3b82f6 !important;
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15), 0 8px 10px -6px rgba(59, 130, 246, 0.05) !important;
+      border-color: #3b82f6 !important;
       transform: translateY(-2px);
     }
 
-    .card-green {
-      border-top-color: #22c55e !important;
-    }
     .card-green:hover {
-      box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.25), 0 8px 10px -6px rgba(34, 197, 94, 0.15) !important;
-      border-color: #bbf7d0 !important;
-      border-top-color: #22c55e !important;
+      box-shadow: 0 10px 25px -5px rgba(34, 197, 94, 0.15), 0 8px 10px -6px rgba(34, 197, 94, 0.05) !important;
+      border-color: #10b981 !important;
       transform: translateY(-2px);
     }
 
-    .card-purple {
-      border-top-color: #a855f7 !important;
-    }
     .card-purple:hover {
-      box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.25), 0 8px 10px -6px rgba(168, 85, 247, 0.15) !important;
-      border-color: #e9d5ff !important;
-      border-top-color: #a855f7 !important;
+      box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.15), 0 8px 10px -6px rgba(168, 85, 247, 0.05) !important;
+      border-color: #8b5cf6 !important;
       transform: translateY(-2px);
     }
 
@@ -195,7 +177,7 @@
     }
 
     .chart-canvas-wrap--sm {
-      height: 200px;
+      height: 240px;
     }
 
     /* Funnel */
@@ -332,7 +314,8 @@
       <div class="dashboard-sidebar__header">
         <a href="/" class="nav__logo">
           <span class="nav__logo-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: white;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              style="color: white;">
               <circle cx="12" cy="12" r="10" />
               <path d="M8 14s1.5 2 4 2 4-2 4-2" />
               <line x1="9" y1="9" x2="9.01" y2="9" />
@@ -384,9 +367,10 @@
           Create New
         </a>
         <a href="/org/tickets" class="org-tab" data-tab="tickets" style="text-decoration: none">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
-            <line x1="4" y1="22" x2="4" y2="15"/>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+            <line x1="4" y1="22" x2="4" y2="15" />
           </svg>
           Report Issue
         </a>
@@ -439,15 +423,27 @@
       <div class="dashboard-container">
 
         <!-- Header -->
-        <div class="analytics-header">
+        <div class="analytics-header" style="align-items: flex-start;">
           <div>
             <h1 class="analytics-title">Analytics Dashboard</h1>
             <p class="analytics-subtitle">Real-time recruitment intelligence and talent pipeline insights</p>
           </div>
-          <div class="range-tabs" id="rangeTabs">
-            <button class="range-tab range-tab--active" onclick="setRange(7, this)">7 days</button>
-            <button class="range-tab" onclick="setRange(30, this)">30 days</button>
-            <button class="range-tab" onclick="setRange(90, this)">90 days</button>
+          <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
+            <div class="range-tabs" id="rangeTabs">
+              <button class="range-tab range-tab--active" onclick="setRange(7, this)">7 days</button>
+              <button class="range-tab" onclick="setRange(30, this)">30 days</button>
+              <button class="range-tab" onclick="setRange(90, this)">90 days</button>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary" onclick="downloadRawData()"
+                style="padding: 8px 14px; font-size: 12px; border-radius: 8px; font-weight: 500;">
+                Download Data
+              </button>
+              <button class="btn btn--gradient" onclick="exportToExcel()"
+                style="padding: 8px 14px; font-size: 12px; border-radius: 8px; color: white; border: none; font-weight: 500;">
+                Excel Report
+              </button>
+            </div>
           </div>
         </div>
 
@@ -460,7 +456,7 @@
           </div>
           <div class="kpi-card card-blue">
             <div class="kpi-card__label">Review Speed</div>
-            <div class="kpi-card__value">4.2 Days</div>
+            <div class="kpi-card__value" id="kpiReviewSpeed">—</div>
             <div class="kpi-card__sub">Average processing speed</div>
           </div>
           <div class="kpi-card card-green">

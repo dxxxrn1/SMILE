@@ -27,6 +27,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Only run on pages that have these elements
   loadStudentHeaderProfile();
+
+  // Always bind logout button if it exists on the page
+  const logoutTag = document.getElementById("logout");
+  if (logoutTag) {
+    logoutTag.addEventListener("click", (e) => {
+      e.preventDefault();
+      logout();
+    });
+  }
 });
 
 /**
@@ -55,14 +64,6 @@ function initMobileNavigation() {
         mobileToggle.setAttribute("aria-expanded", "false");
       }
     });
-
-    const logoutTag = document.getElementById("logout");
-    if (logoutTag) {
-      logoutTag.addEventListener("click", (e) => {
-        e.preventDefault();
-        logout();
-      });
-    }
   }
 }
 
@@ -875,7 +876,13 @@ async function loadSavedOpportunities() {
               </span>
             </div>
             <div class="opportunity-card__actions">
-              <a href="${opp.ApplicationLink || '#'}" class="btn btn--primary btn--sm" style="width: 100%; text-align: center; justify-content: center;" target="_blank">Apply Now</a>
+              ${
+                (opp.ApplicationLink && opp.ApplicationLink !== "null" && opp.ApplicationLink !== "undefined" && opp.ApplicationLink.trim() !== "")
+                  ? `<a href="${opp.ApplicationLink}" class="btn btn--primary btn--sm" style="width: 100%; text-align: center; justify-content: center;" target="_blank">Apply Now</a>`
+                  : (opp.AppliedCount > 0)
+                    ? `<button class="btn btn--secondary btn--sm" style="width: 100%; text-align: center; justify-content: center; border: none; background: #e4e4e7; color: #71717a; cursor: not-allowed;" disabled>Applied</button>`
+                    : `<button class="btn btn--primary btn--sm" style="width: 100%; text-align: center; justify-content: center; border: none; cursor: pointer;" onclick="applyForOpportunity('${opp.Title.replace(/'/g, "\\'")}', ${opp.OppID}, this)">Apply Now</button>`
+              }
             </div>
           </article>
         `;
@@ -889,6 +896,48 @@ async function loadSavedOpportunities() {
   } catch (err) {
     console.error("Error loading saved opportunities:", err);
     container.innerHTML = "<p style='color:#dc2626;padding:1rem;'>Failed to load saved opportunities.</p>";
+  }
+}
+
+async function applyForOpportunity(title, oppId, button) {
+  if (!confirm(`Are you sure you want to apply for "${title}"?`)) return;
+
+  const token = getToken();
+  if (!token) {
+    alert("Please log in to apply.");
+    window.location.href = "/login-page";
+    return;
+  }
+
+  const originalHtml = button.innerHTML;
+  button.disabled = true;
+  button.innerHTML = "Applying...";
+
+  try {
+    const res = await fetch("/api/student/applications", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ oppId })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      alert("Application submitted successfully!");
+      await loadSavedOpportunities();
+      await loadApplications();
+    } else {
+      alert(data.message || "Failed to submit application.");
+      button.disabled = false;
+      button.innerHTML = originalHtml;
+    }
+  } catch (err) {
+    console.error("Error applying:", err);
+    alert("Network error occurred while applying.");
+    button.disabled = false;
+    button.innerHTML = originalHtml;
   }
 }
 
@@ -974,7 +1023,7 @@ async function loadApplications() {
         const conn3 = isFinal ? "app-timeline__connector--active" : "";
 
         return `
-          <article class="application-card" onclick="window.location.href='/careers/explore'" style="cursor: pointer;">
+          <article class="application-card">
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
               <div>
                 <h3 class="application-card__title" style="margin: 0; font-size: 0.9375rem; display: flex; align-items: center; gap: 8px;">
@@ -1099,17 +1148,15 @@ function initDynamicRemoveButtons() {
 function openTicketsTab(event) {
   event.preventDefault();
 
-
-  const dashGrid = document.querySelector(".dashboard__grid");
   const ticketsPanel = document.getElementById("tickets-panel");
   const profileMenu = document.getElementById("profileMenu");
 
-  if (dashGrid) dashGrid.style.display = "none";
-  if (ticketsPanel) ticketsPanel.style.display = "block";
+  if (ticketsPanel) {
+    ticketsPanel.style.display = "flex";
+    ticketsPanel.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
   if (profileMenu) profileMenu.classList.remove("nav__profile-menu--active");
-
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
 
   loadStudentTickets();
 }
@@ -1118,10 +1165,12 @@ function openTicketsTab(event) {
  * Closes the Tickets panel and returns to the dashboard grid view
  */
 function closeTicketsTab() {
-  const dashGrid = document.querySelector(".dashboard__grid");
   const ticketsPanel = document.getElementById("tickets-panel");
-  if (ticketsPanel) ticketsPanel.style.display = "none";
-  if (dashGrid) dashGrid.style.display = "";
+  if (ticketsPanel) {
+    ticketsPanel.style.display = "none";
+    ticketsPanel.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
 }
 
 window.openTicketsTab = openTicketsTab;
@@ -1544,6 +1593,7 @@ window.openAIProfileModal = openAIProfileModal;
 window.closeAIProfileModal = closeAIProfileModal;
 window.sendAIProfileChat = sendAIProfileChat;
 window.applyAIProposedBio = applyAIProposedBio;
+window.applyForOpportunity = applyForOpportunity;
 window.initProfileCompletionWidget = initProfileCompletionWidget;
 
 async function loadStudentHeaderProfile() {
@@ -1614,6 +1664,7 @@ function getToken() {
 }
 
 function logout() {
+  const token = localStorage.getItem('token');
   localStorage.removeItem('token');
   localStorage.removeItem('accountType');
   localStorage.removeItem('userName');
@@ -1627,7 +1678,12 @@ function logout() {
   localStorage.removeItem("orgProfilePic");
   window.__currentUser = null;
 
-  fetch('/logout', { method: 'POST' })
+  fetch('/logout', { 
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
     .catch(() => { })
     .finally(() => {
       window.location.href = '/login-page';
@@ -1815,3 +1871,36 @@ function showAppApprovalPopupByIndex(index) {
     showApprovalPopup(window.__loadedApplications[index]);
   }
 }
+
+// Global Inactivity Auto-Logout Tracker (5 Minutes)
+(function() {
+  let timeoutId;
+  const INACTIVITY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+  function resetTimer() {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(logoutDueToInactivity, INACTIVITY_TIME);
+  }
+
+  function logoutDueToInactivity() {
+    console.log("Logout due to 5 minutes of inactivity.");
+    alert("You have been logged out due to 5 minutes of inactivity.");
+    if (typeof logout === "function") {
+      logout();
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('accountType');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('initials');
+      window.location.href = '/login-page';
+    }
+  }
+
+  // Events that indicate user activity
+  const activityEvents = ['mousemove', 'mousedown', 'keydown', 'keypress', 'click', 'scroll', 'touchstart'];
+  activityEvents.forEach(name => {
+    document.addEventListener(name, resetTimer, { passive: true });
+  });
+
+  resetTimer(); // Start the timer initially
+})();

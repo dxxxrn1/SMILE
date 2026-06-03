@@ -26,13 +26,14 @@ export const fectNews = (req, res) => {
     const pageSize    = parseInt(req.query.pageSize) || 10;
     const apiCategory = CATEGORY_MAP[category] ?? null;
 
-    if (!process.env.NEW_NEWS_API) {
-        console.error('[SMILE News] NEWS_API_KEY is missing from environment variables.');
+    const apiKey = process.env.NEW_NEWS_API || process.env.NEWS_API_KEY;
+    if (!apiKey) {
+        console.error('[SMILE News] NEWS_API_KEY or NEW_NEWS_API is missing from environment variables.');
         return res.status(500).json({ success: false, message: 'News service is not configured.' });
     }
 
     const params = new URLSearchParams({
-        apikey:   process.env.NEW_NEWS_API,
+        apikey:   apiKey,
         country:  'za',
         language: 'en',
         size:     Math.min(pageSize, 10),

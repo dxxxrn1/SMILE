@@ -1,4 +1,6 @@
 import { sql, connectToDB } from "../dbConnection/dbconnection.js";
+import { logAudit } from "./auditController.js";
+import nodemailer from "nodemailer";
 
 /**
  * ID CONVENTION
@@ -157,7 +159,8 @@ export const getUserById = async (req, res) => {
             ISNULL(Status, 'active')          AS status,
             DateCreated                       AS createdAt,
             StuProvince                       AS province,
-            StuEducationLevel                 AS educationLevel
+            StuEducationLevel                 AS educationLevel,
+            ProfilePicUrl                     AS profilePicUrl
           FROM Student
           WHERE StuID = @id
         `);
@@ -174,7 +177,8 @@ export const getUserById = async (req, res) => {
             ISNULL(Status, 'active')          AS status,
             DateCreated                       AS createdAt,
             Province                          AS province,
-            Type                              AS orgType
+            Type                              AS orgType,
+            OrgProfilePic                     AS profilePicUrl
           FROM Organisation
           WHERE OrgId = @id
         `);
@@ -201,26 +205,91 @@ export const suspendUser = async (req, res) => {
     return res.status(400).json({ success: false, message: "Invalid user ID format." });
   }
 
+  const { reason } = req.body;
+  if (!reason || !reason.trim()) {
+    return res.status(400).json({ success: false, message: "Suspension reason is required." });
+  }
+
   try {
     const pool  = await connectToDB();
     const table = parsed.table === "student" ? "Student"      : "Organisation";
     const pkCol = parsed.table === "student" ? "StuID"        : "OrgId";
+    const emailCol = parsed.table === "student" ? "StuEmail"  : "OrgEmail";
+    const nameCol = parsed.table === "student" ? "StuName"    : "OrgName";
 
-    const result = await pool
+    // 1. Fetch user email and name first
+    let userResult;
+    if (parsed.table === "student") {
+      userResult = await pool
+        .request()
+        .input("id", sql.Int, parsed.numericId)
+        .query(`SELECT StuName + ' ' + StuLastName AS name, StuEmail AS email FROM Student WHERE StuID = @id`);
+    } else {
+      userResult = await pool
+        .request()
+        .input("id", sql.Int, parsed.numericId)
+        .query(`SELECT OrgName AS name, OrgEmail AS email FROM Organisation WHERE OrgId = @id`);
+    }
+
+    if (!userResult.recordset.length) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
+
+    const { name, email } = userResult.recordset[0];
+
+    // 2. Perform UPDATE
+    const updateResult = await pool
       .request()
       .input("id", sql.Int, parsed.numericId)
       .query(`
         UPDATE ${table}
-        SET    Status = 'suspended'
+        SET    Status = 'suspended', IsLoggedIn = 0
         WHERE  ${pkCol} = @id;
 
         SELECT @@ROWCOUNT AS affected;
       `);
 
-    const affected = result.recordset[0]?.affected ?? 0;
+    const affected = updateResult.recordset[0]?.affected ?? 0;
     if (!affected) {
       return res.status(404).json({ success: false, message: "User not found." });
     }
+
+    // 3. Send email
+    const transport = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.LUCAS_EMAIL,
+        pass: process.env.LUCAS_APP_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"SMILE Platform" <${process.env.LUCAS_EMAIL}>`,
+      to: email,
+      subject: "Your SMILE account has been suspended",
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:32px;background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb;">
+          <h2 style="color:#dc2626;margin-bottom:8px;">Account Suspended</h2>
+          <p style="color:#374151;line-height:1.6;">Hello ${name},</p>
+          <p style="color:#374151;line-height:1.6;">We are writing to inform you that your SMILE account has been suspended by the administrator.</p>
+          <div style="background:#fee2e2;border-left:4px solid #dc2626;padding:16px;border-radius:4px;margin:24px 0;">
+            <p style="margin:0;color:#991b1b;font-weight:600;">Reason for suspension:</p>
+            <p style="margin:8px 0 0;color:#7f1d1d;font-size:14px;white-space:pre-wrap;">${reason}</p>
+          </div>
+          <p style="color:#374151;line-height:1.6;">If you believe this is a mistake or have questions, please reply to this email or contact support.</p>
+        </div>
+      `
+    };
+
+    try {
+      await transport.sendMail(mailOptions);
+      console.log(`Suspension email sent to ${email}`);
+    } catch (emailErr) {
+      console.error("Suspension email failed (non-fatal):", emailErr.message);
+    }
+
+    // 4. Log audit log
+    await logAudit(req, "SUSPEND_USER", `Suspended ${parsed.table} ID: ${parsed.numericId}. Reason: ${reason}`);
 
     return res.status(200).json({ success: true, message: "User suspended successfully." });
   } catch (error) {
@@ -260,6 +329,7 @@ export const unsuspendUser = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found." });
     }
 
+    await logAudit(req, "UNSUSPEND_USER", `Unsuspended ${parsed.table} ID: ${parsed.numericId}`);
     return res.status(200).json({ success: true, message: "User reactivated successfully." });
   } catch (error) {
     console.error("unsuspendUser:", error);
@@ -319,10 +389,27 @@ export const deleteUser = async (req, res) => {
 
     await transaction.commit();
 
+    await logAudit(req, "DELETE_USER", `Permanently deleted ${parsed.table} ID: ${parsed.numericId}`);
     return res.status(200).json({ success: true, message: "User deleted successfully." });
   } catch (error) {
     await transaction.rollback();
     console.error("deleteUser:", error);
     return res.status(500).json({ success: false, message: "Failed to delete user." });
+  }
+};
+
+export const getOnlineUsersCount = async (req, res) => {
+  try {
+    const pool = await connectToDB();
+    const result = await pool.request().query(`
+      SELECT 
+        (SELECT COUNT(*) FROM Student WHERE IsLoggedIn = 1) AS studentCount,
+        (SELECT COUNT(*) FROM Organisation WHERE IsLoggedIn = 1) AS orgCount
+    `);
+    const { studentCount = 0, orgCount = 0 } = result.recordset[0] || {};
+    return res.status(200).json({ success: true, studentCount, orgCount, totalCount: studentCount + orgCount });
+  } catch (error) {
+    console.error("getOnlineUsersCount error:", error);
+    return res.status(500).json({ success: false, message: "Failed to retrieve online users count." });
   }
 };

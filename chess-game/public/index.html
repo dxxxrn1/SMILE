@@ -369,7 +369,7 @@
           <div class="chat-box" id="chat-box"></div>
           <div class="chat-input-row">
             <input class="input" id="chat-input" placeholder="Say something..." maxlength="80" style="flex:1;" />
-            <button class="btn btn-sm btn-primary" onclick="sendChat()">Send</button>
+            <button class="btn btn-sm btn-primary" onclick="sendChessChat()">Send</button>
           </div>
         </div>
 
@@ -401,7 +401,7 @@
         <h3 id="over-title">Game over</h3>
         <p id="over-msg" style="margin:0.5rem 0 1.5rem;"></p>
         <button class="btn btn-primary" onclick="replayGame()" style="width:100%; justify-content:center; margin-bottom:8px;">↺ Play again</button>
-        <button class="btn" onclick="showScreen('s-home')" style="width:100%; justify-content:center;">Home</button>
+        <button class="btn" onclick="goHome()" style="width:100%; justify-content:center;">Home</button>
       </div>
     </div>
   </div>
@@ -429,6 +429,14 @@
       <div style="display:flex; gap:8px;">
         <button class="btn btn-primary btn-sm" onclick="acceptChallenge()">Accept</button>
         <button class="btn btn-sm" onclick="declineChallenge()">Decline</button>
+      </div>
+    </div>
+
+    <!-- Open challenges section -->
+    <div class="card" style="margin-top: 1rem;">
+      <h3 style="margin:0 0 1rem 0;">Open Challenges</h3>
+      <div id="open-challenges-list">
+        <p style="text-align:center; padding:1rem; color:var(--text3);">No open challenges at the moment.</p>
       </div>
     </div>
 
@@ -921,15 +929,27 @@ function goBot() {
   showScreen('s-diff');
 }
 
+function goHome() {
+  socket.emit('leave_lobby');
+  multiMode = false;
+  showScreen('s-home');
+}
+
 function goLobby() {
-  playerName = getPlayerName();
+  const nameInput = document.getElementById('home-name');
+  const name = nameInput ? nameInput.value.trim() : '';
+  if (!name) {
+    alert("Please enter your display name before joining the multiplayer lobby.");
+    nameInput?.focus();
+    return;
+  }
+  playerName = name;
   joinLobby();
   showScreen('s-lobby');
 }
 
 function leaveLobby() {
-  socket.emit('leave_lobby');
-  showScreen('s-home');
+  goHome();
 }
 
 function confirmHome() {
@@ -937,8 +957,7 @@ function confirmHome() {
     if (!confirm('Abandon this game?')) return;
   }
   if (multiMode) socket.emit('game_over', { roomId, reason: 'abandon', winner: null });
-  multiMode = false;
-  showScreen('s-home');
+  goHome();
 }
 
 function startBot(diff) {
@@ -974,26 +993,52 @@ function joinLobby() {
   socket.emit('join_lobby', { name: playerName, rating: 1200 });
 }
 
-socket.on('lobby_update', (players) => {
+socket.on('lobby_update', ({ players, openChallenges: listChallenges }) => {
   document.getElementById('online-count').textContent = players.length;
   const list = document.getElementById('lobby-list');
   const others = players.filter(p => p.socketId !== socket.id);
   if (!others.length) {
     list.innerHTML = '<p style="text-align:center;padding:1rem;color:var(--text3);">No other players online yet.</p>';
-    return;
+  } else {
+    list.innerHTML = others.map(p => `
+      <div class="lobby-row">
+        <div class="online-dot" style="background:${p.status==='waiting'?'#639922':'#888780'};"></div>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:500;">${p.name}</div>
+          <div style="font-size:11px;color:var(--text3);">Rating ${p.rating} · ${p.status}</div>
+        </div>
+        ${p.status==='waiting'
+          ? `<button class="btn btn-sm" onclick="sendChallenge('${p.socketId}','${p.name}')">⚔ Challenge</button>`
+          : `<span class="badge badge-amber">In game</span>`}
+      </div>`).join('');
   }
-  list.innerHTML = others.map(p => `
-    <div class="lobby-row">
-      <div class="online-dot" style="background:${p.status==='waiting'?'#639922':'#888780'};"></div>
-      <div style="flex:1;">
-        <div style="font-size:14px;font-weight:500;">${p.name}</div>
-        <div style="font-size:11px;color:var(--text3);">Rating ${p.rating} · ${p.status}</div>
-      </div>
-      ${p.status==='waiting'
-        ? `<button class="btn btn-sm" onclick="sendChallenge('${p.socketId}','${p.name}')">⚔ Challenge</button>`
-        : `<span class="badge badge-amber">In game</span>`}
-    </div>`).join('');
+
+  // Render open challenges list
+  const challengesDiv = document.getElementById('open-challenges-list');
+  if (challengesDiv) {
+    if (!listChallenges.length) {
+      challengesDiv.innerHTML = '<p style="text-align:center; padding:1rem; color:var(--text3);">No open challenges at the moment.</p>';
+    } else {
+      challengesDiv.innerHTML = listChallenges.map(c => {
+        const isMe = c.hostId === socket.id;
+        return `
+          <div class="lobby-row" style="border-left: 3px solid ${isMe ? 'var(--purple)' : 'var(--green)'};">
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;color:${isMe ? 'var(--purple)' : 'var(--green)'};">${c.challengeName}</div>
+              <div style="font-size:11px;color:var(--text3);">Host: ${c.challengerName} (Rating ${c.rating}) ${isMe ? '· (You)' : ''}</div>
+            </div>
+            ${isMe
+              ? `<span class="badge badge-purple">Your Challenge</span>`
+              : `<button class="btn btn-sm btn-primary" onclick="acceptOpenChallenge('${c.hostId}')">⚔ Play</button>`}
+          </div>`;
+      }).join('');
+    }
+  }
 });
+
+function acceptOpenChallenge(hostId) {
+  socket.emit('accept_open_challenge', { hostId });
+}
 
 function sendChallenge(targetId, targetName) {
   socket.emit('send_challenge', { targetId });
@@ -1032,8 +1077,10 @@ socket.on('challenge_declined', ({ name }) => {
 });
 
 function openChallenge() {
+  const challengeName = prompt("Enter a custom name/label for your open challenge (e.g., 'Casual Match', 'Minimax Master'):") || "";
+  const name = challengeName.trim() || `Match with ${playerName}`;
   document.getElementById('open-challenge-panel').style.display = 'block';
-  socket.emit('open_challenge', { name: playerName });
+  socket.emit('open_challenge', { challengeName: name });
 }
 
 function cancelOpenChallenge() {
@@ -1086,21 +1133,21 @@ socket.on('opponent_disconnected', () => {
 });
 
 // ── Chat ──
-function sendChat() {
+function sendChessChat() {
   const input = document.getElementById('chat-input');
   const msg = input.value.trim();
   if (!msg || !roomId) return;
   socket.emit('chat_message', { roomId, message: msg });
-  addChatMsg(playerName, msg, true);
   input.value = '';
 }
 
 document.getElementById('chat-input')?.addEventListener('keydown', e => {
-  if (e.key === 'Enter') sendChat();
+  if (e.key === 'Enter') sendChessChat();
 });
 
-socket.on('chat_message', ({ sender, message }) => {
-  if (sender !== playerName) addChatMsg(sender, message, false);
+socket.on('chat_message', ({ sender, senderId, message }) => {
+  const isMe = (senderId === socket.id);
+  addChatMsg(sender, message, isMe);
 });
 
 function addChatMsg(sender, message, isMe) {

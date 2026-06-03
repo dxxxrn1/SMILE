@@ -14,8 +14,9 @@ const createSmileMailTransport = () => {
 
 function fetchLatestNews() {
     return new Promise((resolve, reject) => {
+        const apiKey = process.env.NEW_NEWS_API || process.env.NEWS_API_KEY;
         const params = new URLSearchParams({
-            apikey: process.env.NEW_NEWS_API,
+            apikey: apiKey,
             country: "za",
             language: "en",
             size: 5
@@ -33,6 +34,11 @@ function fetchLatestNews() {
             response.on("end", () => {
                 try {
                     const parsed = JSON.parse(data);
+
+                    if (parsed.status !== "success") {
+                        const errMsg = parsed.results?.message || "newsdata.io returned an error";
+                        return reject(new Error(errMsg));
+                    }
 
                     resolve(
                         (parsed.results || []).slice(0, 5)
@@ -72,17 +78,20 @@ export const sendNewsletterToSubscribersJob = async () => {
     const transport = createSmileMailTransport();
 
     for (const subscriber of subscribers.recordset) {
+        try {
+            await transport.sendMail({
+                from: `"SMILE Platform" <${process.env.LUCAS_EMAIL}>`,
+                to: subscriber.Email,
+                subject: "📰 SMILE Daily Newsletter",
+                html: `
+                    <h1>SMILE Daily Newsletter</h1>
+                    ${newsHtml}
+                `
+            });
 
-        await transport.sendMail({
-            from: `"SMILE Platform" <${process.env.LUCAS_EMAIL}>`,
-            to: subscriber.Email,
-            subject: "📰 SMILE Daily Newsletter",
-            html: `
-                <h1>SMILE Daily Newsletter</h1>
-                ${newsHtml}
-            `
-        });
-
-        console.log(`Newsletter sent to ${subscriber.Email}`);
+            console.log(`Newsletter sent to ${subscriber.Email}`);
+        } catch (mailErr) {
+            console.error(`Failed to send newsletter to ${subscriber.Email}:`, mailErr.message);
+        }
     }
 };

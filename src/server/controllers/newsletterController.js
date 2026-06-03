@@ -100,3 +100,38 @@ export const subscribeToNewsletter = async (req, res) => {
         return res.status(500).json({ success: false, message: "Failed to subscribe. Please try again later." });
     }
 };
+
+// POST /api/newsletter/unsubscribe
+export const unsubscribeFromNewsletter = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            return res.status(400).json({ success: false, message: "Please enter a valid email address." });
+        }
+
+        const pool = await connectToDB();
+
+        // Check if subscribed
+        const check = await pool.request()
+            .input("Email", sql.VarChar, email)
+            .query("SELECT Id FROM NewsletterSubscriptions WHERE Email = @Email");
+
+        if (check.recordset.length === 0) {
+            return res.status(404).json({ success: false, message: "This email address is not subscribed." });
+        }
+
+        // Delete from database
+        await pool.request()
+            .input("Email", sql.VarChar, email)
+            .query("DELETE FROM NewsletterSubscriptions WHERE Email = @Email");
+
+        console.log(`Newsletter subscriber unsubscribed: ${email}`);
+
+        return res.status(200).json({ success: true, message: "You have been unsubscribed from the newsletter." });
+
+    } catch (err) {
+        console.error("unsubscribeFromNewsletter error:", err);
+        return res.status(500).json({ success: false, message: "Failed to unsubscribe. Please try again later." });
+    }
+};

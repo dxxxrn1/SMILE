@@ -358,6 +358,17 @@ function renderCards(opps) {
           </div>
 
           <div class="nearme-card__details" id="details-${opp.OppID}" style="display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--gray-200);">
+            ${
+              (opp.OppImageUrl && opp.OppImageUrl !== "null" && opp.OppImageUrl !== "undefined")
+                ? `<div style="width:100%;height:160px;margin-bottom:12px;overflow:hidden;border-radius:8px;">
+                     <img src="${opp.OppImageUrl}" alt="${opp.Title}" style="width:100%;height:100%;object-fit:cover;">
+                   </div>`
+                : (opp.OrgProfilePic && opp.OrgProfilePic !== "null" && opp.OrgProfilePic !== "undefined")
+                  ? `<div style="width:100%;height:160px;margin-bottom:12px;overflow:hidden;border-radius:8px;">
+                       <img src="${opp.OrgProfilePic}" alt="${opp.OrgName}" style="width:100%;height:100%;object-fit:cover;">
+                     </div>`
+                  : ""
+            }
             <p style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 8px;">
               <strong>Description:</strong><br>
               ${opp.Description || "No description provided."}
@@ -393,6 +404,17 @@ function cardClicked(id) {
     return o.OppID === id;
   });
   if (!opp) return;
+
+  const card = document.getElementById("card-" + id);
+  const wasActive = card ? card.classList.contains("nearme-card--active") : false;
+
+  if (wasActive) {
+    if (card) card.classList.remove("nearme-card--active");
+    const details = document.getElementById("details-" + id);
+    if (details) details.style.display = "none";
+    map.closePopup();
+    return;
+  }
 
   // Pan map to that opportunity's marker
   map.setView([opp.Lat, opp.Lng], 12, { animate: true, duration: 0.8 });
@@ -611,5 +633,38 @@ async function loadOpportunities(province) {
     setMapStatus("error", "Server connection failed.");
   }
 }
+
+// Global Inactivity Auto-Logout Tracker (5 Minutes)
+(function() {
+  let timeoutId;
+  const INACTIVITY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+  function resetTimer() {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(logoutDueToInactivity, INACTIVITY_TIME);
+  }
+
+  function logoutDueToInactivity() {
+    console.log("Logout due to 5 minutes of inactivity.");
+    alert("You have been logged out due to 5 minutes of inactivity.");
+    if (typeof logout === "function") {
+      logout();
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('accountType');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('initials');
+      window.location.href = '/login-page';
+    }
+  }
+
+  // Events that indicate user activity
+  const activityEvents = ['mousemove', 'mousedown', 'keydown', 'keypress', 'click', 'scroll', 'touchstart'];
+  activityEvents.forEach(name => {
+    document.addEventListener(name, resetTimer, { passive: true });
+  });
+
+  resetTimer(); // Start the timer initially
+})();
 
 

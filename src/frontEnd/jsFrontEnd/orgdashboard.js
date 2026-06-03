@@ -21,6 +21,53 @@ document.addEventListener("DOMContentLoaded", function () {
   checkUrlParams();
   bindTabInterceptors();
   loadOrgEvents();
+  
+  const recentList = document.getElementById("recent-applicants-list");
+  const backToTopBtn = document.getElementById("backToTopBtn");
+  if (recentList && backToTopBtn) {
+    recentList.addEventListener("scroll", () => {
+      if (recentList.scrollTop > 50) {
+        backToTopBtn.style.display = "inline-flex";
+      } else {
+        backToTopBtn.style.display = "none";
+      }
+    });
+  }
+
+  const topOppsList = document.getElementById("top-performing-list");
+  const backToTopTopOppsBtn = document.getElementById("backToTopTopOppsBtn");
+  if (topOppsList && backToTopTopOppsBtn) {
+    topOppsList.addEventListener("scroll", () => {
+      if (topOppsList.scrollTop > 50) {
+        backToTopTopOppsBtn.style.display = "inline-flex";
+      } else {
+        backToTopTopOppsBtn.style.display = "none";
+      }
+    });
+  }
+
+  const eventsList = document.getElementById("dynamicEventsListOrg");
+  const backToTopEventsBtn = document.getElementById("backToTopEventsBtn");
+  if (eventsList && backToTopEventsBtn) {
+    eventsList.addEventListener("scroll", () => {
+      if (eventsList.scrollTop > 50) {
+        backToTopEventsBtn.style.display = "inline-flex";
+      } else {
+        backToTopEventsBtn.style.display = "none";
+      }
+    });
+  }
+
+  window.addEventListener("scroll", () => {
+    const btn = document.getElementById("backToTopPageBtn");
+    if (btn) {
+      if (window.scrollY > 150) {
+        btn.style.display = "inline-flex";
+      } else {
+        btn.style.display = "none";
+      }
+    }
+  });
 
   const logoutTag = document.getElementById("logout");
   if (logoutTag) {
@@ -166,7 +213,7 @@ function bindTabInterceptors() {
   document.querySelectorAll(".org-tab").forEach((tabLink) => {
     tabLink.addEventListener("click", function (e) {
       const href = this.getAttribute("href");
-      if (href && href.includes("?tab=")) {
+      if (window.location.pathname === "/org/dashboard" && href && href.includes("?tab=")) {
         e.preventDefault();
         const tabName = this.getAttribute("data-tab");
         switchTab(tabName, this);
@@ -568,6 +615,13 @@ async function submitOpportunityEdit(e) {
   const token = getToken();
   if (!token) return;
 
+  const deadlineVal = document.getElementById("editDeadline").value;
+  const todayStr = new Date().toLocaleDateString("en-CA");
+  if (deadlineVal < todayStr) {
+    showToast("❌ Application closing date cannot be in the past.", "danger");
+    return;
+  }
+
   const oppId = document.getElementById("editOppID").value;
   const payload = {
     title: document.getElementById("editTitle").value.trim(),
@@ -731,6 +785,16 @@ function handlePublish(asDraft) {
   if (!valid) {
     showFormMsg("Please fill in all required fields.", "error");
     return;
+  }
+
+  if (!asDraft) {
+    const todayStr = new Date().toLocaleDateString("en-CA");
+    if (deadline.value < todayStr) {
+      showFormMsg("Application closing date cannot be in the past.", "error");
+      showToast("Application closing date cannot be in the past.", "error");
+      deadline.closest(".form__group").classList.add("form__group--error");
+      return;
+    }
   }
 
   const btn = document.getElementById(asDraft ? "saveDraftBtn" : "publishBtn");
@@ -1334,6 +1398,7 @@ function getToken() {
 }
 
 function logout() {
+  const token = localStorage.getItem('token');
   localStorage.removeItem('token');
   localStorage.removeItem('accountType');
   localStorage.removeItem('userName');
@@ -1347,7 +1412,12 @@ function logout() {
   localStorage.removeItem("orgProfilePic");
   window.__currentUser = null;
 
-  fetch('/logout', { method: 'POST' })
+  fetch('/logout', { 
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
     .catch(() => { })
     .finally(() => {
       window.location.href = '/login-page';
@@ -1459,3 +1529,36 @@ async function loadOrgEvents() {
     container.innerHTML = `<p style="padding: 12px 0; color: #dc2626; text-align: center; font-size: 13px;">Failed to load schedule.</p>`;
   }
 }
+
+// Global Inactivity Auto-Logout Tracker (5 Minutes)
+(function() {
+  let timeoutId;
+  const INACTIVITY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+  function resetTimer() {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(logoutDueToInactivity, INACTIVITY_TIME);
+  }
+
+  function logoutDueToInactivity() {
+    console.log("Logout due to 5 minutes of inactivity.");
+    alert("You have been logged out due to 5 minutes of inactivity.");
+    if (typeof logout === "function") {
+      logout();
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('accountType');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('initials');
+      window.location.href = '/login-page';
+    }
+  }
+
+  // Events that indicate user activity
+  const activityEvents = ['mousemove', 'mousedown', 'keydown', 'keypress', 'click', 'scroll', 'touchstart'];
+  activityEvents.forEach(name => {
+    document.addEventListener(name, resetTimer, { passive: true });
+  });
+
+  resetTimer(); // Start the timer initially
+})();

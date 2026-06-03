@@ -70,6 +70,10 @@ if (oppImageInput) {
                 preview.src = e.target.result;
                 preview.style.display = "block";
             }
+            const placeholder = document.getElementById("uploadPlaceholder");
+            if (placeholder) {
+                placeholder.style.display = "none";
+            }
         };
         reader.readAsDataURL(file);
     });
@@ -80,6 +84,8 @@ document.getElementById("clearBtn").addEventListener("click", function () {
     window._oppImageBase64 = null;
     const preview = document.getElementById("oppImagePreview");
     if (preview) { preview.src = ""; preview.style.display = "none"; }
+    const placeholder = document.getElementById("uploadPlaceholder");
+    if (placeholder) { placeholder.style.display = "block"; }
     // ... rest of your existing clear logic
 });
 
@@ -102,6 +108,14 @@ document.getElementById("clearBtn").addEventListener("click", function () {
 
         if (!valid) {
             setFormMsg("Please fill in all required fields before publishing.", "error");
+            return;
+        }
+
+        const deadlineVal = document.getElementById("newDeadline").value;
+        const todayStr = new Date().toLocaleDateString("en-CA");
+        if (deadlineVal < todayStr) {
+            setFormMsg("Application closing date cannot be in the past.", "error");
+            showToast("Application closing date cannot be in the past.", "error");
             return;
         }
         // Add to your existing payload object
@@ -135,10 +149,16 @@ document.getElementById("clearBtn").addEventListener("click", function () {
         publishBtn.disabled = true;
         publishBtn.textContent = "Publishing...";
 
+        const token = getToken();
+        if (!token) return;
+
         try {
             const res = await fetch("/api/opportunities/create", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify(payload)
             });
 
@@ -149,6 +169,13 @@ document.getElementById("clearBtn").addEventListener("click", function () {
                 showToast("Opportunity published!", "success");
                 document.getElementById("createOppForm").reset();
                 document.getElementById("descCount").textContent = "0 / 1000";
+
+                // Reset image preview and base64 cache
+                window._oppImageBase64 = null;
+                const preview = document.getElementById("oppImagePreview");
+                if (preview) { preview.src = ""; preview.style.display = "none"; }
+                const placeholder = document.getElementById("uploadPlaceholder");
+                if (placeholder) { placeholder.style.display = "block"; }
             } else {
                 setFormMsg(data.message || "Something went wrong.", "error");
                 showToast("Failed to publish.", "error");
@@ -252,6 +279,7 @@ function getToken() {
 }
 
 function logout() {
+    const token = localStorage.getItem('token');
     localStorage.removeItem('token');
     localStorage.removeItem('accountType');
     localStorage.removeItem('userName');
@@ -265,7 +293,12 @@ function logout() {
     localStorage.removeItem("orgProfilePic");
     window.__currentUser = null;
     
-    fetch('/logout', { method: 'POST' })
+    fetch('/logout', { 
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .catch(() => {})
         .finally(() => {
             window.location.href = '/login-page';
@@ -276,3 +309,36 @@ function logout() {
 window.isTokenExpired = isTokenExpired;
 window.getToken = getToken;
 window.logout = logout;
+
+// Global Inactivity Auto-Logout Tracker (5 Minutes)
+(function() {
+  let timeoutId;
+  const INACTIVITY_TIME = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+  function resetTimer() {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(logoutDueToInactivity, INACTIVITY_TIME);
+  }
+
+  function logoutDueToInactivity() {
+    console.log("Logout due to 5 minutes of inactivity.");
+    alert("You have been logged out due to 5 minutes of inactivity.");
+    if (typeof logout === "function") {
+      logout();
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('accountType');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('initials');
+      window.location.href = '/login-page';
+    }
+  }
+
+  // Events that indicate user activity
+  const activityEvents = ['mousemove', 'mousedown', 'keydown', 'keypress', 'click', 'scroll', 'touchstart'];
+  activityEvents.forEach(name => {
+    document.addEventListener(name, resetTimer, { passive: true });
+  });
+
+  resetTimer(); // Start the timer initially
+})();

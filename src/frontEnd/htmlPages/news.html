@@ -98,7 +98,7 @@
         <div class="nav__profile" id="profileDropdown">
           <button class="nav__profile-btn" aria-label="Profile menu" style="position: relative;">
             <div class="nav__avatar">
-              <span id="initials">TM</span>
+              <span id="initials"></span>
             </div>
             <span class="nav__notification-badge" id="notificationBadge"
               style="position: absolute; top: -2px; right: -2px; display: inline-flex; align-items: center; justify-content: center; background: #ef4444; color: white; border-radius: 50%; font-size: 9px; width: 15px; height: 15px; font-weight: 700; border: 1.5px solid white;"
@@ -225,9 +225,30 @@
           <h2 class="newsletter__title">Stay Informed</h2>
           <p class="newsletter__text">Subscribe to our newsletter to receive the latest opportunities and news directly
             in your inbox.</p>
-          <form class="newsletter__form" id="newsletterForm">
-            <input type="email" class="newsletter__input" placeholder="Enter your email address" required>
-            <button type="submit" class="btn btn--gradient">Subscribe</button>
+          <form class="newsletter__form" id="newsletterForm" style="display: flex; flex-direction: column; gap: var(--spacing-md); max-width: 480px; margin: 0 auto;">
+            <input type="email" class="newsletter__input" placeholder="Enter your email address" required style="width: 100%;">
+            <div class="newsletter__buttons" style="display: flex; gap: var(--spacing-sm); width: 100%;">
+              <button type="submit" class="btn btn--gradient" style="flex: 1;">Subscribe</button>
+              <button type="button" class="btn btn--outline" id="btnUnsubscribe" style="
+                flex: 1; 
+                border: 2px solid rgba(255, 255, 255, 0.5); 
+                color: white; 
+                background: transparent; 
+                font-weight: 600; 
+                padding: var(--spacing-sm) var(--spacing-lg); 
+                border-radius: var(--radius-md); 
+                font-family: var(--font-primary); 
+                cursor: pointer; 
+                transition: all 0.2s ease; 
+                display: inline-flex; 
+                align-items: center; 
+                justify-content: center;
+              "
+              onmouseover="this.style.background='rgba(255, 255, 255, 0.1)'; this.style.borderColor='rgba(255, 255, 255, 0.8)';"
+              onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(255, 255, 255, 0.5)';">
+                Unsubscribe
+              </button>
+            </div>
           </form>
         </div>
       </section>
@@ -255,4 +276,5 @@
   <script src="../jsFrontEnd/dashboardJS.js"></script>
   <script src="../jsFrontEnd/newsAPI.js"></script>
 </body>
+
 </html>

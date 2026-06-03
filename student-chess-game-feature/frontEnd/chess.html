@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Student Chess - SMILE</title>
   <script src="/socket.io/socket.io.js"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
       --bg: #f8f7f4;
       --surface: #ffffff;
       --surface2: #f1efe8;
-      --border: rgba(0,0,0,0.12);
-      --border2: rgba(0,0,0,0.22);
+      --border: rgba(0, 0, 0, 0.12);
+      --border2: rgba(0, 0, 0, 0.22);
       --text: #1a1a1a;
       --text2: #5f5e5a;
       --text3: #888780;
@@ -44,9 +51,19 @@
     }
 
     /* ── Layout ── */
-    .app { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
-    .screen { display: none; }
-    .screen.active { display: block; }
+    .app {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
 
     /* ── Cards ── */
     .card {
@@ -58,78 +75,187 @@
     }
 
     /* ── Typography ── */
-    h1 { font-size: 22px; font-weight: 500; }
-    h2 { font-size: 18px; font-weight: 500; margin-bottom: 0.5rem; }
-    h3 { font-size: 16px; font-weight: 500; margin-bottom: 0.75rem; }
-    p  { font-size: 14px; color: var(--text2); line-height: 1.6; }
+    h1 {
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.6;
+    }
 
     /* ── Buttons ── */
     .btn {
-      display: inline-flex; align-items: center; gap: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       padding: 9px 18px;
       border: 0.5px solid var(--border2);
       border-radius: var(--radius);
       background: transparent;
       color: var(--text);
-      font-size: 14px; cursor: pointer;
+      font-size: 14px;
+      cursor: pointer;
       transition: background 0.15s, transform 0.1s;
     }
-    .btn:hover { background: var(--surface2); }
-    .btn:active { transform: scale(0.98); }
-    .btn-primary { background: var(--purple); color: var(--purple-light); border-color: var(--purple); }
-    .btn-primary:hover { background: var(--purple-dark); }
-    .btn-danger  { background: var(--red); color: var(--red-light); border-color: var(--red); }
-    .btn-danger:hover  { background: #791F1F; }
-    .btn-sm { padding: 5px 12px; font-size: 12px; }
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn:hover {
+      background: var(--surface2);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--purple);
+      color: var(--purple-light);
+      border-color: var(--purple);
+    }
+
+    .btn-primary:hover {
+      background: var(--purple-dark);
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: var(--red-light);
+      border-color: var(--red);
+    }
+
+    .btn-danger:hover {
+      background: #791F1F;
+    }
+
+    .btn-sm {
+      padding: 5px 12px;
+      font-size: 12px;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
 
     /* ── Inputs ── */
     .input {
-      width: 100%; padding: 9px 12px;
+      width: 100%;
+      padding: 9px 12px;
       border: 0.5px solid var(--border2);
       border-radius: var(--radius);
       background: var(--surface2);
-      color: var(--text); font-size: 14px;
+      color: var(--text);
+      font-size: 14px;
       outline: none;
     }
-    .input:focus { border-color: var(--purple); }
+
+    .input:focus {
+      border-color: var(--purple);
+    }
 
     /* ── Badges ── */
     .badge {
-      display: inline-block; font-size: 11px;
-      padding: 2px 8px; border-radius: var(--radius);
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: var(--radius);
     }
-    .badge-purple { background: var(--purple-light); color: var(--purple-dark); }
-    .badge-green  { background: var(--green-light);  color: var(--green); }
-    .badge-amber  { background: var(--amber-light);  color: var(--amber); }
-    .badge-red    { background: var(--red-light);    color: var(--red); }
+
+    .badge-purple {
+      background: var(--purple-light);
+      color: var(--purple-dark);
+    }
+
+    .badge-green {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .badge-amber {
+      background: var(--amber-light);
+      color: var(--amber);
+    }
+
+    .badge-red {
+      background: var(--red-light);
+      color: var(--red);
+    }
 
     /* ── Status bar ── */
     .status-bar {
       padding: 9px 14px;
       border-radius: var(--radius);
-      font-size: 13px; font-weight: 500;
-      text-align: center; margin-bottom: 1rem;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 1rem;
     }
-    .s-playing { background: var(--green-light);  color: var(--green); }
-    .s-check   { background: var(--amber-light);  color: var(--amber); }
-    .s-over    { background: var(--red-light);    color: var(--red); }
-    .s-waiting { background: var(--purple-light); color: var(--purple-dark); }
+
+    .s-playing {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .s-check {
+      background: var(--amber-light);
+      color: var(--amber);
+    }
+
+    .s-over {
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    .s-waiting {
+      background: var(--purple-light);
+      color: var(--purple-dark);
+    }
 
     /* ── Board ── */
-    .board-wrap { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
-    .board-container { flex: 0 0 auto; }
+    .board-wrap {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .board-container {
+      flex: 0 0 auto;
+    }
+
     .rank-labels {
-      display: flex; flex-direction: column;
+      display: flex;
+      flex-direction: column;
       justify-content: space-around;
-      height: 424px; padding: 4px;
-      font-size: 11px; color: var(--text3);
+      height: 424px;
+      padding: 4px;
+      font-size: 11px;
+      color: var(--text3);
     }
+
     .file-labels {
-      display: flex; justify-content: space-around;
-      width: 424px; font-size: 11px;
-      color: var(--text3); padding: 4px 0;
+      display: flex;
+      justify-content: space-around;
+      width: 424px;
+      font-size: 11px;
+      color: var(--text3);
+      padding: 4px 0;
     }
+
     .board {
       display: grid;
       grid-template-columns: repeat(8, 53px);
@@ -137,1006 +263,1212 @@
       border: 2px solid var(--border2);
       border-radius: 2px;
     }
+
     .sq {
-      width: 53px; height: 53px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 32px; cursor: pointer;
-      user-select: none; transition: background 0.1s;
+      width: 53px;
+      height: 53px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.1s;
     }
-    .sq.light     { background: var(--sq-light); }
-    .sq.dark      { background: var(--sq-dark); }
-    .sq.selected  { background: var(--sq-select) !important; }
-    .sq.possible  { background: var(--sq-possible) !important; }
-    .sq.last-from { background: var(--sq-lastfrom) !important; }
-    .sq.last-to   { background: var(--sq-select) !important; }
-    .sq.in-check  { background: var(--sq-check) !important; }
+
+    .sq.light {
+      background: var(--sq-light);
+    }
+
+    .sq.dark {
+      background: var(--sq-dark);
+    }
+
+    .sq.selected {
+      background: var(--sq-select) !important;
+    }
+
+    .sq.possible {
+      background: var(--sq-possible) !important;
+    }
+
+    .sq.last-from {
+      background: var(--sq-lastfrom) !important;
+    }
+
+    .sq.last-to {
+      background: var(--sq-select) !important;
+    }
+
+    .sq.in-check {
+      background: var(--sq-check) !important;
+    }
+
     .sq.possible::after {
       content: '';
-      width: 18px; height: 18px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
-      background: rgba(0,0,0,0.18);
+      background: rgba(0, 0, 0, 0.18);
       pointer-events: none;
       position: absolute;
     }
-    .sq { position: relative; }
+
+    .sq {
+      position: relative;
+    }
 
     /* ── Side panel ── */
-    .side-panel { flex: 1; min-width: 185px; }
+    .side-panel {
+      flex: 1;
+      min-width: 185px;
+    }
+
     .player-chip {
-      display: flex; align-items: center; gap: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       padding: 10px 12px;
       border-radius: var(--radius);
       border: 0.5px solid var(--border);
     }
-    .player-chip.active-turn { border-color: var(--purple); background: var(--purple-light); }
+
+    .player-chip.active-turn {
+      border-color: var(--purple);
+      background: var(--purple-light);
+    }
+
     .avatar {
-      width: 34px; height: 34px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 500; flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 500;
+      flex-shrink: 0;
     }
-    .captured { display: flex; flex-wrap: wrap; gap: 1px; min-height: 22px; font-size: 17px; padding: 2px 0; }
+
+    .captured {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1px;
+      min-height: 22px;
+      font-size: 17px;
+      padding: 2px 0;
+    }
+
     .move-list {
-      height: 150px; overflow-y: auto;
-      font-size: 12px; font-family: monospace;
-      color: var(--text2); line-height: 1.9;
+      height: 150px;
+      overflow-y: auto;
+      font-size: 12px;
+      font-family: monospace;
+      color: var(--text2);
+      line-height: 1.9;
     }
-    .material-score { font-size: 11px; color: var(--text3); margin-left: auto; }
+
+    .material-score {
+      font-size: 11px;
+      color: var(--text3);
+      margin-left: auto;
+    }
 
     /* ── Lobby ── */
     .lobby-row {
-      display: flex; align-items: center; gap: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
       padding: 10px 0;
       border-bottom: 0.5px solid var(--border);
     }
-    .lobby-row:last-child { border-bottom: none; }
-    .online-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    .lobby-row:last-child {
+      border-bottom: none;
+    }
+
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
 
     /* ── Chat ── */
     .chat-box {
-      height: 140px; overflow-y: auto;
-      font-size: 13px; line-height: 1.6;
+      height: 140px;
+      overflow-y: auto;
+      font-size: 13px;
+      line-height: 1.6;
       padding: 8px;
       background: var(--surface2);
       border-radius: var(--radius);
       margin-bottom: 8px;
     }
-    .chat-msg { margin-bottom: 4px; }
-    .chat-msg .sender { font-weight: 500; color: var(--purple); }
-    .chat-msg .system { color: var(--text3); font-style: italic; }
-    .chat-input-row { display: flex; gap: 6px; }
+
+    .chat-msg {
+      margin-bottom: 4px;
+    }
+
+    .chat-msg .sender {
+      font-weight: 500;
+      color: var(--purple);
+    }
+
+    .chat-msg .system {
+      color: var(--text3);
+      font-style: italic;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 6px;
+    }
 
     /* ── Modals ── */
     .modal-overlay {
       min-height: 320px;
-      background: rgba(0,0,0,0.38);
+      background: rgba(0, 0, 0, 0.38);
       border-radius: var(--radius-lg);
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-bottom: 1rem;
     }
+
     .modal-box {
       background: var(--surface);
       border: 0.5px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 2rem; width: 290px; text-align: center;
+      padding: 2rem;
+      width: 290px;
+      text-align: center;
     }
-    .modal-box h3 { margin-bottom: 1rem; }
+
+    .modal-box h3 {
+      margin-bottom: 1rem;
+    }
+
     .diff-btn {
-      display: block; width: 100%; padding: 11px 14px;
-      margin-bottom: 8px; text-align: left;
+      display: block;
+      width: 100%;
+      padding: 11px 14px;
+      margin-bottom: 8px;
+      text-align: left;
       border: 0.5px solid var(--border2);
       border-radius: var(--radius);
-      background: transparent; color: var(--text);
-      font-size: 14px; cursor: pointer;
+      background: transparent;
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
     }
-    .diff-btn:hover { background: var(--surface2); }
+
+    .diff-btn:hover {
+      background: var(--surface2);
+    }
 
     /* ── Promotion picker ── */
     .promo-grid {
-      display: flex; gap: 10px; justify-content: center; margin-top: 1rem;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 1rem;
     }
+
     .promo-btn {
-      width: 60px; height: 60px;
+      width: 60px;
+      height: 60px;
       font-size: 36px;
       border: 0.5px solid var(--border2);
       border-radius: var(--radius);
-      background: var(--surface2); cursor: pointer;
+      background: var(--surface2);
+      cursor: pointer;
     }
-    .promo-btn:hover { background: var(--purple-light); border-color: var(--purple); }
+
+    .promo-btn:hover {
+      background: var(--purple-light);
+      border-color: var(--purple);
+    }
 
     /* ── Notification toast ── */
     #toast {
-      position: fixed; bottom: 24px; right: 24px;
-      background: var(--purple); color: var(--purple-light);
-      padding: 10px 18px; border-radius: var(--radius);
-      font-size: 13px; font-weight: 500;
-      opacity: 0; transition: opacity 0.3s;
-      pointer-events: none; z-index: 999;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--purple);
+      color: var(--purple-light);
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 999;
     }
-    #toast.show { opacity: 1; }
+
+    #toast.show {
+      opacity: 1;
+    }
 
     /* ── Nav ── */
     .topbar {
-      display: flex; align-items: center; gap: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       margin-bottom: 1rem;
     }
-    .topbar h2 { margin: 0; }
+
+    .topbar h2 {
+      margin: 0;
+    }
 
     @media (max-width: 600px) {
-      .board { grid-template-columns: repeat(8, 40px); grid-template-rows: repeat(8, 40px); }
-      .sq { width: 40px; height: 40px; font-size: 24px; }
-      .rank-labels { height: 320px; }
-      .file-labels { width: 320px; }
+      .board {
+        grid-template-columns: repeat(8, 40px);
+        grid-template-rows: repeat(8, 40px);
+      }
+
+      .sq {
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
+      }
+
+      .rank-labels {
+        height: 320px;
+      }
+
+      .file-labels {
+        width: 320px;
+      }
     }
   </style>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/student-chess/smileChess.css">
 </head>
+
 <body class="smile-chess-page dashboard-page">
-<header class="header header--dashboard smile-chess-header">
-  <nav class="nav container">
-    <a href="/" class="nav__logo">
-      <span class="nav__logo-icon">&#9786;</span>
-      <span>SMILE</span>
-    </a>
+  <header class="header header--dashboard smile-chess-header">
+    <nav class="nav container">
+      <a href="/" class="nav__logo">
+        <span class="nav__logo-icon">&#9786;</span>
+        <span>SMILE</span>
+      </a>
 
-    <ul class="nav__menu nav__menu--dashboard">
-      <li><a href="/careers/explore" class="nav__link">Careers</a></li>
-      <li><a href="/student/dashboard" class="nav__link">Dashboard</a></li>
-      <li><a href="/student/chess" class="nav__link nav__link--active">Chess</a></li>
-    </ul>
-  </nav>
-</header>
-<div class="app">
+      <ul class="nav__menu nav__menu--dashboard">
+        <li><a href="/careers/explore" class="nav__link">Careers</a></li>
+        <li><a href="/student/dashboard" class="nav__link">Dashboard</a></li>
+        <li><a href="/student/chess" class="nav__link nav__link--active">Chess</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="app">
 
-  <!-- ─── HOME ─────────────────────────────────────────────────── -->
-  <div class="screen active" id="s-home">
-    <div class="card" style="text-align:center; padding:2.5rem 2rem;">
-      <div style="font-size:52px; margin-bottom:1rem;">♟</div>
-      <h1 style="margin-bottom:0.5rem;">Chess</h1>
-      <p style="margin-bottom:1.5rem;">Play against the bot or challenge a live opponent online.</p>
-      <div style="max-width:260px; margin:0 auto 1.5rem;">
-        <label style="font-size:12px; color:var(--text2); display:block; margin-bottom:4px; text-align:left;">Your display name</label>
-        <input class="input" id="home-name" placeholder="Enter your name..." maxlength="18" />
-      </div>
-      <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-        <button class="btn btn-primary" onclick="goBot()">♟ Play vs bot</button>
-        <button class="btn" onclick="goLobby()">⚔ Multiplayer lobby</button>
+    <!-- ─── HOME ─────────────────────────────────────────────────── -->
+    <div class="screen active" id="s-home">
+      <div class="card" style="text-align:center; padding:2.5rem 2rem;">
+        <div style="font-size:52px; margin-bottom:1rem;">♟</div>
+        <h1 style="margin-bottom:0.5rem;">Chess</h1>
+        <p style="margin-bottom:1.5rem;">Play against the bot or challenge a live opponent online.</p>
+        <div style="max-width:260px; margin:0 auto 1.5rem;">
+          <label style="font-size:12px; color:var(--text2); display:block; margin-bottom:4px; text-align:left;">Your
+            display name</label>
+          <input class="input" id="home-name" placeholder="Enter your name..." maxlength="18" />
+        </div>
+        <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="goBot()">♟ Play vs bot</button>
+          <button class="btn" onclick="goLobby()">⚔ Multiplayer lobby</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- ─── DIFFICULTY ───────────────────────────────────────────── -->
-  <div class="screen" id="s-diff">
-    <div class="modal-overlay">
-      <div class="modal-box">
-        <h3>Choose difficulty</h3>
-        <button class="diff-btn" onclick="startBot(1)">😊 &nbsp;Easy — bot plays randomly</button>
-        <button class="diff-btn" onclick="startBot(2)">🧠 &nbsp;Medium — 2-move lookahead</button>
-        <button class="diff-btn" onclick="startBot(3)">💥 &nbsp;Hard — 3-move minimax</button>
-        <button class="btn" onclick="showScreen('s-home')" style="margin-top:4px; width:100%; justify-content:center;">Back</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ─── GAME ──────────────────────────────────────────────────── -->
-  <div class="screen" id="s-game">
-    <div class="topbar">
-      <button class="btn btn-sm" onclick="confirmHome()">← Back</button>
-      <h2 id="game-title">vs Bot</h2>
-      <span class="badge badge-purple" id="game-badge">vs Bot</span>
-    </div>
-
-    <div class="status-bar s-playing" id="status-bar">Your turn — White</div>
-
-    <div class="board-wrap">
-      <!-- Board -->
-      <div class="board-container">
-        <div style="display:flex;">
-          <div class="rank-labels" id="rank-labels"></div>
-          <div>
-            <div class="board" id="chess-board"></div>
-            <div class="file-labels" id="file-labels"></div>
-          </div>
+    <!-- ─── DIFFICULTY ───────────────────────────────────────────── -->
+    <div class="screen" id="s-diff">
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <h3>Choose difficulty</h3>
+          <button class="diff-btn" onclick="startBot(1)">😊 &nbsp;Easy — bot plays randomly</button>
+          <button class="diff-btn" onclick="startBot(2)">🧠 &nbsp;Medium — 2-move lookahead</button>
+          <button class="diff-btn" onclick="startBot(3)">💥 &nbsp;Hard — 3-move minimax</button>
+          <button class="btn" onclick="showScreen('s-home')"
+            style="margin-top:4px; width:100%; justify-content:center;">Back</button>
         </div>
       </div>
+    </div>
 
-      <!-- Side panel -->
-      <div class="side-panel">
-        <!-- Black player -->
-        <div class="player-chip" id="chip-black" style="margin-bottom:6px;">
-          <div class="avatar" style="background:#2C2C2A; color:#F1EFE8;" id="avatar-black">B</div>
-          <div>
-            <div style="font-size:13px; font-weight:500;" id="name-black">Bot</div>
-            <div style="font-size:11px; color:var(--text3);">Black</div>
-          </div>
-          <span class="material-score" id="score-black"></span>
-        </div>
-        <div class="captured" id="cap-white" style="margin-bottom:6px;"></div>
+    <!-- ─── GAME ──────────────────────────────────────────────────── -->
+    <div class="screen" id="s-game">
+      <div class="topbar">
+        <button class="btn btn-sm" onclick="confirmHome()">← Back</button>
+        <h2 id="game-title">vs Bot</h2>
+        <span class="badge badge-purple" id="game-badge">vs Bot</span>
+      </div>
 
-        <!-- Move history -->
-        <div class="card" style="padding:10px; margin-bottom:6px;">
-          <div style="font-size:11px; color:var(--text3); margin-bottom:4px;">Move history</div>
-          <div class="move-list" id="move-list"></div>
-        </div>
+      <div class="status-bar s-playing" id="status-bar">Your turn — White</div>
 
-        <div class="captured" id="cap-black" style="margin-bottom:6px;"></div>
-
-        <!-- White player -->
-        <div class="player-chip" id="chip-white">
-          <div class="avatar" style="background:#F1EFE8; color:#2C2C2A; border:0.5px solid var(--border);" id="avatar-white">W</div>
-          <div>
-            <div style="font-size:13px; font-weight:500;" id="name-white">You</div>
-            <div style="font-size:11px; color:var(--text3);">White</div>
-          </div>
-          <span class="material-score" id="score-white"></span>
-        </div>
-
-        <!-- Chat (multiplayer only) -->
-        <div id="chat-section" style="margin-top:1rem; display:none;">
-          <div class="chat-box" id="chat-box"></div>
-          <div class="chat-input-row">
-            <input class="input" id="chat-input" placeholder="Say something..." maxlength="80" style="flex:1;" />
-            <button class="btn btn-sm btn-primary" onclick="sendChat()">Send</button>
+      <div class="board-wrap">
+        <!-- Board -->
+        <div class="board-container">
+          <div style="display:flex;">
+            <div class="rank-labels" id="rank-labels"></div>
+            <div>
+              <div class="board" id="chess-board"></div>
+              <div class="file-labels" id="file-labels"></div>
+            </div>
           </div>
         </div>
 
-        <!-- Controls -->
-        <div style="display:flex; gap:8px; margin-top:1rem; flex-wrap:wrap;">
-          <button class="btn btn-sm" onclick="undoMove()" id="undo-btn">↩ Undo</button>
-          <button class="btn btn-sm btn-danger" onclick="resignGame()">⚑ Resign</button>
+        <!-- Side panel -->
+        <div class="side-panel">
+          <!-- Black player -->
+          <div class="player-chip" id="chip-black" style="margin-bottom:6px;">
+            <div class="avatar" style="background:#2C2C2A; color:#F1EFE8;" id="avatar-black">B</div>
+            <div>
+              <div style="font-size:13px; font-weight:500;" id="name-black">Bot</div>
+              <div style="font-size:11px; color:var(--text3);">Black</div>
+            </div>
+            <span class="material-score" id="score-black"></span>
+          </div>
+          <div class="captured" id="cap-white" style="margin-bottom:6px;"></div>
+
+          <!-- Move history -->
+          <div class="card" style="padding:10px; margin-bottom:6px;">
+            <div style="font-size:11px; color:var(--text3); margin-bottom:4px;">Move history</div>
+            <div class="move-list" id="move-list"></div>
+          </div>
+
+          <div class="captured" id="cap-black" style="margin-bottom:6px;"></div>
+
+          <!-- White player -->
+          <div class="player-chip" id="chip-white">
+            <div class="avatar" style="background:#F1EFE8; color:#2C2C2A; border:0.5px solid var(--border);"
+              id="avatar-white">W</div>
+            <div>
+              <div style="font-size:13px; font-weight:500;" id="name-white">You</div>
+              <div style="font-size:11px; color:var(--text3);">White</div>
+            </div>
+            <span class="material-score" id="score-white"></span>
+          </div>
+
+          <!-- Chat (multiplayer only) -->
+          <div id="chat-section" style="margin-top:1rem; display:none;">
+            <div class="chat-box" id="chat-box"></div>
+            <div class="chat-input-row">
+              <input class="input" id="chat-input" placeholder="Say something..." maxlength="80" style="flex:1;" />
+              <button class="btn btn-sm btn-primary" onclick="sendChessChat()">Send</button>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div style="display:flex; gap:8px; margin-top:1rem; flex-wrap:wrap;">
+            <button class="btn btn-sm" onclick="undoMove()" id="undo-btn">↩ Undo</button>
+            <button class="btn btn-sm btn-danger" onclick="resignGame()">⚑ Resign</button>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- ─── PROMOTION PICKER ──────────────────────────────────────── -->
+    <div class="screen" id="s-promo">
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <h3>Promote your pawn</h3>
+          <p>Choose a piece to promote to:</p>
+          <div class="promo-grid" id="promo-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── GAME OVER ─────────────────────────────────────────────── -->
+    <div class="screen" id="s-over">
+      <div class="modal-overlay">
+        <div class="modal-box">
+          <div style="font-size:48px; margin-bottom:0.5rem;" id="over-icon">♛</div>
+          <h3 id="over-title">Game over</h3>
+          <p id="over-msg" style="margin:0.5rem 0 1.5rem;"></p>
+          <button class="btn btn-primary" onclick="replayGame()"
+            style="width:100%; justify-content:center; margin-bottom:8px;">↺ Play again</button>
+          <button class="btn" onclick="goHome()" style="width:100%; justify-content:center;">Home</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── LOBBY ─────────────────────────────────────────────────── -->
+    <div class="screen" id="s-lobby">
+      <div class="topbar">
+        <button class="btn btn-sm" onclick="leaveLobby()">← Back</button>
+        <h2>Multiplayer lobby</h2>
+        <span class="badge badge-green" style="margin-left:auto;">● <span id="online-count">0</span> online</span>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+          <h3 style="margin:0;">Online players</h3>
+          <button class="btn btn-sm btn-primary" onclick="openChallenge()">+ Open challenge</button>
+        </div>
+        <div id="lobby-list">
+          <p style="text-align:center; padding:1rem;">Connecting...</p>
+        </div>
+      </div>
+
+      <!-- Incoming challenge -->
+      <div class="card" id="incoming-panel" style="display:none; border-color:var(--purple);">
+        <h3 style="color:var(--purple);">⚔ Challenge received!</h3>
+        <p id="incoming-msg" style="margin-bottom:1rem;"></p>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-primary btn-sm" onclick="acceptChallenge()">Accept</button>
+          <button class="btn btn-sm" onclick="declineChallenge()">Decline</button>
+        </div>
+      </div>
+
+      <!-- Open challenges section -->
+      <div class="card" style="margin-top: 1rem;">
+        <h3 style="margin:0 0 1rem 0;">Open Challenges</h3>
+        <div id="open-challenges-list">
+          <p style="text-align:center; padding:1rem; color:var(--text3);">No open challenges at the moment.</p>
+        </div>
+      </div>
+
+      <!-- Open challenge waiting -->
+      <div class="card" id="open-challenge-panel" style="display:none;">
+        <h3>Your open challenge</h3>
+        <p>Waiting for an opponent to accept...</p>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:1rem;">
+          <span class="badge badge-amber">Searching...</span>
+          <button class="btn btn-danger btn-sm" onclick="cancelOpenChallenge()"
+            style="margin-left:auto;">Cancel</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- ─── PROMOTION PICKER ──────────────────────────────────────── -->
-  <div class="screen" id="s-promo">
-    <div class="modal-overlay">
-      <div class="modal-box">
-        <h3>Promote your pawn</h3>
-        <p>Choose a piece to promote to:</p>
-        <div class="promo-grid" id="promo-grid"></div>
-      </div>
-    </div>
-  </div>
+  <!-- Toast notification -->
+  <div id="toast"></div>
 
-  <!-- ─── GAME OVER ─────────────────────────────────────────────── -->
-  <div class="screen" id="s-over">
-    <div class="modal-overlay">
-      <div class="modal-box">
-        <div style="font-size:48px; margin-bottom:0.5rem;" id="over-icon">♛</div>
-        <h3 id="over-title">Game over</h3>
-        <p id="over-msg" style="margin:0.5rem 0 1.5rem;"></p>
-        <button class="btn btn-primary" onclick="replayGame()" style="width:100%; justify-content:center; margin-bottom:8px;">↺ Play again</button>
-        <button class="btn" onclick="showScreen('s-home')" style="width:100%; justify-content:center;">Home</button>
-      </div>
-    </div>
-  </div>
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    //  CHESS ENGINE
+    // ═══════════════════════════════════════════════════════════════
+    const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    const INIT_BOARD = [
+      ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+      ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      [null, null, null, null, null, null, null, null],
+      ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+      ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+    ];
+    const GLYPHS = { K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙', k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
+    const PIECE_VALUES = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 0 };
 
-  <!-- ─── LOBBY ─────────────────────────────────────────────────── -->
-  <div class="screen" id="s-lobby">
-    <div class="topbar">
-      <button class="btn btn-sm" onclick="leaveLobby()">← Back</button>
-      <h2>Multiplayer lobby</h2>
-      <span class="badge badge-green" style="margin-left:auto;">● <span id="online-count">0</span> online</span>
-    </div>
+    // ── State ──
+    let board, turn, selected, history, moveLog, capW, capB;
+    let gameOver, botMode, botDiff, botThinking;
+    let castleRights, enPassant, lastFrom, lastTo, inCheck;
+    let myColor, roomId, multiMode, currentChallengerId;
+    let promoCallback = null;
+    let playerName = 'Player';
 
-    <div class="card">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
-        <h3 style="margin:0;">Online players</h3>
-        <button class="btn btn-sm btn-primary" onclick="openChallenge()">+ Open challenge</button>
-      </div>
-      <div id="lobby-list"><p style="text-align:center; padding:1rem;">Connecting...</p></div>
-    </div>
+    function deepCopy(b) { return b.map(r => [...r]); }
+    function isWhite(p) { return p && p === p.toUpperCase(); }
+    function isBlack(p) { return p && p === p.toLowerCase(); }
+    function opp(c) { return c === 'w' ? 'b' : 'w'; }
+    function pieceColor(p) { if (!p) return null; return isWhite(p) ? 'w' : 'b'; }
 
-    <!-- Incoming challenge -->
-    <div class="card" id="incoming-panel" style="display:none; border-color:var(--purple);">
-      <h3 style="color:var(--purple);">⚔ Challenge received!</h3>
-      <p id="incoming-msg" style="margin-bottom:1rem;"></p>
-      <div style="display:flex; gap:8px;">
-        <button class="btn btn-primary btn-sm" onclick="acceptChallenge()">Accept</button>
-        <button class="btn btn-sm" onclick="declineChallenge()">Decline</button>
-      </div>
-    </div>
-
-    <!-- Open challenge waiting -->
-    <div class="card" id="open-challenge-panel" style="display:none;">
-      <h3>Your open challenge</h3>
-      <p>Waiting for an opponent to accept...</p>
-      <div style="display:flex; align-items:center; gap:8px; margin-top:1rem;">
-        <span class="badge badge-amber">Searching...</span>
-        <button class="btn btn-danger btn-sm" onclick="cancelOpenChallenge()" style="margin-left:auto;">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- Toast notification -->
-<div id="toast"></div>
-
-<script>
-// ═══════════════════════════════════════════════════════════════
-//  CHESS ENGINE
-// ═══════════════════════════════════════════════════════════════
-const FILES = ['a','b','c','d','e','f','g','h'];
-const INIT_BOARD = [
-  ['r','n','b','q','k','b','n','r'],
-  ['p','p','p','p','p','p','p','p'],
-  [null,null,null,null,null,null,null,null],
-  [null,null,null,null,null,null,null,null],
-  [null,null,null,null,null,null,null,null],
-  [null,null,null,null,null,null,null,null],
-  ['P','P','P','P','P','P','P','P'],
-  ['R','N','B','Q','K','B','N','R']
-];
-const GLYPHS = {K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
-const PIECE_VALUES = {p:1,n:3,b:3,r:5,q:9,k:0};
-
-// ── State ──
-let board, turn, selected, history, moveLog, capW, capB;
-let gameOver, botMode, botDiff, botThinking;
-let castleRights, enPassant, lastFrom, lastTo, inCheck;
-let myColor, roomId, multiMode, currentChallengerId;
-let promoCallback = null;
-let playerName = 'Player';
-
-function deepCopy(b) { return b.map(r => [...r]); }
-function isWhite(p) { return p && p === p.toUpperCase(); }
-function isBlack(p) { return p && p === p.toLowerCase(); }
-function opp(c) { return c === 'w' ? 'b' : 'w'; }
-function pieceColor(p) { if (!p) return null; return isWhite(p) ? 'w' : 'b'; }
-
-function initGame() {
-  board = deepCopy(INIT_BOARD);
-  turn = 'w'; selected = null;
-  history = []; moveLog = [];
-  capW = []; capB = [];
-  gameOver = false; botThinking = false;
-  castleRights = {wK:true,wQ:true,bK:true,bQ:true};
-  enPassant = null; lastFrom = null; lastTo = null; inCheck = false;
-}
-
-// ── Move generation ──
-function getRawMoves(b, r, c, cr, ep) {
-  const p = b[r][c]; if (!p) return [];
-  const color = pieceColor(p);
-  const moves = [];
-  const pt = p.toLowerCase();
-  const add = (tr, tc) => { if (tr >= 0 && tr < 8 && tc >= 0 && tc < 8) moves.push([tr, tc]); };
-  const slide = (dr, dc) => {
-    let nr = r+dr, nc = c+dc;
-    while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
-      if (b[nr][nc]) { if (pieceColor(b[nr][nc]) !== color) moves.push([nr,nc]); break; }
-      moves.push([nr,nc]); nr += dr; nc += dc;
+    function initGame() {
+      board = deepCopy(INIT_BOARD);
+      turn = 'w'; selected = null;
+      history = []; moveLog = [];
+      capW = []; capB = [];
+      gameOver = false; botThinking = false;
+      castleRights = { wK: true, wQ: true, bK: true, bQ: true };
+      enPassant = null; lastFrom = null; lastTo = null; inCheck = false;
     }
-  };
 
-  if (pt === 'p') {
-    const dir = color === 'w' ? -1 : 1;
-    const startRow = color === 'w' ? 6 : 1;
-    if (!b[r+dir]?.[c]) { add(r+dir, c); if (r === startRow && !b[r+2*dir]?.[c]) add(r+2*dir, c); }
-    [-1,1].forEach(dc => {
-      if (c+dc >= 0 && c+dc < 8) {
-        if (b[r+dir][c+dc] && pieceColor(b[r+dir][c+dc]) !== color) add(r+dir, c+dc);
-        if (ep && r+dir === ep[0] && c+dc === ep[1]) add(r+dir, c+dc);
+    // ── Move generation ──
+    function getRawMoves(b, r, c, cr, ep) {
+      const p = b[r][c]; if (!p) return [];
+      const color = pieceColor(p);
+      const moves = [];
+      const pt = p.toLowerCase();
+      const add = (tr, tc) => { if (tr >= 0 && tr < 8 && tc >= 0 && tc < 8) moves.push([tr, tc]); };
+      const slide = (dr, dc) => {
+        let nr = r + dr, nc = c + dc;
+        while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+          if (b[nr][nc]) { if (pieceColor(b[nr][nc]) !== color) moves.push([nr, nc]); break; }
+          moves.push([nr, nc]); nr += dr; nc += dc;
+        }
+      };
+
+      if (pt === 'p') {
+        const dir = color === 'w' ? -1 : 1;
+        const startRow = color === 'w' ? 6 : 1;
+        if (!b[r + dir]?.[c]) { add(r + dir, c); if (r === startRow && !b[r + 2 * dir]?.[c]) add(r + 2 * dir, c); }
+        [-1, 1].forEach(dc => {
+          if (c + dc >= 0 && c + dc < 8) {
+            if (b[r + dir][c + dc] && pieceColor(b[r + dir][c + dc]) !== color) add(r + dir, c + dc);
+            if (ep && r + dir === ep[0] && c + dc === ep[1]) add(r + dir, c + dc);
+          }
+        });
+      } else if (pt === 'n') {
+        [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]].forEach(([dr, dc]) => {
+          const nr = r + dr, nc = c + dc;
+          if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8 && pieceColor(b[nr][nc]) !== color) add(nr, nc);
+        });
+      } else if (pt === 'b') { [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(([dr, dc]) => slide(dr, dc)); }
+      else if (pt === 'r') { [[-1, 0], [1, 0], [0, -1], [0, 1]].forEach(([dr, dc]) => slide(dr, dc)); }
+      else if (pt === 'q') { [[-1, -1], [-1, 1], [1, -1], [1, 1], [-1, 0], [1, 0], [0, -1], [0, 1]].forEach(([dr, dc]) => slide(dr, dc)); }
+      else if (pt === 'k') {
+        [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]].forEach(([dr, dc]) => {
+          const nr = r + dr, nc = c + dc;
+          if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8 && pieceColor(b[nr][nc]) !== color) add(nr, nc);
+        });
+        if (cr) {
+          const attacked = (row, col) => isSquareAttacked(b, row, col, opp(color));
+          if (color === 'w' && cr.wK && !b[7][5] && !b[7][6] && !attacked(7, 4) && !attacked(7, 5) && !attacked(7, 6)) add(7, 6);
+          if (color === 'w' && cr.wQ && !b[7][3] && !b[7][2] && !b[7][1] && !attacked(7, 4) && !attacked(7, 3) && !attacked(7, 2)) add(7, 2);
+          if (color === 'b' && cr.bK && !b[0][5] && !b[0][6] && !attacked(0, 4) && !attacked(0, 5) && !attacked(0, 6)) add(0, 6);
+          if (color === 'b' && cr.bQ && !b[0][3] && !b[0][2] && !b[0][1] && !attacked(0, 4) && !attacked(0, 3) && !attacked(0, 2)) add(0, 2);
+        }
       }
-    });
-  } else if (pt === 'n') {
-    [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]].forEach(([dr,dc]) => {
-      const nr=r+dr, nc=c+dc;
-      if (nr>=0&&nr<8&&nc>=0&&nc<8 && pieceColor(b[nr][nc]) !== color) add(nr, nc);
-    });
-  } else if (pt === 'b') { [[-1,-1],[-1,1],[1,-1],[1,1]].forEach(([dr,dc]) => slide(dr,dc)); }
-  else if (pt === 'r') { [[-1,0],[1,0],[0,-1],[0,1]].forEach(([dr,dc]) => slide(dr,dc)); }
-  else if (pt === 'q') { [[-1,-1],[-1,1],[1,-1],[1,1],[-1,0],[1,0],[0,-1],[0,1]].forEach(([dr,dc]) => slide(dr,dc)); }
-  else if (pt === 'k') {
-    [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(([dr,dc]) => {
-      const nr=r+dr, nc=c+dc;
-      if (nr>=0&&nr<8&&nc>=0&&nc<8 && pieceColor(b[nr][nc]) !== color) add(nr, nc);
-    });
-    if (cr) {
-      const attacked = (row, col) => isSquareAttacked(b, row, col, opp(color));
-      if (color==='w' && cr.wK && !b[7][5] && !b[7][6] && !attacked(7,4) && !attacked(7,5) && !attacked(7,6)) add(7,6);
-      if (color==='w' && cr.wQ && !b[7][3] && !b[7][2] && !b[7][1] && !attacked(7,4) && !attacked(7,3) && !attacked(7,2)) add(7,2);
-      if (color==='b' && cr.bK && !b[0][5] && !b[0][6] && !attacked(0,4) && !attacked(0,5) && !attacked(0,6)) add(0,6);
-      if (color==='b' && cr.bQ && !b[0][3] && !b[0][2] && !b[0][1] && !attacked(0,4) && !attacked(0,3) && !attacked(0,2)) add(0,2);
+      return moves;
     }
-  }
-  return moves;
-}
 
-function isSquareAttacked(b, r, c, byColor) {
-  for (let fr=0; fr<8; fr++) for (let fc=0; fc<8; fc++) {
-    const p = b[fr][fc];
-    if (!p || pieceColor(p) !== byColor) continue;
-    if (getRawMoves(b,fr,fc,null,null).some(m => m[0]===r && m[1]===c)) return true;
-  }
-  return false;
-}
-
-function isInCheck(b, color) {
-  const k = findKing(b, color);
-  if (!k) return false;
-  return isSquareAttacked(b, k[0], k[1], opp(color));
-}
-
-function findKing(b, color) {
-  const king = color === 'w' ? 'K' : 'k';
-  for (let r=0; r<8; r++) for (let c=0; c<8; c++) if (b[r][c] === king) return [r,c];
-  return null;
-}
-
-function applyMove(b, fr, fc, tr, tc, promo) {
-  const nb = deepCopy(b);
-  const p = nb[fr][fc];
-  nb[tr][tc] = p; nb[fr][fc] = null;
-  const pt = p.toLowerCase();
-  const color = pieceColor(p);
-
-  if (pt === 'p') {
-    if (tr === 0 && color === 'w') nb[tr][tc] = promo || 'Q';
-    if (tr === 7 && color === 'b') nb[tr][tc] = promo ? promo.toLowerCase() : 'q';
-    if (enPassant && tr === enPassant[0] && tc === enPassant[1]) nb[fr][tc] = null;
-  }
-  if (pt === 'k') {
-    if (tc - fc === 2) { nb[tr][5] = nb[tr][7]; nb[tr][7] = null; }
-    if (fc - tc === 2) { nb[tr][3] = nb[tr][0]; nb[tr][0] = null; }
-  }
-  return nb;
-}
-
-function getLegalMoves(b, r, c, color, cr, ep) {
-  return getRawMoves(b, r, c, cr, ep).filter(([tr, tc]) => {
-    const nb = applyMove(b, r, c, tr, tc, null);
-    return !isInCheck(nb, color);
-  });
-}
-
-function getAllLegalMoves(b, color, cr, ep) {
-  const all = [];
-  for (let r=0; r<8; r++) for (let c=0; c<8; c++) {
-    if (b[r][c] && pieceColor(b[r][c]) === color) {
-      getLegalMoves(b,r,c,color,cr,ep).forEach(m => all.push({fr:r,fc:c,tr:m[0],tc:m[1]}));
+    function isSquareAttacked(b, r, c, byColor) {
+      for (let fr = 0; fr < 8; fr++) for (let fc = 0; fc < 8; fc++) {
+        const p = b[fr][fc];
+        if (!p || pieceColor(p) !== byColor) continue;
+        if (getRawMoves(b, fr, fc, null, null).some(m => m[0] === r && m[1] === c)) return true;
+      }
+      return false;
     }
-  }
-  return all;
-}
 
-// ── Full move execution ──
-function doMove(fr, fc, tr, tc, promo) {
-  const p = board[fr][fc];
-  const pt = p.toLowerCase();
-  const color = pieceColor(p);
-  const captured = board[tr][tc];
-
-  history.push({
-    board: deepCopy(board), turn, capW:[...capW], capB:[...capB],
-    castleRights:{...castleRights}, enPassant, lastFrom, lastTo
-  });
-
-  if (captured) { isWhite(captured) ? capB.push(captured) : capW.push(captured); }
-
-  const newEP = (pt === 'p' && Math.abs(tr-fr) === 2) ? [(fr+tr)/2, fc] : null;
-
-  if (pt === 'p') {
-    if (tr === 0 && color === 'w') board[fr][fc] = promo || 'Q';
-    if (tr === 7 && color === 'b') board[fr][fc] = promo ? promo.toLowerCase() : 'q';
-    if (enPassant && tr === enPassant[0] && tc === enPassant[1]) {
-      const cap = board[fr][tc]; board[fr][tc] = null;
-      isWhite(cap) ? capB.push(cap) : capW.push(cap);
+    function isInCheck(b, color) {
+      const k = findKing(b, color);
+      if (!k) return false;
+      return isSquareAttacked(b, k[0], k[1], opp(color));
     }
-  }
-  if (pt === 'k') {
-    castleRights[color==='w'?'wK':'bK'] = false;
-    castleRights[color==='w'?'wQ':'bQ'] = false;
-    if (tc-fc===2) { board[tr][5]=board[tr][7]; board[tr][7]=null; }
-    if (fc-tc===2) { board[tr][3]=board[tr][0]; board[tr][0]=null; }
-  }
-  if (pt === 'r') {
-    if (fr===7&&fc===0) castleRights.wQ=false;
-    if (fr===7&&fc===7) castleRights.wK=false;
-    if (fr===0&&fc===0) castleRights.bQ=false;
-    if (fr===0&&fc===7) castleRights.bK=false;
-  }
 
-  board[tr][tc] = board[fr][fc] !== p ? board[fr][fc] : p;
-  if (board[fr][fc] === p) board[tr][tc] = p;
-  board[fr][fc] = null;
-
-  // Fix: apply promo properly
-  if (pt === 'p') {
-    if (tr === 0 && color === 'w') board[tr][tc] = promo || 'Q';
-    if (tr === 7 && color === 'b') board[tr][tc] = (promo||'q').toLowerCase();
-  }
-
-  enPassant = newEP;
-  lastFrom = [fr,fc]; lastTo = [tr,tc];
-
-  const moveStr = FILES[fc]+(8-fr)+FILES[tc]+(8-tr)+(promo||'');
-  if (turn === 'w') moveLog.push(`${Math.floor(moveLog.length/2)+1}. ${moveStr}`);
-  else moveLog.push(moveStr);
-
-  turn = opp(turn);
-  inCheck = isInCheck(board, turn);
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  BOT (Minimax + Alpha-Beta)
-// ═══════════════════════════════════════════════════════════════
-const POSITION_BONUS = {
-  p: [[0,0,0,0,0,0,0,0],[5,5,5,5,5,5,5,5],[1,1,2,3,3,2,1,1],[0.5,0.5,1,2.5,2.5,1,0.5,0.5],[0,0,0,2,2,0,0,0],[0.5,-0.5,-1,0,0,-1,-0.5,0.5],[0.5,1,1,-2,-2,1,1,0.5],[0,0,0,0,0,0,0,0]],
-  n: [[-5,-4,-3,-3,-3,-3,-4,-5],[-4,-2,0,0,0,0,-2,-4],[-3,0,1,1.5,1.5,1,0,-3],[-3,0.5,1.5,2,2,1.5,0.5,-3],[-3,0,1.5,2,2,1.5,0,-3],[-3,0.5,1,1.5,1.5,1,0.5,-3],[-4,-2,0,0.5,0.5,0,-2,-4],[-5,-4,-3,-3,-3,-3,-4,-5]],
-};
-
-function evalBoard(b) {
-  let score = 0;
-  for (let r=0; r<8; r++) for (let c=0; c<8; c++) {
-    const p = b[r][c]; if (!p) continue;
-    const pt = p.toLowerCase();
-    let val = (PIECE_VALUES[pt] || 0) * 10;
-    const bonus = POSITION_BONUS[pt];
-    if (bonus) val += isWhite(p) ? bonus[r][c] : bonus[7-r][c];
-    score += isWhite(p) ? val : -val;
-  }
-  return score;
-}
-
-function minimax(b, depth, alpha, beta, isMax, cr, ep) {
-  const color = isMax ? 'w' : 'b';
-  if (depth === 0) return evalBoard(b);
-  const moves = getAllLegalMoves(b, color, cr, ep);
-  if (!moves.length) return isInCheck(b, color) ? (isMax ? -9999 : 9999) : 0;
-  if (isMax) {
-    let best = -Infinity;
-    for (const m of moves) {
-      const nb = applyMove(b, m.fr, m.fc, m.tr, m.tc, null);
-      best = Math.max(best, minimax(nb, depth-1, alpha, beta, false, cr, ep));
-      alpha = Math.max(alpha, best); if (beta <= alpha) break;
+    function findKing(b, color) {
+      const king = color === 'w' ? 'K' : 'k';
+      for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) if (b[r][c] === king) return [r, c];
+      return null;
     }
-    return best;
-  } else {
-    let best = Infinity;
-    for (const m of moves) {
-      const nb = applyMove(b, m.fr, m.fc, m.tr, m.tc, null);
-      best = Math.min(best, minimax(nb, depth-1, alpha, beta, true, cr, ep));
-      beta = Math.min(beta, best); if (beta <= alpha) break;
+
+    function applyMove(b, fr, fc, tr, tc, promo) {
+      const nb = deepCopy(b);
+      const p = nb[fr][fc];
+      nb[tr][tc] = p; nb[fr][fc] = null;
+      const pt = p.toLowerCase();
+      const color = pieceColor(p);
+
+      if (pt === 'p') {
+        if (tr === 0 && color === 'w') nb[tr][tc] = promo || 'Q';
+        if (tr === 7 && color === 'b') nb[tr][tc] = promo ? promo.toLowerCase() : 'q';
+        if (enPassant && tr === enPassant[0] && tc === enPassant[1]) nb[fr][tc] = null;
+      }
+      if (pt === 'k') {
+        if (tc - fc === 2) { nb[tr][5] = nb[tr][7]; nb[tr][7] = null; }
+        if (fc - tc === 2) { nb[tr][3] = nb[tr][0]; nb[tr][0] = null; }
+      }
+      return nb;
     }
-    return best;
-  }
-}
 
-function doBotMove() {
-  if (gameOver || turn !== 'b') { botThinking = false; return; }
-  const moves = getAllLegalMoves(board, 'b', castleRights, enPassant);
-  if (!moves.length) { botThinking = false; updateStatus(); return; }
-
-  let best;
-  if (botDiff === 1) {
-    best = moves[Math.floor(Math.random() * moves.length)];
-  } else {
-    const depth = botDiff === 2 ? 2 : 3;
-    let bestScore = Infinity;
-    for (const m of moves) {
-      const nb = applyMove(board, m.fr, m.fc, m.tr, m.tc, null);
-      const sc = minimax(nb, depth-1, -Infinity, Infinity, true, castleRights, enPassant);
-      if (sc < bestScore) { bestScore = sc; best = m; }
+    function getLegalMoves(b, r, c, color, cr, ep) {
+      return getRawMoves(b, r, c, cr, ep).filter(([tr, tc]) => {
+        const nb = applyMove(b, r, c, tr, tc, null);
+        return !isInCheck(nb, color);
+      });
     }
-  }
 
-  if (best) doMove(best.fr, best.fc, best.tr, best.tc, null);
-  botThinking = false;
-  renderBoard(); renderSide(); updateStatus();
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  RENDER
-// ═══════════════════════════════════════════════════════════════
-function renderBoard() {
-  const el = document.getElementById('chess-board'); el.innerHTML = '';
-  const rl = document.getElementById('rank-labels'); rl.innerHTML = '';
-  const fl = document.getElementById('file-labels'); fl.innerHTML = '';
-
-  for (let r=0; r<8; r++) { const d=document.createElement('div'); d.textContent=8-r; rl.appendChild(d); }
-  for (let f=0; f<8; f++) { const d=document.createElement('div'); d.textContent=FILES[f]; fl.appendChild(d); }
-
-  const kingPos = findKing(board, turn);
-  const possibles = selected ? getLegalMoves(board, selected[0], selected[1], turn, castleRights, enPassant) : [];
-
-  for (let r=0; r<8; r++) {
-    for (let c=0; c<8; c++) {
-      const sq = document.createElement('div');
-      sq.className = 'sq ' + ((r+c)%2===0 ? 'light' : 'dark');
-      sq.dataset.r = r; sq.dataset.c = c;
-
-      const p = board[r][c];
-      if (p) sq.textContent = GLYPHS[p];
-
-      if (selected && selected[0]===r && selected[1]===c) sq.classList.add('selected');
-      if (lastFrom && lastFrom[0]===r && lastFrom[1]===c) sq.classList.add('last-from');
-      if (lastTo   && lastTo[0]===r   && lastTo[1]===c)   sq.classList.add('last-to');
-      if (inCheck  && kingPos && kingPos[0]===r && kingPos[1]===c) sq.classList.add('in-check');
-      if (possibles.some(m => m[0]===r && m[1]===c)) sq.classList.add('possible');
-
-      sq.onclick = () => handleClick(r, c);
-      el.appendChild(sq);
+    function getAllLegalMoves(b, color, cr, ep) {
+      const all = [];
+      for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) {
+        if (b[r][c] && pieceColor(b[r][c]) === color) {
+          getLegalMoves(b, r, c, color, cr, ep).forEach(m => all.push({ fr: r, fc: c, tr: m[0], tc: m[1] }));
+        }
+      }
+      return all;
     }
-  }
-}
 
-function renderSide() {
-  document.getElementById('cap-white').textContent = capW.map(p => GLYPHS[p]).join('');
-  document.getElementById('cap-black').textContent = capB.map(p => GLYPHS[p]).join('');
+    // ── Full move execution ──
+    function doMove(fr, fc, tr, tc, promo) {
+      const p = board[fr][fc];
+      const pt = p.toLowerCase();
+      const color = pieceColor(p);
+      const captured = board[tr][tc];
 
-  const ml = document.getElementById('move-list');
-  ml.innerHTML = moveLog.join('  ');
-  ml.scrollTop = ml.scrollHeight;
+      history.push({
+        board: deepCopy(board), turn, capW: [...capW], capB: [...capB],
+        castleRights: { ...castleRights }, enPassant, lastFrom, lastTo
+      });
 
-  const wMat = capW.reduce((s,p) => s + (PIECE_VALUES[p.toLowerCase()]||0), 0);
-  const bMat = capB.reduce((s,p) => s + (PIECE_VALUES[p.toLowerCase()]||0), 0);
-  document.getElementById('score-white').textContent = wMat > bMat ? `+${wMat-bMat}` : '';
-  document.getElementById('score-black').textContent = bMat > wMat ? `+${bMat-wMat}` : '';
-}
+      if (captured) { isWhite(captured) ? capB.push(captured) : capW.push(captured); }
 
-function updateStatus() {
-  const moves = getAllLegalMoves(board, turn, castleRights, enPassant);
-  const bar = document.getElementById('status-bar');
-  const turnName = turn === 'w'
-    ? document.getElementById('name-white').textContent
-    : document.getElementById('name-black').textContent;
+      const newEP = (pt === 'p' && Math.abs(tr - fr) === 2) ? [(fr + tr) / 2, fc] : null;
 
-  document.getElementById('chip-white').classList.toggle('active-turn', turn==='w');
-  document.getElementById('chip-black').classList.toggle('active-turn', turn==='b');
+      if (pt === 'p') {
+        if (tr === 0 && color === 'w') board[fr][fc] = promo || 'Q';
+        if (tr === 7 && color === 'b') board[fr][fc] = promo ? promo.toLowerCase() : 'q';
+        if (enPassant && tr === enPassant[0] && tc === enPassant[1]) {
+          const cap = board[fr][tc]; board[fr][tc] = null;
+          isWhite(cap) ? capB.push(cap) : capW.push(cap);
+        }
+      }
+      if (pt === 'k') {
+        castleRights[color === 'w' ? 'wK' : 'bK'] = false;
+        castleRights[color === 'w' ? 'wQ' : 'bQ'] = false;
+        if (tc - fc === 2) { board[tr][5] = board[tr][7]; board[tr][7] = null; }
+        if (fc - tc === 2) { board[tr][3] = board[tr][0]; board[tr][0] = null; }
+      }
+      if (pt === 'r') {
+        if (fr === 7 && fc === 0) castleRights.wQ = false;
+        if (fr === 7 && fc === 7) castleRights.wK = false;
+        if (fr === 0 && fc === 0) castleRights.bQ = false;
+        if (fr === 0 && fc === 7) castleRights.bK = false;
+      }
 
-  if (!moves.length) {
-    if (inCheck) {
-      const winner = opp(turn) === 'w'
+      board[tr][tc] = board[fr][fc] !== p ? board[fr][fc] : p;
+      if (board[fr][fc] === p) board[tr][tc] = p;
+      board[fr][fc] = null;
+
+      // Fix: apply promo properly
+      if (pt === 'p') {
+        if (tr === 0 && color === 'w') board[tr][tc] = promo || 'Q';
+        if (tr === 7 && color === 'b') board[tr][tc] = (promo || 'q').toLowerCase();
+      }
+
+      enPassant = newEP;
+      lastFrom = [fr, fc]; lastTo = [tr, tc];
+
+      const moveStr = FILES[fc] + (8 - fr) + FILES[tc] + (8 - tr) + (promo || '');
+      if (turn === 'w') moveLog.push(`${Math.floor(moveLog.length / 2) + 1}. ${moveStr}`);
+      else moveLog.push(moveStr);
+
+      turn = opp(turn);
+      inCheck = isInCheck(board, turn);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  BOT (Minimax + Alpha-Beta)
+    // ═══════════════════════════════════════════════════════════════
+    const POSITION_BONUS = {
+      p: [[0, 0, 0, 0, 0, 0, 0, 0], [5, 5, 5, 5, 5, 5, 5, 5], [1, 1, 2, 3, 3, 2, 1, 1], [0.5, 0.5, 1, 2.5, 2.5, 1, 0.5, 0.5], [0, 0, 0, 2, 2, 0, 0, 0], [0.5, -0.5, -1, 0, 0, -1, -0.5, 0.5], [0.5, 1, 1, -2, -2, 1, 1, 0.5], [0, 0, 0, 0, 0, 0, 0, 0]],
+      n: [[-5, -4, -3, -3, -3, -3, -4, -5], [-4, -2, 0, 0, 0, 0, -2, -4], [-3, 0, 1, 1.5, 1.5, 1, 0, -3], [-3, 0.5, 1.5, 2, 2, 1.5, 0.5, -3], [-3, 0, 1.5, 2, 2, 1.5, 0, -3], [-3, 0.5, 1, 1.5, 1.5, 1, 0.5, -3], [-4, -2, 0, 0.5, 0.5, 0, -2, -4], [-5, -4, -3, -3, -3, -3, -4, -5]],
+    };
+
+    function evalBoard(b) {
+      let score = 0;
+      for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) {
+        const p = b[r][c]; if (!p) continue;
+        const pt = p.toLowerCase();
+        let val = (PIECE_VALUES[pt] || 0) * 10;
+        const bonus = POSITION_BONUS[pt];
+        if (bonus) val += isWhite(p) ? bonus[r][c] : bonus[7 - r][c];
+        score += isWhite(p) ? val : -val;
+      }
+      return score;
+    }
+
+    function minimax(b, depth, alpha, beta, isMax, cr, ep) {
+      const color = isMax ? 'w' : 'b';
+      if (depth === 0) return evalBoard(b);
+      const moves = getAllLegalMoves(b, color, cr, ep);
+      if (!moves.length) return isInCheck(b, color) ? (isMax ? -9999 : 9999) : 0;
+      if (isMax) {
+        let best = -Infinity;
+        for (const m of moves) {
+          const nb = applyMove(b, m.fr, m.fc, m.tr, m.tc, null);
+          best = Math.max(best, minimax(nb, depth - 1, alpha, beta, false, cr, ep));
+          alpha = Math.max(alpha, best); if (beta <= alpha) break;
+        }
+        return best;
+      } else {
+        let best = Infinity;
+        for (const m of moves) {
+          const nb = applyMove(b, m.fr, m.fc, m.tr, m.tc, null);
+          best = Math.min(best, minimax(nb, depth - 1, alpha, beta, true, cr, ep));
+          beta = Math.min(beta, best); if (beta <= alpha) break;
+        }
+        return best;
+      }
+    }
+
+    function doBotMove() {
+      if (gameOver || turn !== 'b') { botThinking = false; return; }
+      const moves = getAllLegalMoves(board, 'b', castleRights, enPassant);
+      if (!moves.length) { botThinking = false; updateStatus(); return; }
+
+      let best;
+      if (botDiff === 1) {
+        best = moves[Math.floor(Math.random() * moves.length)];
+      } else {
+        const depth = botDiff === 2 ? 2 : 3;
+        let bestScore = Infinity;
+        for (const m of moves) {
+          const nb = applyMove(board, m.fr, m.fc, m.tr, m.tc, null);
+          const sc = minimax(nb, depth - 1, -Infinity, Infinity, true, castleRights, enPassant);
+          if (sc < bestScore) { bestScore = sc; best = m; }
+        }
+      }
+
+      if (best) doMove(best.fr, best.fc, best.tr, best.tc, null);
+      botThinking = false;
+      renderBoard(); renderSide(); updateStatus();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  RENDER
+    // ═══════════════════════════════════════════════════════════════
+    function renderBoard() {
+      const el = document.getElementById('chess-board'); el.innerHTML = '';
+      const rl = document.getElementById('rank-labels'); rl.innerHTML = '';
+      const fl = document.getElementById('file-labels'); fl.innerHTML = '';
+
+      for (let r = 0; r < 8; r++) { const d = document.createElement('div'); d.textContent = 8 - r; rl.appendChild(d); }
+      for (let f = 0; f < 8; f++) { const d = document.createElement('div'); d.textContent = FILES[f]; fl.appendChild(d); }
+
+      const kingPos = findKing(board, turn);
+      const possibles = selected ? getLegalMoves(board, selected[0], selected[1], turn, castleRights, enPassant) : [];
+
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const sq = document.createElement('div');
+          sq.className = 'sq ' + ((r + c) % 2 === 0 ? 'light' : 'dark');
+          sq.dataset.r = r; sq.dataset.c = c;
+
+          const p = board[r][c];
+          if (p) sq.textContent = GLYPHS[p];
+
+          if (selected && selected[0] === r && selected[1] === c) sq.classList.add('selected');
+          if (lastFrom && lastFrom[0] === r && lastFrom[1] === c) sq.classList.add('last-from');
+          if (lastTo && lastTo[0] === r && lastTo[1] === c) sq.classList.add('last-to');
+          if (inCheck && kingPos && kingPos[0] === r && kingPos[1] === c) sq.classList.add('in-check');
+          if (possibles.some(m => m[0] === r && m[1] === c)) sq.classList.add('possible');
+
+          sq.onclick = () => handleClick(r, c);
+          el.appendChild(sq);
+        }
+      }
+    }
+
+    function renderSide() {
+      document.getElementById('cap-white').textContent = capW.map(p => GLYPHS[p]).join('');
+      document.getElementById('cap-black').textContent = capB.map(p => GLYPHS[p]).join('');
+
+      const ml = document.getElementById('move-list');
+      ml.innerHTML = moveLog.join('  ');
+      ml.scrollTop = ml.scrollHeight;
+
+      const wMat = capW.reduce((s, p) => s + (PIECE_VALUES[p.toLowerCase()] || 0), 0);
+      const bMat = capB.reduce((s, p) => s + (PIECE_VALUES[p.toLowerCase()] || 0), 0);
+      document.getElementById('score-white').textContent = wMat > bMat ? `+${wMat - bMat}` : '';
+      document.getElementById('score-black').textContent = bMat > wMat ? `+${bMat - wMat}` : '';
+    }
+
+    function updateStatus() {
+      const moves = getAllLegalMoves(board, turn, castleRights, enPassant);
+      const bar = document.getElementById('status-bar');
+      const turnName = turn === 'w'
         ? document.getElementById('name-white').textContent
         : document.getElementById('name-black').textContent;
-      showOver(true, `Checkmate! ${winner} wins.`);
-      if (multiMode) socket.emit('game_over', { roomId, reason: 'checkmate', winner });
-    } else {
-      showOver(null, 'Stalemate — it\'s a draw!');
-      if (multiMode) socket.emit('game_over', { roomId, reason: 'stalemate', winner: null });
-    }
-    return;
-  }
 
-  if (inCheck) {
-    bar.className = 'status-bar s-check';
-    bar.textContent = `${turnName} is in check!`;
-  } else if (botMode && turn === 'b') {
-    bar.className = 'status-bar s-waiting';
-    bar.textContent = 'Bot is thinking...';
-  } else if (multiMode && ((turn==='w' && myColor==='b') || (turn==='b' && myColor==='w'))) {
-    bar.className = 'status-bar s-waiting';
-    bar.textContent = `Waiting for ${turnName}...`;
-  } else {
-    bar.className = 'status-bar s-playing';
-    bar.textContent = `${turnName}'s turn`;
-  }
-}
+      document.getElementById('chip-white').classList.toggle('active-turn', turn === 'w');
+      document.getElementById('chip-black').classList.toggle('active-turn', turn === 'b');
 
-function showOver(win, msg) {
-  gameOver = true;
-  document.getElementById('status-bar').className = 'status-bar s-over';
-  document.getElementById('status-bar').textContent = msg;
-  document.getElementById('over-title').textContent = win === true ? 'Checkmate!' : win === false ? 'Game over' : 'Draw!';
-  document.getElementById('over-msg').textContent = msg;
-  document.getElementById('over-icon').textContent = win === true ? '♛' : win === false ? '⚑' : '½';
-  setTimeout(() => showScreen('s-over'), 900);
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  CLICK HANDLER + PROMOTION
-// ═══════════════════════════════════════════════════════════════
-function handleClick(r, c) {
-  if (gameOver || botThinking) return;
-  if (multiMode) {
-    if ((turn === 'w' && myColor !== 'w') || (turn === 'b' && myColor !== 'b')) return;
-  } else if (botMode && turn === 'b') return;
-
-  const p = board[r][c];
-
-  if (selected) {
-    const moves = getLegalMoves(board, selected[0], selected[1], turn, castleRights, enPassant);
-    const mv = moves.find(m => m[0]===r && m[1]===c);
-    if (mv) {
-      const piece = board[selected[0]][selected[1]];
-      const isPromo = piece.toLowerCase() === 'p' && (r===0 || r===7);
-      if (isPromo) {
-        askPromotion(pieceColor(piece), (promo) => {
-          executeMove(selected[0], selected[1], r, c, promo);
-        });
-      } else {
-        executeMove(selected[0], selected[1], r, c, null);
+      if (!moves.length) {
+        if (inCheck) {
+          const winner = opp(turn) === 'w'
+            ? document.getElementById('name-white').textContent
+            : document.getElementById('name-black').textContent;
+          showOver(true, `Checkmate! ${winner} wins.`);
+          if (multiMode) socket.emit('game_over', { roomId, reason: 'checkmate', winner });
+        } else {
+          showOver(null, 'Stalemate — it\'s a draw!');
+          if (multiMode) socket.emit('game_over', { roomId, reason: 'stalemate', winner: null });
+        }
+        return;
       }
-      selected = null; return;
+
+      if (inCheck) {
+        bar.className = 'status-bar s-check';
+        bar.textContent = `${turnName} is in check!`;
+      } else if (botMode && turn === 'b') {
+        bar.className = 'status-bar s-waiting';
+        bar.textContent = 'Bot is thinking...';
+      } else if (multiMode && ((turn === 'w' && myColor === 'b') || (turn === 'b' && myColor === 'w'))) {
+        bar.className = 'status-bar s-waiting';
+        bar.textContent = `Waiting for ${turnName}...`;
+      } else {
+        bar.className = 'status-bar s-playing';
+        bar.textContent = `${turnName}'s turn`;
+      }
     }
-    selected = null;
-  }
-  if (p && pieceColor(p) === turn) selected = [r, c];
-  renderBoard();
-}
 
-function executeMove(fr, fc, tr, tc, promo) {
-  doMove(fr, fc, tr, tc, promo);
-  renderBoard(); renderSide(); updateStatus();
+    function showOver(win, msg) {
+      gameOver = true;
+      document.getElementById('status-bar').className = 'status-bar s-over';
+      document.getElementById('status-bar').textContent = msg;
+      document.getElementById('over-title').textContent = win === true ? 'Checkmate!' : win === false ? 'Game over' : 'Draw!';
+      document.getElementById('over-msg').textContent = msg;
+      document.getElementById('over-icon').textContent = win === true ? '♛' : win === false ? '⚑' : '½';
+      setTimeout(() => showScreen('s-over'), 900);
+    }
 
-  if (multiMode) {
-    socket.emit('make_move', { roomId, from:[fr,fc], to:[tr,tc], promotion: promo || null });
-  } else if (botMode && !gameOver && turn === 'b') {
-    botThinking = true;
-    setTimeout(doBotMove, 450);
-  }
-}
+    // ═══════════════════════════════════════════════════════════════
+    //  CLICK HANDLER + PROMOTION
+    // ═══════════════════════════════════════════════════════════════
+    function handleClick(r, c) {
+      if (gameOver || botThinking) return;
+      if (multiMode) {
+        if ((turn === 'w' && myColor !== 'w') || (turn === 'b' && myColor !== 'b')) return;
+      } else if (botMode && turn === 'b') return;
 
-function askPromotion(color, callback) {
-  promoCallback = callback;
-  const pieces = color === 'w' ? ['Q','R','B','N'] : ['q','r','b','n'];
-  const grid = document.getElementById('promo-grid');
-  grid.innerHTML = '';
-  pieces.forEach(piece => {
-    const btn = document.createElement('button');
-    btn.className = 'promo-btn';
-    btn.textContent = GLYPHS[piece];
-    btn.onclick = () => { showScreen('s-game'); promoCallback(piece); promoCallback = null; };
-    grid.appendChild(btn);
-  });
-  showScreen('s-promo');
-}
+      const p = board[r][c];
 
-function undoMove() {
-  if (!history.length || botThinking || gameOver) return;
-  const steps = botMode ? 2 : 1;
-  for (let i=0; i<steps && history.length; i++) {
-    const prev = history.pop();
-    board=prev.board; turn=prev.turn; capW=prev.capW; capB=prev.capB;
-    castleRights=prev.castleRights; enPassant=prev.enPassant;
-    lastFrom=prev.lastFrom; lastTo=prev.lastTo;
-    if (moveLog.length) moveLog.pop();
-  }
-  inCheck = isInCheck(board, turn);
-  selected = null; gameOver = false;
-  renderBoard(); renderSide(); updateStatus();
-}
+      if (selected) {
+        const moves = getLegalMoves(board, selected[0], selected[1], turn, castleRights, enPassant);
+        const mv = moves.find(m => m[0] === r && m[1] === c);
+        if (mv) {
+          const piece = board[selected[0]][selected[1]];
+          const isPromo = piece.toLowerCase() === 'p' && (r === 0 || r === 7);
+          if (isPromo) {
+            askPromotion(pieceColor(piece), (promo) => {
+              executeMove(selected[0], selected[1], r, c, promo);
+            });
+          } else {
+            executeMove(selected[0], selected[1], r, c, null);
+          }
+          selected = null; return;
+        }
+        selected = null;
+      }
+      if (p && pieceColor(p) === turn) selected = [r, c];
+      renderBoard();
+    }
 
-function resignGame() {
-  if (!confirm('Resign this game?')) return;
-  if (multiMode) socket.emit('game_over', { roomId, reason: 'resign', winner: myColor === 'w' ? 'b' : 'w' });
-  showOver(false, 'You resigned.');
-}
+    function executeMove(fr, fc, tr, tc, promo) {
+      doMove(fr, fc, tr, tc, promo);
+      renderBoard(); renderSide(); updateStatus();
 
-// ═══════════════════════════════════════════════════════════════
-//  SCREEN NAVIGATION
-// ═══════════════════════════════════════════════════════════════
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+      if (multiMode) {
+        socket.emit('make_move', { roomId, from: [fr, fc], to: [tr, tc], promotion: promo || null });
+      } else if (botMode && !gameOver && turn === 'b') {
+        botThinking = true;
+        setTimeout(doBotMove, 450);
+      }
+    }
 
-function getPlayerName() {
-  const v = document.getElementById('home-name').value.trim();
-  return v || 'Player';
-}
+    function askPromotion(color, callback) {
+      promoCallback = callback;
+      const pieces = color === 'w' ? ['Q', 'R', 'B', 'N'] : ['q', 'r', 'b', 'n'];
+      const grid = document.getElementById('promo-grid');
+      grid.innerHTML = '';
+      pieces.forEach(piece => {
+        const btn = document.createElement('button');
+        btn.className = 'promo-btn';
+        btn.textContent = GLYPHS[piece];
+        btn.onclick = () => { showScreen('s-game'); promoCallback(piece); promoCallback = null; };
+        grid.appendChild(btn);
+      });
+      showScreen('s-promo');
+    }
 
-function goBot() {
-  playerName = getPlayerName();
-  showScreen('s-diff');
-}
+    function undoMove() {
+      if (!history.length || botThinking || gameOver) return;
+      const steps = botMode ? 2 : 1;
+      for (let i = 0; i < steps && history.length; i++) {
+        const prev = history.pop();
+        board = prev.board; turn = prev.turn; capW = prev.capW; capB = prev.capB;
+        castleRights = prev.castleRights; enPassant = prev.enPassant;
+        lastFrom = prev.lastFrom; lastTo = prev.lastTo;
+        if (moveLog.length) moveLog.pop();
+      }
+      inCheck = isInCheck(board, turn);
+      selected = null; gameOver = false;
+      renderBoard(); renderSide(); updateStatus();
+    }
 
-function goLobby() {
-  playerName = getPlayerName();
-  joinLobby();
-  showScreen('s-lobby');
-}
+    function resignGame() {
+      if (!confirm('Resign this game?')) return;
+      if (multiMode) socket.emit('game_over', { roomId, reason: 'resign', winner: myColor === 'w' ? 'b' : 'w' });
+      showOver(false, 'You resigned.');
+    }
 
-function leaveLobby() {
-  socket.emit('leave_lobby');
-  showScreen('s-home');
-}
+    // ═══════════════════════════════════════════════════════════════
+    //  SCREEN NAVIGATION
+    // ═══════════════════════════════════════════════════════════════
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
 
-function confirmHome() {
-  if (!gameOver && history.length > 0) {
-    if (!confirm('Abandon this game?')) return;
-  }
-  if (multiMode) socket.emit('game_over', { roomId, reason: 'abandon', winner: null });
-  multiMode = false;
-  showScreen('s-home');
-}
+    function getPlayerName() {
+      const v = document.getElementById('home-name').value.trim();
+      return v || 'Player';
+    }
 
-function startBot(diff) {
-  botDiff = diff; botMode = true; multiMode = false;
-  initGame();
-  const labels = ['Easy','Medium','Hard'];
-  document.getElementById('game-title').textContent = `vs Bot (${labels[diff-1]})`;
-  document.getElementById('game-badge').textContent = 'vs Bot';
-  document.getElementById('game-badge').className = 'badge badge-purple';
-  document.getElementById('name-white').textContent = playerName;
-  document.getElementById('name-black').textContent = `Bot (${labels[diff-1]})`;
-  document.getElementById('avatar-white').textContent = playerName[0].toUpperCase();
-  document.getElementById('avatar-black').textContent = 'B';
-  document.getElementById('avatar-black').style.background = '#2C2C2A';
-  document.getElementById('undo-btn').style.display = 'inline-flex';
-  document.getElementById('chat-section').style.display = 'none';
-  showScreen('s-game');
-  renderBoard(); renderSide(); updateStatus();
-}
+    function goBot() {
+      playerName = getPlayerName();
+      showScreen('s-diff');
+    }
 
-function replayGame() {
-  if (botMode) startBot(botDiff);
-  else showScreen('s-lobby');
-}
+    function goHome() {
+      socket.emit('leave_lobby');
+      multiMode = false;
+      showScreen('s-home');
+    }
 
-// ═══════════════════════════════════════════════════════════════
-//  SOCKET.IO — MULTIPLAYER
-// ═══════════════════════════════════════════════════════════════
-const socket = io();
+    function goLobby() {
+      const nameInput = document.getElementById('home-name');
+      const name = nameInput ? nameInput.value.trim() : '';
+      if (!name) {
+        alert("Please enter your display name before joining the multiplayer lobby.");
+        nameInput?.focus();
+        return;
+      }
+      playerName = name;
+      joinLobby();
+      showScreen('s-lobby');
+    }
 
-function joinLobby() {
-  socket.emit('join_lobby', { name: playerName, rating: 1200 });
-}
+    function leaveLobby() {
+      goHome();
+    }
 
-socket.on('lobby_update', (players) => {
-  document.getElementById('online-count').textContent = players.length;
-  const list = document.getElementById('lobby-list');
-  const others = players.filter(p => p.socketId !== socket.id);
-  if (!others.length) {
-    list.innerHTML = '<p style="text-align:center;padding:1rem;color:var(--text3);">No other players online yet.</p>';
-    return;
-  }
-  list.innerHTML = others.map(p => `
-    <div class="lobby-row">
-      <div class="online-dot" style="background:${p.status==='waiting'?'#639922':'#888780'};"></div>
-      <div style="flex:1;">
-        <div style="font-size:14px;font-weight:500;">${p.name}</div>
-        <div style="font-size:11px;color:var(--text3);">Rating ${p.rating} · ${p.status}</div>
-      </div>
-      ${p.status==='waiting'
-        ? `<button class="btn btn-sm" onclick="sendChallenge('${p.socketId}','${p.name}')">⚔ Challenge</button>`
-        : `<span class="badge badge-amber">In game</span>`}
-    </div>`).join('');
-});
+    function confirmHome() {
+      if (!gameOver && history.length > 0) {
+        if (!confirm('Abandon this game?')) return;
+      }
+      if (multiMode) socket.emit('game_over', { roomId, reason: 'abandon', winner: null });
+      goHome();
+    }
 
-function sendChallenge(targetId, targetName) {
-  socket.emit('send_challenge', { targetId });
-  showToast(`Challenge sent to ${targetName}!`);
-}
+    function startBot(diff) {
+      botDiff = diff; botMode = true; multiMode = false;
+      initGame();
+      const labels = ['Easy', 'Medium', 'Hard'];
+      document.getElementById('game-title').textContent = `vs Bot (${labels[diff - 1]})`;
+      document.getElementById('game-badge').textContent = 'vs Bot';
+      document.getElementById('game-badge').className = 'badge badge-purple';
+      document.getElementById('name-white').textContent = playerName;
+      document.getElementById('name-black').textContent = `Bot (${labels[diff - 1]})`;
+      document.getElementById('avatar-white').textContent = playerName[0].toUpperCase();
+      document.getElementById('avatar-black').textContent = 'B';
+      document.getElementById('avatar-black').style.background = '#2C2C2A';
+      document.getElementById('undo-btn').style.display = 'inline-flex';
+      document.getElementById('chat-section').style.display = 'none';
+      showScreen('s-game');
+      renderBoard(); renderSide(); updateStatus();
+    }
 
-socket.on('challenge_sent', ({ targetName }) => {
-  showToast(`Waiting for ${targetName} to respond...`);
-});
+    function replayGame() {
+      if (botMode) startBot(botDiff);
+      else showScreen('s-lobby');
+    }
 
-socket.on('challenge_error', ({ message }) => {
-  showToast(message);
-});
+    // ═══════════════════════════════════════════════════════════════
+    //  SOCKET.IO — MULTIPLAYER
+    // ═══════════════════════════════════════════════════════════════
+    const socket = io();
 
-socket.on('challenge_received', ({ challengerId, challengerName, challengerRating }) => {
-  currentChallengerId = challengerId;
-  document.getElementById('incoming-msg').textContent =
-    `${challengerName} (${challengerRating}) wants to play you!`;
-  document.getElementById('incoming-panel').style.display = 'block';
-  showToast(`${challengerName} challenged you!`);
-});
+    function joinLobby() {
+      socket.emit('join_lobby', { name: playerName, rating: 1200 });
+    }
 
-function acceptChallenge() {
-  socket.emit('accept_challenge', { challengerId: currentChallengerId });
-  document.getElementById('incoming-panel').style.display = 'none';
-}
+    socket.on('lobby_update', ({ players, openChallenges: listChallenges }) => {
+      document.getElementById('online-count').textContent = players.length;
+      const list = document.getElementById('lobby-list');
+      const others = players.filter(p => p.socketId !== socket.id);
+      if (!others.length) {
+        list.innerHTML = '<p style="text-align:center;padding:1rem;color:var(--text3);">No other players online yet.</p>';
+      } else {
+        list.innerHTML = others.map(p => `
+          <div class="lobby-row">
+            <div class="online-dot" style="background:${p.status === 'waiting' ? '#639922' : '#888780'};"></div>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:500;">${p.name}</div>
+              <div style="font-size:11px;color:var(--text3);">Rating ${p.rating} · ${p.status}</div>
+            </div>
+            ${p.status === 'waiting'
+                ? `<button class="btn btn-sm" onclick="sendChallenge('${p.socketId}','${p.name}')">⚔ Challenge</button>`
+                : `<span class="badge badge-amber">In game</span>`}
+          </div>`).join('');
+      }
 
-function declineChallenge() {
-  socket.emit('decline_challenge', { challengerId: currentChallengerId });
-  document.getElementById('incoming-panel').style.display = 'none';
-  currentChallengerId = null;
-}
+      // Render open challenges list
+      const challengesDiv = document.getElementById('open-challenges-list');
+      if (challengesDiv) {
+        if (!listChallenges.length) {
+          challengesDiv.innerHTML = '<p style="text-align:center; padding:1rem; color:var(--text3);">No open challenges at the moment.</p>';
+        } else {
+          challengesDiv.innerHTML = listChallenges.map(c => {
+            const isMe = c.hostId === socket.id;
+            return `
+              <div class="lobby-row" style="border-left: 3px solid ${isMe ? 'var(--purple)' : 'var(--green)'};">
+                <div style="flex:1;">
+                  <div style="font-size:14px;font-weight:600;color:${isMe ? 'var(--purple)' : 'var(--green)'};">${c.challengeName}</div>
+                  <div style="font-size:11px;color:var(--text3);">Host: ${c.challengerName} (Rating ${c.rating}) ${isMe ? '· (You)' : ''}</div>
+                </div>
+                ${isMe
+                  ? `<span class="badge badge-purple">Your Challenge</span>`
+                  : `<button class="btn btn-sm btn-primary" onclick="acceptOpenChallenge('${c.hostId}')">⚔ Play</button>`}
+              </div>`;
+          }).join('');
+        }
+      }
+    });
 
-socket.on('challenge_declined', ({ name }) => {
-  showToast(`${name} declined your challenge.`);
-});
+    function acceptOpenChallenge(hostId) {
+      socket.emit('accept_open_challenge', { hostId });
+    }
 
-function openChallenge() {
-  document.getElementById('open-challenge-panel').style.display = 'block';
-  socket.emit('open_challenge', { name: playerName });
-}
+    function sendChallenge(targetId, targetName) {
+      socket.emit('send_challenge', { targetId });
+      showToast(`Challenge sent to ${targetName}!`);
+    }
 
-function cancelOpenChallenge() {
-  document.getElementById('open-challenge-panel').style.display = 'none';
-  socket.emit('cancel_challenge');
-}
+    socket.on('challenge_sent', ({ targetName }) => {
+      showToast(`Waiting for ${targetName} to respond...`);
+    });
 
-socket.on('game_start', ({ roomId: rid, white, black }) => {
-  roomId = rid;
-  multiMode = true; botMode = false;
-  myColor = white.id === socket.id ? 'w' : 'b';
-  initGame();
+    socket.on('challenge_error', ({ message }) => {
+      showToast(message);
+    });
 
-  document.getElementById('game-title').textContent = `${white.name} vs ${black.name}`;
-  document.getElementById('game-badge').textContent = 'Multiplayer';
-  document.getElementById('game-badge').className = 'badge badge-green';
-  document.getElementById('name-white').textContent = white.name;
-  document.getElementById('name-black').textContent = black.name;
-  document.getElementById('avatar-white').textContent = white.name[0].toUpperCase();
-  document.getElementById('avatar-black').textContent = black.name[0].toUpperCase();
-  document.getElementById('avatar-black').style.background = '#2C2C2A';
-  document.getElementById('undo-btn').style.display = 'none';
-  document.getElementById('chat-section').style.display = 'block';
-  document.getElementById('chat-box').innerHTML = '';
-  document.getElementById('open-challenge-panel').style.display = 'none';
+    socket.on('challenge_received', ({ challengerId, challengerName, challengerRating }) => {
+      currentChallengerId = challengerId;
+      document.getElementById('incoming-msg').textContent =
+        `${challengerName} (${challengerRating}) wants to play you!`;
+      document.getElementById('incoming-panel').style.display = 'block';
+      showToast(`${challengerName} challenged you!`);
+    });
 
-  showScreen('s-game');
-  renderBoard(); renderSide(); updateStatus();
-  showToast(`Game started! You are ${myColor==='w'?'White':'Black'}.`);
-});
+    function acceptChallenge() {
+      socket.emit('accept_challenge', { challengerId: currentChallengerId });
+      document.getElementById('incoming-panel').style.display = 'none';
+    }
 
-socket.on('opponent_move', ({ from, to, promotion }) => {
-  doMove(from[0], from[1], to[0], to[1], promotion);
-  renderBoard(); renderSide(); updateStatus();
-});
+    function declineChallenge() {
+      socket.emit('decline_challenge', { challengerId: currentChallengerId });
+      document.getElementById('incoming-panel').style.display = 'none';
+      currentChallengerId = null;
+    }
 
-socket.on('game_ended', ({ reason, winner }) => {
-  let msg = '';
-  if (reason === 'checkmate') msg = `Checkmate! ${winner === myColor ? 'You win!' : 'You lost.'}`;
-  else if (reason === 'resign') msg = `Opponent resigned. ${winner === myColor ? 'You win!' : 'You lost.'}`;
-  else if (reason === 'stalemate') msg = 'Stalemate — draw!';
-  else msg = 'Game ended.';
-  showOver(winner === myColor, msg);
-});
+    socket.on('challenge_declined', ({ name }) => {
+      showToast(`${name} declined your challenge.`);
+    });
 
-socket.on('opponent_disconnected', () => {
-  showToast('Opponent disconnected. You win!');
-  showOver(true, 'Opponent disconnected. You win!');
-});
+    function openChallenge() {
+      const challengeName = prompt("Enter a custom name/label for your open challenge (e.g., 'Casual Match', 'Minimax Master'):") || "";
+      const name = challengeName.trim() || `Match with ${playerName}`;
+      document.getElementById('open-challenge-panel').style.display = 'block';
+      socket.emit('open_challenge', { challengeName: name });
+    }
 
-// ── Chat ──
-function sendChat() {
-  const input = document.getElementById('chat-input');
-  const msg = input.value.trim();
-  if (!msg || !roomId) return;
-  socket.emit('chat_message', { roomId, message: msg });
-  addChatMsg(playerName, msg, true);
-  input.value = '';
-}
+    function cancelOpenChallenge() {
+      document.getElementById('open-challenge-panel').style.display = 'none';
+      socket.emit('cancel_challenge');
+    }
 
-document.getElementById('chat-input')?.addEventListener('keydown', e => {
-  if (e.key === 'Enter') sendChat();
-});
+    socket.on('game_start', ({ roomId: rid, white, black }) => {
+      roomId = rid;
+      multiMode = true; botMode = false;
+      myColor = white.id === socket.id ? 'w' : 'b';
+      initGame();
 
-socket.on('chat_message', ({ sender, message }) => {
-  if (sender !== playerName) addChatMsg(sender, message, false);
-});
+      document.getElementById('game-title').textContent = `${white.name} vs ${black.name}`;
+      document.getElementById('game-badge').textContent = 'Multiplayer';
+      document.getElementById('game-badge').className = 'badge badge-green';
+      document.getElementById('name-white').textContent = white.name;
+      document.getElementById('name-black').textContent = black.name;
+      document.getElementById('avatar-white').textContent = white.name[0].toUpperCase();
+      document.getElementById('avatar-black').textContent = black.name[0].toUpperCase();
+      document.getElementById('avatar-black').style.background = '#2C2C2A';
+      document.getElementById('undo-btn').style.display = 'none';
+      document.getElementById('chat-section').style.display = 'block';
+      document.getElementById('chat-box').innerHTML = '';
+      document.getElementById('open-challenge-panel').style.display = 'none';
 
-function addChatMsg(sender, message, isMe) {
-  const box = document.getElementById('chat-box');
-  const div = document.createElement('div');
-  div.className = 'chat-msg';
-  div.innerHTML = `<span class="sender" style="color:${isMe?'var(--purple)':'var(--green)'};">${sender}:</span> ${message}`;
-  box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
-}
+      showScreen('s-game');
+      renderBoard(); renderSide(); updateStatus();
+      showToast(`Game started! You are ${myColor === 'w' ? 'White' : 'Black'}.`);
+    });
 
-function addSystemMsg(msg) {
-  const box = document.getElementById('chat-box');
-  const div = document.createElement('div');
-  div.className = 'chat-msg';
-  div.innerHTML = `<span class="system">${msg}</span>`;
-  box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
-}
+    socket.on('opponent_move', ({ from, to, promotion }) => {
+      doMove(from[0], from[1], to[0], to[1], promotion);
+      renderBoard(); renderSide(); updateStatus();
+    });
 
-// ── Toast ──
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
+    socket.on('game_ended', ({ reason, winner }) => {
+      let msg = '';
+      if (reason === 'checkmate') msg = `Checkmate! ${winner === myColor ? 'You win!' : 'You lost.'}`;
+      else if (reason === 'resign') msg = `Opponent resigned. ${winner === myColor ? 'You win!' : 'You lost.'}`;
+      else if (reason === 'stalemate') msg = 'Stalemate — draw!';
+      else msg = 'Game ended.';
+      showOver(winner === myColor, msg);
+    });
 
-// ── Init rank/file labels on load ──
-(function initLabels() {
-  const rl = document.getElementById('rank-labels');
-  const fl = document.getElementById('file-labels');
-  if (rl) for (let r=0;r<8;r++) { const d=document.createElement('div'); d.textContent=8-r; rl.appendChild(d); }
-  if (fl) for (let f=0;f<8;f++) { const d=document.createElement('div'); d.textContent=FILES[f]; fl.appendChild(d); }
-})();
-</script>
+    socket.on('opponent_disconnected', () => {
+      showToast('Opponent disconnected. You win!');
+      showOver(true, 'Opponent disconnected. You win!');
+    });
+
+    // ── Chat ──
+    function sendChessChat() {
+      const input = document.getElementById('chat-input');
+      const msg = input.value.trim();
+      if (!msg || !roomId) return;
+      socket.emit('chat_message', { roomId, message: msg });
+      input.value = '';
+    }
+
+    document.getElementById('chat-input')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendChessChat();
+    });
+
+    socket.on('chat_message', ({ sender, senderId, message }) => {
+      const isMe = (senderId === socket.id);
+      addChatMsg(sender, message, isMe);
+    });
+
+    function addChatMsg(sender, message, isMe) {
+      const box = document.getElementById('chat-box');
+      const div = document.createElement('div');
+      div.className = 'chat-msg';
+      div.innerHTML = `<span class="sender" style="color:${isMe ? 'var(--purple)' : 'var(--green)'};">${sender}:</span> ${message}`;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function addSystemMsg(msg) {
+      const box = document.getElementById('chat-box');
+      const div = document.createElement('div');
+      div.className = 'chat-msg';
+      div.innerHTML = `<span class="system">${msg}</span>`;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    // ── Toast ──
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // ── Init rank/file labels on load ──
+    (function initLabels() {
+      const rl = document.getElementById('rank-labels');
+      const fl = document.getElementById('file-labels');
+      if (rl) for (let r = 0; r < 8; r++) { const d = document.createElement('div'); d.textContent = 8 - r; rl.appendChild(d); }
+      if (fl) for (let f = 0; f < 8; f++) { const d = document.createElement('div'); d.textContent = FILES[f]; fl.appendChild(d); }
+    })();
+  </script>
 </body>
+
 </html>

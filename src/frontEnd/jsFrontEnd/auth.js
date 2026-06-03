@@ -183,16 +183,22 @@ function handleLoginSubmit(event) {
     if (response.status === 200) {
       return response.json();
     }
-    if (response.status === 401) {
-      showFormMessage(form, 'Invalid email or password.', 'error');
-      resetSubmitButton(submitBtn);
-    } else if (response.status === 403) {
-      showFormMessage(form, 'Invalid email or password.', 'error');
-      resetSubmitButton(submitBtn);
-    } else {
-      showFormMessage(form, 'Something went wrong. Please try again.', 'error');
-      resetSubmitButton(submitBtn);
-    }
+    return response.json()
+      .then(data => {
+        const errorMsg = data?.message || 'Invalid email or password.';
+        showFormMessage(form, errorMsg, 'error');
+        resetSubmitButton(submitBtn);
+        return null;
+      })
+      .catch(() => {
+        if (response.status === 401 || response.status === 403) {
+          showFormMessage(form, 'Invalid email or password.', 'error');
+        } else {
+          showFormMessage(form, 'Something went wrong. Please try again.', 'error');
+        }
+        resetSubmitButton(submitBtn);
+        return null;
+      });
   })
   .then(data => {
     if (!data) return;
@@ -734,11 +740,17 @@ function showFormMessage(form, message, type = 'success') {
 }
 
 function handleLogout() {
+    const token = localStorage.getItem('token');
     localStorage.removeItem('token');
     localStorage.removeItem('accountType');
 
-    // âœ… Call logout endpoint to clear cookie on server
-    fetch('/logout', { method: 'POST' })
+    // ✅ Call logout endpoint to clear cookie on server
+    fetch('/logout', { 
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
     .then(() => {
         window.location.href = '/login-page';
     });

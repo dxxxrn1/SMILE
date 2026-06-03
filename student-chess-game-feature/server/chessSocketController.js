@@ -1,7 +1,7 @@
 const lobby = new Map();
 const rooms = new Map();
 const challenges = new Map();
-const openChallenges = new Set();
+const openChallenges = new Map();
 const leaderboard = [];
 
 function generateRoomId() {
@@ -9,15 +9,33 @@ function generateRoomId() {
 }
 
 function getLobbyList() {
-  return Array.from(lobby.entries()).map(([id, data]) => ({
-    socketId: id,
+  const activeChallenges = Array.from(openChallenges.entries()).map(([id, data]) => ({
+    hostId: id,
     ...data,
   }));
+  return {
+    players: Array.from(lobby.entries()).map(([id, data]) => ({
+      socketId: id,
+      ...data,
+    })),
+    openChallenges: activeChallenges,
+  };
 }
 
 export function registerChessSockets(io) {
   io.on("connection", (socket) => {
     socket.on("join_lobby", ({ name, rating = 1200 }) => {
+      // Clean up any existing lobby entries with the exact same name to prevent duplicates due to rapid page reloads/navigation
+      for (const [id, data] of lobby.entries()) {
+        if (id !== socket.id && data.name === name) {
+          lobby.delete(id);
+          openChallenges.delete(id);
+          const oldSocket = io.sockets.sockets.get(id);
+          if (oldSocket) {
+            oldSocket.disconnect(true);
+          }
+        }
+      }
       lobby.set(socket.id, { name, rating, status: "waiting" });
       io.emit("lobby_update", getLobbyList());
     });
@@ -28,55 +46,65 @@ export function registerChessSockets(io) {
       io.emit("lobby_update", getLobbyList());
     });
 
-    socket.on("open_challenge", () => {
+    socket.on("open_challenge", ({ challengeName }) => {
       const player = lobby.get(socket.id);
       if (!player || player.status !== "waiting") {
         socket.emit("challenge_error", { message: "Join the lobby before opening a challenge." });
         return;
       }
 
-      const opponentId = Array.from(openChallenges).find((id) => id !== socket.id && lobby.get(id)?.status === "waiting");
+      openChallenges.set(socket.id, {
+        challengerName: player.name,
+        challengeName: challengeName || `Match with ${player.name}`,
+        rating: player.rating || 1200
+      });
+      socket.emit("challenge_sent", { targetName: "an available student" });
+      io.emit("lobby_update", getLobbyList());
+    });
 
-      if (!opponentId) {
-        openChallenges.add(socket.id);
-        socket.emit("challenge_sent", { targetName: "an available student" });
+    socket.on("cancel_challenge", () => {
+      openChallenges.delete(socket.id);
+      io.emit("lobby_update", getLobbyList());
+    });
+
+    socket.on("accept_open_challenge", ({ hostId }) => {
+      const host = lobby.get(hostId);
+      const challenger = lobby.get(socket.id);
+
+      if (!host || host.status !== "waiting" || !openChallenges.has(hostId)) {
+        socket.emit("challenge_error", { message: "This challenge is no longer available." });
         return;
       }
 
-      openChallenges.delete(opponentId);
-      const white = lobby.get(opponentId);
-      const black = player;
-      const roomId = generateRoomId();
+      openChallenges.delete(hostId);
 
-      lobby.set(opponentId, { ...white, status: "playing" });
-      lobby.set(socket.id, { ...black, status: "playing" });
+      const roomId = generateRoomId();
+      lobby.set(hostId, { ...host, status: "playing" });
+      lobby.set(socket.id, { ...challenger, status: "playing" });
 
       rooms.set(roomId, {
         players: {
-          white: { id: opponentId, name: white.name, rating: white.rating },
-          black: { id: socket.id, name: black.name, rating: black.rating },
+          white: { id: hostId, name: host.name, rating: host.rating },
+          black: { id: socket.id, name: challenger.name, rating: challenger.rating },
         },
         moves: [],
         turn: "w",
         status: "playing",
       });
 
-      const whiteSocket = io.sockets.sockets.get(opponentId);
-      if (whiteSocket) {
-        whiteSocket.join(roomId);
+      const hostSocket = io.sockets.sockets.get(hostId);
+      if (hostSocket) {
+        hostSocket.join(roomId);
       }
       socket.join(roomId);
 
       io.to(roomId).emit("game_start", {
         roomId,
-        white: { id: opponentId, name: white.name },
-        black: { id: socket.id, name: black.name },
+        white: { id: hostId, name: host.name },
+        black: { id: socket.id, name: challenger.name },
       });
-      io.emit("lobby_update", getLobbyList());
-    });
 
-    socket.on("cancel_challenge", () => {
-      openChallenges.delete(socket.id);
+      io.emit("lobby_update", getLobbyList());
     });
 
     socket.on("send_challenge", ({ targetId }) => {
@@ -196,6 +224,7 @@ export function registerChessSockets(io) {
 
       io.to(roomId).emit("chat_message", {
         sender,
+        senderId: socket.id,
         message: message.trim().slice(0, 120),
       });
     });
